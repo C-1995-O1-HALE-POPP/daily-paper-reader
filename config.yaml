@@ -25,3 +25,65 @@ subscriptions:
     stage: A
     diff_threshold_pct: 15
   keyword_recall_mode: or
+  intent_profiles:
+    - tag: ehr-agent
+      description: 基于EHR的医疗Agent评估
+      enabled: true
+      paper_sources:
+        - arxiv
+      keywords:
+        - keyword: EHR medical agent
+          keyword_cn: EHR医疗代理
+          query: medical agent that uses electronic health records
+        - keyword: agent performance benchmark
+          keyword_cn: 代理性能基准
+          query: benchmarking performance of medical agents
+        - keyword: electronic health records
+          keyword_cn: 电子健康记录
+          query: electronic health records for medical agent
+        - keyword: medical AI agents
+          keyword_cn: 医疗AI代理
+          query: medical AI agents evaluation using EHR data
+        - keyword: healthcare reinforcement learning
+          keyword_cn: 医疗强化学习
+          query: reinforcement learning for healthcare agent evaluation
+        - keyword: clinical decision agents
+          keyword_cn: 临床决策代理
+          query: evaluation of clinical decision support agents with EHR
+      intent_queries:
+        - query: What are the metrics for healthcare agent evaluation using EHR data?
+          query_cn: 使用EHR数据评估医疗代理的指标有哪些？
+          enabled: true
+          source: manual
+          note: ''
+        - query: How to evaluate the performance of medical agents using electronic health records
+          query_cn: 如何使用电子健康记录评估医疗智能体的性能
+          enabled: true
+          source: manual
+          note: ''
+        - query: Benchmarks for clinical decision support agents based on EHR
+          query_cn: 基于EHR的临床决策支持智能体基准测试
+          enabled: true
+          source: manual
+          note: ''
+        - query: Reinforcement learning and LLM in medical agent evaluation
+          query_cn: 强化学习与大语言模型在医疗智能体评估中的应用
+          enabled: true
+          source: manual
+          note: ''
+      updated_at: '2026-05-29T05:38:11.935Z'
+source_backends:
+  arxiv:
+    papers_table: arxiv_papers
+    use_vector_rpc: true
+    vector_rpc: match_arxiv_papers
+    vector_rpc_exact: match_arxiv_papers_exact
+    use_bm25_rpc: true
+    bm25_rpc: match_arxiv_papers_bm25
+    sync_table: arxiv_sync_status
+    sync_success_value: success
+    schema: public
+    kind: supabase
+    enabled: true
+    url: https://lyucdwgefyfbmaiopjbk.supabase.co
+    anon_key: sb_publishable_lX-oi64Uxyd7SIVv3_w2Uw_MTOojeKq
