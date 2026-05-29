@@ -1,0 +1,232 @@
+Title: Do Clinical Models Change Treatment Decisions?
+
+URL Source: https://arxiv.org/pdf/2605.28129v1
+
+Published Time: Thu, 28 May 2026 00:53:32 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# Do Clinical Models Change Treatment Decisions? 
+
+Dongkyu Cho 1, Miao Zhang 1, Rumi Chunara 11 New York University 
+
+dongkyu.cho@nyu.edu miaozhng@nyu.edu , rumi.chunara@nyu.edu 
+
+Abstract 
+
+Clinical foundation models are evaluated with factual or exam-style medical QA, but treat-ment decisions must change when patient con-text changes. We introduce ClinPivot, an auditable treatment-decision benchmark built from biomedical relations and pivoted pa-tient contexts. ClinPivot asks whether mod-els change treatment choices when new clin-ical constraints shift the action space. We find that strong medical QA performance does not reliably predict decision-making perfor-mance: frontier models and task-adapted Qwen variants often fail to change decisions cor-rectly, and model rankings shift across evalua-tion regimes. Decision-structured supervision improves pivot-sensitive decision-making and medical QA under matched knowledge bud-gets, while lightweight replay reduces losses in general assistant ability. 
+
+1 Introduction 
+
+Medical QA benchmarks such as MedQA (Jin et al., 2020) and PubMedQA (Jin et al., 2019) have be-come a standard way to evaluate clinical language models. They are useful, but they mostly reward models for answering fixed questions, where the relevant facts and answer set do not change. Treat-ment decisions have a different failure mode: a drug can be appropriate for a disease and still be-come the wrong choice once the patient has a con-traindicating comorbidity, an interacting medica-tion, a relevant allergy, or another constraint. Re-cent work likewise cautions that strong medical QA performance does not settle whether models reason reliably in clinical settings (Singhal et al., 2023; Tu et al., 2023; Griot et al., 2025; Kim et al., 2025). The gap is not simply knowledge, but condi-tional action. A model may know that drug A treats disease D, while still choosing A in a case where 
+
+A has become unsafe or inappropriate. We ask a 60 70 80 90 100 
+
+Accuracy (%)  
+
+> GPT-o1
+> Claude
+> Sonnet 4.5
+> Qwen3.5
+> 397B-A17B
+> DeepSeek R1
+> Qwen3-235B
+> Llama-4
+> Qwen-3-4B-D
+> Qwen-3-8B-D
+> MedQA ClinPivot
+
+Figure 1: Models with high MedQA accuracy still show large drops on C LIN PIVOT . Unmarked frontier-model accuracies are from Table 1; green check marks indicate decision-trained Qwen models from Table 2. Values are accuracies in percent. 
+
+direct question: do clinical models change treat-ment decisions when the patient context changes? This framing follows clinical reasoning work that emphasizes decisions under partial information and patient-specific constraints (Ten Cate et al., 2017; Wu et al., 2024a). Figure 1 previews the central pattern: models with high medical QA scores still drop sharply on pivoted treatment decisions. We introduce C LIN PIVOT , an auditable clin-ical treatment-decision benchmark built from PrimeKG-style disease, drug, phenotype, indica-tion, contraindication, interaction, and off-label relations (Chandak et al., 2023). Each example presents a short patient vignette and candidate treat-ments. The vignette contains a decision pivot: a clinically meaningful change in patient state that can alter or constrain the treatment choice. The 1
+
+> arXiv:2605.28129v1 [cs.AI] 27 May 2026
+
+model must select the appropriate action in the piv-oted case, rather than merely recall a disease–drug association. CLIN PIVOT keeps this behavior inspectable. La-bels come from graph operations rather than an-other language model, and each item stores the disease node, candidate drug nodes, pivot type, banned drugs when applicable, and supporting evi-dence triples. This structure lets us measure both decision accuracy and pivot sensitivity: whether a model avoids the treatment made unsafe or inap-propriate by the new constraint. Our experiments show that high medical QA per-formance does not reliably imply pivot-sensitive decision-making. Strong frontier models and task-adapted Qwen variants can do well on MedQA while failing to update treatment choices under de-cision pivots, and model rankings change across evaluation regimes. We also find that decision-structured supervision improves C LIN PIVOT more directly than QA-only supervision under matched clinical knowledge budgets. Because this training can erode broad assistant abilities, we evaluate gen-eral capability retention and show that lightweight replay preserves much of the base model’s gen-eral behavior while retaining most clinical decision gains. 
+
+Contributions. We make the following contribu-tions: • We introduce C LIN PIVOT , a clinical bench-mark that tests whether models change treatment choices when patient constraints change. • We build the examples from biomedical graph relations and keep the supporting evidence for each item. • We show that medical QA scores do not reliably predict performance on pivoted treatment deci-sions, and that model rankings change across the two settings. • We compare QA-style and decision-style train-ing, and show that simple replay helps preserve general abilities during clinical decision training. 
+
+2 Related Work 
+
+Clinical reasoning models. Large language mod-els have shown strong performance on medical knowledge and clinical reasoning tasks, includ-ing Med-PaLM-style medical QA and generalist biomedical AI systems (Singhal et al., 2023; Tu et al., 2023). However, recent work argues that high benchmark accuracy does not guarantee reliable clinical reasoning: models may lack metacognitive awareness, exhibit inflexible reasoning, or fail in operational clinical settings even when they answer medical questions correctly (Griot et al., 2025; Kim et al., 2025; Jiang et al., 2025). C LIN PIVOT follows this line of work but focuses on a specific, auditable behavior: whether a model changes a treatment de-cision when a patient-specific constraint changes the action space. 
+
+Clinical benchmarks. Medical benchmarks such as MedQA and PubMedQA have become stan-dard tools for evaluating biomedical knowledge and question answering (Jin et al., 2020, 2019). These benchmarks are useful, but they generally present fixed questions with fixed answer choices. They do not directly test whether a model revises an action when the patient context changes. C LIN -PIVOT is complementary: it uses PrimeKG-style biomedical relations (Chandak et al., 2023) to con-struct treatment-selection examples with decision pivots, following the broader idea that correct rea-soning often depends on identifying pivotal state changes (Cho et al., 2026b). This lets us evalu-ate not only whether a model knows a disease– treatment association, but whether it treats that association as conditional on patient-specific con-straints. 
+
+3 CLIN PIVOT : Treatment Decisions Under Constraints 
+
+The task. CLIN PIVOT evaluates treatment selec-tion after the patient context changes. Let d be a disease and a0 an indicated treatment for d. A de-cision pivot p is a minimal addition to the patient state, such as a contraindicating comorbidity, in-teracting medication, allergy, or off-label tension, following prior work on decision pivots in reason-ing (Cho et al., 2026b). The pivot induces a new decision state (d, p ) in which a0 may no longer be the appropriate graph-derived action. Given a vignette for (d, p ) and a candidate set C containing plausible treatments, the model must select the gold treatment under graph-derived constraints, y ∈ C.This setup tests whether the model keeps choosing the original disease–treatment association after the action space has changed. 
+
+Building examples. PrimeKG-style biomedical knowledge graphs provide the relations needed to build these cases at scale (Chandak et al., 2023). Indication edges identify candidate treatments for 2a disease. Contraindication and interaction edges define hard constraints that can make an otherwise plausible treatment unsafe. Off-label relations and pharmacologically nearby drugs provide tempting alternatives. For each eligible disease, we sample an original treatment candidate a0, instantiate one pivot family, and recompute the gold treatment: if the pivot bans a0, the graph-derived gold is an in-dicated drug that is not banned; if the pivot is an off-label tradeoff, the indicated treatment remains the graph-derived gold and the off-label drug be-comes a distractor. Disease feature text and phe-notype edges supply the vignette, while indicated, contraindicated, off-label, and nearby drugs supply plausible answer choices. 
+
+Evidence and checks. Each row contains the benchmark prompt, answer choices, graph-derived gold answer, and a reference rationale. The ratio-nale is not treated as a human chain of thought; it is a structured, graph-aligned explanation derived from the same evidence used to construct the item. Metadata stores the disease node, gold drug node, candidate drug nodes, pivot type, banned drugs, and evidence triples. For release artifacts, we ap-ply a reject-only LLM-assisted clinical consistency screen after rule-based generation. The screen can remove incoherent examples, but it cannot cre-ate labels or change the graph-derived gold treat-ment. C LIN PIVOT is not intended to certify clinical safety or replace guideline-based evaluation; it iso-lates one capability: updating treatment decisions when structured patient constraints change. Ad-ditional construction and validation details are in Appendix A. 
+
+4 Experiments 
+
+4.1 Experimental Setting Evaluation tasks. We evaluate models along three axes: standard medical QA, pivot-sensitive clinical decision making, and general capability retention. MedQA and PubMedQA measure exam-style or abstract-grounded biomedical QA, while CLIN PIVOT asks models to select a treatment under shifts in patient-specific clinical constraints. 
+
+Models. We first evaluate strong general-purpose reasoning models, including GPT o1, Claude Son-net 4.5, Qwen3.5-397B-A17B-FP8, and DeepSeek R1 (OpenAI, 2024; Anthropic, 2025; Qwen Team, 2026; DeepSeek-AI et al., 2025). Qwen3.5-397B-A17B-FP8 is a sparse model with 397B total param-eters and 17B activated parameters. We also eval-uate two additional open-weight frontier models, Qwen3-235B-A22B and Llama-4-Maverick-17B-128E (Yang et al., 2025; Meta AI, 2025), using the same evaluation protocol. For controlled training experiments, we use the Hugging Face checkpoints 
+
+Qwen/Qwen3-4B and Qwen/Qwen3-8B , so that we can compare training recipes while holding the model family fixed. 
+
+Training and scoring. To test whether the de-cision gap can be reduced, we fine-tune Qwen-3 models with matched clinical facts rendered either as QA examples or as C LIN PIVOT -style decision examples. We also evaluate mixed QA+Decision training and replay variants that add general instruction and reasoning examples, equal in size to the clinical fine-tuning data, sampled from the substitute pretraining mixture 
+
+allenai/dolma3_mix-6T (Olmo et al., 2025). All task scores are reported as accuracy in percent. A response is correct if the selected option matches the graph-derived gold label after normalizing op-tion letters and option text; free-form explanations are ignored unless they change the final selected an-swer. Pivot sensitivity measures whether the model avoids the pre-pivot treatment when that treatment is explicitly banned by metadata. Appendix B gives the full training, retention, and scoring protocol. 
+
+4.2 Experimental Results Medical QA performance does not imply clini-cal decision competence. Table 1 and Figure 1 compare strong general-purpose models on medi-cal QA and C LIN PIVOT . MedQA accuracy ranges from 93.19 to 96.49 and PubMedQA accuracy from 75.23 to 81.98, but C LIN PIVOT scores remain much lower. The mean gaps from MedQA and Pub-MedQA to C LIN PIVOT are 29.97 and 14.31 points, respectively. Across all completed C LIN PIVOT 
+
+runs, scores range from 61.93 to 69.32. Rankings also shift: DeepSeek R1 has the second-highest MedQA score but the second-lowest C LIN PIVOT 
+
+score among models with both metrics, while Claude Sonnet 4.5 and Qwen3.5-397B-A17B-FP8 are lower on MedQA but higher on C LIN PIVOT .The benchmark therefore tests whether a model updates an initially plausible treatment decision when a patient-specific pivot changes the clinical constraints. 
+
+Decision-structured supervision is more effec-tive than QA-only supervision. Table 2 and Fig-3Table 1: Medical QA scores are high, but C LIN PIVOT 
+
+scores remain substantially lower across frontier models. CLIN PIVOT scores are computed on the full 2,015-example test set.                             
+
+> Model Access MedQA PubMedQA CLIN PIVOT
+> GPT o1 Closed API 96.49 81.98 69.32 Claude Sonnet 4.5 Closed API 95.72 80.57 67.57 Qwen3.5-397B-A17B-FP8 Open-weight 95.10 79.31 64.22 DeepSeek R1 Open-weight 95.92 80.29 63.10 Qwen3-235B-A22B Open-weight 95.25 80.38 65.74 Llama-4-Maverick Open-weight 93.19 75.23 61.93
+
+Table 2: Decision-structured supervision improves treatment-decision accuracy across both Qwen-3 model sizes. Scores are mean ± standard error across five random seeds.                             
+
+> Model Fine-tuned MedQA PubMedQA CLIN PIVOT
+> Qwen-3-4B ✗88 .17 ±0.64 75 .10 ±0.48 60 .92 ±0.56
+> Qwen-3-4B (QA) ✓89 .02 ±0.33 77 .35 ±0.45 62 .13 ±0.46
+> Qwen-3-4B (Decision) ✓90 .48 ±0.43 80 .69 ±0.35 65 .74 ±0.25
+> Qwen-3-8B ✗90 .13 ±0.73 77 .82 ±0.68 62 .48 ±0.97
+> Qwen-3-8B (QA) ✓92 .12 ±0.53 80 .04 ±0.47 61 .07 ±0.48
+> Qwen-3-8B (Decision) ✓95 .65 ±0.44 82 .31 ±0.23 70 .90 ±0.36
+
+ure 2 isolate the effect of the training signal using Qwen-3 models. Decision SFT consistently outper-forms QA SFT on C LIN PIVOT : it improves Qwen-3-4B by 4.82 points over base, and Qwen-3-8B by 8.42 points. QA SFT is weaker and can even re-duce decision accuracy on the larger model despite improving MedQA. Thus, the format of clinical supervision matters: decision examples train the model to connect facts to actions under constraints, not only to recall biomedical associations. 
+
+Clinical decision training creates a retention tradeoff. Table 3 examines the effect of clinical decision training on general capability retention. Decision SFT improves Qwen-3-8B by 8.42 points on decision accuracy and 20.49 points on pivot sensitivity, while QA + Decision SFT reaches the strongest clinical scores. These gains come with a cost: Decision SFT reduces IFEval by 7.88 points and average retention by 6.27 points, with larger losses for QA + Decision SFT. Clinical decision training can therefore improve pivot-sensitive rea-soning while weakening general assistant behavior. Full per-task retention scores are reported in Ta-ble 5, whose aggregate column matches the Avg. Ret. column in Table 3. 
+
+Replay preserves general capabilities while re-taining most clinical gains. Replay mitigates this tradeoff without erasing most clinical gains. Decision SFT + Replay reaches 70.12 decision ac-curacy and 60.73 pivot sensitivity, close to Decision 60 
+
+> 70
+> 80
+> 90
+> 100
+> Accuracy (%)
+
+A. Qwen-3-4B   
+
+> MedQA PubMedQA ClinPivot
+> 60
+> 70
+> 80
+> 90
+> 100
+> Accuracy (%)
+
+B. Qwen-3-8B   
+
+> Base QA SFT Decision SFT
+
+Figure 2: Decision-structured supervision improves CLIN PIVOT more than QA-only supervision. Panels A and B report Qwen-3-4B and Qwen-3-8B results from Table 2 across MedQA, PubMedQA, and C LIN PIVOT ;error bars show standard error across five random seeds. Table 3: Clinical decision training improves treatment-decision performance but can degrade general capabilities; replay mitigates this tradeoff. 
+
+Avg. Ret. summarizes ARC, TruthfulQA, WinoGrande, GSM8K, HellaSwag, and MMLU; full per-task scores are reported in Table 5.                                             
+
+> Training Data Clinical QA Clinical Decision General Retention MedQA PubMedQA Dec. Acc. Pivot Sens. IFEval Avg. Ret. Base model (Qwen-3-8B) 90.13 77.82 62.48 41.35 74.60 66.10 QA SFT 92.12 80.04 61.07 39.92 71.35 63.42 Decision SFT 95.65 82.31 70.90 61.84 66.72 59.83 QA + Decision SFT 95.94 83.10 72.18 64.27 65.81 58.96 Decision SFT + Replay 95.21 81.94 70.12 60.73 72.91 64.87 QA + Decision SFT + Replay 95.73 82.76 71.64 63.05 72.28 64.41
+
+SFT without replay, while reducing the retention loss to 1.69 points on IFEval and 1.23 points on av-erage retention. This suggests that training clinical decision models should account for both domain-specific decision competence and general assistant reliability. 
+
+5 Concluding Remarks 
+
+CLIN PIVOT turns a simple clinical expectation into a benchmark question: when the patient context changes, does the model change the treatment? Our results suggest that medical QA accuracy is not a re-liable proxy for this behavior. Decision-structured supervision helps, and replay preserves much of the general capability that can be lost during clinical decision training. 4Limitations 
+
+CLIN PIVOT is a benchmark, not a test of clinical safety. Its labels come from biomedical graph rela-tions, so they can be inspected, but they also inherit missing links, noisy relations, and outdated source information. The gold treatments are graph-derived choices under constructed constraints rather than guideline-ranked clinical recommendations. The current task does not model dosage, disease sever-ity, patient preferences, local practice, guideline changes, or care sequencing. The benchmark also covers only one narrow task: choosing a treatment from a fixed list after patient context changes. It does not cover history taking, diagnosis, monitoring, escalation, or shared deci-sion making. The vignettes and rationales are syn-thetic benchmark materials, not clinical notes. Results may also change with the candidate gen-erator, prompt format, answer parser, model ver-sion, and decoding settings. Future versions should add broader clinical review, more disease areas, guideline-date checks, and calibration analysis. Ex-cept for the controlled fine-tuning results where standard errors are reported, the reported numbers are point estimates rather than confidence intervals. We do not study reinforcement learning here; the training experiments use supervised fine-tuning and replay. 
+
+Ethical considerations 
+
+CLIN PIVOT is for research on model behavior, not for medical advice or clinical deployment. The dataset uses public biomedical resources and syn-thetic patient vignettes, not real patient records, which reduces privacy risk. The main risk is mis-use: benchmark performance could be mistaken for evidence that a model is safe for patient care. We therefore release the benchmark with docu-mentation, source provenance, validation scripts, and warnings that the examples are synthetic and incomplete. Any model trained or evaluated with this benchmark would still need expert clinical re-view before patient-facing or clinician-facing use. Release documentation states the licenses and terms for source assets. We do not redistribute raw PrimeKG files unless their terms permit it; released rows are derived artifacts with source citations and metadata. Subject to source terms, the derived benchmark is released under CC BY 4.0. We also disclose that AI assistants were used for coding and editorial support. LLMs are used only as a reject-only consistency screen and cannot assign gold labels. 
+
+References 
+
+Anthropic. 2025. Claude sonnet 4.5 system card. Payal Chandak, Kexin Huang, and Marinka Zitnik. 2023. Building a knowledge graph to enable pre-cision medicine. Scientific Data , 10(1):67. Dongkyu Cho, Taesup Moon, Rumi Chunara, Kyunghyun Cho, and Sungmin Cha. 2026a. Forget forgetting: Continual learning in a world of abundant memory. Preprint , arXiv:2502.07274. Dongkyu Cho, Amy B. Z. Zhang, Bilel Fehri, Sheng Wang, Rumi Chunara, Hengrui Cai, and Rui Song. 2026b. Correct reasoning paths visit shared decision pivots. Preprint , arXiv:2509.21549. DeepSeek-AI, Daya Guo, Dejian Yang, Haowei Zhang, Junxiao Song, Peiyi Wang, Runxin Xu, Ruoyu Zhang, and 1 others. 2025. Deepseek-r1: Incentivizing rea-soning capability in llms via reinforcement learning. 
+
+Nature , 645:633–638. Maxime Griot, Coralie Hemptinne, Jean Vanderdonckt, and Demet Yuksel. 2025. Large language models lack essential metacognition for reliable medical rea-soning. Nature communications , 16(1):642. Lavender Y. Jiang, Angelica Chen, Xu Han, Xujin Chris Liu, Radhika Dua, Kevin Eaton, Frederick Wolff, Robert Steele, Jeff Zhang, Anton Alyakin, Qingkai Pan, Yanbing Chen, Karl L. Sangwon, Daniel A. Alber, Jaden Stryker, Jin Vivian Lee, Yindalon Aphinyanaphongs, Kyunghyun Cho, and Eric Karl Oermann. 2025. Generalist foundation models are not clinical enough for hospital operations. Preprint ,arXiv:2511.13703. Di Jin, Eileen Pan, Nassim Oufattole, Wei-Hung Weng, Hanyi Fang, and Peter Szolovits. 2020. What dis-ease does this patient have? a large-scale open do-main question answering dataset from medical exams. 
+
+Preprint , arXiv:2009.13081. Qiao Jin, Bhuwan Dhingra, Zhengping Liu, William Cohen, and Xinghua Lu. 2019. PubMedQA: A dataset for biomedical research question answering. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Lan-guage Processing (EMNLP-IJCNLP) , pages 2567– 2577, Hong Kong, China. Association for Computa-tional Linguistics. Jonathan Kim, Anna Podlasek, Kie Shidara, Feng Liu, Ahmed Alaa, and Danilo Bernardo. 2025. Limita-tions of large language models in clinical problem-solving arising from inflexible reasoning. Scientific reports , 15(1):39426. 
+
+5Meta AI. 2025. Llama 4 maverick 17b-128e model card. Team Olmo, Allyson Ettinger, Amanda Bertsch, Bailey Kuehl, David Graham, David Heineman, Dirk Groen-eveld, Faeze Brahman, Finbarr Timbers, Hamish Ivison, Jacob Morrison, Jake Poznanski, Kyle Lo, Luca Soldaini, Matt Jordan, Mayee Chen, Michael Noukhovitch, Nathan Lambert, Pete Walsh, and 49 others. 2025. Olmo 3. Preprint , arXiv:2512.13961. OpenAI. 2024. Openai o1 system card. Preprint ,arXiv:2412.16720. Qwen Team. 2026. Qwen3.5-397b-a17b-fp8 model card. David Rolnick, Arun Ahuja, Jonathan Schwarz, Tim-othy P. Lillicrap, and Greg Wayne. 2019. Ex-perience replay for continual learning. Preprint ,arXiv:1811.11682. Karan Singhal, Shekoofeh Azizi, Tao Tu, S Sara Mah-davi, Jason Wei, Hyung Won Chung, Nathan Scales, Ajay Tanwani, Heather Cole-Lewis, Stephen Pfohl, and 1 others. 2023. Large language models encode clinical knowledge. Nature , 620(7972):172–180. Olle Ten Cate, Eugène JFM Custers, and Steven J Durn-ing. 2017. Principles and practice of case-based clinical reasoning education: a method for preclini-cal students . Springer. Tao Tu, Shekoofeh Azizi, Danny Driess, Mike Schaek-ermann, Mohamed Amin, Pi-Chuan Chang, Andrew Carroll, Chuck Lau, Ryutaro Tanno, Ira Ktena, Basil Mustafa, Aakanksha Chowdhery, Yun Liu, Simon Kornblith, David Fleet, Philip Mansfield, Sushant Prakash, Renee Wong, Sunny Virmani, and 13 others. 2023. Towards generalist biomedical ai. Preprint ,arXiv:2307.14334. Hang Wu, Wenqi Shi, Anirudh Choudhary, and May D Wang. 2024a. Clinical decision making under un-certainty: a bootstrapped counterfactual inference approach. BMC Medical Informatics and Decision Making , 24(1):275. Tongtong Wu, Linhao Luo, Yuan-Fang Li, Shirui Pan, Thuy-Trang Vu, and Gholamreza Haffari. 2024b. Continual learning for large language models: A sur-vey. Preprint , arXiv:2402.01364. An Yang, Anfeng Li, Baosong Yang, Beichen Zhang, Binyuan Hui, Bo Zheng, Bowen Yu, and 1 oth-ers. 2025. Qwen3 technical report. Preprint ,arXiv:2505.09388. Jeffrey Zhou, Tianjian Lu, Swaroop Mishra, Siddhartha Brahma, Sujoy Basu, Yi Luan, Denny Zhou, and Le Hou. 2023. Instruction-following evaluation for large language models. Preprint , arXiv:2311.07911. 
+
+A Benchmark Generation Details 
+
+Benchmark object. Each C LIN PIVOT item is a treatment-selection problem built around a disease 
+
+d, an initially plausible treatment a0, and a patient-specific decision pivot p. The released row con-tains a natural-language multiple-choice prompt 
+
+question , a candidate set choices , the gold treat-ment answer under graph-derived constraints, its zero-indexed position answer_index , a structured reference rationale reasoning , and metadata for audit and analysis. At evaluation time, the model sees only the prompt and answer options; graph node identifiers, pivot labels, banned-drug meta-data, and evidence triples are not shown to the model. 
+
+Construction workflow. The generator creates benchmark rows in five steps. First, it selects a disease with at least one graph-supported indi-cated treatment and samples an initial treatment 
+
+a0. Second, it searches for a feasible pivot p tied to graph relations or synthetic-but-labeled allergy constraints. Third, it renders the pivot into the patient vignette, producing a new decision state 
+
+(d, p ). Fourth, it recomputes the gold treatment under graph-derived constraints for that state. Fi-nally, it builds a candidate set containing the post-pivot graph-derived gold treatment, the pre-pivot treatment when it is useful as a hard negative, and additional plausible alternatives. Rows are skipped when a pivot cannot be grounded, when no valid post-pivot graph-derived gold can be selected, or when the resulting item fails structural validation. 
+
+Gold-label semantics. For constraint pivots, the pivot makes the original treatment unsafe or inap-propriate, so the gold label is an indicated treat-ment for d that is not banned by the pivot. This label should be read as a graph-derived treatment choice under the constructed constraints, not as a guideline-ranked clinical recommendation. This directly tests whether the model moves away from the pre-pivot disease–drug association. For off-label tradeoff pivots, the indicated treatment re-mains the graph-derived gold while the off-label option becomes a tempting distractor. This tests whether the model resists changing to a less ap-propriate option when a related but insufficiently supported treatment is introduced. Thus, C LIN -PIVOT includes both “change when constrained” and “do not change for the wrong reason” cases. 6Source graph and clinical text. The genera-tor uses PrimeKG-style node metadata, disease– drug relations, disease–phenotype relations, and clinical feature tables. Disease feature fields pro-vide textual clinical descriptions, symptoms, risk factors, complications, causes, and management notes. Drug feature fields provide descriptions, in-dications, mechanisms, pharmacodynamics, ATC codes, categories, and related metadata. The graph relations identify candidate treatment edges and de-cision pivots, while the feature fields supply natural-language context for the vignette and metadata for plausible distractor selection. 
+
+Vignette construction. For a disease node, the generator renders a short synthetic clinical vignette from a demographic header, disease feature text, linked phenotype concepts when available, and the pivot text. The benchmark prompt is stored as 
+
+question , the gold drug as answer , the option list as choices , and the zero-indexed gold option as 
+
+answer_index .
+
+Pivot families. We instantiate five pivot families. • Contraindication. If the original drug is con-traindicated for another disease, the vignette adds a history of that disease and marks the original drug as unsafe. • Comorbidity conflict. The vignette adds a co-morbid condition for which the original drug is contraindicated. • Drug–drug interaction. The vignette adds a current medication that has a graph-backed in-teraction with the original drug. We treat this family as optional and include it only when the relation source supports a clinically con-straining interpretation. • Allergy. The vignette adds a deterministic synthetic allergy to the original drug or an inferred medication class. These rows are la-beled as synthetic in metadata. • Off-label tradeoff. The vignette introduces an off-label tempting alternative whose graph evidence supports use in a related condition but not as the preferred treatment for the cur-rent disease. 
+
+Candidate construction. Each item contains up to six answer choices. The choice set always in-cludes the gold drug. When a pivot bans the orig-inal drug, the banned drug is included as a hard negative whenever it is present in the drug table. Additional choices are drawn from other indicated drugs, contraindicated drugs, off-label drugs, and pharmacologically nearby drugs. Nearness is ap-proximated using drug metadata such as ATC hi-erarchy, category, and group fields before falling back to broader drug-description filters. 
+
+Reference rationale and metadata. Each row contains a reasoning field, but this field is not used as a gold chain of thought. It is a structured reference rationale derived from the same graph-backed note used to construct the item. The row metadata stores the disease node, gold drug node, candidate drug nodes, pivot type, banned drugs, evidence triples, and a structured JSON note. 
+
+Clinical consistency screen. For release arti-facts, we add an LLM-assisted clinical consistency screen after the complete item has been gener-ated. The screen sees the vignette, choices, graph-derived gold answer, pivot text, pivot effect, and evidence metadata. It samples repeated judgments with temperature 0.9 and returns keep , reject , or 
+
+uncertain plus short issue tags: an item is kept when a majority of judgments consider the con-structed example sound, rejected when a major-ity do not, and marked uncertain when the judg-ments split evenly. The screen is not allowed to relabel examples: rejected or uncertain rows are removed from the release set, while kept rows pre-serve the original graph-derived answer. We use 
+
+openai/gpt-oss-120b for this screen and also tested Qwen/Qwen3.5-27B , which produced sim-ilar aggregate outcomes. We record the screen out-put in metadata and report the keep/reject/uncertain counts. In the current release pass, the screen keeps 87% of examples, rejects 9%, and marks 4% as un-certain; uncertain rows are also excluded from the release set. 
+
+Splits and validation. Decision examples are split by disease node, so all pivoted rows for a disease appear in the same split. This prevents near-duplicate disease contexts from appearing in both training and test sets. The current release snapshot contains 20,000 examples, with 17,985 training examples and 2,015 test examples. It spans 527 disease nodes, 1,320 gold treatment drugs, and 2,099 candidate drugs. The train split contains 472 disease nodes and the test split contains 55 disease nodes, with no disease-node overlap. We run a structural validator that checks that the gold an-7Table 4: C LIN PIVOT release statistics.             
+
+> Statistic Count
+> Total examples 20,000 Train examples 17,985 Test examples 2,015 Disease nodes 527 Gold treatment drugs 1,320 Candidate drugs 2,099 Contraindication pivots 3,379 Comorbidity-conflict pivots 3,327 Drug–drug interaction pivots 5,201 Allergy pivots 5,653 Off-label tradeoff pivots 2,440
+
+swer appears in the options, that answer_index 
+
+matches answer , that each row contains graph evi-dence, that train/test disease leakage is absent, and that pivot text makes banned drugs visible when a pivot bans an option. Validation errors are treated as release blockers. 
+
+Scoring. Models are evaluated by feeding only the benchmark question . A response is cor-rect if the selected option matches the gold 
+
+answer_index ; when an option index cannot be parsed, the evaluator falls back to normalized drug-name matching against answer . Explanations may be generated for qualitative analysis, but they are ignored for automatic accuracy unless they change the final selected answer. 
+
+B Experimental Details 
+
+Fine-tuning data. The controlled training ex-periments compare three supervision conditions. The base condition evaluates the pretrained or instruction-tuned model without additional task-specific clinical fine-tuning. The QA SFT condi-tion fine-tunes on PrimeKG-derived QA examples rendered from disease and drug feature fields. The Decision SFT condition fine-tunes on C LIN PIVOT -style decision examples generated from the same source tables and graph relations. Thus, QA and Decision SFT expose the model to overlapping disease–drug facts while varying whether supervi-sion is answer-oriented recall or action selection under constraints. 
+
+Fine-tuning configuration. Unless otherwise specified, Qwen-3 experiments use full fine-tuning rather than LoRA. We fine-tune for three epochs with learning rate 1 × 10 −6 and batch size 8. Train-ing jobs used either 8 Google Cloud TPU v6e ac-celerators or 4 NVIDIA A100 GPUs, depending Base   
+
+> QA
+> Dec
+> QA+Dec
+> Dec+R
+> All+R
+> 50
+> 60
+> 70
+> 80
+> 90
+> Average accuracy (%)
+> Clinical QA Decision Retention
+
+Figure 3: Replay recovers much of the general reten-tion lost during clinical decision training. Each bar visualizes Table 3 by averaging the two metrics in the corresponding evaluation family. 
+
+on the run. Pretokenizing the training data took approximately one hour. Fine-tuning runs took approximately 10–20 minutes once the data were pretokenized. We did not perform hyperparameter search; all training recipes use the fixed settings above, and we report the final checkpoint after three epochs. 
+
+Retention setting. Clinical decision training can improve domain performance while eroding gen-eral abilities that are important for deployable as-sistants, such as instruction following, formatting, commonsense reasoning, and quantitative reason-ing. We therefore evaluate mixed QA + Decision SFT and replay variants. Replay mixes a set of gen-eral instruction and reasoning examples, equal in size to the clinical fine-tuning data, sampled from 
+
+allenai/dolma3_mix-6T (Olmo et al., 2025) into the clinical decision-training stream, rather than replaying examples from the retention evaluation sets. We use this as a standard mitigation strat-egy for forgetting in sequential or task-adaptive training (Rolnick et al., 2019; Wu et al., 2024b; Cho et al., 2026a). General retention is summa-rized with IFEval (Zhou et al., 2023) and a broader battery covering ARC, TruthfulQA, WinoGrande, GSM8K, HellaSwag, and MMLU. 
+
+Closed-model evaluation. Closed-model evalu-ations were run through a hosted API evaluation service available to the authors. We report pub-lic model names and shared decoding and scoring settings, but exact backend checkpoint revisions for closed models are not fully controlled by the authors. 8Table 5: Per-task general retention results underlying the aggregate retention score in Table 3. Values are accuracies in percent.                                                  
+
+> Training Data ARC TruthfulQA WinoGrande GSM8K HellaSwag MMLU Avg.
+> Base model 70.19 50.46 69.90 58.76 77.64 69.80 66.10 QA SFT 67.12 47.84 66.30 55.22 75.00 69.12 63.42 Decision SFT 63.23 44.12 62.80 50.46 72.01 66.48 59.83 QA + Decision SFT 62.44 43.26 61.50 49.07 71.30 66.36 58.96 Decision SFT + Replay 68.91 49.58 68.40 56.29 76.05 70.22 64.87 QA + Decision SFT + Replay 68.12 48.82 67.71 55.40 75.52 70.96 64.41
+
+Scoring protocol. For multiple-choice and candidate-selection settings, a response is scored correct if the selected option matches the graph-derived gold label after normalizing option letters and option text. For pivoted examples, decision accuracy is computed against the recomputed gold treatment under graph-derived constraints. Pivot sensitivity is computed from whether the model avoids the pre-pivot treatment when that treatment is explicitly banned by the pivot metadata. Evalua-tion uses deterministic decoding where supported, with temperature 0.0, top-p 1.0, and a maximum of 256 new tokens. For Table 2, we report means and standard errors across five random seeds; other reported experimental results are point estimates unless otherwise specified. 9

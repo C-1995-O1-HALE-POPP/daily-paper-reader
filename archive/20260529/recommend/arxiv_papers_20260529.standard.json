@@ -1,0 +1,357 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-29T21:50:05.005777+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2605.29744v1",
+      "source": "arxiv",
+      "title": "Why Specialist Models Still Matter: A Heterogeneous Multi-Agent Paradigm for Medical Artificial Intelligence",
+      "abstract": "The impressive performance of generalist large language models (LLMs) such as GPT and Claude in healthcare raises a critical question: will domain-specific medical specialist models become obsolete? We argue that the future of medical artificial intelligence (AI) lies not in building monolithic medical foundation models, nor in replacing human expertise, but in orchestrating collaboration among generalist LLMs, domain-specific specialist models, and clinicians. We propose HetMedAgent, a heterogeneous medical multi-agent framework that enables conflict-aware evidence fusion, uncertainty-based clinician intervention triggering, and adaptive threshold calibration. Experiments on three real-world clinical decision-making tasks demonstrate that the synergy between generalist LLMs and domain-specific specialist models significantly outperforms using either type of model alone, validating the irreplaceable value of specialist models in modality-specific analysis. HetMedAgent represents a shift from building medical LLMs or foundation models to multi-agent collaboration, achieving a balance between general reasoning capabilities and domain-specific precision.",
+      "authors": [
+        "Yanan Wang",
+        "Shuaicong Hu",
+        "Jian Liu",
+        "Guohui Zhou",
+        "Aiguo Wang",
+        "Cuiwei Yang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.LG",
+        "cs.MA"
+      ],
+      "published": "2026-05-28T10:42:44+00:00",
+      "link": "https://arxiv.org/pdf/2605.29744v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "heterogeneous medical multi-agent framework using EHR for clinical decision making",
+      "llm_evidence_cn": "提出异构医疗多智能体框架，使用电子健康记录进行临床决策",
+      "llm_evidence": "提出异构医疗多智能体框架，使用电子健康记录进行临床决策",
+      "canonical_evidence": "提出异构医疗多智能体框架，使用电子健康记录进行临床决策",
+      "llm_tldr_en": "Proposes HetMedAgent, a heterogeneous multi-agent framework for medical AI that integrates generalist LLMs, specialist models, and clinicians, evaluated on real-world clinical decision-making tasks using EHR.",
+      "llm_tldr_cn": "该论文质疑通用大模型是否会使医疗专科模型过时，提出HetMedAgent异构多智能体框架。该框架融合通用大模型、专科模型和临床医生，通过冲突感知证据融合和不确定性触发的临床干预实现协作。在三个真实临床决策数据集上验证，证明异构多智能体系统优于单一通用模型。",
+      "llm_tldr": "该论文质疑通用大模型是否会使医疗专科模型过时，提出HetMedAgent异构多智能体框架。该框架融合通用大模型、专科模型和临床医生，通过冲突感知证据融合和不确定性触发的临床干预实现协作。在三个真实临床决策数据集上验证，证明异构多智能体系统优于单一通用模型。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.30295v1",
+      "source": "arxiv",
+      "title": "MedCase-Structured: A Text-to-FHIR Dataset for Benchmarking Diagnostic Reasoning in Clinically Realistic EHR Settings",
+      "abstract": "Large language models (LLMs) show promise for clinical reasoning and decision support, but evaluation in realistic, electronic health record-congruent settings remains limited. Existing benchmarks often rely on static datasets or unstructured inputs that do not reflect the structured, interoperable data formats used in clinical systems. We introduce a pipeline for generating clinically realistic HL7 FHIR R4 bundles from unstructured text, enabling controllable evaluation of clinical decision support systems. The pipeline combines staged LLM generation with terminology-grounded validation and repair to reduce hallucinated codes and enforce structural and semantic consistency. Applying this approach to MedCaseReasoning, we construct MedCase-Structured, a synthetic dataset aligned with clinician-authored diagnostic cases, achieving valid FHIR generation for 82.5% of cases. Evaluation on MedCase-Structured reveals consistently lower diagnostic accuracy for LLMs on structured FHIR inputs than with plain text, highlighting the importance of deployment-aligned benchmarking.",
+      "authors": [
+        "Valentina Bui Muti",
+        "Eugénie Dulout",
+        "Ziquan Fu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-05-28T17:42:43+00:00",
+      "link": "https://arxiv.org/pdf/2605.30295v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "introduces a benchmark for diagnostic reasoning in EHR settings",
+      "llm_evidence_cn": "提出了在EHR设置中用于诊断推理的基准测试",
+      "llm_evidence": "提出了在EHR设置中用于诊断推理的基准测试",
+      "canonical_evidence": "提出了在EHR设置中用于诊断推理的基准测试",
+      "llm_tldr_en": "MedCase-Structured provides a pipeline to generate FHIR-based EHR data for benchmarking LLM diagnostic reasoning, enabling realistic evaluation of clinical decision support agents.",
+      "llm_tldr_cn": "该工作针对现有基准测试缺乏EHR兼容性问题，提出从非结构化文本自动生成HL7 FHIR R4数据集的管道，通过分阶段LLM生成和术语验证确保结构一致性，为临床决策支持系统的可控评估提供新标准。实验表明该管道能有效生成临床真实EHR数据，可用于诊断推理基准测试。",
+      "llm_tldr": "该工作针对现有基准测试缺乏EHR兼容性问题，提出从非结构化文本自动生成HL7 FHIR R4数据集的管道，通过分阶段LLM生成和术语验证确保结构一致性，为临床决策支持系统的可控评估提供新标准。实验表明该管道能有效生成临床真实EHR数据，可用于诊断推理基准测试。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.29146v1",
+      "source": "arxiv",
+      "title": "SafeRx-Agent: A Knowledge-Grounded Multi-Agent Framework for Safe and Explainable Medication Recommendation",
+      "abstract": "Medication recommendation predicts medications for patient visits, but existing methods still face two key challenges. At the model level, traditional drug recommendation methods only predict structured drug codes with limited evidence grounding, while LLM agents can use richer clinical context but may lack safety verification and traceability. At the task level, existing benchmarks often use broad medication categories, which ignore subgroup-level safety differences and can lead to risk overestimation. We introduce the first fine-grained medication recommendation setting based on fourth-level ATC code generation. We propose Safe Prescription Agent (SafeRx-Agent), a knowledge-grounded multi-agent framework that uses patient context, external clinical knowledge, and safety verification to recommend traceable medication sets. Experimental results on MIMIC-III and MIMIC-IV datasets show that SafeRx-Agent improves fine-grained medication prediction accuracy while controlling drug interactions, contraindications, and medication set size.",
+      "authors": [
+        "Xinyu Wang",
+        "Hanwei Wu",
+        "Zhenghan Tai",
+        "Sicheng Lyu",
+        "Qincheng Lu",
+        "Ziyu Zhao",
+        "Jijun Chi",
+        "Jingrui Tian",
+        "Xiao-Wen Chang",
+        "Ziyang Song"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-05-27T22:15:48+00:00",
+      "link": "https://arxiv.org/pdf/2605.29146v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "knowledge-grounded multi-agent framework for safe medication recommendation using clinical context",
+      "llm_evidence_cn": "基于知识的多智能体框架，利用临床上下文进行安全用药推荐",
+      "llm_evidence": "基于知识的多智能体框架，利用临床上下文进行安全用药推荐",
+      "canonical_evidence": "基于知识的多智能体框架，利用临床上下文进行安全用药推荐",
+      "llm_tldr_en": "SafeRx-Agent introduces a fine-grained medication recommendation setting using fourth-level ATC codes and a multi-agent framework that leverages knowledge grounding for safe and explainable prescriptions, with a benchmark for evaluation.",
+      "llm_tldr_cn": "SafeRx-Agent 针对现有用药推荐方法缺乏安全验证和可解释性的问题，提出了基于第四级ATC代码的细粒度用药推荐任务，并设计了知识驱动的多智能体框架。该框架利用临床上下文进行处方预测，同时内置安全验证机制，并建立了相应的基准测试。在实验上证明了其在推荐准确性和安全性上的优势，为临床决策支持智能体的评估提供了新范式。",
+      "llm_tldr": "SafeRx-Agent 针对现有用药推荐方法缺乏安全验证和可解释性的问题，提出了基于第四级ATC代码的细粒度用药推荐任务，并设计了知识驱动的多智能体框架。该框架利用临床上下文进行处方预测，同时内置安全验证机制，并建立了相应的基准测试。在实验上证明了其在推荐准确性和安全性上的优势，为临床决策支持智能体的评估提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.22608v1",
+      "source": "arxiv",
+      "title": "Agentic CLEAR: Automating Multi-Level Evaluation of LLM Agents",
+      "abstract": "Agentic systems are becoming more capable: agents define strategies, take actions, and interact with different environments. This autonomy poses serious challenges for overseeing and assessing agent behavior. Most current tools are limited, focusing on observability with basic evaluation capabilities or imposing static, hand-crafted error taxonomies that cannot adapt to new domains. To address this gap, we present Agentic CLEAR, an automatic, dynamic, and easy-to-use evaluation framework. It produces textual insights into the agent behavior on three levels of granularity: system, trace, and node. Agentic CLEAR operates above the observability layer, enabling seamless integration and featuring an intuitive UI that makes agent evaluation highly accessible. In our experiments on four benchmarks, seven agentic settings, and tens of thousands of LLM calls, we show that Agentic CLEAR produces high-quality, data-driven, insightful feedback. Our analysis shows strong alignment with human-annotated errors and the ability to predict task success rate.",
+      "authors": [
+        "Asaf Yehudai",
+        "Lilach Eden",
+        "Michal Shmueli-Scheuer"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-05-21T15:26:02+00:00",
+      "link": "https://arxiv.org/pdf/2605.22608v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Automated multi-level evaluation framework for LLM agents, directly applicable to medical agent benchmarking",
+      "llm_evidence_cn": "自动化多级LLM代理评估框架，直接适用于医疗代理基准测试",
+      "llm_evidence": "自动化多级LLM代理评估框架，直接适用于医疗代理基准测试",
+      "canonical_evidence": "自动化多级LLM代理评估框架，直接适用于医疗代理基准测试",
+      "llm_tldr_en": "Agentic CLEAR provides automatic, dynamic, and easy-to-use evaluation framework for LLM agents with system, trace, and node granularity.",
+      "llm_tldr_cn": "随着LLM代理自主能力增强，现有评估工具局限于可观测性且依赖静态错误分类。本文提出Agentic CLEAR，一个自动、动态、易用的评估框架，在系统、轨迹和节点三级粒度上产生文本洞察，支持可解释的代理行为评估。该框架可无缝集成到医疗代理评估流程中，为基于EHR的医疗代理提供通用评估工具。",
+      "llm_tldr": "随着LLM代理自主能力增强，现有评估工具局限于可观测性且依赖静态错误分类。本文提出Agentic CLEAR，一个自动、动态、易用的评估框架，在系统、轨迹和节点三级粒度上产生文本洞察，支持可解释的代理行为评估。该框架可无缝集成到医疗代理评估流程中，为基于EHR的医疗代理提供通用评估工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.23629v1",
+      "source": "arxiv",
+      "title": "DDX-TRACE: A Benchmark for Medical Diagnostic Trajectories in VLMs",
+      "abstract": "Medical diagnosis is not a single prediction from a fully specified vignette. It is a sequential workup: clinicians decide what evidence to obtain, revise a differential diagnosis, and stop when the diagnosis is sufficiently supported. Most medical AI benchmarks instead reveal the relevant context upfront and score only the final answer, making unsupported correct guesses, premature closure, inefficient workups, and poor uncertainty updating invisible. We introduce DDX-TRACE, a physician-adjudicated benchmark for multimodal neuroradiology that evaluates diagnostic trajectories under hidden evidence over 211 challenging cases. Each case begins with limited clinical history; models request imaging studies in free form, receive matched image bundles when available, update a probabilistic differential diagnosis after each turn, and stop with a localized final diagnosis. Evaluating state-of-the-art VLMs, we find that final diagnosis scores can substantially misrepresent workup quality: models may guess plausible diagnoses without essential evidence, request useful studies but misinterpret raw images, or acquire evidence inefficiently while updating uncertainty poorly. Controlled evidence variants isolate bottlenecks in planning, visual evidence extraction, and downstream differential reasoning. DDX-TRACE shifts medical AI evaluation from final answers to evidence-supported diagnostic trajectories.",
+      "authors": [
+        "Jiazhen Pan",
+        "Weixiang Shen",
+        "Jun Li",
+        "Julian Canisius",
+        "Felix Bitzer",
+        "Paula Roßmüller",
+        "Jiancheng Yang",
+        "Virginie Kreutzinger",
+        "Daniel Rueckert",
+        "Benedikt Wiestler"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-05-22T13:41:10+00:00",
+      "link": "https://arxiv.org/pdf/2605.23629v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark for medical diagnostic trajectories that evaluates sequential decision-making, relevant to agent evaluation",
+      "llm_evidence_cn": "评估诊断轨迹的基准，涉及序列决策，与医疗智能体评估相关",
+      "llm_evidence": "评估诊断轨迹的基准，涉及序列决策，与医疗智能体评估相关",
+      "canonical_evidence": "评估诊断轨迹的基准，涉及序列决策，与医疗智能体评估相关",
+      "llm_tldr_en": "Introduces DDX-TRACE, a benchmark evaluating medical diagnostic trajectories under hidden evidence, providing a more realistic evaluation than final-answer-only benchmarks.",
+      "llm_tldr_cn": "医学诊断是逐步收集证据的过程，但现有基准仅评估最终答案，忽略了过早关闭或低效工作流等问题。本文提出DDX-TRACE，一个包含211个挑战性病例的医师裁定基准，用于评估多模态神经放射学中的诊断轨迹。模型在隐藏证据下请求影像检查，评估其诊断推理过程。该基准为医疗智能体的过程评估提供了新方法。",
+      "llm_tldr": "医学诊断是逐步收集证据的过程，但现有基准仅评估最终答案，忽略了过早关闭或低效工作流等问题。本文提出DDX-TRACE，一个包含211个挑战性病例的医师裁定基准，用于评估多模态神经放射学中的诊断轨迹。模型在隐藏证据下请求影像检查，评估其诊断推理过程。该基准为医疗智能体的过程评估提供了新方法。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.24635v1",
+      "source": "arxiv",
+      "title": "HiMed: Incentivizing Hindi Reasoning in Medical LLMs",
+      "abstract": "Medical large language models hold promise for reducing healthcare disparities, yet Hindi remains severely underrepresented. While medical LLMs excel in high-resource languages, their performance degrades sharply in Hindi, particularly on Indian systems of medicine. We argue that robust cross-lingual medical transfer requires Hindi reasoning. To this end, we introduce HiMed, a Hindi reasoning medical corpus and benchmark suite covering both Western and Indian medicine. We further propose HiMed-8B, a Hindi-form medical reasoning LLM, through the design of decaying scaffolding reward. Extensive experiments demonstrate improvement in Hindi medical reasoning performance and reduction in the English--Hindi accuracy gap. Ablation studies validate the contribution of each training stage and reward component. All data and code are available on GitHub: https://github.com/FreedomIntelligence/HiMed.",
+      "authors": [
+        "Dingfeng Jiang",
+        "Han Yan",
+        "Chenze Ma",
+        "Amit Kumar Jaiswal",
+        "Ang Li",
+        "Yunxiang Jiang",
+        "Xinlei Xiong",
+        "Juhao Liang",
+        "Hongru Xiao",
+        "Xiang Li",
+        "Fan Bu",
+        "Jiale Han",
+        "Ruchir Gupta",
+        "Prayag Tiwari",
+        "Benyou Wang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-05-23T15:51:04+00:00",
+      "link": "https://arxiv.org/pdf/2605.24635v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Uses reinforcement learning (decaying scaffolding reward) to improve Hindi medical LLM reasoning; includes benchmark",
+      "llm_evidence_cn": "使用强化学习（衰减支架奖励）提升印地语医疗LLM推理，包含基准套件",
+      "llm_evidence": "使用强化学习（衰减支架奖励）提升印地语医疗LLM推理，包含基准套件",
+      "canonical_evidence": "使用强化学习（衰减支架奖励）提升印地语医疗LLM推理，包含基准套件",
+      "llm_tldr_en": "HiMed introduces a Hindi medical reasoning benchmark and LLM using decaying scaffolding reinforcement learning to reduce English-Hindi accuracy gap.",
+      "llm_tldr_cn": "医疗大语言模型在印地语中表现不佳，且缺乏印地语推理评估。本文构建了HiMed印地语医疗推理语料库和基准套件，涵盖西医和印度医学。通过设计衰减支架奖励（强化学习）训练HiMed-8B模型，显著提升了印地语医疗推理性能，缩小了英印准确率差距。该工作展示了强化学习在医疗LLM评估和改进中的潜力。",
+      "llm_tldr": "医疗大语言模型在印地语中表现不佳，且缺乏印地语推理评估。本文构建了HiMed印地语医疗推理语料库和基准套件，涵盖西医和印度医学。通过设计衰减支架奖励（强化学习）训练HiMed-8B模型，显著提升了印地语医疗推理性能，缩小了英印准确率差距。该工作展示了强化学习在医疗LLM评估和改进中的潜力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Reinforcement learning and LLM in medical agent evaluation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.26463v1",
+      "source": "arxiv",
+      "title": "Towards Error-Free EHRs: Reasoning-Intensive Consistency Verification Between Clinical Notes and Structured Tables in Electronic Health Records",
+      "abstract": "Data consistency between unstructured clinical notes and structured tables in Electronic Health Records (EHRs) is essential for patient safety and clinical decision-making. However, existing work on note-table consistency verification mainly relies on surface-level matching of numeric values or simple events. Such approaches fail to capture the reasoning underlying real-world EHR documentation, including clinical interpretation, event relations, and temporal changes. To address this gap, we introduce EHR-ReasonCon, a reasoning-intensive benchmark for note-table consistency verification. Built on MIMIC-III with expert-guided annotations, it comprises 8,048 entities derived from clinical notes and provides high-quality ground-truth labels. The annotation protocol is supported by specialized table-exploration tools to ensure systematic evidence retrieval and reliable consistency assessment. We also propose EHR-Inspector, an LLM-based framework that segments notes, extracts anchor entities and temporal references, and uses table-exploration tools to verify consistency against structured tables. Evaluated using expert-validated LLM-as-a-judge metrics under harsh and lenient criteria, EHR-Inspector achieves state-of-the-art performance across multiple model backbones. Analyses further demonstrate the effectiveness of its components and highlight differences from human verification.",
+      "authors": [
+        "Yeonsu Kwon",
+        "Jiho Kim",
+        "Junseong Choi",
+        "Paloma Rabaey",
+        "Minseo Kim",
+        "Sujeong Im",
+        "Jeewon Yang",
+        "Jun-Min Lee",
+        "Sangji Lee",
+        "Jiwon Kim",
+        "Hangyul Yoon",
+        "Hyunwook Kwon",
+        "Edward Choi"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-05-26T02:19:42+00:00",
+      "link": "https://arxiv.org/pdf/2605.26463v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Introduces EHR-ReasonCon benchmark for consistency verification, directly using EHR data",
+      "llm_evidence_cn": "引入基于EHR的一致性验证基准EHR-ReasonCon，直接使用EHR数据",
+      "llm_evidence": "引入基于EHR的一致性验证基准EHR-ReasonCon，直接使用EHR数据",
+      "canonical_evidence": "引入基于EHR的一致性验证基准EHR-ReasonCon，直接使用EHR数据",
+      "llm_tldr_en": "EHR-ReasonCon benchmark for reasoning-intensive consistency verification between clinical notes and structured tables, built on MIMIC-III with 8,048 entities.",
+      "llm_tldr_cn": "电子健康记录中临床笔记与结构化表格的数据一致性对患者安全至关重要，但现有方法仅做表层匹配。本文提出EHR-ReasonCon基准，基于MIMIC-III构建，包含8048条需要临床推理的实体，用于评估模型在时间变化、事件关系等复杂场景下的一致性验证能力。该基准可服务于基于EHR的医疗代理评估。",
+      "llm_tldr": "电子健康记录中临床笔记与结构化表格的数据一致性对患者安全至关重要，但现有方法仅做表层匹配。本文提出EHR-ReasonCon基准，基于MIMIC-III构建，包含8048条需要临床推理的实体，用于评估模型在时间变化、事件关系等复杂场景下的一致性验证能力。该基准可服务于基于EHR的医疗代理评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.28129v1",
+      "source": "arxiv",
+      "title": "Do Clinical Models Change Treatment Decisions?",
+      "abstract": "Clinical foundation models are evaluated with factual or exam-style medical QA, but treatment decisions must change when patient context changes. We introduce ClinPivot, an auditable treatment-decision benchmark built from biomedical relations and pivoted patient contexts. ClinPivot asks whether models change treatment choices when new clinical constraints shift the action space. We find that strong medical QA performance does not reliably predict decision-making performance: frontier models and task-adapted Qwen variants often fail to change decisions correctly, and model rankings shift across evaluation regimes. Decision-structured supervision improves pivot-sensitive decision-making and medical QA under matched knowledge budgets, while lightweight replay reduces losses in general assistant ability.",
+      "authors": [
+        "Dongkyu Cho",
+        "Miao Zhang",
+        "Rumi Chunara"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-27T08:19:12+00:00",
+      "link": "https://arxiv.org/pdf/2605.28129v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Proposes ClinPivot benchmark for evaluating treatment decision changes in clinical models",
+      "llm_evidence_cn": "提出ClinPivot基准用于评估临床模型的治疗决策变化",
+      "llm_evidence": "提出ClinPivot基准用于评估临床模型的治疗决策变化",
+      "canonical_evidence": "提出ClinPivot基准用于评估临床模型的治疗决策变化",
+      "llm_tldr_en": "ClinPivot benchmark tests whether clinical models change treatment decisions when patient context shifts, showing that strong QA performance does not guarantee good decision-making.",
+      "llm_tldr_cn": "现有临床模型评估依赖事实性医学问答，但真实决策需要随患者情境调整。本文提出ClinPivot基准，通过生物医学关系和情境变化评估治疗决策调整能力。结果发现，强问答性能并不保证正确决策，且模型排名随评估方式变化。决策结构监督能提升调整敏感性和医学问答质量。该基准为临床决策支持代理的评估提供了新视角。",
+      "llm_tldr": "现有临床模型评估依赖事实性医学问答，但真实决策需要随患者情境调整。本文提出ClinPivot基准，通过生物医学关系和情境变化评估治疗决策调整能力。结果发现，强问答性能并不保证正确决策，且模型排名随评估方式变化。决策结构监督能提升调整敏感性和医学问答质量。该基准为临床决策支持代理的评估提供了新视角。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
