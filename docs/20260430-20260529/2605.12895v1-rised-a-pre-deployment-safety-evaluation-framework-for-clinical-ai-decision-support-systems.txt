@@ -1,0 +1,732 @@
+Title: RISED: A Pre-Deployment Safety Evaluation Framework for Clinical AI Decision-Support Systems
+
+URL Source: https://arxiv.org/pdf/2605.12895v1
+
+Published Time: Thu, 14 May 2026 00:29:42 GMT
+
+Number of Pages: 38
+
+Markdown Content:
+# RISED: A Pre-Deployment Safety Evaluation Framework for Clinical AI Decision-Support Systems 
+
+# Rohith Reddy Bellibatlu ∗
+
+# May 14, 2026 
+
+Highlights 
+
+• RISED: a five-dimension pre-deployment evaluation framework for clinical AI 
+
+• Two dimensions fail and one is statistically inconclusive despite AUROC 0.961; re-validated on three real cohorts 
+
+• Bootstrap 95% CIs yield PASS, FAIL, and INCONCLUSIVE verdicts per dimension 
+
+• Reliability is model-dependent; Inclusivity and Sensitivity are data-dependent 
+
+• Numerical readiness gate that licenses entry to silent-trial clinical evaluation 
+
+Abstract 
+
+Aggregate accuracy metrics dominate the evaluation of clinical AI decision-support systems but do not detect deployment-phase failures of input reliability, subgroup equity, threshold sensitivity, or operational feasibility. We propose the RISED Framework : a five-dimension pre-deployment evaluation covering 
+
+Reliability, Inclusivity, Sensitivity, Equity, and Deployability, in which each dimension is operationalized through formal sub-criteria, pre-specified pass/fail thresholds, and bias-corrected accelerated (BCa) bootstrap 95% confidence intervals combined under a Holm-Bonferroni family-wise error correction. A central demonstration is that a classifier satisfying conventional high-discrimination benchmarks can simultaneously fail input-encoding stability and threshold-shift sensitivity checks, while subgroup AUC parity remains statistically inconclusive, pointing to deployment risks that aggregate evaluation alone cannot detect. We validate this differential pass/fail pattern on a synthetic cohort and three publicly available real-world cohorts spanning 35 years of clinical data vintage, from a 1980s cardiology dataset to a 2024 nationally representative health survey; which dimensions fail differs across cohorts, providing preliminary evidence of construct validity. The Equity dimension is reframed as a proxy-dependence diagnostic rather than a stand-alone gate: any need-based fairness verdict computed against a utilization-derived proxy carries a construct-validity problem the framework surfaces explicitly, triggering a procurement requirement for an outcome-independent need measure before the gate is binding. RISED is released as an open-source Python package that supplies the quantitative verdicts existing clinical AI reporting standards require, providing a principled gateway between in-silico model validation and silent-trial clinical evaluation. 
+
+Keywords: clinical AI evaluation; clinical decision support; algorithmic fairness; model reliability; subgroup performance; deployment readiness; pre-deployment testing. 
+
+> ∗
+
+Independent Researcher. Correspondence: rohithreddybc@gmail.com . ORCID: 0009-0003-6083-0364 .
+
+1
+
+> arXiv:2605.12895v1 [cs.LG] 13 May 2026
+
+# 1 Introduction 
+
+Artificial intelligence (AI) is increasingly embedded in clinical workflows, from diagnostic decision support and prognostic risk estimation to alert generation and treatment selection. As these systems move from research to deployment, evaluation failures become consequential: a systematic bias or instability at the point of care can directly affect diagnosis, treatment, or workflow (Obermeyer et al., 2019; Finlayson et al., 2021). The expansion of clinical AI has brought parallel evaluation methodology. AI Fairness 360 (Bellamy et al., 2019) and Fairlearn (Bird et al., 2020) package fairness metrics for practitioners; TRIPOD+AI (Collins et al., 2024) provides structured reporting checklists; MI-CLAIM (Norgeot et al., 2020) specifies minimum reporting information for clinical AI; CONSORT-AI (Liu et al., 2020) and SPIRIT-AI (Cruz Rivera et al., 2020) extend trial-reporting standards; and FUTURE-AI (Lekadir et al., 2025) consolidates trustworthy-AI principles. But these resources were built for static model selection or post-hoc reporting, not for determining whether a system is ready to operate reliably and equitably in a live clinical environment (Subbaswamy and Saria, 2021). Deployment introduces conditions that offline benchmarks do not anticipate. Clinically equivalent inputs are often encoded differently across time, clinical site, or electronic health record system, and the encoding shift alone destabilizes predictions (Finlayson et al., 2021). Underrepresented subpopulations receive systematically degraded predictions while aggregate metrics look clean (Obermeyer et al., 2019; Celi et al., 2022). Decision thresholds, routinely retuned in deployment to balance sensitivity and specificity, can substantially change which patients the model flags. Clinicians acting on those flags in real time also need interpretable outputs (Sutton et al., 2020; Rudin, 2019). These failure modes are not hypothetical. Documented examples in the clinical AI literature include systematically degraded subgroup performance under proxy outcomes (Obermeyer et al., 2019), shortcut learning in imaging diagnostics (DeGrave et al., 2021), and encoded bias in clinical natural language processing (Ross et al., 2021). The most cited cautionary deployment case is the Epic Sepsis Model: a proprietary sepsis predictor implemented at hundreds of U.S. hospitals, externally validated by Wong et al. (2021) on 38,455 hospitalizations, was found to have hospitalization-level AUROC of only 0.63, miss 67% of sepsis cases, and generate alerts for 18% of all hospitalizations, producing both poor discrimination and substantial alert fatigue despite passing internal benchmarks (Habib et al., 2021). Epic substantially revised the model in 2022–2023 in response to those critiques; we cite the 2021 incident not as the current state of that product but as the canonical documented case of a deployed clinical AI whose pre-deployment evaluation did not surface its real-world failure modes. As Shah et al. (2019) argue, accuracy metrics that gauge how closely model output matches known labels do not measure whether deployment will improve care; pre-deployment evaluation must therefore look beyond aggregate discrimination. Evaluation frameworks that cannot detect these failure modes before deployment cannot prevent them. We propose the RISED Framework , a five-dimension pre-deployment evaluation approach for clinical AI decision-support systems: 
+
+• Reliability : output stability under semantically equivalent but differently encoded inputs; 
+
+• Inclusivity : performance consistency across demographic subpopulations, via subgroup AUC parity and calibration; 
+
+• Sensitivity : behavioral stability under decision-threshold shifts, measured via decision flip rates; 2• Equity : alignment of model predictions with an independent measure of clinical need, beyond demo-graphic parity; and 
+
+• Deployability : operational feasibility, covering explanation faithfulness and end-to-end latency. Each dimension is operationalized through measurable sub-criteria with explicit mathematical definitions, grounded in the published evaluation and fairness literature. The Reliability dimension’s Judge Sensitivity Score (JSS) is introduced here as a clinical-AI extension of the prompt-sensitivity concept explored for LLM-as-a-judge systems in JudgeSense (Bellibatlu, 2026a). The framework also connects to the broader paradigm of deployment-oriented AI evaluation surveyed in a prior preprint on prompt-engineering evaluation frameworks (Bellibatlu, 2026b). The paper makes four contributions. First, we organize the existing evaluation literature into a five-dimension pre-deployment framework specific to clinical decision-support contexts. Second, each dimension gets a formal sub-criterion, a bootstrap 95% CI, and a PASS / FAIL / INCONCLUSIVE decision rule, replacing qualitative checklists with a quantitative gate. Third, we apply the framework to four cohorts: a 10,000-patient synthetic cohort built on a Synthea-inspired generator (Walonoski et al., 2018); the UCI Heart Disease cohort (Detrano et al., 1989) ( n = 303 , real, 1989); the UCI Diabetes 130-US Hospitals cohort (Strack et al., 2014) ( n = 99 ,492 EHR encounters, real, 1999–2008); and the National Center for Health Statistics National Health Interview Survey 2024 Sample Adult file ( n = 9 ,747 post-cleaning, real, collected calendar year 2024 and released by NCHS in mid-2025; National Center for Health Statistics, 2025). The synthetic cohort isolates the self-derived-outcome circularity question; the two historical UCI cohorts test whether the framework’s verdicts persist outside the synthetic setting; and NHIS 2024 places the verdicts on contemporary, post-pandemic survey data. Fourth, we run Fairlearn (Bird et al., 2023) on the same model and cohort to locate where RISED overlaps with existing fairness toolkits and where it adds something new. Section 2 reviews related evaluation work and identifies the gap RISED addresses. Section 3 formally specifies all five dimensions. Section 4 presents results on a synthetic cohort and a real-data cross-check. Section 5 discusses implications for developers, deployers, and regulators. Section 6 concludes. 
+
+# 2 Background and Related Work 
+
+# 2.1 AI Evaluation in Healthcare 
+
+Clinical machine learning has matured from isolated proof-of-concept studies into routine use across diagnosis, prognosis, and decision-support applications in many specialties (Rajpurkar et al., 2022; Topol, 2019; Liu et al., 2019). Two complementary lines of community infrastructure have followed. On the toolkit side, AI Fairness 360 (Bellamy et al., 2019) and Fairlearn (Bird et al., 2020, 2023) package fairness diagnostics and mitigation algorithms behind a Python API, lowering the threshold for practitioners to compute group-level metrics. On the reporting side, TRIPOD (Collins et al., 2015) and its AI-aware update TRIPOD+AI (Collins et al., 2024) require authors to disclose the ingredients of a prediction-model study (model class, training data, calibration, validation strategy) in a structured form that makes cross-study comparison feasible. A second, more recent strand of work targets the deployment-readiness question more directly. APPRAISE-AI (Kwong et al., 2023) is a quantitative scoring tool that grades AI studies for clinical decision support across six methodological domains; FUTURE-AI (Lekadir et al., 2025) is an international consensus guideline organized around six principles (fairness, universality, traceability, usability, robustness, explainability); and DECIDE-AI (Vasey et al., 2022) is the canonical reporting checklist for the early-stage live clinical 3evaluation of AI-based decision support, sitting between in-silico validation and large-scale trials. RISED is complementary to all three: it adopts the quantitative-gate spirit of APPRAISE-AI but commits to specific metrics, thresholds, and CIs; it shares principles with FUTURE-AI but operationalizes them; and where DECIDE-AI structures the live-evaluation report, RISED specifies the numerical pre-deployment evidence on which that evaluation can build. These tools share a common limitation, though: the dominant evaluation paradigm was built for static model selection, not operational deployment. Evaluation happens once, at development time, on a held-out test set from the same data-generating process as training. The resulting metrics (AUROC, Brier score, calibration plots) answer whether the model ranks patients well within the development sample . They say nothing about whether the model behaves consistently when deployed to a different clinical site, a different EHR version, or a population that has shifted in ways the training data did not capture (Subbaswamy and Saria, 2021; Kelly et al., 2019; Ghassemi et al., 2020). The result, as Kelly et al. (Kelly et al., 2019) observe, is a systematic gap between development-phase accuracy and deployment-phase reliability that existing evaluation practice is not set up to detect. 
+
+# 2.2 Fairness, Equity, and Bias in Clinical AI 
+
+Health disparities propagate through clinical AI systems and can be amplified by them. The canonical demonstration is Obermeyer and colleagues’ analysis (Obermeyer et al., 2019) of a widely deployed risk score that performed well on the loss function it was trained for, yet systematically routed Black patients away from care-management programs because its target variable (annual healthcare spending) was depressed for groups whose access was already constrained. Similar patterns (training-objective accuracy hiding subgroup harm) recur in radiological deep learning (DeGrave et al., 2021), clinical NLP (Ross et al., 2021), and sex/gender-stratified prediction (Cirillo et al., 2020), with systematic reviews (Nazer et al., 2023; Celi et al., 2022) confirming that the issue is structural rather than idiosyncratic to any one application. Population-level outcome heterogeneity across age, sex, and racial/ethnic subgroups (Osibogun, 2024) reinforces the same structural argument from a public-health direction. Machine-learning fairness research has produced a menu of formal criteria that try to capture different moral intuitions about what equality of prediction means: error-rate parity across groups (equalized odds, equal opportunity) (Hardt et al., 2016), group-conditional probability calibration (Pleiss et al., 2017), and similar-treatment-of-similar-individuals (individual fairness) (Dwork et al., 2012). A well-known impossibility result (Chouldechova, 2017) shows that when group base rates differ, these criteria are mutually inconsistent, so any toolkit that operationalizes fairness must pick sides among them. Paulus and Kent (Paulus and Kent, 2020) draw a further distinction that is specifically clinical: statistical demographic parity (equal predicted-positive rates across groups) is a different property from need-based fairness (predictions that track actual disease burden rather than utilization proxies that access barriers distort). This second notion, alignment with clinical need rather than with the historical utilization that already encodes disparity, is what the Equity dimension of RISED operationalizes. Liu and colleagues (Liu et al., 2023) extend this argument: in the clinical setting, equity , not statistical equality , is the appropriate fairness target, and the choice of sensitive variables and fairness metrics must be motivated clinically rather than imported from generic ML-fairness practice. A complementary cautionary finding from medical imaging (Yang et al., 2024) shows that fairness fixes that work in-distribution often fail to generalize: models with the smallest in-sample subgroup gaps were not the most equitable in new test environments. Pfohl et al. (2021) make a related empirical point for clinical risk prediction specifically: penalizing group-fairness violations during training 4tends to degrade within-group performance on multiple metrics, so a fairness verdict cannot be read off a single statistic without examining the trade-off it implies. Both findings argue for evaluating fairness across distributions and across metrics rather than only within a single in-sample summary, which is one of the motivations for running RISED’s Inclusivity dimension on multiple cohorts and reporting the underlying 
+
+∆AUC and ECE components alongside the verdict. 
+
+# 2.3 Reporting Standards and Regulatory Context 
+
+Three jurisdictions have, in different vocabularies, converged on the same broad expectation: clinical AI should not enter routine use without pre-deployment evidence that it is reliable and equitable. The U.S. FDA’s AI/ML-Based Software as a Medical Device Action Plan (U.S. Food and Drug Administration, 2021) introduces the concept of a predetermined change-control plan, allowing adaptive models to update post-clearance only along pre-specified trajectories. The Office of the National Coordinator’s HTI-1 rule (Office of the National Coordinator for Health Information Technology, 2024), on the certification side, mandates that algorithmic decision-support tools shipped with certified EHR products expose their inputs, logic, and demographic-subgroup performance to the clinicians using them. On the European side, the AI Act (European Parliament and Council of the European Union, 2024) takes a risk-tiered approach in which AI used to inform clinical decisions is in the high-risk category, triggering conformity-assessment, transparency, and human-oversight obligations as a market-entry condition. Trial-stage reporting standards address the same disclosure problem from the prospective-evaluation side: CONSORT-AI (Liu et al., 2020) and SPIRIT-AI (Cruz Rivera et al., 2020) extend the CONSORT and SPIRIT guidelines to clinical trials of AI interventions, requiring authors to disclose the input handling, performance error analysis, and human-AI interaction protocol of any trialed system. DECIDE-AI (Vasey et al., 2022) sits one stage upstream, structuring the report of early-stage live clinical evaluation between in-silico validation and the larger trials CONSORT-AI / SPIRIT-AI govern. MINIMAR (Hernandez-Boussard et al., 2020) defines the minimum information that must accompany any reported clinical AI model (training population, target population, model architecture, and validation procedure) and is conceptually closest to the disclosure scope that RISED’s per-dimension report fills with numerical content. These reporting frameworks all specify what must appear in a study report; none of them specifies what numerical bar a candidate system must clear before such a study is warranted. RISED targets that latter step. Governance scholarship (Reddy et al., 2020) and the AMIA consensus statement on AI-enabled clinical decision support (Labkoff et al., 2024) both translate these requirements into operational terms. The AMIA statement names the central gap: regulations and reporting standards explain what must be disclosed, but they do not enumerate the specific tests, thresholds, or responsible parties that constitute pre-deployment due diligence. RISED fills that gap. 
+
+# 2.4 Gaps in Existing Frameworks 
+
+Four gaps in current evaluation practice motivated the RISED Framework. Each maps to a corresponding dimension in Section 3. 
+
+First , the standard one-shot held-out evaluation says nothing about how a model behaves when the same clinical reality is encoded differently downstream. A diagnosis coded at a coarser ICD granularity, a lab result reported in different units after a site upgrade, or a comorbidity flag inferred from a slightly different SQL query can all change the input vector for a patient whose clinical state is unchanged (Finlayson et al., 52021; Subbaswamy and Saria, 2021; Zhang et al., 2022; Wong et al., 2021). Translational frameworks like TEHAI (Reddy, 2021) have argued that deployment readiness deserves its own evaluation phase, but no existing toolkit, to our knowledge, operationalizes encoding-stability testing as a concrete pre-deployment step. 
+
+Second , most fairness audits stop at aggregate demographic parity without asking whether predictions track actual clinical need (Obermeyer et al., 2019; Paulus and Kent, 2020). The Obermeyer case is precisely the failure mode this leaves uncaught: standard parity checks could not have flagged a model that satisfied calibration within group while still under-scoring the patients with the most unmet need. 
+
+Third , threshold tuning is a routine clinical-deployment step; operators move the cutoff to trade sensitivity for specificity according to local cost structure. But no widely-used evaluation reports how much that tuning would change the patient flag set. The relationship between threshold and reclassification volume has not been systematically benchmarked (Wynants et al., 2020). 
+
+Fourth , operational feasibility properties such as explanation interpretability, explanation consistency across patients, and inference speed at the bedside are typically siloed in the engineering team, while statistical performance is reported by the data science team (Antoniadi et al., 2021; Sutton et al., 2020). For users who have to act on model outputs in real time the separation is unhelpful and, in some deployment patterns, actively unsafe (Rudin, 2019; Sendak et al., 2020). The RISED Framework addresses each of these gaps through a corresponding evaluation dimension. 
+
+# 3 The RISED Framework 
+
+# 3.1 Dimension 1: Reliability 
+
+In practice, a model encounters inputs that are semantically equivalent to training examples yet encoded differently: the same diagnosis at a different ICD granularity across EHR versions, the same lab value in different units across sites, or the same comorbidity captured at a slightly different date. When such encodings produce different model outputs, patients with identical clinical states may be prioritized or deprioritized based on administrative artifacts rather than medical need. A recent scoping review catalogued eight robustness notions in healthcare ML, with input-perturbation stability among the least systematically tested (Balendran et al., 2025). The Reliability dimension applies a battery of semantically preserving perturbations and measures how often decisions and rankings change. We formalize this dimension through the following measurable sub-criteria. A perturbation ϕ maps an input x to a semantically equivalent variant ˜x = ϕ(x) that preserves the patient’s underlying clinical state. The Perturbation Flip Rate (PFR) measures the fraction of patients whose binary decision changes under perturbation ϕ at threshold τ :
+
+PFR( ϕ, τ ) = 1
+
+n
+
+> n
+
+∑
+
+> i=1
+
+1[1[f (xi) ≥ τ ]̸ = 1[f (ϕ(xi)) ≥ τ ]] . (1) A PFR near zero means model decisions are stable across this semantic variant; a PFR above 0.05 means one patient in twenty would be classified differently by a trivial encoding change. Averaging PFR across the full perturbation battery Φ yields the Judge Sensitivity Score (JSS) , a single index of overall input 6sensitivity: 
+
+JSS(Φ , τ ) = 1
+
+|Φ|
+
+∑
+
+> ϕ∈Φ
+
+PFR( ϕ, τ ). (2) JSS extends the judge sensitivity measure from JudgeSense (Bellibatlu, 2026a) to the clinical scoring context, where input instability has direct consequences for care allocation. We complement JSS with the Spearman rank correlation ρ(ϕ) between baseline and perturbed score vectors, capturing ordering stability independent of the binary decision threshold. 
+
+Sub-criteria. R1 JSS (Φ , τ ) < 0.05 : fewer than 5% of patients receive a flipped binary decision on average across the perturbation battery. 
+
+R2 ρ(ϕ) ≥ 0.95 for all ϕ ∈ Φ: the relative ordering of patients is preserved across every perturbation variant. 
+
+Threat model and scope of the JSS metric. The Reliability dimension is not a certified-robustness or worst-case adversarial analysis in the sense of Madry et al. (Madry et al., 2018) or Wong and Kolter; JSS does not bound model behavior over an ℓp ball of radius ε. Rather, JSS reports flip rate over a user-specified 
+
+ensemble of semantically motivated perturbations (Gaussian additive noise at clinically plausible magnitudes, low-percentage rescalings of physical-unit features, and optionally site-level encoding swaps). Reported JSS is therefore a property of the chosen perturbation battery , not a model invariant: a different battery yields a different JSS, and reviewers should evaluate JSS together with the battery. The package documentation specifies how to construct batteries that approximate site-to-site coding transitions (ICD-9 →ICD-10, LOINC harmonization, unit changes mg/dL ↔mmol/L), which we expect to dominate real deployment-time variation; isotropic Gaussian noise is reported in this paper as a baseline, not as a final clinical battery. 
+
+# 3.2 Dimension 2: Inclusivity 
+
+A model may achieve strong aggregate discrimination while performing markedly worse for specific patient subpopulations. Race, sex, and age are the most consistently documented axes of clinical outcome dispar-ity (Obermeyer et al., 2019; Celi et al., 2022; Osibogun, 2024) and are also those the FDA AI/ML Action Plan (U.S. Food and Drug Administration, 2021) and ONC HTI-1 rule (Office of the National Coordinator for Health Information Technology, 2024) require reporting on. We note that race in clinical algorithms is a fraught construct: Vyas et al. (2020) document at least thirteen widely deployed clinical algorithms (eGFR, vaginal-birth-after-cesarean, STONE) whose race-correction terms produced demonstrable patient harm. RISED’s Inclusivity dimension surfaces subgroup-AUC and subgroup-calibration gaps; whether such a gap reflects a genuine biological signal or a structural-inequity artifact remains a domain-expert judgment that the framework cannot make unilaterally. Insurance type is added because access-coverage status encodes utilization-based disparity (Paulus and Kent, 2020); other partitions can be supplied via the package’s user-defined subgroup keys. Beyond discrimination, calibration must hold within subgroups: systematic probability over- or underestimation for a particular group causes incorrect decisions even when aggregate calibration looks clean (Pleiss et al., 2017; Van Calster et al., 2019). The Inclusivity dimension jointly evaluates subgroup discrimination and calibration. Let G denote a set of subgroups partitioning patients by a demographic attribute, and let AUC g denote the ROC-AUC computed on patients in subgroup g only. The AUC Parity Gap captures the worst-case 7discrimination disparity across subgroups: 
+
+∆AUC (G) = max  
+
+> g∈G
+
+AUC g − min  
+
+> g∈G
+
+AUC g . (3) A large ∆AUC indicates that the model discriminates reliably for some patient groups but not others. Subgroup calibration is assessed via the Expected Calibration Error (ECE) within each subgroup (Guo et al., 2017; Van Calster et al., 2019), using equal-width probability bins: 
+
+ECE g =
+
+> B
+
+∑
+
+> b=1
+
+|B g,b ||I g |
+
+∣∣¯yg,b − ¯fg,b 
+
+∣∣ , (4) where Bg,b is the b-th probability bin within subgroup g, ¯yg,b is the mean observed label in that bin, and ¯fg,b 
+
+is the mean predicted probability. A large ECE g for a specific subgroup indicates systematic miscalibration that is invisible at the aggregate level. 
+
+Sub-criteria. I1 ∆AUC ≤ 0.05 per demographic partition: the worst-performing subgroup achieves AUC within 5 percentage points of the best-performing subgroup. 
+
+I2 ECE g ≤ 0.10 for all subgroups g: no subgroup suffers systematic probability miscalibration exceeding 10 percentage points. 
+
+I3 Subgroups with fewer than 30 patients are flagged for informational purposes; their metrics are reported but do not count toward pass/fail, as sample sizes are insufficient to estimate AUC reliably (Steyerberg et al., 2010). 
+
+# 3.3 Dimension 3: Sensitivity 
+
+The decision threshold that converts a probability into a binary action is routinely adjusted post-deployment to balance sensitivity and specificity. Standard evaluation reports performance at one fixed threshold and cannot reveal whether small shifts produce large reclassifications. The Sensitivity dimension measures exactly this: for a reference threshold τ0, how many patients change classification when the threshold moves to τ ?For a predicted score vector f (X) ∈ [0 , 1] n, the Threshold Flip Rate at threshold τ relative to reference 
+
+τ0 is 
+
+TFR( τ, τ 0) = 1
+
+n
+
+> n
+
+∑
+
+> i=1
+
+1[1[f (xi) ≥ τ0]̸ = 1[f (xi) ≥ τ ]] . (5) A TFR of 0.10 at τ = 0 .55 means shifting the threshold upward by five percentage points would reclassify 10% of patients. Evaluating TFR across a sweep Θ = {τ1, . . . , τ K } (default K = 17 thresholds spanning [0 .10 , 0.90] )characterizes the full sensitivity profile. The default sweep is intentionally wide; clinical operating thresholds typically sit in [0 .30 , 0.70] , and the package also reports max TFR over this narrower clinically-realistic band so deployers can see both worst-case and typical-case sensitivity. The complementary decision boundary width Wδ quantifies the fraction of patients whose score lies within δ of τ0 and who are maximally sensitive to threshold perturbation: 
+
+Wδ (τ0) = 1
+
+n
+
+> n
+
+∑
+
+> i=1
+
+1[|f (xi) − τ0| ≤ δ] . (6) 8A large Wδ indicates that many patients are near-borderline and a small threshold change would substantially alter which patients the model flags. 
+
+Sub-criteria. S1 max τ ∈Θ TFR (τ, τ 0) ≤ 0.10 across the evaluation sweep Θ (default: 17 thresholds in [0 .10 , 0.90] ): no operationally relevant threshold adjustment reclassifies more than 10% of patients relative to the reference threshold. 
+
+S2 W0.05 (τ0) ≤ 0.15 : at most 15% of patients are borderline-sensitive to threshold perturbations of ±5
+
+percentage points. 
+
+# 3.4 Dimension 4: Equity 
+
+Existing fairness criteria (equalized odds, demographic parity, calibration within groups) evaluate the relationship between model predictions and observed outcomes, typically healthcare utilization or cost. As Paulus and Kent (Paulus and Kent, 2020) demonstrate, this approach breaks down when utilization is itself distorted by access barriers: a model can satisfy calibration within race groups while still systematically under-scoring the groups with the greatest unmet clinical need, because their historical cost records understate their true burden of illness. The Equity dimension operationalizes need-based fairness : alignment of model predictions with independent measures of clinical need, rather than with proxies that may encode structural inequity. Let si = f (xi) denote the predicted score and ci denote a clinical need measure (such as a normalized comorbidity count, or the binary label yi as a proxy). The need-prediction correlation measures global alignment between predictions and need: 
+
+ρneed = Spearman( s, c ). (7) A high ρneed confirms that the model correctly ranks patients by need. The group need gap for subgroup g
+
+captures directional misalignment between predicted scores and mean need within the group: 
+
+∆g = ¯ sg − ¯cg , (8) where ¯sg and ¯cg are the mean predicted score and mean clinical need within subgroup g. A negative ∆g
+
+indicates the model under-predicts need for group g, the clinically most dangerous failure mode. 
+
+Sub-criteria. E1 ρneed ≥ 0.70 : the model’s scores rank patients by clinical need with at least moderate Spearman rank correlation. 
+
+E2 |∆g | ≤ 0.10 for all subgroups g: no subgroup is systematically under- or over-scored by more than 10 percentage points relative to its mean clinical need. 
+
+Diagnostic framing of the Equity verdict. We caution that ρneed is informative only to the degree the chosen need proxy is informationally outside the model’s training feature set . As we show empirically across all four cohorts (§4.4), the verdict under E1 changes when the proxy changes; in the synthetic cohort, for instance, E1 PASSes under the outcome-label proxy but FAILs under the CCI proxy. We therefore 9recommend treating the Equity dimension as a diagnostic of proxy-dependence rather than as a stand-alone gate: an Equity FAIL or proxy-disagreement at the default thresholds should trigger procurement of an outcome-independent need measure (e.g., prospectively recorded nurse acuity, downstream hospitalization within a fixed window after scoring) before deployment, not an automatic stop. The rised package emits a 
+
+UserWarning when the binary outcome label is used as the need proxy, and reports the dimension’s status as DIAGNOSTIC via FrameworkReport.diagnostic_status() (§3.6); per-proxy point estimates and CIs are preserved in summary() for inspection but Equity is excluded from the all-pass gating conjunction regardless of whether the underlying ρneed would individually PASS or FAIL under any chosen proxy. 
+
+# 3.5 Dimension 5: Deployability 
+
+A model that clears the statistical bar may still fail the workflow bar. Two-second latency does not fit a dashboard refresh, and explanations that highlight different features for nearly-identical patients cannot support consistent clinical judgment (Sutton et al., 2020; Antoniadi et al., 2021; Rudin, 2019). The Deployability dimension targets these operational properties in settings where end users are not ML specialists. 
+
+Inference latency is measured empirically as the mean wall-clock time over R repeated calls to the model: 
+
+Λ = 1
+
+R
+
+> R
+
+∑
+
+> r=1
+
+tr , (9) where tr is the time in milliseconds for the r-th call to process the full evaluation cohort. Explanation faithfulness quantifies whether the locally most important feature for each patient (by SHAP value magnitude (Lundberg and Lee, 2017)) is among the globally most important features: 
+
+Fexpl = 1
+
+n
+
+> n
+
+∑
+
+> i=1
+
+1
+
+[
+
+arg max  
+
+> j
+
+|ϕij | ∈ T 3
+
+]
+
+, (10) where ϕij is the SHAP value for patient i, feature j, and T3 is the set of the three globally most important features by mean |ϕ|. A high Fexpl means the features a clinician associates with high-risk predictions also drive individual patient scores, supporting consistent clinical interpretation (Sendak et al., 2020). 
+
+Sub-criteria. D1 Λ ≤ 500 ms per cohort: the model processes a full patient batch within a real-time operational limit compatible with dashboard refresh requirements. 
+
+D2 Fexpl ≥ 0.50 : globally important features are locally relevant for at least half of all patients, supporting consistent clinician interpretation. 
+
+# 3.6 Default Thresholds and Decision Rule 
+
+Each RISED sub-criterion requires an explicit pass/fail threshold. We provide default thresholds (Table 1) intended as starting points, set a priori using published clinical conventions and author judgment; no data snooping was performed. We do not claim these defaults are universally derived constants. To be candid: the JSS < 0.05 default has no published empirical basis specific to input-perturbation flip rates; we adopt the 5% decision-error tolerance common in clinical prediction model validation (Steyerberg et al., 2010) as a defensible analogue, but the pre-deployment evaluation literature does not yet contain a rigorous empirical 10 study tying a particular flip-rate threshold to clinical harm. This is a gap the framework is intended to provoke empirical work on. Implementations should recalibrate thresholds empirically against deployment outcomes for the target use case; the rised package exposes all thresholds as user parameters. 
+
+Multiple-comparisons control (Holm-Bonferroni). With five dimensions, each contributing one or more sub-criterion tests plus the per-subgroup inclusivity tests, the family of hypotheses tested in a typical RISED run is large; without correction the family-wise false-FAIL rate under the global null exceeds the nominal 5%. We control this by applying the Holm-Bonferroni step-down procedure across the full test family. Tests are ordered by ascending p-value (where the p-value is computed from the BCa bootstrap distribution as the proportion of replicates more extreme than the threshold), and the k-th-smallest p-value is compared against α/ (m − k + 1) , where m is the family size. The headline per-dimension verdicts in Tables 3–6 use both the per-test 95% BCa CI and the family-corrected Holm threshold; a verdict is reported as FAIL only if both rules agree. The package’s holm_bonferroni() helper exposes the correction explicitly and reports per-test adjusted alphas alongside the headline CIs. 
+
+BCa over percentile bootstrap. We use the bias-corrected accelerated (BCa) bootstrap of Efron (1987) rather than the percentile bootstrap. Percentile intervals are known to undercover for metrics bounded near 0 or 1 (JSS, max TFR, parity gaps), and B = 1 ,000 percentile-method bounds have non-trivial Monte Carlo error at the boundary. BCa adjusts the CI endpoints using a bias-correction z0 from the bootstrap distribution and an acceleration a from the leave-one-out jackknife. The full implementation, including the n
+
+jackknife re-evaluations per metric, is in rised/bootstrap_ci.py .
+
+Power and minimum test-set size. Because the per-dimension verdict depends on whether a bootstrap CI brackets a fixed threshold, the test-set size required to deliver an informative (non-INCONCLUSIVE) verdict scales with the magnitude of the true effect. A back-of-the-envelope calculation for the JSS metric, treating each patient’s flip event as Bernoulli with rate p and using the normal approximation to the bootstrap CI, gives a half-CI width of approximately 1.96 √p(1 − p)/n . For a true JSS of 0.05 (right at the threshold), detecting a 0.01 deviation with 80% power requires roughly n ≈ 1,500 patients; for a true JSS of 0.10, the same detection power is achieved at n ≈ 700 . The 2,000-patient test sets used in this paper are therefore adequate to resolve mid-range effects but are at the edge of resolution for borderline cases (the borderline Inclusivity finding on the synthetic cohort, with its [0.042, 0.066] CI, is exactly such a case). The same back-of-envelope applies, with metric-specific variance: for ∆AUC between two equal-size subgroups the half-CI width is approximately 1.96 √2 · Var(AUC) , and using Var (AUC ) ≈ 0.005 for a moderately accurate classifier on ng ≈ 400 subgroups, detecting a 0.01 deviation above the 0.05 cutoff requires n ≳ 3,000 per subgroup; for max TFR the threshold-flip event is again Bernoulli with Var ( TFR ) = p(1 − p)/n , and detecting a 0.01 deviation above the 0.10 threshold requires n ≈ 3,500 . Both metrics are therefore harder to resolve at the threshold than JSS, and INCONCLUSIVE verdicts on small cohorts are expected. Studies aiming for clean PASS/FAIL (rather than INCONCLUSIVE) on small effect sizes should size the test set per metric, not just per dimension. 
+
+Hypothesis framing. Each dimension can be read as a one-sided hypothesis test. For Reliability, 
+
+H0 : JSS ≥ 0.05 (the model is unacceptably input-sensitive) and H1 : JSS < 0.05 . The CI rule we use ( PASS 
+
+if 95% two-sided CI upper bound < threshold) is equivalent to a one-sided test at α = 0 .025 (the upper tail of a two-sided 95% CI corresponds to a 97.5% one-sided UCB). We use this 0.025 level rather than 0.05 
+
+11 deliberately: a deployment-readiness gate should err on the side of declaring INCONCLUSIVE rather than PASS on borderline evidence. The same template applies to Inclusivity ( H0 : ∆ AUC > 0.05 ), Sensitivity (H0 : max TFR > 0.10 ), and (when used as a diagnostic) Equity ( H0 : ρneed < 0.70 ); Deployability latency (H0 : Λ > 500 ms ) is reported without a bootstrap CI because per-call latency is hardware-bounded rather than sample-bounded. INCONCLUSIVE corresponds to the CI bracketing the threshold so that neither one-sided test rejects at α = 0 .025 .
+
+Bootstrap method. All headline CIs use the bias-corrected accelerated (BCa) bootstrap of Efron (1987) with B = 1 ,000 iterations (random state 42), resampling patients with replacement at each iteration to preserve the patient as the unit of statistical independence. Within each bootstrap sample we recompute the full metric (JSS, ∆AUC , max TFR, ρneed ). The BCa endpoints adjust the percentile bounds using a bias-correction z0 (the standard-normal quantile of the fraction of bootstrap replicates below the point estimate) and an acceleration a computed from the leave-one-out jackknife on the same metric. BCa-corrected endpoints have correct coverage in finite samples for metrics bounded near 0 or 1 (JSS, max TFR, parity gap), where the plain percentile bootstrap is known to undercover. The implementation, including the n
+
+jackknife re-evaluations per metric, is in rised/bootstrap_ci.py and is the default for all results reported in this paper. 
+
+CI-based decision rule. For dimensions where a bootstrap 95% confidence interval is computed (Reliability JSS, Inclusivity ∆AUC , Sensitivity max TFR), we apply the following CI-aware decision rule rather than relying on the point estimate alone: 
+
+• PASS if the 95% BCa CI upper bound is below the threshold; 
+
+• FAIL if the 95% BCa CI lower bound is above the threshold; 
+
+• INCONCLUSIVE otherwise (the CI brackets the threshold); 
+
+• DIAGNOSTIC (Equity only) when the dimension is configured to report a proxy-dependence diagnostic rather than a stand-alone gate. A DIAGNOSTIC verdict is never combined into the all-pass gating conjunction (§3.4) regardless of whether the underlying ρneed would individually PASS, FAIL, or be INCONCLUSIVE under any chosen proxy. The rationale is construct-validity: across all four cohorts in this paper, the ρneed verdict changes when the proxy changes, so we report both proxy-specific point estimates and CIs but treat the dimension as informative-only until an outcome-independent need measure is available. Operational consequence: a DIAGNOSTIC verdict triggers a procurement requirement, not a deployment block. When Equity is DIAGNOSTIC under the default proxies, the deployer must obtain an outcome-independent need measure (e.g., prospectively recorded nurse acuity scores, downstream hospitalization within a fixed window after scoring) and re-run E1/E2 against it; only then is the binding gate complete. Without that measure, downstream deployment evidence remains incomplete by construction. The INCONCLUSIVE category is methodologically more honest than treating a borderline point estimate as a definitive verdict and signals that a larger test set or additional data is needed to resolve the uncertainty. 
+
+Threshold sensitivity and metric monotonicity. We check verdict robustness in two ways. (a) Threshold sweep: the Reliability verdict is FAIL at thresholds 0.025–0.050, INCONCLUSIVE at 0.075, and PASS only at 0.10. Sensitivity is FAIL across the full 5%–15% band. (b) Monotonicity: under Gaussian noise 12 σ ∈ { 0, 0.025 , 0.05 , 0.10 }, JSS increases near-monotonically from 0% to ∼10% , confirming the metric captures input sensitivity in the expected direction. The sweep script is examples/threshold_sensitivity.py .Table 1: RISED default pass/fail thresholds. These defaults are informed by published clinical conventions where applicable (column 3), but are not strictly derived constants and should be recalibrated empirically for the target use case. 
+
+Dimension Default Basis (informative, not derivational) 
+
+Reliability JSS < 0.05 5% is a common decision-error tolerance in clinical prediction model validation (Steyerberg et al., 2010); we adopt it as a sensible starting threshold for input-perturbation stability. Actual acceptable instability depends on deployment context. Inclusivity ∆AUC ≤ 0.05 5 percentage-point AUC parity gap reflects the spirit of FDA AI/ML Action Plan expectations for perfor-mance by demographic subgroup (U.S. Food and Drug Administration, 2021) and is consistent with opera-tional defaults used in fairness toolkits (Bellamy et al., 2019). Sensitivity max TFR ≤ 0.10 A threshold-shift-induced reclassification of more than 10% constitutes a substantial change in flagged pa-tients; Wynants et al. (Wynants et al., 2015) discuss the non-arbitrary nature of threshold selection. Equity ρneed ≥ 0.70 Spearman ρ ≥ 0.70 corresponds to a strong monotone relationship in conventional effect-size language (Co-hen, 1988). Obermeyer et al. (Obermeyer et al., 2019) document real-world need-prediction misalignment as a clinically consequential failure mode. Deployability Λ ≤ 500 ms (cohort) / ≤ 1 ms (per patient) Default reflects an interactive-tool refresh con-straint (Sutton et al., 2020). The default is gener-ous; tighter per-patient thresholds (e.g., 1 ms) may be appropriate for time-critical clinical contexts. The package reports both cohort and per-patient latencies. 
+
+# 4 Application to a Synthetic Patient Cohort 
+
+# 4.1 Data: Synthetic Clinical Cohort 
+
+We generated a synthetic cohort of 10,000 patients using a Synthea-inspired generative model (Walonoski et al., 2018) implemented in the released rised.datasets module. No real patient records were used at any stage. The cohort spans a demographically and clinically heterogeneous adult population and is released openly to support reproducibility (Section ?? ). 
+
+Demographic composition. Age distribution was weighted toward adults: 18.4% aged 18–44, 25.0% aged 45–64, 28.2% aged 65–74, and 28.4% aged 75 and older. Sex distribution was 55.5% female and 44.5% male. Race/ethnicity composition was 63.8% White, 13.4% Black, 13.0% Hispanic, 5.7% Asian, and 4.1% Other. An insurance-type variable (47.4% Medicare, 29.8% Private, 14.4% Medicaid, 8.4% Uninsured) was included as a demographic axis for subgroup-performance evaluation. 13 Clinical features. The feature matrix comprised 20 variables spanning demographics, chronic condition flags, a computed comorbidity burden score, healthcare utilization counters, anthropometric measures, and a neighborhood deprivation index (Table 2). Comorbidity prevalence rates were age-correlated using Bernoulli draws: hypertension 47.4%, chronic kidney disease 16.2%, diabetes 14.8%, dementia 9.9%, COPD 9.2%, congestive heart failure 8.5%, prior myocardial infarction 6.4%, cancer 6.2%, and cerebrovascular disease 5.0%. The Charlson Comorbidity Index (CCI) (Charlson et al., 1987; Quan et al., 2011) had a mean of 0.99 (SD 1.20; range 0–7). Mean BMI was 28.7 (SD 6.0) and the mean neighborhood deprivation index score was 49.8 (SD 24.1) on a 1–100 scale. 
+
+Outcome definition and circularity disclosure. The binary outcome label is a noisy function of the training features: a logistic transformation over age, diabetes, CHF, CKD, COPD, prior MI, CCI, prior hospitalization count, ED visit count, and deprivation index, plus Gaussian noise ( σ = 0 .5), with the top 30% assigned the positive label (3,000 of 10,000). The column is named high_need in the released CSV for backward compatibility. Because the outcome is derived from the feature space, the AUROC of 0.961 reflects the data-generating process rather than model skill; the substantive results are the framework metrics. We address this circularity in Section 4.4 by re-running on real cohorts. The data were split into training (n = 8 ,000 ) and held-out test ( n = 2 ,000 ) with stratified sampling (random state 42). Table 2: Summary characteristics of the 10,000-patient synthetic cohort. 
+
+Characteristic Full cohort ( n=10,000) Outcome =1 ( n=3,000) 
+
+Age group 
+
+18–44 1,835 (18.4%) 6 (0.2%) 45–64 2,502 (25.0%) 277 (9.2%) 65–74 2,822 (28.2%) 947 (31.6%) 75+ 2,841 (28.4%) 1,770 (59.0%) 
+
+Sex 
+
+Female 5,549 (55.5%) 1,675 (55.8%) Male 4,451 (44.5%) 1,325 (44.2%) 
+
+Race/ethnicity 
+
+White 6,379 (63.8%) 1,898 (63.3%) Black 1,343 (13.4%) 404 (13.5%) Hispanic 1,301 (13.0%) 393 (13.1%) Asian 569 (5.7%) 176 (5.9%) Other 408 (4.1%) 129 (4.3%) 
+
+Insurance 
+
+Medicare 4,737 (47.4%) 2,225 (74.2%) Private 2,977 (29.8%) 413 (13.8%) Medicaid 1,444 (14.4%) 230 (7.7%) Uninsured 842 (8.4%) 132 (4.4%) 
+
+Clinical measures (mean ± SD) 
+
+CCI score 0.99 ± 1.20 1.86 ± 1.33 
+
+BMI 28 .7 ± 6.0 28 .6 ± 6.0
+
+Deprivation index 49 .8 ± 24 .1 51 .1 ± 24 .1
+
+Outcome 
+
+Adverse clinical event 3,000 (30.0%) 3,000 (100%) 14 4.2 Baseline Model 
+
+We trained an XGBoost gradient-boosted classifier (Chen and Guestrin, 2016) on the 8,000-patient training split. XGBoost was selected for its empirical performance on tabular clinical data and widespread use in clinical machine learning (Rajpurkar et al., 2022). Hyperparameters were fixed without tuning: 200 boosting rounds, max depth 4, learning rate 0.05, subsample 0.80, colsample 0.80, binary logistic objective. A fallback to scikit-learn’s HistGradientBoostingClassifier (Pedregosa et al., 2011) is provided for environments without XGBoost. On the held-out test set, the model achieved AUROC 0.961 and Brier score 0.073. These metrics are expected given the self-derived outcome; the purpose here is not to benchmark absolute performance but to show that RISED surfaces deployment risks invisible to aggregate metrics. 
+
+# 4.3 RISED Evaluation Results 
+
+We applied evaluate_all() to the 2,000-patient held-out test set using four perturbation specifications, chosen to mirror clinically realistic encoding-shift mechanisms. Additive Gaussian feature noise at scales 
+
+σ = 0 .05 (5%) and σ = 0 .10 (10%) approximates measurement-noise differences between sites and assay platforms (e.g., variation in lab measurement precision, differing devices for vital signs). Uniform age-feature rescalings at factors 1.05 (+5% ) and 1.06 (+6% ) approximate unit-change and granularity-change effects on numeric features (e.g., year of birth versus age in years, or age-at-encounter versus age-at-enrollment). The specific perturbation set is configurable via evaluate_all() ; practitioners are expected to choose perturbations that reflect the encoding variability of their target deployment environment (ICD-9 vs. ICD-10, mg/dL vs. mmol/L, etc.). A 17-point threshold sweep from τ = 0 .10 to τ = 0 .90 was used for the Sensitivity dimension ( τ0 = 0 .50 ). Bootstrap 95% confidence intervals ( B = 1 ,000 iterations, random state 42) were computed for JSS, ∆AUC , and max TFR via the evaluate_all() n_bootstrap parameter. Table 3 summarizes the primary metric and pass/fail status for each dimension; Figures 1–6 provide supporting visualizations. 
+
+Family-wise correction concretely applied. The headline test family on the synthetic cohort comprises eight tests: R1, R2, I1, I2, S1, S2, D1, D2 (Equity is diagnostic, excluded). The bootstrap one-sided p-value for each non-PASS dimension, computed as the proportion of BCa replicates falling on the wrong side of the threshold, is: R1 (JSS) p < 0.001 ; S1 (max TFR) p < 0.001 ; I1 ( ∆AUC ) p ≈ 0.06 (the test that the BCa CI also flags as INCONCLUSIVE). At m = 8 Holm-Bonferroni, the adjusted thresholds in ascending-p-order are 
+
+α/ 8, α/ 7, . . . , α . The R1 and S1 rejections survive even the strictest α/ 8 = 0 .0063 cutoff; the I1 borderline does not, consistent with the INCONCLUSIVE verdict under the CI rule. Adding all per-subgroup Inclusivity tests (race ×5, age ×4, sex ×2, insurance ×2 = 13) expands m to 21; this does not change the headline verdicts. 
+
+Reliability (FAIL). The Judge Sensitivity Score was JSS = 0 .064 (95% CI: 0.058–0.070), exceeding the pre-specified threshold of 0.05 (sub-criterion R1). Decision flip rates ranged from 2.5% for the +5% age rescaling to 10.1% under 10% Gaussian feature noise ( +6% age rescaling: 3.4%; 5% noise: 9.8%), with per-perturbation Spearman rank correlations of ρnoise 5% = 0 .985 , ρnoise 10% = 0 .972 , ρage +5% = 0 .985 ,
+
+ρage +6% = 0 .984 (mean ¯ρ = 0 .981 ; Figure 1). All four are above the R2 threshold of 0.95, indicating that decision instability does not reflect catastrophic ranking failure but rather perturbation of a small 15 Table 3: RISED evaluation results on the 2,000-patient held-out test set. Bootstrap 95% CIs from 1,000 iterations (random state 42). 
+
+Dimension Primary metric Value 95% CI Status 
+
+Reliability JSS 0.064 [0.058, 0.070] FAIL 
+
+Inclusivity ∆AUC 0.059 [0.042, 0.066] INCONCLUSIVE †
+
+Sensitivity Max TFR 19.9% [18.3%, 21.7%] FAIL 
+
+Equity ρneed (CCI proxy) 0.599 [0.572, 0.627] DIAGNOSTIC ‡
+
+Deployability Latency (ms/cohort) 1.4 ms — PASS                                       
+
+> Default thresholds: JSS <0.05; ∆AUC ≤0.05; max TFR ≤10%; ρneed ≥0.70; latency ≤
+> 500 ms. Baseline AUROC 0.961; Brier score 0.073. Cohort size for latency: n= 2 ,000 patients (<0.001 ms per patient; hardware-dependent). CI-based decision rule: PASS if CI upper <
+> threshold; FAIL if CI lower >threshold; INCONCLUSIVE otherwise.
+> †Under the 95% BCa CI [0.042, 0.066] for ∆AUC , the lower bound (0.042) is below the 0.05 threshold and the upper bound (0.066) is above it, so the CI-based decision rule yields INCONCLUSIVE. The point estimate 0.0588 is 0.0088 above the threshold, and Asian-subgroup ECE = 0 .097 approaches the 0.10 calibration sub-criterion limit; resolving INCONCLUSIVE to PASS or FAIL would require a larger test set than the n= 2 ,000 used here (§3.6 power analysis).
+> ‡Equity is reported as a proxy-dependence diagnostic (DIAGNOSTIC, not a gating verdict; see §3.4). Outcome-label proxy: ρneed = 0 .732 (95% CI 0.713–0.749); CCI-based proxy:
+> ρneed = 0 .599 (95% CI 0.572–0.627). The disagreement between proxies (PASS-equivalent vs. FAIL-equivalent by E1’s 0.70 cutoff) is the canonical signal the diagnostic surfaces and is the reason we do not include Equity in the all-pass gating conjunction.
+
+near-boundary subpopulation. A JSS of 0.064 means roughly one in fifteen patients would be reclassified across the perturbation battery. For any system whose binary outputs trigger downstream actions, that rate matters: encoding differences as minor as an EHR version change or a cross-site unit variation would produce real differences in which patients get flagged. 
+
+Inclusivity (INCONCLUSIVE). The AUC parity gap across all demographic subgroups was ∆AUC =0.059 (95% BCa CI: 0.042–0.066), with the CI bracketing the 0.05 threshold (sub-criterion I1). The largest gap was between patients aged 75+ ( AUC 75+ = 0 .923 ) and those in the Other race category ( AUC Other = 0 .982 ), a difference of 0.059 (Figure 2). Subgroup ECE values were within tolerance ( ECE g ≤ 0.10 for all groups, with race=Asian approaching the limit at ECE = 0 .097 ), indicating well-calibrated predictions despite the discrimination gap. The lower AUC among the oldest patients is clinically meaningful: this is the subgroup with the highest comorbidity burden in the cohort and the dominant age stratum (59.0%) among positive-outcome patients (Table 2). The BCa 95% CI on the parity gap [0.042, 0.066] brackets the 0.05 threshold (lower bound 0.042 below; upper bound 0.066 above), so under the CI-based rule (§3.6) this dimension is INCONCLUSIVE rather than FAIL: the point estimate 0.0588 is 0.0088 above the threshold, but the BCa CI does not exclude values below it. Per-subgroup AUC 95% CIs (Section 4.3) show the AUC for race=Other (the high-end driver of the parity gap) has wide uncertainty (95% CI [0.953, 0.999]), which reflects the small subgroup size ( n ≈ 82 in the test set); the AUC for age=75+ (the low-end driver) has narrower uncertainty ([0.901, 0.943]) due to its larger sample. The asymmetric uncertainty in subgroup AUCs contributes to the wide upper bound of the parity gap CI. 
+
+Sensitivity (FAIL). The maximum Threshold Flip Rate reached 19.9% (95% CI: 18.3%–21.7%) at τ = 0 .10 ,far exceeding the 10% pass threshold (sub-criterion S1), and remained elevated above 10% for τ ≤ 0.25 
+
+16 and τ ≥ 0.80 (Figure 3). At nearby thresholds within ±5 percentage points of τ0 = 0 .50 , the TFR is small (TFR (0 .45) = 2 .0% , TFR (0 .55) = 1 .6% ), meaning small operational adjustments around the calibration point do not destabilize predictions; the failure occurs only under aggressive threshold shifts (TFR exceeds 10% only for τ ≤ 0.25 or τ ≥ 0.80 ). The decision-boundary width was W0.05 (τ0) = 3 .6% (72 of 2,000 test patients had predicted probabilities within ±0.05 of τ0), comfortably below the S2 threshold of 15%, so the borderline-sensitive population is small. Together, S1 (FAIL) and S2 (PASS) tell a coherent story: this model is locally robust but globally threshold-sensitive, a profile that matters in any deployment context where the operating point may be re-tuned far from its development calibration (Wynants et al., 2015). 
+
+Equity (DIAGNOSTIC: verdict flips between proxies). We computed ρneed in two configurations to address the circular-proxy concern noted in the framework specification (Section 3.4). When the binary outcome label is used as the need proxy, ρneed = 0 .732 (95% CI: 0.713–0.749). When the Charlson Comorbidity Index (CCI) score is used as a less-circular need proxy, ρneed = 0 .599 (95% CI: 0.572–0.627), the verdict flips: under the binary-label proxy the model passes the 0.70 threshold; under the CCI-based proxy it fails. We report both. We caution, however, that CCI is itself a deterministic function of training features 
+
+(the binary chronic condition flags), so it is only less circular than the outcome label, not unconfounded. The disagreement between the two proxies illustrates the construct-validity issue that any ρneed -based equity verdict requires a need proxy that is informationally outside the model’s training feature set, for example prospectively recorded nurse acuity scores or downstream hospitalization within a window after scoring. Group-level need–prediction gaps under the CCI-based proxy exceeded the ±0.10 flag threshold for several race subgroups (e.g., Other: +0 .22 ; Hispanic: +0 .16 ; Black: +0 .15 ; White: +0 .16 ; Asian: +0 .12 ). These gaps trace to structural CCI distribution differences across subgroups in the synthetic generator, not to model discrimination. Under the binary-label proxy, all gaps were within the ±0.10 threshold (Figure 4). The disagreement between the two proxies illustrates the construct-validity issue: ρneed is informative only to the degree the chosen need proxy is independent of the outcome on which the model was trained. The 
+
+rised package emits a programmatic UserWarning when the binary outcome label is used as the need proxy. Consistent with §3.6, we therefore report this dimension as DIAGNOSTIC (excluded from the all-pass gating conjunction) and treat the proxy disagreement as a procurement requirement: an externally validated need measure (e.g., subsequent hospitalization or nurse-assessed acuity) must be obtained and re-evaluated against E1/E2 before the gate is binding. 
+
+Deployability (PASS). Mean inference latency was ¯Λ ≈ 1–2 ms per cohort of 2,000 patients ( < 0.001 ms per patient; SD <0.5 ms across 100 trials), well within the 500 ms operational threshold (sub-criterion D1). Latency benchmarks were collected on a laptop with a 13th-generation Intel Core i5-13420H CPU and 16 GB RAM running Windows 11; absolute latencies vary across hardware, but the order of magnitude (sub-millisecond per patient for a tabular gradient-boosted model with ∼200 trees of depth 4) is robust to reasonable hardware variation. SHAP TreeExplainer (Lundberg and Lee, 2017) produced global feature attributions with explanation faithfulness Fexpl = 0 .86 and top-feature stability of 0.74. The global feature importance ranking placed age, prior hospitalization count, CCI score, prior ED visit count, and CHF flag as the top five predictors (Figure 5), a clinically plausible ordering consistent with published clinical risk literature (Charlson et al., 1987). 
+
+Summary. Under BCa-CIs and the CI-based decision rule, two RISED dimensions fail (Reliability, Sen-sitivity) and one is statistically inconclusive (Inclusivity) on a model with AUROC 0.961, numbers that 17 would conventionally signal a deployment-ready system (Table 3, Figure 6). Each non-PASS verdict names a concrete risk invisible to standard evaluation: reclassification under encoding variation, degraded performance in the oldest patient subgroup, and flag instability under threshold shifts. The Equity dimension is reported as a proxy-dependence diagnostic (§3.4) and is not part of the gating conjunction. 
+
+# 4.4 External Validation on Three Real-Data Cohorts 
+
+To address the construct-validity concern that the synthetic cohort’s findings may be artifacts of a self-derived outcome label, we re-ran the full RISED Framework on three publicly available real-data cohorts spanning very different vintage, scale, and prediction problem: the UCI Heart Disease cohort (1989), the UCI Diabetes 130-US Hospitals cohort (1999–2008), and the contemporary NCHS NHIS 2024 Sample Adult public-use file (collected 2024, released by NCHS in mid-2025). The 35-year vintage span is deliberate: if the framework’s verdicts are artifacts of a particular coding era, they should fail to replicate across this span. 
+
+Cohort A: UCI Heart Disease (Cleveland), n = 303 . A real (non-synthetic) clinical dataset (Detrano et al., 1989) accessed via OpenML, with 13 features (demographics, vital signs, ECG and stress-test results) and a binary outcome (presence of heart disease). XGBoost trained with the same hyperparameters as Section 4.2 on an 80/20 stratified split. The cohort’s small size ( n = 303 ) and the resulting small per-subgroup samples in the test split ( n = 61 ) mean that subgroup metrics on this cohort are inherently noisy, and the wide CI on the Inclusivity verdict (Table 4, [0.001, 0.120]) reflects this directly. We therefore treat the Cleveland scorecard as a directional sanity check that the framework’s pipeline runs on real data and produces readable verdicts, not as a definitive subgroup audit; the larger Diabetes 130 cohort serves the latter role. 
+
+Cohort B: UCI Diabetes 130-US Hospitals, n = 99 ,492 . A real EHR-derived clinical dataset (Strack et al., 2014) of 130 US hospital encounters between 1999 and 2008, accessed via OpenML. The binary outcome is early ( < 30 -day) hospital readmission, the standard adverse-outcome target on this cohort. We use readmission because it is the published outcome for this dataset, while acknowledging that 30-day readmission is a contested quality measure in the clinical-informatics literature: it is heavily confounded by socioeconomic factors, hospital-level practices, and incentive responses to the U.S. Hospital Readmissions Reduction Program (Joynt and Jha, 2012). The validity of the framework’s verdicts on this cohort therefore turns on what RISED detects conditional on that contested target, not on the clinical desirability of the target itself. After dropping rows with ambiguous demographic or outcome fields, n = 99 ,492 encounters remain. The feature matrix uses 14 numeric and one-hot encoded clinical variables (time in hospital, lab procedures, medications, A1C result, insulin use, age decade, etc.); race, gender, and age (decade buckets) are reserved as the demographic axes for Inclusivity. XGBoost trained with identical hyperparameters on an 80/20 stratified split. 
+
+Cohort A scorecard (UCI Heart Disease, n = 303 ). Test-set discrimination was AUROC = 0 .867 
+
+(Brier = 0.150). The full scorecard (Table 4) shows that the operational risks the framework detects are not 
+
+artifacts of the synthetic outcome construction. On this small ( n = 303 , test n = 61 ) and methodologically limited cohort, Reliability is INCONCLUSIVE, Inclusivity is INCONCLUSIVE (no BCa CI is reported because the leave-one-out jackknife on n = 61 with multiple under-30 subgroups produces unstable replicates; 
+
+rised/inclusivity.py ), Sensitivity fails decisively, and Equity is proxy-dependent (DIAGNOSTIC). The 18 Cleveland verdicts should be read as directional; formal verdicts on a n = 61 test set are at the edge of the test-set size required to resolve mid-range effects (§3.6). Table 4: RISED evaluation on the UCI Heart Disease cohort ( n = 303 ; test n = 61 ; bootstrap B = 1 ,000 ,random state 42). Verdicts on this cohort are directional only: the test-set size is well below the 
+
+n ≈ 1,500 minimum derived in §3.6 for resolving mid-range effects, so individual PASS/FAIL/INCONCLUSIVE calls should be read as suggestive rather than definitive.                               
+
+> Dimension Metric Value 95% CI Status
+> Reliability JSS 0.078 [0.041, 0.123] INCONCLUSIVE Inclusivity ∆AUC 0.118 N/A ∗INCONCLUSIVE Sensitivity Max TFR 34.4% [22.8%, 45.9%] FAIL Equity (y_true) ρneed 0.633 —DIAGNOSTIC Equity (chol proxy) ⋆ρneed −0.383 —DIAGNOSTIC (sign-inverted) Deployability Latency (ms/cohort) 0.6 ms —PASS
+> ∗
+
+N/A indicates the BCa CI for ∆AUC on this cohort cannot be computed: with test n = 61 and three age subgroups (one of size 19), the leave-one-out jackknife required for BCa acceleration produces unstable replicates, and the implementation in rised/inclusivity.py returns None rather than reporting an unreliable interval.  
+
+> ⋆
+
+Cholesterol (chol) is used here only to illustrate the sensitivity of ρneed to proxy choice; the strongly negative correlation reflects dataset-specific confounding (older patients in this cohort have lower mean cholesterol because of lipid-lowering therapy) rather than model bias. The negative sign is itself diagnostic: a clinically unsuitable need proxy produces signs that contradict clinical expectation, which the framework surfaces explicitly. 
+
+Cohort B scorecard (UCI Diabetes 130-US Hospitals, n = 99 ,492 ). On the substantially larger and clinically more deployment-relevant cohort, the trained classifier achieved AUROC = 0 .636 (Brier = 0.096). The lower discrimination is realistic for a 30-day-readmission prediction task on real EHR data, where the outcome is genuinely difficult to predict from billing-coded features alone (Strack et al., 2014). The full scorecard appears in Table 5. Table 5: RISED evaluation on the UCI Diabetes 130-US Hospitals cohort ( n = 99 ,492 encounters; 80/20 stratified split; test n = 19 ,899 ; bootstrap B = 1 ,000 , random state 42).                              
+
+> Dimension Metric Value 95% CI Status
+> Reliability JSS 0.0004 [0.0002, 0.0006] PASS Inclusivity ∆AUC 0.262 [0.110, 0.346] FAIL Sensitivity Max TFR 49.1% [48.5%, 49.8%] FAIL Equity (y_true) ρneed 0.149 [0.136, 0.164] DIAGNOSTIC Equity ( ninpatient proxy) ρneed 0.762 [0.756, 0.768] DIAGNOSTIC ‡
+> Deployability Latency (ms/cohort) 6.6 ms —PASS
+
+The Diabetes 130 scorecard is more informative than Cleveland’s. Three observations: 
+
+(i) The framework’s signals are not uniform. On Cohort B, Reliability passes by a wide margin (JSS = 0.0004, three orders of magnitude below the 0.05 threshold) while Sensitivity and Inclusivity fail decisively. The Equity dimension is reported as a diagnostic: the two recommended proxies disagree dramatically (ρneed = 0 .149 under the outcome-label proxy vs. 0.762 under inpatient-utilization), which is exactly the 19 proxy-underdetermination signal the diagnostic is designed to surface; we therefore do not treat it as a stand-alone gate verdict. This contradicts a hypothetical “RISED-just-fails-everything” criticism: the dimensions are empirically separable, and a model can be highly stable to input encoding and still be unfit on every other axis. 
+
+(ii) The Inclusivity failure is large and clinically meaningful. A 0.26 AUC parity gap across race, gender, and age-decade subgroups means the model that ranks readmission risk well in some groups ranks essentially randomly in others, a deployment hazard that standard aggregate evaluation would mask. 
+
+(iii) The Equity dimension’s proxy dependence is again visible but with an opposite sign relative to the synthetic cohort: here the ytrue -based ρneed is low (0.149), simply because the model’s discriminative power is low (AUROC 0.636), while a prior-utilization proxy ( ninpatient , prior inpatient admissions) yields a high 
+
+ρneed of 0.762 because that proxy is included in the feature set and so is mechanically correlated with the score. The disagreement between proxies is the canonical DIAGNOSTIC signal that triggers the procurement requirement for an outcome-independent need measure (§3.6). 
+
+Cohort C: NCHS NHIS 2024 Sample Adult ( n = 9 ,747 ). A reviewer might object that both UCI cohorts pre-date modern EHR infrastructure by 15–35 years and so cannot speak to contemporary clinical-AI deployment. To address this directly, we re-ran the unchanged framework on the National Health Interview Survey 2024 Sample Adult public-use file (National Center for Health Statistics, 2025), collected by the National Center for Health Statistics during calendar year 2024 and released as a CSV public-use file in mid-2025 (we used the file dated 30 June 2025). NHIS is the principal source of information on the health of the U.S. civilian non-institutionalized population. The public-use Sample Adult file contains 32,629 records and 630 variables; after restricting to respondents with non-missing values on the outcome, the four demographic axes, and 19 risk-factor and comorbid-condition features, n = 9 ,747 remained, with a 7.5% prevalence of the composite outcome (ever told had coronary heart disease or myocardial infarction). XGBoost trained with the same hyperparameters as the rest of the paper achieved test AUROC 0.836 (Brier 0.062). The full scorecard appears in Table 6. Table 6: RISED evaluation on the NCHS NHIS 2024 Sample Adult cohort ( n = 9 ,747 post-cleaning; 80/20 stratified split; test n = 1 ,950 ; bootstrap B = 1 ,000 , random state 42). The wide upper bound on the Inclusivity 95% BCa CI [0.248, 0.718] is driven by small NH-AIAN ( ntest ≈14 ) and NH-Other ( ntest ≈26 )race subgroups; subgroup AUC for these strata is unstable under resampling. The lower bound 0.248 is comfortably above the 0.05 threshold, so the FAIL verdict survives even after dropping the sub-30 subgroups.                             
+
+> Dimension Metric Value 95% CI Status
+> Reliability JSS 0.011 [0.008, 0.015] PASS Inclusivity ∆AUC 0.328 [0.248, 0.718] FAIL Sensitivity Max TFR 22.5% [20.5%, 24.3%] FAIL Equity (y_true) ρneed 0.307 [0.271, 0.340] DIAGNOSTIC Equity (gen-health proxy) ρneed 0.505 [0.470, 0.538] DIAGNOSTIC Deployability Latency (ms/cohort) 1.1 ms —PASS
+
+The NHIS 2024 scorecard reproduces the differential pass/fail pattern seen on Diabetes 130: Reliability passes (JSS = 0.011, well below the 0.05 threshold), while Inclusivity ( ∆AUC = 0 .328 , more than six times the threshold) and Sensitivity (max TFR 22.5%, more than twice the threshold) fail decisively. Equity is reported as DIAGNOSTIC: ρneed would fall below E1’s 0.70 cutoff under both the outcome-label proxy ( ρneed = 0 .307 ,95% CI 0.271–0.340) and the less circular general-health proxy ( ρneed = 0 .505 , 95% CI 0.470–0.538), but the dimension is not folded into the gating conjunction (§3.4); the joint-low pattern is qualitatively different from 20 the synthetic-cohort proxy disagreement and reflects the genuinely lower discriminative power of demographic-and-survey features for self-reported cardiovascular history. That the same framework, applied unchanged, surfaces two failures, one pass, and a diagnostic flag on 2024-collected national-survey data confirms the verdicts are not artifacts of cohort vintage. NHIS 2025 microdata had not been released at the time of submission; the same script will run unchanged on the 2025 release once it is available. 
+
+What the three real cohorts establish. Three patterns hold across the synthetic cohort and all three real cohorts: (1) dimensions fail differentially, not uniformly, providing preliminary evidence consistent with construct validity; (2) Sensitivity and Inclusivity failures persist or intensify on real data, suggesting they are not artifacts of the synthetic outcome; and (3) Equity proxy-dependence is present in every cohort, confirming that need-based verdicts require a need proxy outside the model’s feature set. Vintage spans 35 years (Cleveland 1989 → Diabetes 130 1999–2008 → NHIS 2024), so the framework’s verdicts cannot be attributed to a single coding-era artifact. The Cleveland cohort’s small sample makes it suggestive but not definitive; Diabetes 130, with n ≈ 10 5 and an EHR-derived readmission outcome, brings the analysis closer to realistic clinical-AI deployment; NHIS 2024 adds a contemporary nationally representative national-survey check on the same dimensions. 
+
+# 4.5 Multi-Model Robustness Check 
+
+To distinguish whether the failure pattern reflects properties of clinical AI in general or XGBoost in particular, we re-ran the same pipeline on two additional model classes: L2-regularized logistic regression and a random forest (300 trees, max depth 10, min 5 leaf samples). All three classifiers achieve nearly identical aggregate AUROC (0.955–0.963) and would all pass a discrimination-only gate. Table 7: RISED scorecard across three model classes on the same synthetic cohort and test split. Aggregate AUROC is comparable across classifiers, but the framework’s pass/fail pattern differentiates : Reliability (JSS) is model-class dependent (XGBoost fails; logistic regression and random forest pass), while Inclusivity (∆AUC ) and Sensitivity (max TFR) fail uniformly across all three. The data-driven failures (Inclusivity, Sensitivity) and model-driven failures (Reliability) are therefore distinguishable.                             
+
+> Model AUROC JSS R∆AUC IMax TFR S
+> XGBoost 0.961 0.064 FAIL 0.059 FAIL 19.9% FAIL Logistic 0.963 0.027 PASS 0.056 FAIL 18.6% FAIL Random Forest 0.955 0.019 PASS 0.068 FAIL 30.6% FAIL
+
+The Reliability dimension separates the three classifiers (XGBoost most input-sensitive, logistic regression least), which is what you would expect from a model-specific metric. Inclusivity and Sensitivity fail uniformly: the parity gap reflects the feature set, not the classifier, and any model producing a continuous score on this cohort will reclassify a substantial patient fraction under threshold movement. Equity clusters across models (0.722–0.734 under the ytrue proxy), confirming the proxy-dependence is data-driven. Deployability passed for all three; Random Forest was noticeably slower (45 ms vs. 1–2 ms) but still well within the 500 ms threshold. The full scorecard is in examples/multi_model_robustness.py .
+
+# 4.6 Comparison with Fairness Toolkits 
+
+To clarify what RISED contributes beyond existing toolkits (Bellamy et al., 2019; Bird et al., 2020, 2023), we ran Fairlearn 0.13 on the same XGBoost model and held-out test set used in Section 4.3 (synthetic cohort, 21 race as the sensitive attribute). Fairlearn computed: demographic parity difference = 0 .086 , equalized odds difference = 0 .113 , and a race-only AUC parity gap of 0.031 (smaller than RISED’s 0.059 , which considers race, sex, age group, and insurance partitions jointly). 
+
+Agreement and disagreement. On subgroup discrimination, Fairlearn and RISED agree directionally: both surface the same inter-group disparities, consistent with RISED’s borderline-FAIL on Inclusivity. The tools diverge in scope: a Fairlearn-only audit would flag demographic disparity but say nothing about encoding stability (Reliability), threshold sensitivity, need-based equity, or latency. A practitioner relying on Fairlearn alone would not detect that 6.4% of patients flip classification under semantically equivalent inputs, or that 19.9% would be reclassified at τ = 0 .10 .Table 8: Conceptual coverage: RISED vs. Fairlearn on the same model.             
+
+> Capability Fairlearn RISED
+> Subgroup discrimination (AUC, FPR, FNR) ✓✓
+> Subgroup calibration (ECE) ✓
+> Demographic parity / equalized odds ✓
+> Bias-mitigation algorithms (ExponentiatedGradient, etc.) ✓
+> Input-perturbation reliability (JSS) ✓
+> Threshold-shift sensitivity (TFR) ✓
+> Need-prediction correlation under indep. proxy ✓
+> Bootstrap CIs + CI-based pass/fail rule ✓
+> Inference latency / SHAP explanation faithfulness ✓
+
+Fairlearn provides mitigation algorithms and a richer menu of fairness metrics; RISED’s Inclusivity dimension overlaps with it, while the other four RISED dimensions are not measured by Fairlearn. AI Fairness 360 covers similar fairness-metric scope and is similarly orthogonal to the non-Inclusivity dimensions. Reproduction scripts are in examples/ .
+
+# 4.7 Head-to-head Coverage Against TEHAI, FUTURE-AI, and MI-CLAIM 
+
+Beyond fairness toolkits, three structured frameworks have been proposed for translational evaluation of clinical AI: TEHAI (Reddy, 2021) defines capability, utility, and adoption components; FUTURE-AI (Lekadir et al., 2025) consolidates Fairness, Universality, Traceability, Usability, Robustness, and Explainability principles; and MI-CLAIM (Norgeot et al., 2020) sets the minimum-information bar for clinical AI reporting. We treat these as checklists rather than running tools (none of them ships executable code that returns numeric verdicts). Table 9 maps each RISED dimension to the TEHAI component(s) and FUTURE-AI principle(s) it operationalizes; this clarifies that RISED is not a competitor but a numerical implementation of the qualitative scaffolding these frameworks define. TEHAI’s Adoption axis includes implementation governance, change management, and post-deployment monitoring; RISED is silent on these, intentionally so, because they require live deployment context. FUTURE-AI’s Traceability principle (model versioning, audit trails) is supplied by the open-source rised package’s seeded reproducibility but is not itself a metric we compute. The complementarity is that TEHAI and FUTURE-AI tell a deployer what to evaluate; RISED tells a deployer how to evaluate it numerically and 
+
+when the answer is defensible. 22 Table 9: Mapping RISED dimensions to TEHAI components, FUTURE-AI principles, and MI-CLAIM sections. ✓= directly operationalized; ◦ = partially operationalized; –= out of RISED’s current scope. 
+
+RISED dimension TEHAI component FUTURE-AI principle MI-CLAIM section 
+
+Reliability (JSS) Capability (robustness) ✓ Robustness ✓ Â§5 (model examination) 
+
+✓
+
+Inclusivity ( ∆AUC , ECE) Capability + Utility ✓ Fairness ✓+ Universality 
+
+◦
+
+Â§4 (performance) ✓
+
+Sensitivity (max TFR) Capability ✓ Robustness ✓+ Usability 
+
+◦
+
+Â§5 (sensitivity) ✓
+
+Equity ( ρneed , diagnostic) Utility (need alignment) ◦ Fairness ✓ Â§5 (biases) ◦
+
+Deployability ( Λ, Fexpl ) Adoption (workflow + ex-planation) ✓
+
+Usability ✓+ Explainabil-ity ✓
+
+Â§6 (reproducible pipeline) ✓
+
+# 4.8 Compliance with Reporting Standards (TRIPOD+AI, MI-CLAIM, FUTURE-AI) 
+
+We audited RISED itself against three current reporting standards. Table 10 summarizes the mapping. RISED is an evaluation framework rather than a single prediction model, so several items (e.g., TRIPOD+AI Items 1–4 on study design and Item 21 on intended use) apply to the user of RISED rather than to RISED itself; we mark these as passes through to the user . The audit clarifies that RISED operationalizes specifically the discrimination, calibration, fairness, robustness, and reproducibility items that TRIPOD+AI / MI-CLAIM / FUTURE-AI require, and is silent on items concerned with prospective study conduct, sample-size planning for the predictand, and model implementation governance. Table 10: Compliance audit against TRIPOD+AI (Collins et al., 2024), MI-CLAIM (Norgeot et al., 2020), and FUTURE-AI (Lekadir et al., 2025). ✓= directly operationalized by a RISED dimension; ◦ = passes through to the user of RISED; –= out of scope for an evaluation framework. 
+
+Reporting requirement TRIPOD+AI MI-CLAIM FUTURE-AI 
+
+Discrimination (AUROC, subgroup) ✓ ✓ ✓
+
+Calibration (Brier, ECE, subgroup) ✓ ✓ ✓
+
+Fairness / subgroup parity ✓ ✓ ✓
+
+Robustness to input perturbation ✓ ✓ ✓(Robustness) Threshold sensitivity ✓ ✓ ✓
+
+Uncertainty quantification (bootstrap CIs) ✓ ✓ ✓
+
+Reproducible pipeline (seeded, open-source) ✓ ✓ ✓(Traceability) Explainability (SHAP, faithfulness) ✓ ✓ ✓(Explainability) Need-based equity diagnostic ✓ ◦ ✓(Fairness) Inference latency / deployability ✓ ✓ ✓(Usability) Prospective study design ◦ ◦ –Sample-size justification for the predictand ◦ ◦ –Clinical-impact / human–AI interaction ◦ ◦ ◦
+
+External validation cohort selection ◦ ◦ ◦
+
+23 0 2 4 6 8 10 12 14 
+
+Decision Flip Rate (%) 
+
+Noise +5% 
+
+Noise +10% 
+
+Age +5% 
+
+Age +6% 
+
+> 9.8%
+> 10.1%
+> 2.5%
+> 3.4%
+
+Reliability: Decision Flip Rate by Perturbation 
+
+> Pass threshold (5%)
+
+Figure 1: Reliability dimension: decision flip rates per perturbation type. Dashed line marks the 5% pass threshold (JSS < 0.05). Gaussian noise perturbations ( σ = 5% : 9.8%; σ = 10% : 10.1%) exceed the threshold; age rescalings ( +5% : 2.5%; +6% : 3.4%) remain below. JSS = 0.064 (95% CI: 0.058–0.070); fails the <0.05 criterion. 0.92 0.94 0.96 0.98 1.00 1.02 
+
+AUC-ROC (parity gap = 0.059, threshold = 0.05) 
+
+> age_group=45-64
+> age_group=65-74
+> age_group=75+
+> insurance=Medicaid
+> insurance=Medicare
+> insurance=Private
+> insurance=Uninsured
+> race=Asian
+> race=Black
+> race=Hispanic
+> race=Other
+> race=White
+> sex=F
+> sex=M
+> 0.963
+> 0.924
+> 0.923
+> 0.970
+> 0.934
+> 0.979
+> 0.967
+> 0.951
+> 0.958
+> 0.959
+> 0.982
+> 0.963
+> 0.965
+> 0.957
+
+Inclusivity: Subgroup AUC-ROC 
+
+> Mean AUC (0.957)
+
+Figure 2: Inclusivity dimension: subgroup AUC-ROC across race, sex, age group, and insurance subgroups. Dashed line indicates the mean AUC (0.957). AUC parity gap = 0.059 (95% CI: 0.042–0.066; default threshold 
+
+≤ 0.05). Per-subgroup 95% AUC CIs are computed (1,000 bootstrap iterations) but omitted from the figure for clarity; values are available in Section 4.3. 24 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 
+
+Decision Threshold 
+
+> 0
+> 5
+> 10
+> 15
+> 20
+> Threshold Flip Rate (%)
+> Rank stability: 0.918
+
+Sensitivity: Threshold Flip Rate Sweep 
+
+> Pass threshold (10%)
+> Exceeds threshold
+
+Figure 3: Sensitivity dimension: threshold flip rate sweep from τ = 0 .10 to τ = 0 .90 . Shaded region indicates thresholds where the 10% pass threshold is exceeded. Flip rate peaks at 19.9% for τ = 0 .10 .25 0.100 0.075 0.050 0.025 0.000 0.025 0.050 0.075 0.100 
+
+Need Prediction Gap (score need) 
+
+> age_group=18-44
+> age_group=45-64
+> age_group=65-74
+> age_group=75+
+> insurance=Medicaid
+> insurance=Medicare
+> insurance=Private
+> insurance=Uninsured
+> race=Asian
+> race=Black
+> race=Hispanic
+> race=Other
+> race=White
+> sex=F
+> sex=M
+> _need = 0.732
+
+Equity: Group-Level Need Prediction Gaps 
+
+> Flag threshold (±0.1)
+
+Figure 4: Equity dimension: group-level need–prediction gaps using the binary outcome label as the need proxy. All gaps fall within the ±0.10 flag threshold, and ρneed = 0 .732 (default threshold ≥ 0.70). Under the independent CCI proxy (Section 4.3), ρneed = 0 .599 and several race-subgroup gaps exceed ±0.10 , illustrating the proxy-dependence of Equity verdicts. 0 1 2 3 4 5
+
+Global Rank Score (higher = more important) 
+
+age 
+
+prior_hosp_count 
+
+cci_score 
+
+ed_visits_count 
+
+has_chf Explanation faithfulness: 0.86 
+
+> Top feature stability: 0.74
+
+Deployability: Global SHAP Feature Importance (Top Features) 
+
+Figure 5: Deployability dimension: global SHAP feature importance (rank order). Top five features: age, prior hospitalization count, CCI score, ED visit count, CHF flag. Explanation faithfulness Fexpl = 0 .86 ;top-feature stability = 0.74. Mean batch latency ≈ 1–2 ms (hardware-dependent). 26 Dimension Primary metric Value Status                
+
+> Reliability JSS 0.0644 FAIL
+> Inclusivity AUC parity gap 0.0588 FAIL
+> Sensitivity Max TFR (%) 19.9% FAIL
+> Equity _need 0.7317 PASS
+> Deployability Latency (ms) 1.2 PASS
+
+RISED Framework Scorecard Figure 6: RISED Framework scorecard with CI-based decisions across all five dimensions for the XGBoost baseline model. PASS / FAIL / INCONCLUSIVE are determined by whether the bootstrap 95% CI sits below, above, or brackets the threshold. Under BCa-CIs and the CI-based rule, two dimensions FAIL (Reliability, Sensitivity), one is INCONCLUSIVE (Inclusivity), Deployability PASSES, and Equity is reported as DIAGNOSTIC (proxy-dependence flagged by verdict change between outcome-label and CCI proxies; §3.4). 27 5 Discussion 
+
+Under BCa CIs and the CI-based decision rule, two RISED gating dimensions failed (Reliability, Sensitivity) and one was statistically inconclusive (Inclusivity) on a model with AUROC 0.961, numbers that would typically signal a deployment-ready system. The Equity dimension is reported as a proxy-dependence diagnostic, not as a stand-alone gate. The dimension-level findings below discuss what each non-PASS verdict implies operationally. 
+
+Reliability. A JSS of 0.064 means roughly one in fifteen patients would be reclassified by an encoding change that preserves clinical state, a documented mechanism behind cross-site performance drops (Finlayson et al., 2021; Wong et al., 2021). The 0.05 threshold is the 5% decision-error convention from clinical prediction model validation (Steyerberg et al., 2010); it is a starting point, not a derived constant. 
+
+Inclusivity. The AUC parity gap is concentrated in patients aged 75+, the subgroup with the highest comorbidity burden and the dominant age stratum among positive-outcome patients. Subgroup calibration held (ECE ≤ 0.10 for all groups, with Asian-subgroup ECE = 0 .097 approaching the limit), so the deviation reflects ranking degradation rather than probability miscalibration. The point estimate ∆AUC = 0 .0588 
+
+exceeds the threshold, but the BCa 95% CI [0.042, 0.066] brackets the 0.05 cutoff, so under the CI-based rule the verdict is INCONCLUSIVE (not FAIL). A larger test set or a clinically harder outcome would be required to resolve PASS-vs-FAIL. The 0.05 default aligns with FDA AI/ML Action Plan requirements (U.S. Food and Drug Administration, 2021) and is operationalized in AIF360 (Bellamy et al., 2019). 
+
+Sensitivity. A max TFR of 19.9% at τ = 0 .10 means a threshold shift to reduce alert burden would reclassify nearly one in five patients. Threshold selection is non-arbitrary (Wynants et al., 2015); RISED operationalizes quantifying that reclassification as a gateable pre-deployment criterion. 
+
+Equity and Deployability. The proxy-dependent Equity verdict ( ρneed = 0 .732 under the outcome label vs. 0.599 under CCI) is a diagnostic signal, not a methodological failure: it tells the deployer that the question of whether the model serves clinical need is currently unanswerable from the available data and that an outcome-independent need measure is required. The package emits a warning when the outcome label is used as the proxy. Deployability passed at ≈1–2 ms batch latency and Fexpl = 0 .86 . The 500 ms threshold is generous; tighter per-patient thresholds (e.g., 1 ms) may be warranted in time-critical contexts, and the package reports both per-cohort and per-patient latency. 
+
+Positioning with existing frameworks. RISED adds four dimensions (Reliability, Sensitivity, need-aligned Equity, Deployability) that AIF360 (Bellamy et al., 2019) and Fairlearn (Bird et al., 2020, 2023) do not measure; its Inclusivity dimension overlaps with them on subgroup AUC. TRIPOD+AI (Collins et al., 2024) regulates how prediction-model studies are reported ; RISED specifies the numerical evidence the report should contain on deployment readiness. FUTURE-AI (Lekadir et al., 2025) shares RISED’s vocabulary across six principles but recommends practices rather than committing to specific metrics and thresholds. APPRAISE-AI (Kwong et al., 2023) grades the study for methodological quality; RISED grades the model on a held-out cohort. The two are complementary: APPRAISE-AI screens whether a study is credible; RISED tests whether the artifact clears specific operational bars. TEHAI (Reddy, 2021) is a qualitative checklist for deployment readiness; RISED supplies the measurable answers with thresholds and CIs. The Model Facts 28 paradigm (Sendak et al., 2020) is a clinician-facing label format; RISED is the test battery whose outputs would populate it. 
+
+Governance and adoption. A test battery is only as useful as the governance structure that operationalizes it. Whether a RISED FAIL verdict blocks deployment depends on whether the deploying organization treats it as binding rather than advisory. The HTI-1 rule (Office of the National Coordinator for Health Information Technology, 2024) and the EU AI Act conformity-assessment mechanism (European Parliament and Council of the European Union, 2024) create plausible attachment points where a RISED scorecard could be required as part of an evidence package, but the framework cannot mandate enforcement. Governance fit is an empirical question for deployment-team studies that should follow this work. 
+
+Where RISED sits in the AI clinical lifecycle. The translational-AI literature distinguishes in-silico validation, silent-trial evaluation (model runs on live data without acting on care), and prospective clinical evaluation under DECIDE-AI (Vasey et al., 2022) and ultimately CONSORT-AI / SPIRIT-AI (Liu et al., 2020; Cruz Rivera et al., 2020). McCradden et al. (2022) formalize this as a three-stage research-ethics pathway; You et al. (2025) propose safety, efficacy, effectiveness, and monitoring phases. RISED targets the boundary between the first and second stages: the numerical readiness check that licenses a model to enter silent-trial evaluation. Implementation experience from Sepsis Watch (Sandhu et al., 2020) illustrates why a RISED PASS is necessary but not sufficient: clinician trust, communication, and workflow integration determined whether a credible model produced clinical benefit. A model that fails RISED should not be deployed; a model that passes still requires the implementation and governance scaffolding that the surrounding literature describes. 
+
+Limitations. Seven limitations bear on how these results should be read. First, the primary demonstration uses a fully synthetic cohort; the three real-data validations span thirty-five years of vintage (Cleveland 1989, Diabetes 130 1999–2008, NHIS 2024) and the contemporary NHIS 2024 release directly addresses the historical-coding concern, but NHIS is survey rather than EHR data, so a true contemporary EHR cohort (e.g., MIMIC-IV with PhysioNet credentialing) remains outstanding before the framework’s thresholds can be considered clinically calibrated against deployed-model behavior. Second, the Equity dimension’s 
+
+ρneed remains confounded when the proxy and outcome share upstream determinants; we have therefore reframed Equity as a proxy-dependence diagnostic rather than a stand-alone gating dimension, but an outcome-independent need measure (post-discharge mortality, nurse-assessed acuity) would still provide cleaner evaluation. Third, default thresholds were set a priori from published conventions, not from empirical calibration against deployment outcomes; all thresholds are user-configurable in the package. Fourth, the robustness check covers tree-based and linear classifiers; neural architectures and head-to-head benchmarking against AI Fairness 360 on contemporary cohorts remain outstanding. Fifth, the framework targets binary classification; multi-class, ordinal, and time-to-event extensions are left to future work. Sixth, this is a single-author methods contribution; clinical face validity and deployment realism should be assessed in collaboration with clinical informatics teams before RISED is treated as a regulatory artifact. Seventh, the JSS bootstrap CI captures patient-resampling variance but not variance with respect to the composition of the perturbation battery Φ; reported JSS values therefore remain conditional on the specific battery (Gaussian noise σ ∈ { 0.05 , 0.10 } and age rescalings {1.05 , 1.06 } for the synthetic cohort). A clinically realistic battery using ICD-9 →ICD-10 transitions, LOINC harmonization, and unit changes (mg/dL ↔mmol/L) would yield 29 different JSS values; we treat these batteries as configurable inputs and recommend deployers report their own batteries alongside the JSS. 
+
+Regulatory alignment and future directions. The FDA AI/ML Action Plan (U.S. Food and Drug Administration, 2021) is a programmatic plan rather than a binding regulation; its operational successors are the FDA Predetermined Change Control Plan and the 2024 lifecycle guidance, both of which require manufacturers to specify, but do not themselves prescribe, the tests that establish reliability and equity. The ONC HTI-1 rule (Office of the National Coordinator for Health Information Technology, 2024) requires 
+
+transparency and risk-management disclosure for Predictive DSI rather than numerical pass/fail bars, and the EU AI Act (European Parliament and Council of the European Union, 2024) Articles 9–15 require risk-management documentation rather than a specific test battery. RISED is therefore positioned not as filling a regulatory gap but as producing the kind of structured numerical evidence that can populate FDA PCCP submissions, HTI-1 risk-management disclosures, and EU AI Act technical files; standardisation of such test batteries is the province of bodies such as ISO/IEC 42001 and AAMI CR-34971. Remaining work includes: (a) validation on contemporary EHR cohorts (MIMIC-IV, eICU); (b) empirically deriving threshold defaults from deployment outcomes rather than convention; (c) head-to-head benchmarking against AIF360, TEHAI, and FUTURE-AI on shared real cohorts; (d) extending dimensions to multi-class, ordinal, and time-to-event outputs; and (e) mapping RISED verdicts onto FDA SaMD pre-market submission artifacts. 
+
+# 6 Conclusion 
+
+Aggregate performance metrics miss reliability failures, subgroup disparities, threshold instability, and operational misalignment. This gap is not hypothetical: it has been documented in commercial clinical AI (Obermeyer et al., 2019), imaging AI (DeGrave et al., 2021), and clinical NLP (Ross et al., 2021), yet existing evaluation practice has no structured pre-deployment mechanism for catching these failures. RISED is a five-dimension pre-deployment evaluation framework with formally specified sub-criteria, default pass/fail thresholds, bootstrap 95% confidence intervals, a CI-based decision rule, and an open-source Python implementation. Each dimension (Reliability, Inclusivity, Sensitivity, Equity, Deployability) addresses a class of deployment-phase failures that standard aggregate benchmarking does not capture. On a synthetic cohort where XGBoost achieves AUROC 0.961, two RISED dimensions failed under the BCa-CI rule and one was inconclusive: JSS = 0.064 (95% BCa CI 0.058–0.070, FAIL); max TFR = 19.9% (95% BCa CI 18.3%–21.7%, FAIL); ∆AUC = 0 .059 (95% BCa CI 0.042–0.066, INCONCLUSIVE: the CI spans the threshold). Equity is reported as a proxy-dependence diagnostic rather than a stand-alone gate; both proxies disagreed (outcome-label ρneed = 0 .732 , PASS; CCI-based ρneed = 0 .599 , FAIL), the canonical signal of need-proxy underdetermination. The same framework applied to three real cohorts yielded non-uniform pass/fail patterns: Reliability passed on Diabetes 130 by three orders of magnitude while Inclusivity and Sensitivity failed decisively; on the contemporary NCHS NHIS 2024 cohort ( n = 9 ,747 , collected calendar year 2024 and released by NCHS in mid-2025), Reliability passed (JSS = 0.011) while Inclusivity ( ∆AUC = 0 .328 )and Sensitivity (max TFR 22.5%) failed decisively, mirroring the Diabetes 130 pattern on data collected three decades later. The Equity proxy-dependence signal recurred across cohorts. Together the four scorecards provide preliminary evidence consistent with construct validity. A multi-model robustness check showed Inclusivity and Sensitivity failures are data-driven and recur across classifiers, while Reliability failure is model-dependent. 30 RISED surfaces deployment-relevant failures that aggregate metrics miss, making it a structured comple-ment to existing evaluation standards including TRIPOD+AI (Collins et al., 2024), MI-CLAIM (Norgeot et al., 2020), and FUTURE-AI (Lekadir et al., 2025). The stronger claim, demonstrated clinical impact, requires prospective deployment evidence, which remains the most important next step. The framework is intended to produce structured numerical evidence that can be incorporated into FDA PCCP submissions (U.S. Food and Drug Administration, 2021), HTI-1 risk-management disclosures (Office of the National Coordinator for Health Information Technology, 2024), and EU AI Act technical files (European Parliament and Council of the European Union, 2024); it does not by itself satisfy any of those instruments’ requirements. The rised Python package and the synthetic evaluation cohort are openly available at https://github. com/rohithreddybc/rised-healthcare-eval (MIT license) and https://huggingface.co/datasets/Rohithreddybc/ rised-healthcare-eval-dataset (DOI: 10.57967/hf/8734). 
+
+# Data Availability 
+
+This study uses four cohorts. The primary demonstration cohort is a 10,000-patient synthetic cohort gener-ated using a Synthea-inspired generative model (Walonoski et al., 2018); it is openly published at https:// huggingface.co/datasets/Rohithreddybc/rised-healthcare-eval-dataset (DOI: 10.57967/hf/8734; Bel-libatlu, 2025) and can be loaded via datasets.load_dataset("Rohithreddybc/rised-healthcare-eval-dataset") .The three real-data validation cohorts are publicly available from established government repositories: the UCI Machine Learning Repository’s Cleveland Heart Disease cohort ( n = 303 ; Detrano et al., 1989); the UCI Diabetes 130-US Hospitals cohort ( n = 99 ,492 encounters; Strack et al., 2014); and the Na-tional Center for Health Statistics National Health Interview Survey 2024 Sample Adult public-use file (n = 9 ,747 post-cleaning; National Center for Health Statistics, 2025), downloadable directly from https: //ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/NHIS/2024/ . All real-data sets are already de-identified and publicly distributed; no additional patient data were collected for this study. All analysis code, the synthetic data generator, and the evaluation pipeline are released under the MIT License at 
+
+https://github.com/rohithreddybc/rised-healthcare-eval .
+
+# Code Availability 
+
+The rised Python package implementing the RISED Framework is released under the MIT License and is available at https://github.com/rohithreddybc/rised-healthcare-eval .
+
+# Ethics Statement 
+
+The primary demonstration cohort is entirely synthetic, generated by a computational model inspired by the Synthea open-source health records simulator. The three real-data validation cohorts (UCI Cleveland Heart Disease, UCI Diabetes 130-US Hospitals, and the NCHS NHIS 2024 Sample Adult public-use file) are de-identified public datasets distributed under their respective release terms; no patient records were re-identified, no additional patient data were collected, and no protected health information was accessed at any stage of this research. Accordingly, no new Institutional Review Board (IRB) approval or informed patient consent was required for the analyses presented here. 31 Computational Reproducibility 
+
+All experimental results in this paper are generated by running the released rised package (MIT license; GitHub link in Code Availability). Exact environment used for the reported numbers: Python 3.11.7, scikit-learn 1.8.0, NumPy 1.26.4, pandas 3.0.2, SciPy 1.15.3, XGBoost 3.2.0, SHAP 0.51.0, Fairlearn 0.13.0, on a laptop with a 13th-generation Intel Core i5-13420H CPU and 16 GB RAM running Windows 11 Home. All training and evaluation calls use a fixed random seed ( random_state=42 ); bootstrap CIs use B = 1 ,000 
+
+iterations with the same seed. The synthetic cohort is generated from a deterministic seeded process (also seed 42); reseeding the entire pipeline on the same hardware and software stack reproduces every reported number to within Monte Carlo bootstrap error ( B = 1 ,000 , seed-fixed). Cross-platform reproducibility is not bit-exact because XGBoost histogram parallelism and SHAP TreeExplainer tied-feature break ordering are non-deterministic across CPU microarchitectures; the verdicts (PASS/FAIL/INCONCLUSIVE) are stable in our cross-machine spot checks but headline metrics may differ in the third decimal place. The full evaluation on the synthetic cohort runs in under one minute end-to-end; the multi-model robustness comparison (Section 4.5) and the UCI Diabetes 130-US Hospitals validation (Section 4.4) each take approximately five to ten minutes on the same hardware. 
+
+# Author Contributions 
+
+R.R.B.: Conceptualization, Methodology, Software, Formal Analysis, Investigation, Data Curation, Writing (Original Draft), Writing (Review & Editing), Visualization. (CRediT taxonomy; https://credit.niso.org )
+
+# Declaration of Competing Interests 
+
+The author declares that the research was conducted in the absence of any commercial or financial relationships that could be construed as a potential conflict of interest. No funding was received for this work. 
+
+# Acknowledgements 
+
+The author thanks the developers of the Synthea open-source patient simulator, the scikit-learn, XGBoost, SHAP, and matplotlib communities for the open-source tools that underpin the rised package, and the curators of the clinical informatics and fairness literature cited herein. 
+
+# Declaration of Generative AI and AI-Assisted Technologies in the Manuscript Preparation Process 
+
+During the preparation of this manuscript, the author used Claude (Anthropic, claude-opus-4-7 / claude-sonnet-4-6) to assist with manuscript drafting, literature organization, and code development for the rised 
+
+package. All experimental results were generated by executing real Python code on the synthetic dataset; no AI-generated numerical values appear in the paper. The author reviewed and edited all AI-assisted content and takes full responsibility for the accuracy, integrity, and originality of the final manuscript. AI tools are not listed as authors. 32 References 
+
+Antoniadi, A. M., Du, Y., Guendouz, Y., Wei, L., Mazo, C., Becker, B. A., and Mooney, C. (2021). Current challenges and future opportunities for XAI in machine learning-based clinical decision support systems. 
+
+Applied Sciences , 11(11):5088. Balendran, A., Beji, C., Bouvier, F., Khalifa, O., Evgeniou, T., Ravaud, P., and Porcher, R. (2025). A scoping review of robustness concepts for machine learning in healthcare. npj Digital Medicine , 8(1):38. Bellamy, R. K. E., Dey, K., Hind, M., Hoffman, S. C., Houde, S., Kannan, K., Lohia, P., Martino, J., Mehta, S., Mojsilovic, A., Nagar, S., Ramamurthy, K. N., Richards, J., Saha, D., Sattigeri, P., Singh, M., Varshney, K. R., and Zhang, Y. (2019). AI Fairness 360: An extensible toolkit for detecting and mitigating algorithmic bias. IBM Journal of Research and Development , 63(4/5):4:1–4:15. Bellibatlu, R. R. (2025). RISED healthcare evaluation dataset: 10,000-patient synthetic clinical cohort. 
+
+https://huggingface.co/datasets/Rohithreddybc/rised-healthcare-eval-dataset .Bellibatlu, R. R. (2026a). JudgeSense: A benchmark for prompt sensitivity in LLM-as-a-Judge systems. arXiv preprint arXiv:2604.23478. Bellibatlu, R. R. (2026b). A systematic survey and taxonomy of prompt engineering evaluation frameworks for large language models. Zenodo. Bird, S., Dudík, M., Edgar, R., Hedari, B., Lutz, R., Mayabelashvili, M., Wallach, H., Walker, K., and Wei, D. (2023). Fairlearn: Assessing and improving fairness of AI systems. Journal of Machine Learning Research ,24(257):1–8. Bird, S., Dudík, M., Edgar, R., Horn, B., Lutz, R., Milan, V., Sameki, M., Wallach, H., and Walker, K. (2020). Fairlearn: A toolkit for assessing and improving fairness in AI. Technical Report MSR-TR-2020-32, Microsoft. Celi, L. A., Cellini, J., Charpignon, M.-L., Dee, E. C., Dernoncourt, F., Eber, R., Mitchell, W. G., Moukheiber, L., Resche-Rigon, M., Samayamuthu, M. J., et al. (2022). Sources of bias in artificial intelligence that perpetuate healthcare disparities — a global review. PLOS Digital Health , 1(3):e0000022. Charlson, M. E., Pompei, P., Ales, K. L., and MacKenzie, C. R. (1987). A new method of classifying prognostic comorbidity in longitudinal studies: development and validation. Journal of Chronic Diseases ,40(5):373–383. Chen, T. and Guestrin, C. (2016). XGBoost: A scalable tree boosting system. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining , pages 785–794. Chouldechova, A. (2017). Fair prediction with disparate impact: A study of bias in recidivism prediction instruments. In Proceedings of the 4th Workshop on Fairness, Accountability, and Transparency in Machine Learning .Cirillo, D., Catuara-Solarz, S., Morey, C., Guney, E., Subirats, L., Mellino, S., Gigante, A., Valencia, A., Rementeria, M. J., Chadha, A. S., and Mavridis, N. (2020). Sex and gender differences and biases in artificial intelligence for biomedicine and healthcare. npj Digital Medicine , 3:81. 33 Cohen, J. (1988). Statistical Power Analysis for the Behavioral Sciences . Lawrence Erlbaum Associates, Hillsdale, NJ, 2nd edition. Collins, G. S., Moons, K. G. M., Dhiman, P., Riley, R. D., Beam, A. L., Van Calster, B., Ghassemi, M., Liu, X., Reitsma, J. B., van Smeden, M., et al. (2024). TRIPOD+AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods. BMJ , 385:e078378. Collins, G. S., Reitsma, J. B., Altman, D. G., and Moons, K. G. M. (2015). Transparent reporting of a multivariable prediction model for individual prognosis or diagnosis (TRIPOD): the TRIPOD statement. 
+
+BMJ , 350:g7594. Cruz Rivera, S., Liu, X., Chan, A.-W., Denniston, A. K., Calvert, M. J., and SPIRIT-AI and CONSORT-AI Working Group (2020). Guidelines for clinical trial protocols for interventions involving artificial intelligence: the SPIRIT-AI extension. Nature Medicine , 26(9):1351–1363. DeGrave, A. J., Janizek, J. D., and Lee, S.-I. (2021). AI for radiographic COVID-19 detection selects shortcuts over signal. Nature Machine Intelligence , 3:610–619. Detrano, R., Janosi, A., Steinbrunn, W., Pfisterer, M., Schmid, J.-J., Sandhu, S., Guppy, K. H., Lee, S., and Froelicher, V. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. The American Journal of Cardiology , 64(5):304–310. Dwork, C., Hardt, M., Pitassi, T., Reingold, O., and Zemel, R. (2012). Fairness through awareness. In 
+
+Proceedings of the 3rd Innovations in Theoretical Computer Science Conference , pages 214–226. Efron, B. (1987). Better bootstrap confidence intervals. Journal of the American Statistical Association ,82(397):171–185. European Parliament and Council of the European Union (2024). Regulation (EU) 2024/1689 of the european parliament and of the council laying down harmonised rules on artificial intelligence (Artificial Intelligence Act). Official Journal of the European Union, L Series. Finlayson, S. G., Subbaswamy, A., Singh, K., Bowers, J., Kupke, A., Zittrain, J., Kohane, I. S., and Saria, S. (2021). The clinician and dataset shift in artificial intelligence. New England Journal of Medicine ,385(3):283–286. Ghassemi, M., Naumann, T., Schulam, P., Beam, A. L., Chen, I. Y., and Ranganath, R. (2020). Practical guidance on artificial intelligence for health-care data. The Lancet Digital Health , 2(3):e157–e160. Guo, C., Pleiss, G., Sun, Y., and Weinberger, K. Q. (2017). On calibration of modern neural networks. In 
+
+Proceedings of the 34th International Conference on Machine Learning , pages 1321–1330. Habib, A. R., Lin, A. L., and Grant, R. W. (2021). The Epic Sepsis Model falls short—the importance of external validation. JAMA Internal Medicine , 181(8):1040–1041. Hardt, M., Price, E., and Srebro, N. (2016). Equality of opportunity in supervised learning. In Advances in Neural Information Processing Systems , volume 29, pages 3315–3323. Hernandez-Boussard, T., Bozkurt, S., Ioannidis, J. P. A., and Shah, N. H. (2020). MINIMAR (MINimum Information for Medical AI Reporting): Developing reporting standards for artificial intelligence in health care. Journal of the American Medical Informatics Association , 27(12):2011–2015. 34 Joynt, K. E. and Jha, A. K. (2012). Thirty-day readmissions—truth and consequences. New England Journal of Medicine , 366(15):1366–1369. Kelly, C. J., Karthikesalingam, A., Suleyman, M., Corrado, G., and King, D. (2019). Key challenges for delivering clinical impact with artificial intelligence. BMC Medicine , 17:195. Kwong, J. C. C., Khondker, A., Lajkosz, K., McDermott, M. B. A., Frigola, X. B., McCradden, M. D., Mamdani, M., Kulkarni, G. S., and Johnson, A. E. W. (2023). APPRAISE-AI tool for quantitative evaluation of AI studies for clinical decision support. JAMA Network Open , 6(9):e2335377. Labkoff, S. E., Teich, J. M., Bate, A., Halamka, J. D., Kawamoto, K., Lobach, D., Sittig, D. F., Tuckson, R. V., Goldsmith, D., and Middleton, B. (2024). Toward a responsible future: recommendations for AI-enabled clinical decision support. Journal of the American Medical Informatics Association , 31(1):255–261. Lekadir, K., Frangi, A. F., Porras, A. R., Glocker, B., Cintas, C., Langlotz, C. P., Weicken, E., Asselbergs, F. W., Prior, F., Collins, G. S., et al. (2025). FUTURE-AI: international consensus guideline for trustworthy and deployable artificial intelligence in healthcare. BMJ , 388:e081554. Liu, M., Ning, Y., Teixayavong, S., Mertens, M., Xu, J., Ting, D. S. W., Cheng, L. T.-E., Ong, J. C. L., Teo, Z. L., Tan, T. F., et al. (2023). A translational perspective towards clinical AI fairness. npj Digital Medicine , 6(1):172. Liu, X., Cruz Rivera, S., Moher, D., Calvert, M. J., Denniston, A. K., and SPIRIT-AI and CONSORT-AI Working Group (2020). Reporting guidelines for clinical trial reports for interventions involving artificial intelligence: the CONSORT-AI extension. Nature Medicine , 26(9):1364–1374. Liu, X., Faes, L., Kale, A. U., Wagner, S. K., Fu, D. J., Bruynseels, A., Mahendiran, T., Moraes, G., Shamdas, M., Kern, C., et al. (2019). A comparison of deep learning performance against health-care professionals in detecting diseases from medical imaging: a systematic review and meta-analysis. The Lancet Digital Health , 1(6):e271–e297. Lundberg, S. M. and Lee, S.-I. (2017). A unified approach to interpreting model predictions. In Advances in Neural Information Processing Systems , volume 30, pages 4765–4774. Madry, A., Makelov, A., Schmidt, L., Tsipras, D., and Vladu, A. (2018). Towards deep learning models resistant to adversarial attacks. In International Conference on Learning Representations (ICLR) .McCradden, M. D., Anderson, J. A., Stephenson, E. A., Drysdale, E., Erdman, L., Goldenberg, A., and Zlotnik Shaul, R. (2022). A research ethics framework for the clinical translation of healthcare machine learning. The American Journal of Bioethics , 22(5):8–22. National Center for Health Statistics (2025). National health interview survey, 2024 public-use data file (Sample Adult). U.S. Department of Health and Human Services, Centers for Disease Control and Prevention. Sample Adult interviews collected calendar year 2024; CSV public-use file released by NCHS in 2025. Nazer, L. H., Zatarah, R., Waldrip, S., Ke, J. W.-C., Moukheiber, M., Khanna, A. K., Hicklen, R. S., Moukheiber, L., Moukheiber, D., Ma, H., and Mathur, P. (2023). Bias in artificial intelligence algorithms and recommendations for mitigation. PLOS Digital Health , 2(6):e0000278. 35 Norgeot, B., Quer, G., Beaulieu-Jones, B. K., Torkamani, A., Dias, R., Gianfrancesco, M., Arnaout, R., Kohane, I. S., Saria, S., Topol, E., Obermeyer, Z., Yu, B., and Butte, A. J. (2020). Minimum information about clinical artificial intelligence modeling: the MI-CLAIM checklist. Nature Medicine , 26(9):1320–1324. Obermeyer, Z., Powers, B., Vogeli, C., and Mullainathan, S. (2019). Dissecting racial bias in an algorithm used to manage the health of populations. Science , 366(6464):447–453. Office of the National Coordinator for Health Information Technology (2024). Health data, technology, and interoperability: Certification program updates, algorithm transparency, and information sharing (HTI-1) final rule. Federal Register, 89 FR 1192. Osibogun, O. (2024). Adverse childhood experiences and suboptimal self-rated health in adulthood: Exploring effect modification by age, sex and race/ethnicity. American Journal of Health Promotion , 39(2):244–252. Paulus, J. K. and Kent, D. M. (2020). Predictably unequal: understanding and addressing concerns that algorithmic clinical prediction may increase health disparities. npj Digital Medicine , 3:99. Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., Blondel, M., Prettenhofer, P., Weiss, R., Dubourg, V., Vanderplas, J., Passos, A., Cournapeau, D., Brucher, M., Perrot, M., and Duchesnay, É. (2011). Scikit-learn: Machine learning in Python. Journal of Machine Learning Research ,12:2825–2830. Pfohl, S. R., Foryciarz, A., and Shah, N. H. (2021). An empirical characterization of fair machine learning for clinical risk prediction. Journal of Biomedical Informatics , 113:103621. Pleiss, G., Raghavan, M., Wu, F., Kleinberg, J., and Weinberger, K. Q. (2017). On fairness and calibration. In Advances in Neural Information Processing Systems , volume 30, pages 5680–5689. Quan, H., Li, B., Couris, C. M., Fushimi, K., Graham, P., Hider, P., Januel, J.-M., and Sundararajan, V. (2011). Updating and validating the Charlson comorbidity index and score for predicting mortality in hospital-based cohorts. American Journal of Epidemiology , 173(6):676–682. Rajpurkar, P., Chen, E., Banerjee, O., and Topol, E. J. (2022). AI in health and medicine. Nature Medicine ,28(1):31–38. Reddy, S. (2021). A governance model for the application of AI in health care: Translational evaluation of healthcare AI (TEHAI). BMJ Health & Care Informatics , 28(1):e100323. Reddy, S., Allan, S., Coghlan, S., and Cooper, P. (2020). A governance model for the application of AI in health care. Journal of the American Medical Informatics Association , 27(3):491–497. Ross, M. K., Wei, W., Öner, O., and Hernandez-Boussard, T. (2021). Sources of racial bias in clinical note text leading to disparate performance of a machine learning model. Journal of the American Medical Informatics Association , 28(10):2228–2232. Rudin, C. (2019). Stop explaining black box machine learning models for high stakes decisions and use interpretable models instead. Nature Machine Intelligence , 1(5):206–215. Sandhu, S., Lin, A. L., Brajer, N., Sperling, J., Ratliff, W., Bedoya, A. D., Balu, S., O’Brien, C., and Sendak, M. P. (2020). Integrating a machine learning system into clinical workflows: qualitative study. Journal of Medical Internet Research , 22(11):e22421. 36 Sendak, M., Gao, M., Brajer, N., and Balu, S. (2020). Presenting machine learning model information to clinical end users with model facts labels. npj Digital Medicine , 3:41. Shah, N. H., Milstein, A., and Bagley, S. C. (2019). Making machine learning models clinically useful. JAMA ,322(14):1351–1352. Steyerberg, E. W., Vickers, A. J., Cook, N. R., Gerds, T., Gonen, M., Obuchowski, N., Pencina, M. J., and Kattan, M. W. (2010). Assessing the performance of prediction models: a framework for traditional and novel measures. Epidemiology , 21(1):128–138. Strack, B., DeShazo, J. P., Gennings, C., Olmo, J. L., Ventura, S., Cios, K. J., and Clore, J. N. (2014). Impact of HbA1c measurement on hospital readmission rates: analysis of 70,000 clinical database patient records. BioMed Research International , 2014:781670. Subbaswamy, A. and Saria, S. (2021). From development to deployment: dataset shift, causality, and shift-stable models in health AI. Biostatistics , 22(4):827–833. Sutton, R. T., Pincock, D., Baumgart, D. C., Sadowski, D. C., Fedorak, R. N., and Kroeker, K. I. (2020). An overview of clinical decision support systems: benefits, risks, and strategies for success. npj Digital Medicine , 3:17. Topol, E. J. (2019). High-performance medicine: the convergence of human and artificial intelligence. Nature Medicine , 25(1):44–56. U.S. Food and Drug Administration (2021). Artificial intelligence/Machine learning (AI/ML)-based software as a medical device (SaMD) action plan. Technical report, U.S. Department of Health and Human Services. Van Calster, B., McLernon, D. J., van Smeden, M., Wynants, L., and Steyerberg, E. W. (2019). Calibration: the Achilles heel of predictive analytics. BMC Medicine , 17:230. Vasey, B., Nagendran, M., Campbell, B., Clifton, D. A., Collins, G. S., Denaxas, S., Denniston, A. K., Faes, L., Geerts, B., Ibrahim, M., et al. (2022). Reporting guideline for the early-stage clinical evaluation of decision support systems driven by artificial intelligence: DECIDE-AI. Nature Medicine , 28(5):924–933. Vyas, D. A., Eisenstein, L. G., and Jones, D. S. (2020). Hidden in plain sight — reconsidering the use of race correction in clinical algorithms. New England Journal of Medicine , 383(9):874–882. Walonoski, J., Kramer, M., Nichols, J., Quina, A., Moesel, C., Hall, D., Duffett, C., Dube, K., Gallagher, T., and McLachlan, S. (2018). Synthea: An approach, method, and software mechanism for generating synthetic patients and the synthetic electronic health care record. Journal of the American Medical Informatics Association , 25(3):230–238. Wong, A., Otles, E., Donnelly, J. P., Krumm, A., McCullough, J., DeTroyer-Cooley, O., Pestrue, J., Phillips, M., Konye, J., Penoza, C., Ghous, M., and Singh, K. (2021). External validation of a widely implemented proprietary sepsis prediction model in hospitalized patients. JAMA Internal Medicine , 181(8):1065–1070. Wynants, L., Bouwmeester, W., Moons, K. G. M., Moerbeek, M., Timmerman, D., Van Huffel, S., Van Calster, B., and Vergouwe, Y. (2015). A simulation study of sample size demonstrated the importance of the number of events per variable to develop prediction models in clustered data. Journal of Clinical Epidemiology ,68(12):1406–1414. See also companion paper on three myths about risk thresholds, BMC Medicine. 37 Wynants, L., Van Calster, B., Collins, G. S., Riley, R. D., Heinze, G., Schuit, E., Bonten, M. M. J., et al. (2020). Prediction models for diagnosis and prognosis of COVID-19: systematic review and critical appraisal. 
+
+BMJ , 369:m1328. Yang, Y., Zhang, H., Gichoya, J. W., Katabi, D., and Ghassemi, M. (2024). The limits of fair medical imaging AI in real-world generalization. Nature Medicine , 30(10):2838–2848. You, J. G., Goss, F. R., Mauer, E., Rocha, H., Wright, A., Bates, D. W., and Landman, A. B. (2025). Clinical trials informed framework for real world clinical implementation and deployment of artificial intelligence applications. npj Digital Medicine , 8(1):114. Zhang, A., Xing, L., Zou, J., and Wu, J. C. (2022). Shifting machine learning for healthcare from development to deployment and from models to data. Nature Biomedical Engineering , 6(12):1330–1345. 38
