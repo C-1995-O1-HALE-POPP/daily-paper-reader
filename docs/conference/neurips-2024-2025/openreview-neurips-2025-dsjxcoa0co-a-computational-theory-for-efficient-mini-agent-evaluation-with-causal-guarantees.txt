@@ -1,0 +1,3513 @@
+Title: 2941_A_Computational_Theory_fo.pdf
+
+URL Source: https://openreview.net/pdf?id=dsjxCoa0CO
+
+Number of Pages: 42
+
+Markdown Content:
+# A Computational Theory for Efficient Mini Agent Evaluation with Causal Guarantees 
+
+Anonymous Author(s) 
+
+Affiliation Address 
+
+email 
+
+## Abstract 
+
+In order to reduce the cost of experimental evaluation for agents, we introduce 1
+
+a computational theory of evaluation for mini agents: build evaluation model to 2
+
+accelerate the evaluation procedures. We prove upper bounds of generalized error 3
+
+and generalized causal effect error of given evaluation models for infinite agents. 4
+
+We also prove efficiency, and consistency to estimated causal effect from deployed 5
+
+agents to evaluation metric by prediction. To learn evaluation models, we propose 6
+
+a meta-learner to handle heterogeneous agents space problem. Comparing with 7
+
+existed evaluation approaches, our (conditional) evaluation model reduced 24.1% to 8
+
+99.0% evaluation errors across 12 scenes, including individual medicine, scientific 9
+
+simulation, social experiment, business activity, and quantum trade. The evaluation 10 
+
+time is reduced 3 to 7 order of magnitude per subject comparing with experiments 11 
+
+or simulations. 12 
+
+## 1 Introduction 13 
+
+Throughout the history of computer science, manually handing the data has been replaced by 14 
+
+computational approach, such as computational linguistic (OpenAI et al. [2024], DeepSeek-AI et al. 15 
+
+[2025]), computational biology (Abramson et al. [2024]), and computational learning (Valiant [1984]). 16 
+
+Here we extend the computational theory to the ubiquitous domain of evaluation. 17 
+
+Randomized controlled trials (Fisher [1974], Box et al. [2005]) are widely regarded as the gold 18 
+
+standard for evaluating the efficacy of interventions, such as drugs and therapies, due to their 19 
+
+ability to minimize bias and establish causal relationships between interventions and outcomes. By 20 
+
+randomly assigning participants to intervention group or control group, RCTs effectively balance 21 
+
+both observed and unobserved confounding variables, thereby mitigating the influence of hidden 22 
+
+common causes (Reichenbach [1999]). However, conducting RCTs to assess every potential agent 23 
+
+is often prohibitively expensive and, in certain cases, unfeasible as shown in appendix A. This 24 
+
+challenge is particularly pronounced in fields like artificial intelligences, where models may possess 25 
+
+hundreds of parameters, resulting in an infinite and high-dimensional space of potential interventions. 26 
+
+Evaluating such agents through randomized experiments is resource-intensive, demanding substantial 27 
+
+investments of time, finances, personnel, and materials (Speich et al. [2018]). Moreover, the extended 28 
+
+duration of these experiments hampers the rapid iteration and optimization of agents, rendering 29 
+
+the process inefficient. Given these limitations, alternative methodologies that balance rigorous 30 
+
+evaluation with practical feasibility are essential, especially in rapidly evolving domains requiring 31 
+
+swift assessment and deployment of new agents. 32 
+
+An improvement is to build the centralized A/B test platform, which has been proven successes 33 
+
+in application updates and recommendation in Byte Dance (Byte-Dance). The implementation 34 
+
+of centralized A/B testing platforms can significantly reduce the costs associated with conducting 35 
+
+randomized trials for researchers. However, this cost reduction does not inherently enhance the utility 36 
+
+Submitted to 39th Conference on Neural Information Processing Systems (NeurIPS 2025). Do not distribute. derived from each individual trial and it still can not handle the infinite evaluation subjects problem. 37 
+
+Notably, the lower cost and increased accessibility of such platforms can lead to a substantial rise in 38 
+
+the number of randomized trials conducted. This proliferation of experiments raises ethical concerns 39 
+
+regarding participant exposure to potential harm during the randomization process. For instance, 40 
+
+as highlighted by Zhou et al. [2024b], the automation and scalability of A/B testing frameworks, 41 
+
+while beneficial for rapid experimentation, necessitate careful consideration of ethical implications 42 
+
+to safeguard participant well-being. Polonioli et al. [2023] emphasizes the need for ethical and 43 
+
+responsible experimentation to protect users and society. 44 
+
+In addition to other agent evaluation works in appendix B, evaluatology (Zhan et al. [2024]) emerges 45 
+
+as an independent filed in recent years. However, there is still a lack of a theory to help us find an 46 
+
+effective and efficient evaluation system that satisfies the concerns and interests of the stakeholders. 47 
+
+Here, we introduce a computational theory to evaluate the effect of given agents. The main benefit 48 
+
+to evaluate by computation is its efficiency and low cost. If we learned the connection between the 49 
+
+experiment result and pre-experiment agents by a computational model, the evaluation cost will be 50 
+
+reduced dramatically comparing with performing experiments. 51 C S M Time          
+
+> Data Collection Learn Evaluation Model
+> (𝐶 ,𝑆 )!"#$%
+> (𝐶 ,𝑆 )!&'!
+> 𝑀 !"#$%
+> 𝑀 !&'!
+> Train Data Learned EM
+> Test Data Empirical Evaluation Error
+> Generalized Error
+> Up Bound
+> IIDE
+> Assumption
+> Sampling
+> Prediction
+> Proxy -M
+> M
+> Evaluation Model
+> S-Encoder SPrediction
+> C-Encoder
+> MS-Encoder S
+> C
+> Conditional Evaluation Model
+> IRIS
+> Assumption
+> Generalized
+> Effect Error
+> Up Bound
+> Downstream Tasks
+> Individual
+> Medicine
+> Scientific
+> Simulation
+> Quantitative
+> Trading
+> Insurance
+> Recommendation
+> Proxy -M
+> Unbiased Assumption
+
+Figure 1: Procedure of computational evaluation. C is evaluation condition, S is evaluation subject (agent), M is evaluation metric, EM is evaluation model. The procedure of our computational evaluation is listed in figure 7. First, data of evaluation condition, 52 
+
+deployed agents, and evaluation metric are collected. If causal relationship is needed, the subject 53 
+
+is required to be independently, randomly, identically sampled (IRIS) so that the causal effect from 54 
+
+the subject to the metric can be bounded in the following steps. Next, evaluation model is learned 55 
+
+from the collected data, and generalized evaluation error is upper bounded under independently, 56 
+
+identically distributed error (IIDE) assumption. Also, the evaluation model is assumed unbiased 57 
+
+to bound the causal effect from agent to metric. Then, learned evaluation model is applied to 58 
+
+the downstream applications once the upper bounds are low enough to satisfy the real need. The 59 
+
+mentioned assumptions are assessed by testing their necessary conditions. 60 
+
+In addressing on on the heterogeneous agents space problem in evaluation model learning, we 61 
+
+propose a meta algorithm to parameterize agents, learn (conditional) evaluation models, and inference 62 
+
+separately. The upper bounds of generalized error for both metric and its first order difference on 63 
+
+agents are minimized by minimizing the empirical error. Also, learning evaluation model from 64 
+
+evaluation samples directly is very challenging in some cases. So we add a proxy module for the 65 
+
+agents in addressing the challenge. The proxy module will create some proxy metrics according 66 
+
+some existing computational evaluation methods, which can help us to improve the performance of 67 
+
+evaluation model. 68 
+
+In our evaluation experiment, we test evaluation model on 11 scenes including individual medicine, 69 
+
+scientific simulation, insurance, advertisement, trade. Comparing with the existed computational 70 
+
+2evaluation methods, our method reduced 24.1% to 99.0% evaluation errors while remain the advan-71 
+
+tage of computational evaluation efficiency. We also test our conditional evaluation model in the 72 
+
+quantitative trade scene. Comparing with baseline backtesting strategy, our evaluation model reduced 73 
+
+89.4% evaluation errors. The evaluation acceleration ratio is ranged from 1000 times to 10000000 74 
+
+times comparing with experimental or simulation based evaluation in the 12 scenes. 75 
+
+## 2 Notation 76 
+
+Variable Name Description 
+
+S evaluation subject the operable and indivisible unit that we (agents) want to deploy, remove, understand, and modify 
+
+C evaluation condition set of pre-evaluation features of evaluation subject, including inner attributes and environments that identify a real evaluation process 
+
+M evaluation metric subset of stakeholders’ buy-in metrics 
+
+EM or ˆf evaluation model a function that takes an evaluation subject and evaluation conditions as inputs and produces evaluation metrics as its output L evaluation error function a function to measure the discrepancy (ranged from 0 to 1) between output of evaluation model and true metric 
+
+Eemp empirical evaluation error average evaluation error of empirical sample 
+
+Egen generalized evaluation error expected evaluation error of super-population Table 1: Notation table for used variables. Table 1 shows the notation we used in this paper. In order to simplify the evaluation problem, 77 
+
+evaluation metric and difference of evaluation metric are assumed as measurable and pairwise 78 
+
+comparable. The computational evaluation problem is modeled as computing the evaluation metrics 79 
+
+for evaluation subject with certain evaluation conditions. Unless otherwise specified, all evaluation 80 
+
+subjects in this paper are mini agents. 81 
+
+## 3 Theoretical analysis 82 
+
+3.1 Upper bound of generalized evaluation error 83 
+
+Theorem 1. Upper bound . Given any evaluation model ˆf , P (Egen ( ˆf ) < E emp ( ˆf )+ 
+
+q 12n ln( 1 
+
+> σ
+
+)) ≥84 
+
+1−σ where n is number of independent identical distributed error (IIDE) measurements, 0 < 1−σ < 85 
+
+1 is confidence. 86 
+
+In Theorem 1, we show that the generalization error Egen is bounded by the empirical error Eemp .87 
+
+the number of error measurements n, and the significance level 1−σ under the IIDE assumption. This 88 
+
+result underpins our ability to use a finite number of evaluation samples to compare the performance 89 
+
+of evaluation models across an infinite subject and condition space. For example, when the evaluation 90 
+
+subject space is extremely large or infinite—as in the cases of AI diagnosis agents, AI treatment 91 
+
+agents, or quantitative strategy agents—Theorem 1 allows us to generalize our empirical analysis to 92 
+
+the entire subject space. Similarly, in evaluation condition spaces, such as those involving AI-driven 93 
+
+discovery of unseen materials based on molecular and structural conditions, the generalization errors 94 
+
+for any evaluation model can be bounded using the same theorem. 95 
+
+Once the upper bound is smaller than given error tolerance, evaluation model f is regarded to meet 96 
+
+the practical needs with high probability 1 − σ. Additionally, Theorem 1 provides a method to 97 
+
+estimate the number of error measurements (or evaluation samples) required prior to sampling. 98 
+
+We emphasize that IIDE can also be satisfied if the non-IID components of (C, S, M ) was offset by 99 
+
+the evaluation model or the evaluation error function (such as non-misspecified time-series model 100 
+
+on time-series data) although independent identical distributed (C, S, M ) is a sufficient condition 101 
+
+of IIDE. In fact, the assumption of independent and identically distributed samples is considered 102 
+
+excessively strong in this paper, particularly with respect to IID conditions and IID outcomes. 103 
+
+33.2 Hidden common cause 104 
+
+The hidden common cause between subject and metric may introduce the confounding bias if the 105 
+
+evaluation task is causality sensitive, such as individual medicine. Causal inference is often used to 106 
+
+handle hidden common cause from data. However, applying existed methods to handle unmeasured 107 
+
+hidden common cause problem in evaluation faced those challenges: 108 
+
+• Hidden identical common cause (HIC) . If the assignment of S is determined by an unlisted 109 
+
+identical common cause E which can be denoted as S := E, and there exists effect from 110 
+
+E to M . We may mistakenly attributing the effect on M of E to S. The identical hidden 111 
+
+confounder can never be excluded from statistical analysis due to the identical property if 112 
+
+S was never controlled by randomization. Therefore, effect from S to M is unidentifiable 113 
+
+in all kinds of existed non-intervention based causal analysis, including diagram-based 114 
+
+identification (Pearl [1995], Tian and Pearl [2002], Shpitser and Pearl [2006], Bareinboim 115 
+
+and Pearl [2012], YAN [2025]), neural-based identification (Xia et al. [2021]), statistical-116 
+
+based identification (Jaber et al. [2019]), observation study (ROSENBAUM and RUBIN 117 
+
+[1983]), causal representation learning (Schölkopf et al. [2021]), and causal discovery 118 
+
+(Spirtes and Glymour [1991], Zhang and Hyvärinen [2009]). 119 
+
+• High-dimensional evaluation subject . Potential outcomes (Splawa-Neyman et al. [1990], 120 
+
+Holland [1986], Imbens and Rubin [2015]) often assumes each evaluation subject must be 121 
+
+sampled once which often do not established for high-dimensional evaluation subjects. For 122 
+
+instance, parameters of AI model can be hundreds or thousands and more complex which 123 
+
+structure is different from continuous dose-level analysis (Schwab et al. [2020], Nie et al. 124 
+
+[2021], Zhu et al. [2024], Nagalapatti et al. [2024]) with low dimension. 125 
+
+For causality sensitive task, any hidden common cause between subject and metric is excluded 126 
+
+including HIC if the subject was randomly, independently, identically sampled or assigned as shown 127 
+
+in theorem 2 and theorem 4. For high-dimensional evaluation subject, the causal effect of evaluation 128 
+
+error is bounded and evaluation result can be generalized to the whole subject space whatever how 129 
+
+large the space size as shown in theorem 4. 130 
+
+Theorem 2. Strict causal advantage . Given {ci, s i, m i}ni=1 , where c is evaluation condition, s131 
+
+is independent from c, and e, and s is independently, randomly, identically sampled (IRIS) from 132 
+
+distribution P r (S), m is generate by an unknown and inaccessible function m = f (c, e, s ), e is 133 
+
+other unlisted random variable, evaluation error function L is mean square error, ∀ ˆf1, ∀ ˆf2 where ˆf1134 
+
+and ˆf2 are unbiased estimation of f given c (CU), we have Efficiency : if Egen ( ˆf1) < E gen ( ˆf2) for 135 
+
+any s, then ∀sa ∈ S, ∀sb ∈ S, ∀c ∈ C, Egen ( ˆf1(c, s a) − ˆf1(c, s b)) < E gen ( ˆf2(c, s a) − ˆf2(c, s b)) ;136 
+
+Consistency : if lim ˆf →f Egen ( ˆf ) = 0 , then ∀sa ∈ S, ∀sb ∈ S, ∀c ∈ C, lim ˆf →f Egen ( ˆf (c, s a) −137 
+
+ˆf (c, s b)) = 0 .138 
+
+From theorem 2, minimization of generalized mean square causal effect evaluation error can be 139 
+
+performed by minimizing generalized evaluation error greedily until the evaluation error is close to 0. 140 
+
+However, we can not get the generalized evaluation errors in reality. An upper bound with empirical 141 
+
+errors was inferred in the theorem 3. 142 
+
+Theorem 3. Causal bound with positivity . ∀sa ∈ S, ∀sb ∈ S, given any unbiased evaluation model 143 
+
+ˆf (c, s a) and ˆf (c, s b),144 
+
+P (Egen (∆ ˆf ) < 2 max {Eemp (a) + 
+
+r 12na
+
+ln( 2
+
+σ )) , E emp (b) + 
+
+r 12nb
+
+ln( 2
+
+σ )}) ≥ 1 − σ
+
+, where ∆ ˆf = ˆf (c, s a) − ˆf (c, s b), na and nb are number of independently, randomly, identically 145 
+
+sampled error measurements (IIDE) where s = sa and s = sb, 0 < 1 − σ < 1 is confidence, 146 
+
+evaluation error function L is mean square error ranged from 0 to 1. 147 
+
+In practice, na and nb are typically zero for infinite evaluation subject (non-positivity Imbens and 148 
+
+Rubin [2015]); in such cases, upper bound of generalized effect error is given by Theorem 4. 149 
+
+Theorem 4. Causal bound with non-positivity . Given unbiased evaluation model ˆf , then ∀sa ∈150 
+
+S, ∀sb ∈ S,151 
+
+P (Egen (∆ ˆf ) < 2( Eemp ( ˆf ) + 
+
+r 12n ln( 1
+
+σ ))) ≥ 1 − σ
+
+4, where ∆ ˆf = ˆf (c, s a) − ˆf (c, s b), n is number of independently, randomly, identically sampled error 152 
+
+measurements (IIDE), 0 < 1 − σ < 1 is confidence, s is independently, randomly, identically sampled 153 
+
+(IRIS), evaluation error function L is mean square error ranged from 0 to 1. 154 
+
+Theorem 4 provides the rationale for why our evaluation models can learn the causal effect from 155 
+
+subjects to metrics rather than mere correlations when the evaluation subjects are independently, 156 
+
+randomly, and identically sampled (IRIS), the evaluation models are unbiased, and the evaluation 157 
+
+errors are independently, randomly, identically distributed (IIDE). Also, effect error is upper bounded 158 
+
+by its bias even the model is not unbiased. Proofs of all the theorems were given in appendix C. 159 
+
+Comparing with Saito and Yasui [2020] and Alaa and Van Der Schaar [2019], our unbiased assumption 160 
+
+has potential to be rejected from real data testing as shown in the experiment part while they did 161 
+
+not provide approaches to reject their unbiased causal effect assumption (Saito and Yasui [2020]) 162 
+
+or min-max optimal effect estimator assumption (Alaa and Van Der Schaar [2019]) from real data 163 
+
+without counterfactual. Also, IID samples assumption in those works (Saito and Yasui [2020], 164 
+
+Johansson et al. [2022], Alaa and Van Der Schaar [2019], Shalit et al. [2017], Li and Pearl [2022], 165 
+
+Wang et al. [2022]) is too strong for causal evaluation, especially IID conditions and IID outcomes. 166 
+
+## 4 Learning evaluation models 167 
+
+In evaluation processes, two critical factors are evaluation error and evaluation cost. Our objective is 168 
+
+to reduce evaluation cost while maintaining an acceptable level of generalized evaluation (causal) 169 
+
+error through computational evaluation. To achieve this, we can minimize empirical evaluation error 170 
+
+because upper bound size is fixed given number of error measurements n and confidence requirement 171 
+
+1 − σ in theorem 1 and theorem 4. 172 
+
+Directly learning an evaluation model from evaluation samples presents significant challenges. To 173 
+
+address this, we introduce a proxy module that generates surrogate metrics using established compu-174 
+
+tational methods, such as dataset-based approaches including bootstrapping, hold-out validation, and 175 
+
+cross-validation. These techniques enhance the performance of the evaluation model by providing 176 
+
+more robust and reliable features. Furthermore, to effectively manage heterogeneous agents, we 177 
+
+employ vectorization strategies, develop specialized sub-models, and conduct inferences tailored 178 
+
+to each agent type. This approach ensures that the evaluation model can accommodate the diverse 179 
+
+characteristics inherent in heterogeneous agent spaces. 180 𝑇 !(𝑆 )       
+
+> 𝐸𝑀 #!(𝐶 ,𝑇 ,𝑃 )
+> MSC
+> 1
+> …
+> n
+> MSC
+> 1
+> …
+> 𝑛 !
+> MSC
+> 1
+> …
+> 𝑛 "
+> MPTC
+> 1
+> …
+> 𝑛 !
+> 𝑃 (𝑆 )
+> MPTC
+> 1
+> …
+> 𝑛 "
+> 𝑇 "(𝑆 )𝑃 (𝑆 )
+> 𝐸𝑀 #"(𝐶 ,𝑇 ,𝑃 )
+> S Type
+
+(a) Evaluation model learning. 𝑇 !(𝑆 )            
+
+> 𝑀 "=𝐸𝑀 %!(𝐶 ,𝑇 ,𝑃 )
+> SC
+> 1
+> …
+> n
+> SC
+> 1
+> …
+> 𝑛 !
+> SC
+> 1
+> …
+> 𝑛 "
+> PTC
+> 1
+> …
+> 𝑛 !
+> 𝑃 (𝑆 )
+> PTC
+> 1
+> …
+> 𝑛 "
+> 𝑇 "(𝑆 )𝑃 (𝑆 )
+> 𝑀 "=𝐸𝑀 %"(𝐶 ,𝑇 ,𝑃 )
+> S Type
+
+(b) Evaluation model inference. Linear SVR XGBoost     
+
+> LGBM CatBoost
+> RF
+> MLP
+> Base Learners
+> IIDE assessment Unbiasedness assessment
+> Model Selection
+> Error Bound
+> Effect Error Bound
+> ……
+
+(c) Evaluation model Selection. 
+
+Figure 2: Learn evaluation models from data. P is proxy metrics of evaluation subject, and Ti is tensorization function for subject type i.The proposed meta-learning algorithm for evaluation model is illustrated in Figure 2. Initially, 181 
+
+data are classified based on subject type. Subsequently, distinct vectorization methods are applied 182 
+
+corresponding to each subject type. Proxy metrics are then computed using predefined proxy 183 
+
+functions, facilitating the development of tailored evaluation models. For the assessment of unseen 184 
+
+subjects, the process involves computing proxy values, determining the subject type, selecting the 185 
+
+appropriate vectorization function, and inputting these into the corresponding evaluation model to 186 
+
+predict relevant metrics. The base learners for the evaluation models can vary and include algorithms 187 
+
+5such as linear models, Random Forests (RF), Multi-Layer Perceptrons (MLP), CatBoost, XGBoost, 188 
+
+and LightGBM. Following the development of these evaluation models, an upper bound is calculated 189 
+
+to check whether the models meet practical requirements and constraints. 190 
+
+## 5 Assessing assumptions 191 
+
+The IRIS assumption can be satisfied in data collection while the other assumptions may not be 192 
+
+satisfied in real world. While the IIDE assumption could be trivially met by employing a random 193 
+
+number generator as the outputs for IID outcome, this approach is devoid of practical utility, as it 194 
+
+fails to reflect any substantive patterns or domain-specific knowledge required for realistic evaluation 195 
+
+modeling. In order to assess the IIDE and unbiased assumptions, statistical analyses can be employed 196 
+
+to verify necessary conditions under those assumptions, providing credibility to the theorems derived 197 
+
+from this assumption for someone. It is important to note that these assessments do not conclusively 198 
+
+prove the assumptions. Instead, they serve as methods to potentially refute the assumptions under 199 
+
+specific conditions, rather than confirming its validity. 200 
+
+5.1 Assessing IIDE assumption 201 
+
+In highly controlled environments, such as CPU evaluation, the assumption can be rigorously satisfied 202 
+
+by independently and randomly selecting tested chips and configurations from an identical distribution. 203 
+
+However, in many open environments, the IIDE assumption is not directly testable on real-world data, 204 
+
+such as individual medicine, and social experiment. 205 
+
+First, the normalized means of error subsets should follow a common Gaussian distribution, as 206 
+
+implied by the central limit theorem. To test this, we randomly generate 30 subsets and apply the 207 
+
+D’Agostino-Pearson test to assess whether their normalized means adhere to a single Gaussian 208 
+
+distribution. Second, error distributions across different splits should be identical. We randomly 209 
+
+partition the errors into 30 subsets and use the Kolmogorov-Smirnov test to determine whether the 210 
+
+distributions across these subsets are statistically indistinguishable. 211 
+
+5.2 Assessing Unbiased assumption 212 
+
+Our effect error bounds requires unbiased evaluation models while sometime the evaluation model 213 
+
+may not be unbiased. To assess the unbiasedness of the evaluation model, we employ the following 214 
+
+statistical procedures: 1) Global Unbiasedness Assessment: We conduct a one-sample t-test on the 215 
+
+entire dataset to determine if the model’s errors have a mean of zero, indicating unbiasedness across 216 
+
+the universal set; 2) Subset Unbiasedness Assessment: We randomly select 30 subsets from the dataset 217 
+
+and perform one-sample t-tests on each to evaluate whether the mean errors within these subsets 218 
+
+deviate significantly from zero. This step examines the consistency of the model’s unbiasedness 219 
+
+across different data partitions. 220 
+
+## 6 Experiment 221 
+
+We performed experiments for evaluation model without condition and evaluation model with 222 
+
+condition respectively in 12 scenes of mini agent evaluation, including randomized experiment 223 
+
+prediction, scientific simulation, advertising, insurance, and quantum trade. The detailed evaluation 224 
+
+scenes (including experiment setting), assumption assessing, hyperparameter tuning, and evaluation 225 
+
+results are listed in the appendix D, E, F, G. 226 
+
+6.1 Evaluation model 227 
+
+To demonstrate the generalizability of our evaluation model in agent space, we consider 11 distinct 228 
+
+scenes. In these scenes, computational evaluation can be helpful to reduce experimental cost, shorten 229 
+
+simulation time, or enhance the efficiency of advertising and insurance sales. 230 
+
+Although subjects are independently, randomly, and identically sampled from the subject space, they 231 
+
+cannot be randomly deployed in real-world settings for direct measurement of benefit-related metrics 232 
+
+(such as mortality, rehabilitation time) due to experimental limitation. Instead, our evaluation system 233 
+
+defines the evaluation metric as the post-experiment metric on unseen test data with randomized 234 
+
+6treatment. The metrics capture the causal effect from subject to post-experiment outcome, as 235 
+
+established in Theorem 4. Empirical studies (Ai et al. [2022], Zhou et al. [2023], Zhou et al. [2024a], 236 
+
+Cheng et al. [2022], Gentzel et al. [2021]) have also demonstrated the correlation between the agents’ 237 
+
+predictive performance on randomized experimental data and its performance following randomized 238 
+
+deployment. Accordingly, we employ these predictive metrics to approximate randomized post-239 
+
+deployment performance, which can then be integrated into the AI decision via an appropriate utility 240 
+
+function. 241  
+
+> (a) Normalized negative RMSE when evaluation met-ric is ROC-AUC.
+> (b) Normalized negative RMSE when evaluation met-ric is ACC.
+> (c) Normalized negative RMSE when evaluation met-ric is RMSE.
+> (d) Normalized negative RMSE when evaluation met-ric is R2.
+
+Figure 3: Normalized empirical negative RMSE of evaluation models crossing scenes (6 scenes in figure 3a and figure 3b, 5 scenes in figure 3c and figure 3d. The confidence level of confidence interval bar is set as 95%. The baselines are holdout 100%, holdout 50%, holdout 10%, 5-fold cross-validation, 10-fold cross-validation, and bootstrap. We test different base learners (Linear, MLP, SVM/SVR, Random forest, XGBoost, LighGBM, and CatBoost) for heterogeneous subject space. Across the 11 scenes, we compare our evaluation model against 6 existing validation methods that do 242 
+
+not incorporate prior information from data. The normalized negative empirical RMSE is illustrated 243 
+
+in Figure 3. Our best evaluation model (Het-Linear) achieves error reductions of 94.7% to 99.0% 244 
+
+in RMSE, 81.7% to 95.5% in R2, 24.1% to 77.0% in ROC-AUC, and 39.2% to 89.5% in ACC 245 
+
+relative to the Holdout-100 validation method. This performance improvement is attributable to 246 
+
+the effective modeling of the relationships among the subject, its proxy metrics, and the evaluation 247 
+
+metrics. Notably, models that capture spurious correlations (MLP and SVR without hyperparameter 248 
+
+tuning) fail to reduce evaluation error. 249 
+
+6.2 Conditional evaluation model 250 
+
+In order to demonstrate the generalizbility of conditional evaluation model on the condition space 251 
+
+further, we introduce the trade backtesting task of A-share market in China to test the performance of 252 
+
+conditional evaluation model. In this scene, the computational evaluation can be helpful to exclude 253 
+
+the influence of hidden common cause between trade strategy and return of invest (RoI), and to 254 
+
+reduce the evaluation cost of trade strategy’s deployment. 255 
+
+7The evaluation subjects are trade models whose inputs are last day’s variables of the stock and output 256 
+
+are one of three decisions (buy 1 hand, sell 1 hand, and hold) at open this day. The metric is Return of 257 
+
+Invest of a subject in a time slot (10 days) in future. The condition is the stock’s time-series variables 258 
+
+in the last time slot. In this scene, we not only measure the subject and its metric, but also consider the 259 
+
+pre-trade variables (condition) of the subject in an attempt to reduce evaluation error further. We use 260 
+
+the unseen future data and performance of unseen subjects for conditional evaluation model testing. 261 
+
+Similarly, we build the evaluation systems by combining the real data and a float model whose input 262 
+
+is subject vector and last day’s variables of the stock, and output is a small float ratio of opening price. 263 
+
+We want to use it to simulate the exclusion of hidden common cause on the stock market by the data 264 
+
+without the randomized deployment of the subject. 265 
+
+Backtesting method RMSE of RoI Baseline (Last10Days) 3.067 HetEM (Linear) 2.163 HetEM (CatBoost) 0.527 Table 2: Performance of backtesting methods. We compare our conditional evaluation models with a baseline backtesting methods as shown in 266 
+
+the table 2. The reason we did not take the time cross-validation, k-fold cross-validation, and 267 
+
+combinatorial symmetry cross-validation (Bailey et al. [2013]) into baselines is that those methods 268 
+
+are train-valid fused rather than evaluation-targeted methods. When the validation part is separated, 269 
+
+they will give the same trivial constant prediction which can not utilize the evaluation conditions for 270 
+
+each time slot. 271 
+
+Our best conditional evaluation models (HetEM-CatBoost) for heterogeneous subjects reduced 89.4% 272 
+
+evaluation errors comparing with the baseline method. Even the linear conditional evaluation model 273 
+
+can reduce the 34.0% RMSE of estimated RoI. The average RMSE of estimated RoI in a future 274 
+
+time slot is about 0.527, which may be reduced further when adding more factors of stocks, and 275 
+
+designing novel neural network architectures. From the result of different evaluation methods, the 276 
+
+computational evaluation approach has higher potential to solve the backtest over-fitting problem 277 
+
+(Bailey et al. [2013]) in stock market. 278 
+
+6.3 Interpretability 279 
+
+In order to understand the contribution of subject vector, and proxy metric in the evaluation of our 280 
+
+best evaluation model respectively, we visualize the Shapley value (Shapley [1997], Lundberg and 281 
+
+Lee [2017]) for subject vector and proxy metric of all models as shown in figrue 4. The null set’s 282 
+
+value is set as the negative RMSE of holdout-100. From the visualization, the main contribution for 283 
+
+heterogeneous subject whose metrics are ROC-AUC and ACC, is from the relationship between the 284 
+
+proxy metric and true metric despite of an example in climate prediction scene. For heterogeneous 285 
+
+subjects whose metrics are RMSE and R2, the contribution of subject and proxy metric is almost equal 286 
+
+to each other. It reveals the effectiveness of the introduced proxy module and subject vectorization 287 
+
+module in our learning algorithm respectively. 288 
+
+In order to understand the contribution of the condition vector, subject vector, and proxy metrics 289 
+
+in the evaluation of our best conditional evaluation model, we use Shapley values to explain the 290 
+
+contribution of modules (Shapley [1997], Lundberg and Lee [2017]). The null set is set as the baseline 291 
+
+backtesting method. The contribution rate of condition vector, subject vector, and proxy metrics for 292 
+
+the HetEM(CatBoost) are 28.8% (0.729 uplift RMSE of RoI), 35.6% (0.905 uplift RMSE of RoI), 293 
+
+and 35.6% (0.906 uplift RMSE of RoI) respectively. It reveals the importance of evaluation condition 294 
+
+to reduce the evaluation errors in the A-share trade scenes of China. 295 
+
+6.4 Evaluation cost 296 
+
+The primary advantage of our computational evaluation method is its efficiency and low cost. Rather 297 
+
+than conducting an unbounded number of experiments for infinitely many subjects (e.g., AI models or 298 
+
+other agents), our approach only requires the collection of initial data, training an evaluation model, 299 
+
+and subsequently applying it in real-world scenes. 300 
+
+8(a) Shapley Value of Subject and Proxy when metric is ROC-AUC.  
+
+> (b) Shapley Value of Subject and Proxy when metric is ACC.
+> (c) Shapley Value of Subject and Proxy when metric is RMSE.
+> (d) Shapley Value of Subject and Proxy when metric is R2.
+
+Figure 4: Shapley value of subject vector and proxy metrics on 11 scenes (6 scenes in figure 4a and figure 4b, 5 scenes in figure 4c and figure 4d. The outcome of null set is set as the performance of holdout-100, and other outcomes are the negative RMSE of the linear evaluation models. The acceleration ratio of time achieved by our computational method ranges from 1,000 to 10,000,000 301 
+
+per evaluation subject in the 12 scenes as shown in appendix H. Although experimental and simulation-302 
+
+based evaluations can be accelerated via parallel processing (excluding additional evaluation costs), 303 
+
+the same parallelization strategies can be readily applied to computational evaluation approach. 304 
+
+## 7 Limitation and conclusion 305 
+
+Limitation. First, our theoretical guarantees rely on three assumptions, which may not hold for all 306 
+
+real-world scenes and agents. Second, while our method has been validated across multiple domains, 307 
+
+its generalization in extremely high-dimensional settings (such as LLM) require further investigation. 308 
+
+Third, lower error and tighter bound are required to apply evaluation models into real applications 309 
+
+with small sample. Four, scalability of evaluation models across scenes is another problem in future 310 
+
+study. Five, the post-experiment metric (such as mortality) of randomized deployed mini-agents with 311 
+
+high utility should be collected to increase the value of computational evaluation. 312 
+
+Conclusion. In this work, we propose a novel computational framework for the evaluation of mini-313 
+
+agents that rigorously derives upper bounds on generalized evaluation error and effect error, and 314 
+
+employs a meta-learning strategy to address heterogeneity in agent space. Our extensive experimental 315 
+
+results, conducted over 12 diverse scenes—including individual medicine, scientific simulation, social 316 
+
+experiments, business activity, and quantum trade—demonstrate significant error reductions (ranging 317 
+
+from 24.1% to 99.0%) and substantial acceleration (up to 10 7) compared to traditional evaluation 318 
+
+methods. These findings highlight the potential of our technical route to drastically reduce evaluation 319 
+
+costs for rapid model iteration. Future work will focus on more benefit-related metrics, multi-source 320 
+
+inputs, novel neural architectures for evaluation tasks and enhancing the validation of key assumption. 321 
+
+The upper bound table and paradigm of computational evaluation were given in the appendix I and J. 322 
+
+9References 323 
+
+Michael D Abramoff, Noelle Whitestone, Jennifer L Patnaik, Emily Rich, Munir Ahmed, Lutful 324 
+
+Husain, Mohammad Yeadul Hassan, Md Sajidul Huq Tanjil, Dena Weitzman, Tinglong Dai, 325 
+
+Brandie D Wagner, David H Cherwek, Nathan Congdon, and Khairul Islam. Autonomous artificial 326 
+
+intelligence increases real-world specialist clinic productivity in a cluster-randomized trial. NPJ 327 
+
+Digit. Med. , 6(1):184, October 2023. 328 
+
+Josh Abramson, Jonas Adler, Jack Dunger, Richard Evans, Tim Green, Alexander Pritzel, Olaf 329 
+
+Ronneberger, Lindsay Willmore, Andrew J Ballard, Joshua Bambrick, Sebastian W Bodenstein, 330 
+
+David A Evans, Chia-Chun Hung, Michael O’Neill, David Reiman, Kathryn Tunyasuvunakool, 331 
+
+Zachary Wu, Akvil ˙e Žemgulyt ˙e, Eirini Arvaniti, Charles Beattie, Ottavia Bertolli, Alex Bridg-332 
+
+land, Alexey Cherepanov, Miles Congreve, Alexander I Cowen-Rivers, Andrew Cowie, Michael 333 
+
+Figurnov, Fabian B Fuchs, Hannah Gladman, Rishub Jain, Yousuf A Khan, Caroline M R Low, 334 
+
+Kuba Perlin, Anna Potapenko, Pascal Savy, Sukhdeep Singh, Adrian Stecula, Ashok Thillaisun-335 
+
+daram, Catherine Tong, Sergei Yakneen, Ellen D Zhong, Michal Zielinski, Augustin Žídek, Victor 336 
+
+Bapst, Pushmeet Kohli, Max Jaderberg, Demis Hassabis, and John M Jumper. Accurate structure 337 
+
+prediction of biomolecular interactions with AlphaFold 3. Nature , 630(8016):493–500, June 2024. 338 
+
+Meng Ai, Biao Li, Heyang Gong, Qingwei Yu, Shengjie Xue, Yuan Zhang, Yunzhou Zhang, and 339 
+
+Peng Jiang. Lbcf: A large-scale budget-constrained causal forest algorithm. In Proceedings 340 
+
+of the ACM Web Conference 2022 , WWW ’22, page 2310–2319, New York, NY, USA, 2022. 341 
+
+Association for Computing Machinery. ISBN 9781450390965. doi: 10.1145/3485447.3512103. 342 
+
+URL https://doi.org/10.1145/3485447.3512103 .343 
+
+Ahmed Alaa and Mihaela Van Der Schaar. Validating causal inference models via influence functions. 344 
+
+In Kamalika Chaudhuri and Ruslan Salakhutdinov, editors, Proceedings of the 36th International 345 
+
+Conference on Machine Learning , volume 97 of Proceedings of Machine Learning Research , pages 346 
+
+191–201. PMLR, 09–15 Jun 2019. URL https://proceedings.mlr.press/v97/alaa19a. 347 
+
+html .348 
+
+Rabia Musheer Aziz, Mohammed Farhan Baluch, Sarthak Patel, and Abdul Hamid Ganie. LGBM: a 349 
+
+machine learning approach for ethereum fraud detection. Int. J. Inf. Technol. , 14(7):3321–3331, 350 
+
+December 2022. 351 
+
+David H Bailey, Jonathan M Borwein, Marcos Lopez de Prado, and Qiji Jim Zhu. The probability 352 
+
+of back-test over-fitting. SSRN Electron. J. , 2013. URL http://dx.doi.org/10.2139/ssrn. 353 
+
+2326253 .354 
+
+P Baldi, P Sadowski, and D Whiteson. Searching for exotic particles in high-energy physics with 355 
+
+deep learning. Nat. Commun. , 5(1):4308, July 2014. 356 
+
+Elias Bareinboim and Judea Pearl. Causal inference by surrogate experiments: z-identifiability. In 357 
+
+Proceedings of the Twenty-Eighth Conference on Uncertainty in Artificial Intelligence , UAI’12, 358 
+
+page 113–120, Arlington, Virginia, USA, 2012. AUAI Press. ISBN 9780974903989. 359 
+
+Keith Battocchi, Eleanor Dillon, Maggie Hei, Greg Lewis, Paul Oka, Miruna Oprescu, and Vasilis 360 
+
+Syrgkanis. EconML: A Python Package for ML-Based Heterogeneous Treatment Effects Estima-361 
+
+tion. https://github.com/py-why/EconML, 2019. Version 0.x. 362 
+
+Ioana Bica, Ahmed Alaa, and Mihaela Van Der Schaar. Time series deconfounder: Estimating 363 
+
+treatment effects over time in the presence of hidden confounders. In Hal Daumé III and Aarti 364 
+
+Singh, editors, Proceedings of the 37th International Conference on Machine Learning , volume 365 
+
+119 of Proceedings of Machine Learning Research , pages 884–895. PMLR, 13–18 Jul 2020. URL 366 
+
+https://proceedings.mlr.press/v119/bica20a.html .367 
+
+Patrick Blöbaum, Peter Götz, Kailash Budhathoki, Atalanti A. Mastakouri, and Dominik Janzing. 368 
+
+Dowhy-gcm: An extension of dowhy for causal inference in graphical causal models. Journal 369 
+
+of Machine Learning Research , 25(147):1–7, 2024. URL http://jmlr.org/papers/v25/ 370 
+
+22-1258.html .371 
+
+Jian Yang Bochen Lyu, Xuefeng Li. YLearn: A Python Package for Causal Inference. 372 
+
+https://github.com/DataCanvasIO/YLearn, 2022. Version 0.2.x. 373 
+
+10 Ben Bogin, Kejuan Yang, Shashank Gupta, Kyle Richardson, Erin Bransom, Peter Clark, Ashish 374 
+
+Sabharwal, and Tushar Khot. SUPER: Evaluating agents on setting up and executing tasks 375 
+
+from research repositories. In Yaser Al-Onaizan, Mohit Bansal, and Yun-Nung Chen, editors, 376 
+
+Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing ,377 
+
+pages 12622–12645, Miami, Florida, USA, November 2024. Association for Computational 378 
+
+Linguistics. doi: 10.18653/v1/2024.emnlp-main.702. URL https://aclanthology.org/2024. 379 
+
+emnlp-main.702/ .380 
+
+George E P Box, J Stuart Hunter, and William G Hunter. Statistics for experimenters . Wiley Series in 381 
+
+Probability and Statistics. Wiley-Blackwell, Chichester, England, 2 edition, May 2005. 382 
+
+Leo Breiman. Mach. Learn. , 45(1):5–32, 2001. 383 
+
+Byte-Dance. Understanding a/b testing products - a/b testing - volcano engine. https://www. 384 
+
+volcengine.com/docs/6287/65798 . Accessed: 2024-10-16. 385 
+
+Tianqi Chen and Carlos Guestrin. Xgboost: A scalable tree boosting system. In Proceedings of the 386 
+
+22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining , KDD 387 
+
+’16, page 785–794, New York, NY, USA, 2016. Association for Computing Machinery. ISBN 388 
+
+9781450342322. doi: 10.1145/2939672.2939785. URL https://doi.org/10.1145/2939672. 389 
+
+2939785 .390 
+
+Lu Cheng, Ruocheng Guo, Raha Moraffah, Paras Sheth, K. Selçuk Candan, and Huan Liu. Evaluation 391 
+
+methods and measures for causal learning algorithms. IEEE Transactions on Artificial Intelligence ,392 
+
+3(6):924–943, 2022. doi: 10.1109/TAI.2022.3150264. 393 
+
+DeepSeek-AI, Aixin Liu, Bei Feng, Bing Xue, Bingxuan Wang, Bochao Wu, Chengda Lu, Chenggang 394 
+
+Zhao, Chengqi Deng, Chenyu Zhang, Chong Ruan, Damai Dai, Daya Guo, Dejian Yang, Deli 395 
+
+Chen, Dongjie Ji, Erhang Li, Fangyun Lin, Fucong Dai, Fuli Luo, Guangbo Hao, Guanting Chen, 396 
+
+Guowei Li, H. Zhang, Han Bao, Hanwei Xu, Haocheng Wang, Haowei Zhang, Honghui Ding, 397 
+
+Huajian Xin, Huazuo Gao, Hui Li, Hui Qu, J. L. Cai, Jian Liang, Jianzhong Guo, Jiaqi Ni, Jiashi 398 
+
+Li, Jiawei Wang, Jin Chen, Jingchang Chen, Jingyang Yuan, Junjie Qiu, Junlong Li, Junxiao Song, 399 
+
+Kai Dong, Kai Hu, Kaige Gao, Kang Guan, Kexin Huang, Kuai Yu, Lean Wang, Lecong Zhang, 400 
+
+Lei Xu, Leyi Xia, Liang Zhao, Litong Wang, Liyue Zhang, Meng Li, Miaojun Wang, Mingchuan 401 
+
+Zhang, Minghua Zhang, Minghui Tang, Mingming Li, Ning Tian, Panpan Huang, Peiyi Wang, 402 
+
+Peng Zhang, Qiancheng Wang, Qihao Zhu, Qinyu Chen, Qiushi Du, R. J. Chen, R. L. Jin, Ruiqi 403 
+
+Ge, Ruisong Zhang, Ruizhe Pan, Runji Wang, Runxin Xu, Ruoyu Zhang, Ruyi Chen, S. S. Li, 404 
+
+Shanghao Lu, Shangyan Zhou, Shanhuang Chen, Shaoqing Wu, Shengfeng Ye, Shengfeng Ye, 405 
+
+Shirong Ma, Shiyu Wang, Shuang Zhou, Shuiping Yu, Shunfeng Zhou, Shuting Pan, T. Wang, 406 
+
+Tao Yun, Tian Pei, Tianyu Sun, W. L. Xiao, Wangding Zeng, Wanjia Zhao, Wei An, Wen Liu, 407 
+
+Wenfeng Liang, Wenjun Gao, Wenqin Yu, Wentao Zhang, X. Q. Li, Xiangyue Jin, Xianzu Wang, 408 
+
+Xiao Bi, Xiaodong Liu, Xiaohan Wang, Xiaojin Shen, Xiaokang Chen, Xiaokang Zhang, Xiaosha 409 
+
+Chen, Xiaotao Nie, Xiaowen Sun, Xiaoxiang Wang, Xin Cheng, Xin Liu, Xin Xie, Xingchao Liu, 410 
+
+Xingkai Yu, Xinnan Song, Xinxia Shan, Xinyi Zhou, Xinyu Yang, Xinyuan Li, Xuecheng Su, 411 
+
+Xuheng Lin, Y. K. Li, Y. Q. Wang, Y. X. Wei, Y. X. Zhu, Yang Zhang, Yanhong Xu, Yanhong 412 
+
+Xu, Yanping Huang, Yao Li, Yao Zhao, Yaofeng Sun, Yaohui Li, Yaohui Wang, Yi Yu, Yi Zheng, 413 
+
+Yichao Zhang, Yifan Shi, Yiliang Xiong, Ying He, Ying Tang, Yishi Piao, Yisong Wang, Yixuan 414 
+
+Tan, Yiyang Ma, Yiyuan Liu, Yongqiang Guo, Yu Wu, Yuan Ou, Yuchen Zhu, Yuduan Wang, Yue 415 
+
+Gong, Yuheng Zou, Yujia He, Yukun Zha, Yunfan Xiong, Yunxian Ma, Yuting Yan, Yuxiang Luo, 416 
+
+Yuxiang You, Yuxuan Liu, Yuyang Zhou, Z. F. Wu, Z. Z. Ren, Zehui Ren, Zhangli Sha, Zhe Fu, 417 
+
+Zhean Xu, Zhen Huang, Zhen Zhang, Zhenda Xie, Zhengyan Zhang, Zhewen Hao, Zhibin Gou, 418 
+
+Zhicheng Ma, Zhigang Yan, Zhihong Shao, Zhipeng Xu, Zhiyu Wu, Zhongyu Zhang, Zhuoshu 419 
+
+Li, Zihui Gu, Zijia Zhu, Zijun Liu, Zilin Li, Ziwei Xie, Ziyang Song, Ziyi Gao, and Zizheng Pan. 420 
+
+Deepseek-v3 technical report, 2025. URL https://arxiv.org/abs/2412.19437 .421 
+
+David K. Eng, Nishith B. Khandwala, Jin Long, Nancy R. Fefferman, Shailee V. Lala, Naomi A. 422 
+
+Strubel, Sarah S. Milla, Ross W. Filice, Susan E. Sharp, Alexander J. Towbin, Michael L. Fran-423 
+
+cavilla, Summer L. Kaplan, Kirsten Ecklund, Sanjay P. Prabhu, Brian J. Dillon, Brian M. Everist, 424 
+
+Christopher G. Anton, Mark E. Bittman, Rebecca Dennis, David B. Larson, Jayne M. Seekins, 425 
+
+Cicero T. Silva, Arash R. Zandieh, Curtis P. Langlotz, Matthew P. Lungren, and Safwan S. Halabi. 426 
+
+Artificial intelligence algorithm improves radiologist performance in skeletal age assessment: 427 
+
+11 A prospective multicenter randomized controlled trial. Radiology , 301(3):692–699, 2021. doi: 428 
+
+10.1148/radiol.2021204021. URL https://doi.org/10.1148/radiol.2021204021 . PMID: 429 
+
+34581608. 430 
+
+Zhihao Fan, Lai Wei, Jialong Tang, Wei Chen, Wang Siyuan, Zhongyu Wei, and Fei Huang. AI 431 
+
+hospital: Benchmarking large language models in a multi-agent medical interaction simulator. In 432 
+
+Owen Rambow, Leo Wanner, Marianna Apidianaki, Hend Al-Khalifa, Barbara Di Eugenio, and 433 
+
+Steven Schockaert, editors, Proceedings of the 31st International Conference on Computational 434 
+
+Linguistics , pages 10183–10213, Abu Dhabi, UAE, January 2025. Association for Computational 435 
+
+Linguistics. URL https://aclanthology.org/2025.coling-main.680/ .436 
+
+Sebastian Fischer. kin8nm. https://www.openml.org/search?type=data&status=active& 437 
+
+id=44980 , 2022. Accessed: March 13, 2025. 438 
+
+Sir Ronald Aylmer Fisher. The design of experiments . 1974. 439 
+
+Janos Galambos. Bonferroni inequalities. The Annals of Probability , 5(4):577–581, 1977. ISSN 440 
+
+00911798, 2168894X. URL http://www.jstor.org/stable/2243081 .441 
+
+Amanda M Gentzel, Purva Pruthi, and David Jensen. How and why to use experimental data to 442 
+
+evaluate methods for observational causal inference. In Marina Meila and Tong Zhang, edi-443 
+
+tors, Proceedings of the 38th International Conference on Machine Learning , volume 139 of 444 
+
+Proceedings of Machine Learning Research , pages 3660–3671. PMLR, 18–24 Jul 2021. URL 445 
+
+https://proceedings.mlr.press/v139/gentzel21a.html .446 
+
+Gokagglers. Sales conversion optimization. https://www.kaggle.com/datasets/loveall/ 447 
+
+clicks-conversion-tracking/data , 2018. Accessed: March 13, 2025. 448 
+
+Google. Causalimpact: An r package for causal inference using bayesian structural time-series 449 
+
+models. https://github.com/google/CausalImpact . Accessed: 2025-5-8. 450 
+
+Wassily Hoeffding. Probability inequalities for sums of bounded random variables. Journal of 451 
+
+the American Statistical Association , 58(301):13–30, 1963. ISSN 01621459, 1537274X. URL 452 
+
+http://www.jstor.org/stable/2282952 .453 
+
+Paul W. Holland. Statistics and causal inference. Journal of the American Statistical As-454 
+
+sociation , 81(396):945–960, 1986. doi: 10.1080/01621459.1986.10478354. URL https: 455 
+
+//www.tandfonline.com/doi/abs/10.1080/01621459.1986.10478354 .456 
+
+Noah Hollmann, Samuel Müller, Lennart Purucker, Arjun Krishnakumar, Max Körfer, Shi Bin Hoo, 457 
+
+Robin Tibor Schirrmeister, and Frank Hutter. Accurate predictions on small data with a tabular 458 
+
+foundation model. Nature , 637(8045):319–326, January 2025. 459 
+
+Qian Huang, Jian Vora, Percy Liang, and Jure Leskovec. Mlagentbench: evaluating language agents 460 
+
+on machine learning experimentation. In Proceedings of the 41st International Conference on 461 
+
+Machine Learning , ICML’24. JMLR.org, 2024. 462 
+
+Nguyen Huu Tiep. Lattice-physics (PWR fuel assembly neutronics simulation results). UCI Machine 463 
+
+Learning Repository, 2024. DOI: https://doi.org/10.24432/C5BK64. 464 
+
+Guido W Imbens and Donald B Rubin. Causal Inference for Statistics, Social, and Biomedical 465 
+
+Sciences . Cambridge University Press, Cambridge, England, May 2015. 466 
+
+inovex. Justcause. https://github.com/inovex/justcause . Accessed: 2025-5-8. 467 
+
+Amin Jaber, Jiji Zhang, and Elias Bareinboim. Causal identification under Markov equivalence: 468 
+
+Completeness results. In Kamalika Chaudhuri and Ruslan Salakhutdinov, editors, Proceedings of 469 
+
+the 36th International Conference on Machine Learning , volume 97 of Proceedings of Machine 470 
+
+Learning Research , pages 2981–2989. PMLR, 09–15 Jun 2019. URL https://proceedings. 471 
+
+mlr.press/v97/jaber19a.html .472 
+
+12 Jingru Jia, Zehua Yuan, Junhao Pan, Paul E. McNamara, and Deming Chen. Decision-making be-473 
+
+havior evaluation framework for llms under uncertain context. In A. Globerson, L. Mackey, 474 
+
+D. Belgrave, A. Fan, U. Paquet, J. Tomczak, and C. Zhang, editors, Advances in Neu-475 
+
+ral Information Processing Systems , volume 37, pages 113360–113382. Curran Associates, 476 
+
+Inc., 2024. URL https://proceedings.neurips.cc/paper_files/paper/2024/file/ 477 
+
+cda04d7ea67ea1376bf8c6962d8541e0-Paper-Conference.pdf .478 
+
+Fredrik Johansson, Uri Shalit, and David Sontag. Learning representations for counterfactual 479 
+
+inference. In Maria Florina Balcan and Kilian Q. Weinberger, editors, Proceedings of The 480 
+
+33rd International Conference on Machine Learning , volume 48 of Proceedings of Machine 481 
+
+Learning Research , pages 3020–3029, New York, New York, USA, 20–22 Jun 2016. PMLR. URL 482 
+
+https://proceedings.mlr.press/v48/johansson16.html .483 
+
+Fredrik D. Johansson, Uri Shalit, Nathan Kallus, and David Sontag. Generalization bounds and 484 
+
+representation learning for estimation of potential outcomes and causal effects. Journal of Machine 485 
+
+Learning Research , 23(166):1–50, 2022. URL http://jmlr.org/papers/v23/19-511.html .486 
+
+Diviyan Kalainathan, Olivier Goudet, and Ritik Dutta. Causal discovery toolbox: Uncovering 487 
+
+causal relationships in python. Journal of Machine Learning Research , 21(37):1–5, 2020. URL 488 
+
+http://jmlr.org/papers/v21/19-187.html .489 
+
+Markus Kalisch, Martin Mächler, Diego Colombo, Marloes H. Maathuis, and Peter Bühlmann. 490 
+
+Causal inference using graphical models with the r package pcalg. Journal of Statistical Software ,491 
+
+47(11):1–26, 2012. doi: 10.18637/jss.v047.i11. URL https://www.jstatsoft.org/index. 492 
+
+php/jss/article/view/v047i11 .493 
+
+Nathan Kallus. DeepMatch: Balancing deep covariate representations for causal inference using ad-494 
+
+versarial training. In Hal Daumé III and Aarti Singh, editors, Proceedings of the 37th International 495 
+
+Conference on Machine Learning , volume 119 of Proceedings of Machine Learning Research ,496 
+
+pages 5067–5077. PMLR, 13–18 Jul 2020. URL https://proceedings.mlr.press/v119/ 497 
+
+kallus20a.html .498 
+
+Roni W. Kobrosly. causal-curve: A python causal inference package to estimate causal dose-response 499 
+
+curves. Journal of Open Source Software , 5(52):2523, 2020. doi: 10.21105/joss.02523. URL 500 
+
+https://doi.org/10.21105/joss.02523 .501 
+
+Matthieu Komorowski, Leo A Celi, Omar Badawi, Anthony C Gordon, and A Aldo Faisal. The 502 
+
+artificial intelligence clinician learns optimal treatment strategies for sepsis in intensive care. Nat. 503 
+
+Med. , 24(11):1716–1720, November 2018. 504 
+
+Laird Kramer, Edgar Fuller, Charity Watson, Adam Castillo, Pablo Duran Oliva, and Geoff Potvin. 505 
+
+Establishing a new standard of care for calculus using trials with randomized student allocation. 506 
+
+Science , 381(6661):995–998, 2023. doi: 10.1126/science.ade9803. URL https://www.science. 507 
+
+org/doi/abs/10.1126/science.ade9803 .508 
+
+Arun Kumar. customer. https://www.kaggle.com/datasets/arun0309/customer , 2023. Ac-509 
+
+cessed: March 13, 2025. 510 
+
+Jaron J. R. Lee, Rohit Bhattacharya, Razieh Nabi, and Ilya Shpitser. Ananke: A python package for 511 
+
+causal inference using graphical models, 2023. URL https://arxiv.org/abs/2301.11477 .512 
+
+Ang Li and Judea Pearl. Bounds on causal effects and application to high dimensional data. Proceed-513 
+
+ings of the AAAI Conference on Artificial Intelligence , 36(5):5773–5780, Jun. 2022. doi: 10.1609/ 514 
+
+aaai.v36i5.20520. URL https://ojs.aaai.org/index.php/AAAI/article/view/20520 .515 
+
+Fengzi Li. Causal effect engine. https://github.com/L-F-Z/CEE . Accessed: 2025-5-8. 516 
+
+Jian’an Li, Wenguang Xia, Chao Zhan, Shouguo Liu, Zhifei Yin, Jiayue Wang, Yufei Chong, Chanjuan 517 
+
+Zheng, Xiaoming Fang, Wei Cheng, and Jan D Reinhardt. A telerehabilitation programme in 518 
+
+post-discharge COVID-19 patients (TERECO): a randomised controlled trial. Thorax , 77(7): 519 
+
+697–706, July 2022. 520 
+
+13 Sheng Li and Yun Fu. Matching on balanced nonlinear representations for treatment effects esti-521 
+
+mation. In I. Guyon, U. Von Luxburg, S. Bengio, H. Wallach, R. Fergus, S. Vishwanathan, and 522 
+
+R. Garnett, editors, Advances in Neural Information Processing Systems , volume 30. Curran As-523 
+
+sociates, Inc., 2017. URL https://proceedings.neurips.cc/paper_files/paper/2017/ 524 
+
+file/b2eeb7362ef83deff5c7813a67e14f0a-Paper.pdf .525 
+
+Christos Louizos, Uri Shalit, Joris M Mooij, David Sontag, Richard Zemel, and Max Welling. Causal 526 
+
+effect inference with deep latent-variable models. In I. Guyon, U. Von Luxburg, S. Bengio, H. Wal-527 
+
+lach, R. Fergus, S. Vishwanathan, and R. Garnett, editors, Advances in Neural Information Process-528 
+
+ing Systems , volume 30. Curran Associates, Inc., 2017. URL https://proceedings.neurips. 529 
+
+cc/paper_files/paper/2017/file/94b5bde6de888ddf9cde6748ad2523d1-Paper.pdf .530 
+
+D. D. Lucas, R. Klein, J. Tannahill, D. Ivanova, S. Brandon, D. Domyancic, and Y. Zhang. 531 
+
+Failure analysis of parameter-induced simulation crashes in climate models. Geoscientific 532 
+
+Model Development , 6(4):1157–1171, 2013. doi: 10.5194/gmd-6-1157-2013. URL https: 533 
+
+//gmd.copernicus.org/articles/6/1157/2013/ .534 
+
+Scott M Lundberg and Su-In Lee. A unified approach to interpreting model predictions. In 535 
+
+I. Guyon, U. Von Luxburg, S. Bengio, H. Wallach, R. Fergus, S. Vishwanathan, and R. Gar-536 
+
+nett, editors, Advances in Neural Information Processing Systems , volume 30. Curran Asso-537 
+
+ciates, Inc., 2017. URL https://proceedings.neurips.cc/paper_files/paper/2017/ 538 
+
+file/8a20a8621978632d76c43dfd28b67767-Paper.pdf .539 
+
+Nan Lv, Thomas Kannampallil, Lan Xiao, Corina R Ronneberg, Vikas Kumar, Nancy E Wittels, 540 
+
+Olusola A Ajilore, Joshua M Smyth, and Jun Ma. Association between user interaction and 541 
+
+treatment response of a voice-based coach for treating depression and anxiety: Secondary analysis 542 
+
+of a pilot randomized controlled trial. JMIR Hum Factors , 10:e49715, Nov 2023. ISSN 2292-9495. 543 
+
+doi: 10.2196/49715. URL https://humanfactors.jmir.org/2023/1/e49715 .544 
+
+A Luke MacNeill, Shelley Doucet, and Alison Luke. Effectiveness of a mental health chatbot for 545 
+
+people with chronic diseases: Randomized controlled trial. JMIR Form Res , 8:e50025, May 546 
+
+2024. ISSN 2561-326X. doi: 10.2196/50025. URL https://formative.jmir.org/2024/1/ 547 
+
+e50025 .548 
+
+David C Mohr, Stephen M Schueller, Kathryn Noth Tomasino, Susan M Kaiser, Nameyeh Alam, Chris 549 
+
+Karr, Jessica L Vergara, Elizabeth L Gray, Mary J Kwasny, and Emily G Lattie. Comparison of the 550 
+
+effects of coaching and receipt of app recommendations on depression, anxiety, and engagement 551 
+
+in the intellicare platform: Factorial randomized controlled trial. J Med Internet Res , 21(8): 552 
+
+e13609, Aug 2019. ISSN 1438-8871. doi: 10.2196/13609. URL http://www.jmir.org/2019/ 553 
+
+8/e13609/ .554 
+
+Lokesh Nagalapatti, Akshay Iyer, Abir De, and Sunita Sarawagi. Continuous treatment effect 555 
+
+estimation using gradient interpolation and kernel smoothing. Proceedings of the AAAI Conference 556 
+
+on Artificial Intelligence , 38(13):14397–14404, Mar. 2024. doi: 10.1609/aaai.v38i13.29353. URL 557 
+
+https://ojs.aaai.org/index.php/AAAI/article/view/29353 .558 
+
+Ashwin Nayak, Sharif Vakili, Kristen Nayak, Margaret Nikolov, Michelle Chiu, Philip Sosseinheimer, 559 
+
+Sarah Talamantes, Stefano Testa, Srikanth Palanisamy, Vinay Giri, and Kevin Schulman. Use 560 
+
+of voice-based conversational artificial intelligence for basal insulin prescription management 561 
+
+among patients with type 2 diabetes: A randomized clinical trial. JAMA Network Open , 6(12): 562 
+
+e2340232–e2340232, 12 2023. ISSN 2574-3805. doi: 10.1001/jamanetworkopen.2023.40232. 563 
+
+URL https://doi.org/10.1001/jamanetworkopen.2023.40232 .564 
+
+Lizhen Nie, Mao Ye, qiang liu, and Dan Nicolae. {VCN}et and functional targeted regularization 565 
+
+for learning causal effects of continuous treatments. In International Conference on Learning 566 
+
+Representations , 2021. URL https://openreview.net/forum?id=RmB-88r9dL .567 
+
+OpenAI, Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Florencia Leoni 568 
+
+Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, Shyamal Anadkat, Red Avila, Igor 569 
+
+Babuschkin, Suchir Balaji, Valerie Balcom, Paul Baltescu, Haiming Bao, Mohammad Bavarian, 570 
+
+Jeff Belgum, Irwan Bello, Jake Berdine, Gabriel Bernadett-Shapiro, Christopher Berner, Lenny 571 
+
+Bogdonoff, Oleg Boiko, Madelaine Boyd, Anna-Luisa Brakman, Greg Brockman, Tim Brooks, 572 
+
+14 Miles Brundage, Kevin Button, Trevor Cai, Rosie Campbell, Andrew Cann, Brittany Carey, Chelsea 573 
+
+Carlson, Rory Carmichael, Brooke Chan, Che Chang, Fotis Chantzis, Derek Chen, Sully Chen, 574 
+
+Ruby Chen, Jason Chen, Mark Chen, Ben Chess, Chester Cho, Casey Chu, Hyung Won Chung, 575 
+
+Dave Cummings, Jeremiah Currier, Yunxing Dai, Cory Decareaux, Thomas Degry, Noah Deutsch, 576 
+
+Damien Deville, Arka Dhar, David Dohan, Steve Dowling, Sheila Dunning, Adrien Ecoffet, Atty 577 
+
+Eleti, Tyna Eloundou, David Farhi, Liam Fedus, Niko Felix, Simón Posada Fishman, Juston Forte, 578 
+
+Isabella Fulford, Leo Gao, Elie Georges, Christian Gibson, Vik Goel, Tarun Gogineni, Gabriel 579 
+
+Goh, Rapha Gontijo-Lopes, Jonathan Gordon, Morgan Grafstein, Scott Gray, Ryan Greene, Joshua 580 
+
+Gross, Shixiang Shane Gu, Yufei Guo, Chris Hallacy, Jesse Han, Jeff Harris, Yuchen He, Mike 581 
+
+Heaton, Johannes Heidecke, Chris Hesse, Alan Hickey, Wade Hickey, Peter Hoeschele, Brandon 582 
+
+Houghton, Kenny Hsu, Shengli Hu, Xin Hu, Joost Huizinga, Shantanu Jain, Shawn Jain, Joanne 583 
+
+Jang, Angela Jiang, Roger Jiang, Haozhun Jin, Denny Jin, Shino Jomoto, Billie Jonn, Heewoo 584 
+
+Jun, Tomer Kaftan, Łukasz Kaiser, Ali Kamali, Ingmar Kanitscheider, Nitish Shirish Keskar, 585 
+
+Tabarak Khan, Logan Kilpatrick, Jong Wook Kim, Christina Kim, Yongjik Kim, Jan Hendrik 586 
+
+Kirchner, Jamie Kiros, Matt Knight, Daniel Kokotajlo, Łukasz Kondraciuk, Andrew Kondrich, 587 
+
+Aris Konstantinidis, Kyle Kosic, Gretchen Krueger, Vishal Kuo, Michael Lampe, Ikai Lan, Teddy 588 
+
+Lee, Jan Leike, Jade Leung, Daniel Levy, Chak Ming Li, Rachel Lim, Molly Lin, Stephanie 589 
+
+Lin, Mateusz Litwin, Theresa Lopez, Ryan Lowe, Patricia Lue, Anna Makanju, Kim Malfacini, 590 
+
+Sam Manning, Todor Markov, Yaniv Markovski, Bianca Martin, Katie Mayer, Andrew Mayne, 591 
+
+Bob McGrew, Scott Mayer McKinney, Christine McLeavey, Paul McMillan, Jake McNeil, David 592 
+
+Medina, Aalok Mehta, Jacob Menick, Luke Metz, Andrey Mishchenko, Pamela Mishkin, Vinnie 593 
+
+Monaco, Evan Morikawa, Daniel Mossing, Tong Mu, Mira Murati, Oleg Murk, David Mély, 594 
+
+Ashvin Nair, Reiichiro Nakano, Rajeev Nayak, Arvind Neelakantan, Richard Ngo, Hyeonwoo 595 
+
+Noh, Long Ouyang, Cullen O’Keefe, Jakub Pachocki, Alex Paino, Joe Palermo, Ashley Pantuliano, 596 
+
+Giambattista Parascandolo, Joel Parish, Emy Parparita, Alex Passos, Mikhail Pavlov, Andrew Peng, 597 
+
+Adam Perelman, Filipe de Avila Belbute Peres, Michael Petrov, Henrique Ponde de Oliveira Pinto, 598 
+
+Michael, Pokorny, Michelle Pokrass, Vitchyr H. Pong, Tolly Powell, Alethea Power, Boris Power, 599 
+
+Elizabeth Proehl, Raul Puri, Alec Radford, Jack Rae, Aditya Ramesh, Cameron Raymond, Francis 600 
+
+Real, Kendra Rimbach, Carl Ross, Bob Rotsted, Henri Roussez, Nick Ryder, Mario Saltarelli, Ted 601 
+
+Sanders, Shibani Santurkar, Girish Sastry, Heather Schmidt, David Schnurr, John Schulman, Daniel 602 
+
+Selsam, Kyla Sheppard, Toki Sherbakov, Jessica Shieh, Sarah Shoker, Pranav Shyam, Szymon 603 
+
+Sidor, Eric Sigler, Maddie Simens, Jordan Sitkin, Katarina Slama, Ian Sohl, Benjamin Sokolowsky, 604 
+
+Yang Song, Natalie Staudacher, Felipe Petroski Such, Natalie Summers, Ilya Sutskever, Jie 605 
+
+Tang, Nikolas Tezak, Madeleine B. Thompson, Phil Tillet, Amin Tootoonchian, Elizabeth Tseng, 606 
+
+Preston Tuggle, Nick Turley, Jerry Tworek, Juan Felipe Cerón Uribe, Andrea Vallone, Arun 607 
+
+Vijayvergiya, Chelsea Voss, Carroll Wainwright, Justin Jay Wang, Alvin Wang, Ben Wang, 608 
+
+Jonathan Ward, Jason Wei, CJ Weinmann, Akila Welihinda, Peter Welinder, Jiayi Weng, Lilian 609 
+
+Weng, Matt Wiethoff, Dave Willner, Clemens Winter, Samuel Wolrich, Hannah Wong, Lauren 610 
+
+Workman, Sherwin Wu, Jeff Wu, Michael Wu, Kai Xiao, Tao Xu, Sarah Yoo, Kevin Yu, Qiming 611 
+
+Yuan, Wojciech Zaremba, Rowan Zellers, Chong Zhang, Marvin Zhang, Shengjia Zhao, Tianhao 612 
+
+Zheng, Juntang Zhuang, William Zhuk, and Barret Zoph. Gpt-4 technical report, 2024. URL 613 
+
+https://arxiv.org/abs/2303.08774 .614 
+
+paras2612. Causebox-a-causal-inference-toolbox-for-benchmarkingtreatment-effect-estimators-with-615 
+
+machine-learning-methods. https://github.com/paras2612/CauseBox . Accessed: 2025-5-616 
+
+8. 617 
+
+Judea Pearl. Causal diagrams for empirical research. Biometrika , 82(4):669–688, 1995. ISSN 618 
+
+00063444, 14643510. URL http://www.jstor.org/stable/2337329 .619 
+
+John D. Piette, Sean Newman, Sarah L. Krein, Nicolle Marinec, Jenny Chen, David A. Williams, 620 
+
+Sara N. Edmond, Mary Driscoll, Kathryn M. LaChappelle, Robert D. Kerns, Marianna Maly, 621 
+
+H. Myra Kim, Karen B. Farris, Diana M. Higgins, Eugenia Buta, and Alicia A. Heapy. Patient-622 
+
+centered pain care using artificial intelligence and mobile health tools: A randomized comparative 623 
+
+effectiveness trial. JAMA Internal Medicine , 182(9):975–983, 09 2022. ISSN 2168-6106. doi: 624 
+
+10.1001/jamainternmed.2022.3178. URL https://doi.org/10.1001/jamainternmed.2022. 625 
+
+3178 .626 
+
+Andrea Polonioli, Riccardo Ghioni, Ciro Greco, Prathm Juneja, Jacopo Tagliabue, David Watson, and 627 
+
+Luciano Floridi. The ethics of online controlled experiments (A/B testing). Minds Mach. (Dordr.) ,628 
+
+33(4):667–693, September 2023. 629 
+
+15 Liudmila Prokhorenkova, Gleb Gusev, Aleksandr Vorobev, Anna Veronika Dorogush, and 630 
+
+Andrey Gulin. Catboost: unbiased boosting with categorical features. In S. Ben-631 
+
+gio, H. Wallach, H. Larochelle, K. Grauman, N. Cesa-Bianchi, and R. Garnett, edi-632 
+
+tors, Advances in Neural Information Processing Systems , volume 31. Curran Associates, 633 
+
+Inc., 2018. URL https://proceedings.neurips.cc/paper_files/paper/2018/file/ 634 
+
+14491b756b3a51daac41c24863285549-Paper.pdf .635 
+
+quantumblacklabs. Causalnex: A toolkit for causal reasoning with bayesian networks. https: 636 
+
+//github.com/quantumblacklabs/causalnex . Accessed: 2025-5-8. 637 
+
+Nicholas Radcliffe. Using control groups to target on predicted lift: Building and assessing uplift 638 
+
+model. 2007. URL https://api.semanticscholar.org/CorpusID:22535399 .639 
+
+Joseph D Ramsey, Kun Zhang, Madelyn Glymour, Ruben Sanchez Romero, Biwei Huang, Imme 640 
+
+Ebert-Uphoff, Savini Samarasinghe, Elizabeth A Barnes, and Clark Glymour. Tetrad—a toolbox 641 
+
+for causal discovery. 642 
+
+Hans Reichenbach. The direction of time . Dover Books on Physics. Dover Publications, Mineola, 643 
+
+NY, July 1999. 644 
+
+PAUL R. ROSENBAUM and DONALD B. RUBIN. The central role of the propensity score in 645 
+
+observational studies for causal effects. Biometrika , 70(1):41–55, 04 1983. ISSN 0006-3444. doi: 646 
+
+10.1093/biomet/70.1.41. URL https://doi.org/10.1093/biomet/70.1.41 .647 
+
+Yuta Saito and Shota Yasui. Counterfactual cross-validation: Stable model selection procedure for 648 
+
+causal inference models. In Hal Daumé III and Aarti Singh, editors, Proceedings of the 37th 649 
+
+International Conference on Machine Learning , volume 119 of Proceedings of Machine Learning 650 
+
+Research , pages 8398–8407. PMLR, 13–18 Jul 2020. URL https://proceedings.mlr.press/ 651 
+
+v119/saito20a.html .652 
+
+B Schäfer, C Grabow, S Auer, J Kurths, D Witthaut, and M Timme. Taming instabilities in power 653 
+
+grid networks by decentralized control. Eur. Phys. J. Spec. Top. , 225(3):569–582, May 2016. 654 
+
+Patrick Schwab, Lorenz Linhardt, Stefan Bauer, Joachim M. Buhmann, and Walter Karlen. Learning 655 
+
+counterfactual representations for estimating individual dose-response curves. Proceedings of 656 
+
+the AAAI Conference on Artificial Intelligence , 34(04):5612–5619, Apr. 2020. doi: 10.1609/aaai. 657 
+
+v34i04.6014. URL https://ojs.aaai.org/index.php/AAAI/article/view/6014 .658 
+
+Bernhard Schölkopf, Francesco Locatello, Stefan Bauer, Nan Rosemary Ke, Nal Kalchbrenner, 659 
+
+Anirudh Goyal, and Yoshua Bengio. Toward causal representation learning. Proceedings of the 660 
+
+IEEE , 109(5):612–634, May 2021. ISSN 1558-2256. doi: 10.1109/JPROC.2021.3058954. 661 
+
+Marco Scutari. Learning bayesian networks with the bnlearn r package. Journal of Statistical 662 
+
+Software , 35(3):1–22, 2010. doi: 10.18637/jss.v035.i03. URL https://www.jstatsoft.org/ 663 
+
+index.php/jss/article/view/v035i03 .664 
+
+Uri Shalit, Fredrik D. Johansson, and David Sontag. Estimating individual treatment effect: gen-665 
+
+eralization bounds and algorithms. In Doina Precup and Yee Whye Teh, editors, Proceed-666 
+
+ings of the 34th International Conference on Machine Learning , volume 70 of Proceedings 667 
+
+of Machine Learning Research , pages 3076–3085. PMLR, 06–11 Aug 2017. URL https: 668 
+
+//proceedings.mlr.press/v70/shalit17a.html .669 
+
+L. Shapley. 7. A Value for n-Person Games. Contributions to the Theory of Games II (1953) 307-670 
+
+317. , pages 69–79. Princeton University Press, Princeton, 1997. ISBN 9781400829156. doi: 671 
+
+doi:10.1515/9781400829156-012. URL https://doi.org/10.1515/9781400829156-012 .672 
+
+Amit Sharma and Emre Kiciman. Dowhy: An end-to-end library for causal inference. arXiv preprint 673 
+
+arXiv:2011.04216 , 2020. 674 
+
+Claudia Shi, David Blei, and Victor Veitch. Adapting neural networks for the estimation of treatment 675 
+
+effects. In H. Wallach, H. Larochelle, A. Beygelzimer, F. d'Alché-Buc, E. Fox, and R. Gar-676 
+
+nett, editors, Advances in Neural Information Processing Systems , volume 32. Curran Asso-677 
+
+ciates, Inc., 2019. URL https://proceedings.neurips.cc/paper_files/paper/2019/ 678 
+
+file/8fb5f8be2aa9d6c64a04e3ab9f63feee-Paper.pdf .679 
+
+16 Yishai Shimoni, Chen Yanover, Ehud Karavani, and Yaara Goldschmnidt. Benchmarking framework 680 
+
+for performance-evaluation of causal inference analysis, 2018. URL https://arxiv.org/abs/ 681 
+
+1802.05046 .682 
+
+Ilya Shpitser and Judea Pearl. Identification of joint interventional distributions in recursive semi-683 
+
+markovian causal models. In Proceedings of the 21st National Conference on Artificial Intelligence 684 
+
+- Volume 2 , AAAI’06, page 1219–1226. AAAI Press, 2006. ISBN 9781577352815. 685 
+
+Benjamin Speich, Belinda von Niederhäusern, Nadine Schur, Lars G Hemkens, Thomas Fürst, Neera 686 
+
+Bhatnagar, Reem Alturki, Arnav Agarwal, Benjamin Kasenda, Christiane Pauli-Magnus, Matthias 687 
+
+Schwenkglenks, and Matthias Briel. Systematic review on costs and resource use of randomized 688 
+
+clinical trials shows a lack of transparent and comprehensive data. J. Clin. Epidemiol. , 96:1–11, 689 
+
+April 2018. 690 
+
+Peter Spirtes and Clark Glymour. An algorithm for fast recovery of sparse causal graphs. Social 691 
+
+Science Computer Review , 9(1):62–72, 1991. doi: 10.1177/089443939100900106. URL https: 692 
+
+//doi.org/10.1177/089443939100900106 .693 
+
+Jerzy Splawa-Neyman, D. M. Dabrowska, and T. P. Speed. On the application of probability theory 694 
+
+to agricultural experiments. essay on principles. section 9. Statistical Science , 5(4):465–472, 1990. 695 
+
+ISSN 08834237, 21688745. URL http://www.jstor.org/stable/2245382 .696 
+
+Johannes Textor, Juliane Hardt, and Sven Knüppel. DAGitty. Epidemiology , 22(5):745, September 697 
+
+2011. 698 
+
+Jin Tian and Judea Pearl. A general identification condition for causal effects. In Eighteenth 699 
+
+National Conference on Artificial Intelligence , page 567–573, USA, 2002. American Association 700 
+
+for Artificial Intelligence. ISBN 0262511290. 701 
+
+Santtu Tikka and Juha Karvanen. Identifying causal effects with the r package causaleffect. Journal 702 
+
+of Statistical Software , 76(12):1–30, 2017. doi: 10.18637/jss.v076.i12. URL https://www. 703 
+
+jstatsoft.org/index.php/jss/article/view/v076i12 .704 
+
+Santtu Tikka, Antti Hyttinen, and Juha Karvanen. Causal effect identification from multiple in-705 
+
+complete data sources: A general search-based approach. Journal of Statistical Software , 99 706 
+
+(5):1–40, 2021. doi: 10.18637/jss.v099.i05. URL https://www.jstatsoft.org/index.php/ 707 
+
+jss/article/view/v099i05 .708 
+
+L. G. Valiant. A theory of the learnable. In Proceedings of the Sixteenth Annual ACM Symposium 709 
+
+on Theory of Computing , STOC ’84, page 436–445, New York, NY, USA, 1984. Association 710 
+
+for Computing Machinery. ISBN 0897911334. doi: 10.1145/800057.808710. URL https: 711 
+
+//doi.org/10.1145/800057.808710 .712 
+
+Xin Wang, Shengfei Lyu, Xingyu Wu, Tianhao Wu, and Huanhuan Chen. General-713 
+
+ization bounds for estimating causal effects of continuous treatments. In S. Koyejo, 714 
+
+S. Mohamed, A. Agarwal, D. Belgrave, K. Cho, and A. Oh, editors, Advances in Neu-715 
+
+ral Information Processing Systems , volume 35, pages 8605–8617. Curran Associates, 716 
+
+Inc., 2022. URL https://proceedings.neurips.cc/paper_files/paper/2022/file/ 717 
+
+390bb66a088d37f62ee9fb779c5953c2-Paper-Conference.pdf .718 
+
+Yixin Wang and David M. Blei and. The blessings of multiple causes. Journal of the American 719 
+
+Statistical Association , 114(528):1574–1596, 2019. doi: 10.1080/01621459.2019.1686987. URL 720 
+
+https://doi.org/10.1080/01621459.2019.1686987 .721 
+
+F Perry Wilson, Melissa Martin, Yu Yamamoto, Caitlin Partridge, Erica Moreira, Tanima Arora, 722 
+
+Aditya Biswas, Harold Feldman, Amit X Garg, Jason H Greenberg, Monique Hinchcliff, Stephen 723 
+
+Latham, Fan Li, Haiqun Lin, Sherry G Mansour, Dennis G Moledina, Paul M Palevsky, Chirag R 724 
+
+Parikh, Michael Simonov, Jeffrey Testani, and Ugochukwu Ugwuowo. Electronic health record 725 
+
+alerts for acute kidney injury: multicenter, randomized clinical trial. BMJ , 372:m4786, January 726 
+
+2021. 727 
+
+17 F Perry Wilson, Yu Yamamoto, Melissa Martin, Claudia Coronel-Moreno, Fan Li, Chao Cheng, Abi-728 
+
+net Aklilu, Lama Ghazi, Jason H Greenberg, Stephen Latham, Hannah Melchinger, Sherry G Man-729 
+
+sour, Dennis G Moledina, Chirag R Parikh, Caitlin Partridge, Jeffrey M Testani, and Ugochukwu 730 
+
+Ugwuowo. A randomized clinical trial assessing the effect of automated medication-targeted alerts 731 
+
+on acute kidney injury outcomes. Nat. Commun. , 14(1):2826, May 2023. 732 
+
+Kevin Xia, Kai-Zhan Lee, Yoshua Bengio, and Elias Bareinboim. The causal-neural connection: 733 
+
+Expressiveness, learnability, and inference. In M. Ranzato, A. Beygelzimer, Y. Dauphin, P.S. Liang, 734 
+
+and J. Wortman Vaughan, editors, Advances in Neural Information Processing Systems , volume 34, 735 
+
+pages 10823–10836. Curran Associates, Inc., 2021. URL https://proceedings.neurips.cc/ 736 
+
+paper_files/paper/2021/file/5989add1703e4b0480f75e2390739f34-Paper.pdf .737 
+
+Hedong YAN. Awesome causality identification. https://github.com/hedongyan/awesome-causality-738 
+
+identification, 2025. Version 0.x. 739 
+
+Liuyi Yao, Sheng Li, Yaliang Li, Mengdi Huai, Jing Gao, and Aidong Zhang. Representation learning 740 
+
+for treatment effect estimation from observational data. In S. Bengio, H. Wallach, H. Larochelle, 741 
+
+K. Grauman, N. Cesa-Bianchi, and R. Garnett, editors, Advances in Neural Information Processing 742 
+
+Systems , volume 31. Curran Associates, Inc., 2018. URL https://proceedings.neurips.cc/ 743 
+
+paper_files/paper/2018/file/a50abba8132a77191791390c3eb19fe7-Paper.pdf .744 
+
+Jinsung Yoon, James Jordon, and Mihaela van der Schaar. GANITE: Estimation of individualized 745 
+
+treatment effects using generative adversarial nets. In International Conference on Learning 746 
+
+Representations , 2018. URL https://openreview.net/forum?id=ByKWUeWA-.747 
+
+Jianfeng Zhan, Lei Wang, Wanling Gao, Hongxiao Li, Chenxi Wang, Yunyou Huang, Yatao Li, 748 
+
+Zhengxin Yang, Guoxin Kang, Chunjie Luo, Hainan Ye, Shaopeng Dai, and Zhifei Zhang. 749 
+
+Evaluatology: The science and engineering of evaluation. BenchCouncil Transactions on 750 
+
+Benchmarks, Standards and Evaluations , 4(1):100162, 2024. ISSN 2772-4859. doi: https: 751 
+
+//doi.org/10.1016/j.tbench.2024.100162. URL https://www.sciencedirect.com/science/ 752 
+
+article/pii/S2772485924000140 .753 
+
+Keli Zhang, Shengyu Zhu, Marcus Kalander, Ignavier Ng, Junjian Ye, Zhitang Chen, and Lujia Pan. 754 
+
+gcastle: A python toolbox for causal discovery, 2021. 755 
+
+Kun Zhang and Aapo Hyvärinen. On the identifiability of the post-nonlinear causal model. In 756 
+
+Proceedings of the Twenty-Fifth Conference on Uncertainty in Artificial Intelligence , UAI ’09, 757 
+
+page 647–655, Arlington, Virginia, USA, 2009. AUAI Press. ISBN 9780974903958. 758 
+
+Yang Zhao and Qing Liu. Causal ml: Python package for causal inference machine learning. 759 
+
+SoftwareX , 21:101294, 2023. ISSN 2352-7110. doi: https://doi.org/10.1016/j.softx.2022.101294. 760 
+
+URL https://www.sciencedirect.com/science/article/pii/S2352711022002126 .761 
+
+Yujia Zheng, Biwei Huang, Wei Chen, Joseph Ramsey, Mingming Gong, Ruichu Cai, Shohei Shimizu, 762 
+
+Peter Spirtes, and Kun Zhang. Causal-learn: Causal discovery in python. Journal of Machine 763 
+
+Learning Research , 25(60):1–8, 2024. 764 
+
+Hao Zhou, Shaoming Li, Guibin Jiang, Jiaqi Zheng, and Dong Wang. Direct heterogeneous causal 765 
+
+learning for resource allocation problems in marketing. Proceedings of the AAAI Conference 766 
+
+on Artificial Intelligence , 37(4):5446–5454, Jun. 2023. doi: 10.1609/aaai.v37i4.25677. URL 767 
+
+https://ojs.aaai.org/index.php/AAAI/article/view/25677 .768 
+
+Hao Zhou, Rongxiao Huang, Shaoming Li, Guibin Jiang, Jiaqi Zheng, Bing Cheng, and Wei Lin. 769 
+
+Decision focused causal learning for direct counterfactual marketing optimization. In Proceedings 770 
+
+of the 30th ACM SIGKDD Conference on Knowledge Discovery and Data Mining , KDD ’24, 771 
+
+page 6368–6379, New York, NY, USA, 2024a. Association for Computing Machinery. ISBN 772 
+
+9798400704901. doi: 10.1145/3637528.3672353. URL https://doi.org/10.1145/3637528. 773 
+
+3672353 .774 
+
+Wenru Zhou, Miranda Kroehl, Maxene Meier, and Alexander Kaizer. An automated platform 775 
+
+trial framework for a/b testing. Contemporary Clinical Trials Communications , 42:101388, 776 
+
+2024b. ISSN 2451-8654. doi: https://doi.org/10.1016/j.conctc.2024.101388. URL https: 777 
+
+//www.sciencedirect.com/science/article/pii/S2451865424001352 .778 
+
+18 Minqin Zhu, Anpeng Wu, Haoxuan Li, Ruoxuan Xiong, Bo Li, Xiaoqing Yang, Xuan Qin, Peng 779 
+
+Zhen, Jiecheng Guo, Fei Wu, and Kun Kuang. Contrastive balancing representation learning 780 
+
+for heterogeneous dose-response curves estimation. Proceedings of the AAAI Conference on 781 
+
+Artificial Intelligence , 38(15):17175–17183, Mar. 2024. doi: 10.1609/aaai.v38i15.29663. URL 782 
+
+https://ojs.aaai.org/index.php/AAAI/article/view/29663 .783 
+
+## A Investigation of individual medical AI in randomized controlled trial 784 
+
+From January 2022 and January 2023, there are total 380 completed phase III interventional trials 785 
+
+(adult) with results and study documents on ClinicalTrials.gov. The statistical estimates can be 786 
+
+categorized into six classes: geometric mean, mean, square mean, median, rank, and percentage, 787 
+
+as shown in the figure 5. It is important to note that these estimates can not reflect the probability 788 
+
+of a group or an individual benefiting from the treatment. For example, for treatment effect with 789 
+
+Gaussian distribution, the mean difference can still be significant even the treatment is harmful for 790 
+
+49% and benefited for 51% if n is large enough. The randomized controlled trails can not be applied 791 
+
+to development of individual treatment AI directly. 792 
+
+Figure 5: Estimates percentage of completed phase III interventional trials (adult) with results and study documents on https://clinicaltrials.gov. Another query was conducted on ClinicalTrials.gov using the keyword “Artificial Intelligence” under 793 
+
+the Condition or Disease field. Filters were applied to select only completed , interventional studies ,794 
+
+with posted results , and available statistical analysis plans , with no restriction on completion 795 
+
+date at January of 2025. 796 
+
+Only a total of 13 studies were retrieved. After manually excluding single-arm trials (i.e., studies 797 
+
+without control groups or randomized design), 7 randomized clinical trials (RCTs) (Nayak et al. 798 
+
+[2023], Abramoff et al. [2023], Lv et al. [2023], MacNeill et al. [2024], Eng et al. [2021], Piette et al. 799 
+
+[2022], Mohr et al. [2019]) remained that investigated the clinical efficacy of AI-based healthcare 800 
+
+interventions. 801 
+
+Among these, only 3 trials reported statistically significant primary outcomes, including: 802 
+
+• An AI-powered blood glucose reminder system (Nayak et al. [2023]), 803 
+
+• The Wysa AI chatbot for mental health support (MacNeill et al. [2024]), 804 
+
+• An AI system for bone age prediction (Eng et al. [2021]). 805 
+
+19 These results highlight the challenge of translating AI agent systems into demonstrably effective 806 
+
+clinical interventions , emphasizing the need for rigorous evaluation, robust study design, and careful 807 
+
+integration into complex healthcare workflows. 808 
+
+## B Investigation of agent evaluation 809 
+
+B.1 Existed agent evaluation works 810 
+
+The theoretical foundations of agent evaluation, particularly with causal guarantees, remain underde-811 
+
+veloped. To date, we are not aware of any systematic theory that rigorously supports causal inference 812 
+
+for agent performance evaluation. While several benchmarking efforts exist, they primarily focus on 813 
+
+performance measurement rather than causal understanding. MLAgentBench (Huang et al. [2024]) 814 
+
+uses 13 tasks (including Canonical Tasks, Classic Kaggle, Kaggle Challenges, Recent Research, and 815 
+
+Code Improvement) to evaluate the performance of large language model. SUPER Benchmark (Bogin 816 
+
+et al. [2024]) is used to evaluate the agents’ ability to reproduce results from research repositories. AI 817 
+
+Clinician (Komorowski et al. [2018]) and AI Hospital (Fan et al. [2025]) use synthetic data to test 818 
+
+the performance of clinical agents. Jia et al. [2024] explores the LLMs’ output decisions’ alignment 819 
+
+with human norms and ethical expectations. However, a common limitation across these works is 820 
+
+the lack of control over unobserved confounders, such as participants’ pre-experiment training or 821 
+
+researchers’ design biases. These hidden common causes may simultaneously influence both the 822 
+
+deployed agent and its measured performance in real-world settings. As a result, these benchmarks 823 
+
+cannot identify the (conditional) causal effect of an agent on real-world outcomes—such as clinical 824 
+
+mortality—limiting their utility for causal evaluation. 825 
+
+B.2 Causal mini agent evaluation and potential outcome 826 
+
+Despite targeting different problem settings, the causal computational evaluation framework and 827 
+
+the potential outcomes framework (Imbens and Rubin [2015]) for agent evaluation share one key 828 
+
+connection and exhibit two fundamental differences. The connection lies in the fact that the uncon-829 
+
+foundedness (ignorability/exchangeability) assumption in potential outcomes can be directly implied 830 
+
+by the IRIS assumption. Furthermore, IRIS can be satisfied in practice by deploying mini agents in a 831 
+
+randomized manner. The first major difference is that the Stable Unit Treatment Value Assumption 832 
+
+(no interference and consistency)—a common requirement in potential outcome formulations—is 833 
+
+not necessary under our framework, as long as the IIDE (Independent and Identically Distributed 834 
+
+Evaluations) assumption holds. The second key difference is that the positivity assumption, which 835 
+
+typically requires a non-zero probability of receiving each treatment, is also not required. Never-836 
+
+theless, the causal effect of mini agents on evaluation metrics can still be bounded in the limit, as 837 
+
+formally established in Theorem 4. These distinctions suggest that the proposed framework can be 838 
+
+viewed as a generalized and more flexible extension of the potential outcomes framework, tailored 839 
+
+specifically for the causal evaluation of mini agent behaviors. 840 
+
+B.3 Existed causal inference benchmark and packages 841 
+
+Although a number of benchmark datasets and open-source packages have been developed to address 842 
+
+general causal inference problems—such as CausalML (Zhao and Liu [2023]), EconML (Battocchi 843 
+
+et al. [2019]), DoWhy (Blöbaum et al. [2024], Sharma and Kiciman [2020]), CauseBox (paras2612), 844 
+
+CausalNex (quantumblacklabs), Causal Curve (Kobrosly [2020]), CausalDiscovery (Kalainathan 845 
+
+et al. [2020]), pcalg (Kalisch et al. [2012]), bnlearn (Scutari [2010]), TETRAD (Ramsey et al.), 846 
+
+CausalityBenchmark (Shimoni et al. [2018]), JustCause (inovex), CausalEffect (Tikka and Karvanen 847 
+
+[2017]), Ananke (Lee et al. [2023]), Dagitty (Textor et al. [2011]), YLearn (Bochen Lyu [2022]), 848 
+
+CausalImpact (Google), causal-learn (Zheng et al. [2024]), gCastle (Zhang et al. [2021]), dosearch 849 
+
+(Tikka et al. [2021]), CEE (Li), awesome-causality-identification (YAN [2025]) —these tools are 850 
+
+primarily designed for causal discovery or treatment effect estimation. Despite extensive investigation, 851 
+
+we did not identify any existing algorithms or frameworks that directly address the problem of causal 852 
+
+evaluation of agents, particularly in the context of evaluating agent-driven decision-making processes. 853 
+
+20 C Proofs 854 
+
+Theorem 1. Upper bound . Given any evaluation model ˆf , P (Egen ( ˆf ) < E emp ( ˆf )+ 
+
+q 12n ln( 1 
+
+> σ
+
+)) ≥855 
+
+1−σ where n is number of independent identical distributed error (IIDE) measurements, 0 < 1−σ < 856 
+
+1 is confidence. 857 
+
+Proof. Denote ϵ0 ∼=
+
+q 12n ln( 1 
+
+> σ
+
+), inequality in theorem 1 is equivalent to 858 
+
+P (Egen ( ˆf ) − Eemp ( ˆf ) < ϵ 0) ≥ 1 − σ
+
+. Because event Egen ( ˆf ) − Eemp ( ˆf ) < ϵ 0 and event Egen ( ˆf ) − Eemp ( ˆf ) ≥ ϵ0 are complementary 859 
+
+events, so 860 
+
+P (Egen ( ˆf ) − Eemp ( ˆf ) < ϵ 0) = 1 − P (Egen ( ˆf ) − Eemp ( ˆf ) ≥ ϵ0)
+
+. Bring it in, we have 861 
+
+1 − P (Egen ( ˆf ) − Eemp ( ˆf ) ≥ ϵ0) ≥ 1 − σ
+
+. Then it can be simplified as 862 
+
+P (Egen ( ˆf ) − Eemp ( ˆf ) ≥ ϵ0) ≤ σ
+
+. Because evaluation error is distributed on [0 , 1] , and Hoeffding inequality (Hoeffding [1963]), 863 
+
+P (Egen ( ˆf ) − Eemp ( ˆf ) ≥ ϵ0)
+
+> 864
+
+≤ 2e− 2ϵ20n2
+
+> Pni=1 (1 −0) 2
+
+= 2 e− 2( 
+
+√ 12n (ln( 1 
+
+> σ))) 2n2
+> Pni=1 (1 −0) 2
+
+= σ
+
+> 865
+
+Theorem 2. Strict causal advantage . Given {ci, s i, m i}ni=1 , where c is evaluation condition, s866 
+
+is independent from c, and e, and s is independently, randomly, identically sampled (IRIS) from 867 
+
+distribution P r (S), m is generate by an unknown and inaccessible function m = f (c, e, s ), e is 868 
+
+other unlisted random variable, evaluation error function L is mean square error, ∀ ˆf1, ∀ ˆf2 where ˆf1869 
+
+and ˆf2 are unbiased estimation of f given c (CU), we have Efficiency : if Egen ( ˆf1) < E gen ( ˆf2) for 870 
+
+any s, then ∀sa ∈ S, ∀sb ∈ S, ∀c ∈ C, Egen ( ˆf1(c, s a) − ˆf1(c, s b)) < E gen ( ˆf2(c, s a) − ˆf2(c, s b)) ;871 
+
+Consistency : if lim ˆf →f Egen ( ˆf ) = 0 , then ∀sa ∈ S, ∀sb ∈ S, ∀c ∈ C, lim ˆf →f Egen ( ˆf (c, s a) −872 
+
+ˆf (c, s b)) = 0 .873 
+
+Proof. ∀k = 1 , 2, denote ϵk(c, s, e ) = ˆfk(c, s ) − f (c, e, s ), according to conditional unbiasness, we 874 
+
+have E(ϵk(c, s )) = 0 . The error is denoted as 875 
+
+∆ ˆfk(s) = ˆfk(c, s a) − ˆfk(c, s b) − (f (c, s a, e ) − f (c, s b, e )) = ϵk(c, s a, e ) − ϵk(c, s b, e )
+
+, the square error is denoted as 876 
+
+(∆ ˆfk)2 = ( ϵk(c, s a, e ) − ϵk(c, s b, e )) 2
+
+, the mean square error is denoted as 877 
+
+E((∆ ˆfk)2) = E(ϵk(c, s a, e )2) + E(ϵk(c, s b, e )2) − 2E(ϵk(c, s a, e )ϵk(c, s b, e )) 
+
+. According to the IRIS assumption and condition unbiasness assumption, the third term 878 
+
+E(ϵk(c, s a)ϵk(c, s b)) = Ec(E(ϵk(c, s a, e )ϵk(c, s b, e )|c)) 
+
+> 879
+
+= Ec(E(ϵ(c, s a)|c)E(ϵ(c, s b)|c)) = Ec(0 ∗ 0) = Ec(0) = 0 
+
+, then because ∀s, Egen ( ˆf1) < E gen ( ˆf2), that is E(ϵ1(c, s, e )2) < E (ϵ2(c, s, e )2) for any s, then 880 
+
+E((∆ ˆf1)2) = E(ϵ1(c, s a, e )2) + E(ϵ1(c, s b, e )2)
+
+> 881
+
+< E (ϵ2(c, s a, e )2) + E(ϵ2(c, s b, e )2) = E((∆ ˆf2)2)
+
+, which can be write as Egen ( ˆf1(c, s a)− ˆf1(c, s b)) < E gen ( ˆf2(c, s a)− ˆf2(c, s b)) when error function 882 
+
+is mean square error. 883 
+
+Following, the consistency can be proved spontaneously by the Squeeze Theorem in Calculus. 884 
+
+21 Theorem 3. Causal bound with positivity . ∀sa ∈ S, ∀sb ∈ S, given any unbiased evaluation model 885 
+
+ˆf (c, s a) and ˆf (c, s b),886 
+
+P (Egen (∆ ˆf ) < 2 max {Eemp (a) + 
+
+r 12na
+
+ln( 2
+
+σ )) , E emp (b) + 
+
+r 12nb
+
+ln( 2
+
+σ )}) ≥ 1 − σ
+
+, where ∆ ˆf = ˆf (c, s a) − ˆf (c, s b), na and nb are number of independently, randomly, identically 887 
+
+sampled error measurements (IIDE) where s = sa and s = sb, 0 < 1 − σ < 1 is confidence, 888 
+
+evaluation error function L is mean square error ranged from 0 to 1. 889 
+
+Proof. Because evaluation error function is mean square error, 890 
+
+Egen (∆ ˆf ) ∼= E((∆ ˆf − ∆f )2) = E(( ˆf (c, s a) − ˆf (c, s b) − (f (c, s a, e ) − f (c, s b, e ))) 2)
+
+. Denote ϵa(c, e ) ∼= ˆf (c, s a) − f (c, s a, e ) and ϵb(c, e ) ∼= ˆf (c, s b) − f (c, s b, e ),891 
+
+Egen (∆ ˆf ) = E(ϵa(c, e )2 + ϵb(c, e )2 − 2ϵa(c, e )ϵb(c, e )) 
+
+. Due to properties of expectation, 892 
+
+Egen (∆ ˆf ) = E(ϵa(c, e )2) + E(ϵb(c, e )2) − 2E(ϵa(c, e )ϵb(c, e )) 
+
+. Due to IIDE assumption, the sub population of errors where s = a and s = b is also independently 893 
+
+sampled, 894 
+
+Egen (∆ ˆf ) = E(ϵa(c, e )2) + E(ϵb(c, e )2) − 2E(ϵa(c, e )) E(ϵb(c, e )) 
+
+. Due to the unbiased assumption, 895 
+
+Egen (∆ ˆf ) = E(ϵa(c, e )2) + E(ϵb(c, e )2)
+
+. Denote ϵ0 = 2 max {νa, ν b} where νa = Eemp (a)+ 
+
+q 12na ln( 2 
+
+> σ
+
+) and νb = Eemp (b)+ 
+
+q 12nb ln( 2 
+
+> σ
+
+),896 
+
+due to Bonferroni inequality (Galambos [1977]), 897 
+
+P (Egen (∆ ˆf ) < ϵ 0) = P (E(ϵa(c, e )2) + E(ϵb(c, e )2) < ϵ 0)
+
+≥ P (E(ϵa(c, e )2) < ϵ0
+
+2
+
+\ E(ϵb(c, e )2) < ϵ0
+
+2 )
+
+≥ P (E(ϵa(c, e )2) < ϵ0
+
+2 ) + P (E(ϵb(c, e )2) < ϵ0
+
+2 ) − 1
+
+≥ P (E(ϵa(c, e )2) < ν a) + P (E(ϵb(c, e )2) < ν b) − 1
+
+≥ 1 − σ
+
+2 + 1 − σ
+
+2 − 1= 1 − σ
+
+> 898
+
+Theorem 4. Causal bound with non-positivity . Given unbiased evaluation model ˆf , then ∀sa ∈899 
+
+S, ∀sb ∈ S,900 
+
+P (Egen (∆ ˆf ) < 2( Eemp ( ˆf ) + 
+
+r 12n ln( 1
+
+σ ))) ≥ 1 − σ
+
+, where ∆ ˆf = ˆf (c, s a) − ˆf (c, s b), n is number of independently, randomly, identically sampled error 901 
+
+measurements (IIDE), 0 < 1 − σ < 1 is confidence, s is independently, randomly, identically sampled 902 
+
+(IRIS), evaluation error function L is mean square error ranged from 0 to 1. 903 
+
+22 Proof. According to same proof and denotation in theorem 3, 904 
+
+Egen (∆ ˆf ) = E(ϵa(c, e )2) + E(ϵb(c, e )2) − 2E(ϵa(c, e )) E(ϵb(c, e )) 
+
+. Due to IIDE and IRIS assumption, the sub population of errors where s = a and s = b is also 905 
+
+independently sampled (IIDE) identically following the whole population (IRIS), 906 
+
+Egen (∆ ˆf ) = 2 E(ϵ(c, e )2) − 2E(ϵ(c, e )) 2
+
+. Due to the unbiased assumption, 907 
+
+Egen (∆ ˆf ) = 2 E(ϵ(c, e )2)
+
+. According to theorem 1, let evaluation error function be MSE, 908 
+
+P (E(ϵ(c, e )2) ≤
+
+> n
+
+X
+
+> i=1
+
+( ˆf (ci, s i) − mi)2 +
+
+r 12n ln( 1
+
+σ )) ≥ 1 − σ
+
+where mi is true metric. Due to the property of equivalent events, 909 
+
+P (2 E(ϵ(c, e )2) ≤ 2( 
+
+> n
+
+X
+
+> i=1
+
+( ˆf (ci, s i) − mi)2 +
+
+r 12n ln( 1
+
+σ ))) ≥ 1 − σ
+
+, which can be rewrite as 910 
+
+P (Egen (∆ ˆf ) ≤ 2( Eemp ( ˆf ) + 
+
+r 12n ln( 1
+
+σ ))) ≥ 1 − σ
+
+.911 
+
+## D Evaluation scenes 912 
+
+We introduce 12 scenes to test the performance of our (conditional) evaluation model: Alert (Wilson 913 
+
+et al. [2021]), Withdraw (Wilson et al. [2023]), Grid-S (Schäfer et al. [2016]), Higgs-S (Baldi et al. 914 
+
+[2014]), Insurance (Kumar [2023]), Climate-S (Lucas et al. [2013]), TERECO (Li et al. [2022]), 915 
+
+Calculus (Kramer et al. [2023]), Ad (Gokagglers [2018]), kin8nm-S (Fischer [2022]), NuScale-S 916 
+
+(Huu Tiep [2024]), and Quantum trade. The evaluation subject (agent) and evaluation metric in those 917 
+
+applied scenes is listed in the table 4. All the data are collected from real experiments or simulation. 918 
+
+As mentioned in the section 6, we use the prediction performance in randomized experiment to 919 
+
+approximate the post-experiment performance of randomized deployed mini agents. We also listed 920 
+
+the website and license of the mentioned asset in the following table 3. 921 
+
+Scenes Website License Alert https://datadryad.org/dataset/doi:10.5061/dryad.4f4qrfj95 CC0 1.0 Withdraw https://datadryad.org/dataset/doi:10.5061/dryad.kh189327p CC0 1.0 Grid-S https://www.openml.org/search?type=data&status=active&id=44973 CC BY 4.0 Higgs https://www.openml.org/search?type=data&status=active&id=42769 Public Insurance https://www.kaggle.com/datasets/arun0309/customer Unknown Climate https://www.openml.org/search?type=data&status=active&id=40994 Public TERECO https://datadryad.org/dataset/doi:10.5061/dryad.59zw3r27n CC0 1.0 Calculus https://datadryad.org/dataset/doi:10.5061/dryad.kkwh70s95 CC0 1.0 Ad https://www.kaggle.com/datasets/loveall/clicks-conversion-tracking Other kin8nm https://www.openml.org/search?type=data&status=active&id=44980 Public NuScale https://archive.ics.uci.edu/dataset/1091 CC BY 4.0 Table 3: Website and license of the mentioned asset. The heterogeneous mini agent space is configured as a combination of a linear mini agent space 922 
+
+(logistic regression or linear regression) and a non-linear mini agent space (MLP Classifier or MLP 923 
+
+Regressor). The agent’s input dimension is the number of features, and output dimension is the 924 
+
+number of the targets. The MLP’s hidden layer size limit is set as 8. 925 
+
+23 Scene Evaluation Subject (Agent) Application Metric Individual input is patients’ record, intelligent Alert, ROC-AUC Treatment and random pop-up, and Withdrawal ACC output is mortality for AKI input is patients’ record, Covid-19 recovery RMSE and random therapy, (TERECO) R2
+
+output is walk distance Scientific input is setting of fission reactor, nuclear power plant RMSE Simulation output is k-inf and PPPF (Nuscale) R2
+
+input is particle features higgs detection ROC-AUC output is whether it is higgs (Higgs) ACC input is initial parameter of climate, climate simulation ROC-AUC output is whether the climate crash (Climate) ACC input is joint moving of robotic arm, robot action RMSE output is distance to target (kin8nm) R2
+
+input is parameter of electric grid, grid simulation ROC-AUC output is whether the grid crash (Grid) ACC Social input is students’ record, individual teaching RMSE Experiment and random class (Calculus) R2
+
+output is students’ grading Business input is customers’ record, sell insurance ROC-AUC and random recommendation (Insurance) ACC output is buy-in decision of custom input is feature of a group, advertisement RMSE and random recommendation (Ad) R2
+
+output is buy-in decision of custom Quantum input is stock’s feature last day, A-share trade RoI Trade output is decision for the stock Table 4: Detailed setting of scene. The IRIS sampling of the agent is two steps. The first step is the agent type sampling with 0.5 926 
+
+probability to choose linear model and 0.5 probability to choose MLP model. The second step is 927 
+
+to choose a specific model in the sub space. For both linear agent and MLP agent, we use Normal 928 
+
+distribution N (0 , 1) to determine the parameter of the models. The outcome when we calculate 929 
+
+Shapley value is set as the negative evaluation errors. 930 
+
+The samples number of scenes Alert, Withdrawal, Higgs, Climate, Grid, Insurance, TERECO, 931 
+
+Nuscale, kin8nm, Calculus, Ad, and A-share trade are listed in table 5. The 7 kinds of base learners 932 
+
+we used is Linear, MLP, SVM/SVR, RF (Breiman [2001]), LGBM (Aziz et al. [2022]), XGBoost 933 
+
+(Chen and Guestrin [2016]), and CatBoost (Prokhorenkova et al. [2018]). All the computation is on 934 
+
+the one 13-inch MacBook Pro 2020 with Apple M1 chip and 16GB memory in 2 days. 935 
+
+Scenes Train Samples Test Samples Alert 1600 ∗ 5911 ∗ 0.2 = 1891520 400 ∗ 5911 ∗ 0.2 = 472880 
+
+Withdrawal 1600 ∗ 4998 ∗ 0.2 = 1599360 400 ∗ 4998 ∗ 0.2 = 399840 
+
+Higgs 1600 ∗ 2000 ∗ 0.2 = 640000 400 ∗ 2000 ∗ 0.2 = 160000 
+
+Climate 1600 ∗ 540 ∗ 0.2 = 172800 400 ∗ 540 ∗ 0.2 = 43200 
+
+Grid 1600 ∗ 10000 ∗ 0.2 = 3200000 400 ∗ 10000 ∗ 0.2 = 800000 
+
+Insurance 1600 ∗ 45211 ∗ 0.2 = 14467520 400 ∗ 45211 ∗ 0.2 = 3616880 
+
+TERECO 1600 ∗ 104 ∗ 0.2 = 33280 400 ∗ 104 ∗ 0.2 = 8320 
+
+Nuscale 1600 ∗ 360 = 576000 400 ∗ 360 = 144000 
+
+kin8nm 1600 ∗ 8192 ∗ 0.2 = 2621440 400 ∗ 8192 ∗ 0.2 = 655360 
+
+Calculus 1600 ∗ 672 ∗ 0.2 = 215040 400 ∗ 672 ∗ 0.2 = 53760 
+
+Ad 1600 ∗ 1143 ∗ 0.2 = 365760 400 ∗ 1143 ∗ 0.2 = 91440 
+
+Trade 160 ∗ 200 ∗ 30 = 960000 40 ∗ 200 ∗ 20 = 160000 
+
+Table 5: Evaluation sample numbers in different scenes. 24 D.1 Scenes to test evaluation model 936 
+
+For 11 scenes to test evaluation model, 2000 agents was randomly sampling from heterogeneous 937 
+
+agent space. 20% data was used to build the real systems to generate true evaluation metrics and 938 
+
+other 80% data was used to get the proxy metrics of a agent. When the evaluation samples are 939 
+
+collected from the built real systems, 20% samples are used for evaluation model testing, and other 940 
+
+80% samples are for evaluation model learning. The experiment is performed 30 times. All the null 941 
+
+value was removed from the raw data in preprocessing. The classical features are encoded by the 942 
+
+label encoder to reduce the computation. The text classical features are encoded by one-hot encoder. 943 
+
+The proxy metrics we used for Alert, Withdrawal, Higgs, Climate, Grid, Insurance are ROC-AUC, 944 
+
+accuracy, recall, precision, F1 score, and PR-AUC. The proxy metrics we used for TERECO, Nuscale, 945 
+
+kin8nm, Calculus, Ad are RMSE, R2, MAE, MAPE, and MSE. 946 
+
+D.2 Scenes to test conditional evaluation model 947 
+
+We collected the A-share data of China from 2024-8 to 2024-11 (89 days) by an open source tool Ak-948 
+
+Share. The collected day-wise features of stocks are “Profit Ratio”, “Average Cost”, “90 Cost Low”, 949 
+
+“90 Cost High”, “90 Episode Medium”, “70 Cost Low”, “70 Cost High”, “70 Episode Medium”, 950 
+
+“Closing”, “Opening”, “Highest”, “Lowest”, “Transaction Volume”, “Transaction Amount”, “Ampli-951 
+
+tude”. The strategy is to buy 1 hand, sell 1 hand, or hold by the agent following the open price of the 952 
+
+market. The slippage and commission is not considered in this work. If the stock was limit up (limit 953 
+
+down), then we can only hold even the model decision is to buy (sell). The agent’s input is the feature 954 
+
+of the stock last day and output is the decision this day. The agent will be deployed and run for 1 955 
+
+time slot (10 trading days, about 2 weeks), and the evaluation condition is feature of the stock in the 956 
+
+last time slot. At the end of deployment in a time slot, we will sell all the hold stocks. When the end 957 
+
+of the slot is limit down at open, we assume that it will be sold by 90 percents of open price in future. 958 
+
+In order to simulate the direct effect from the agent itself to the sensitive market, we add a float 959 
+
+model which input is the vectorized agents and output is float rate of open price ranged from -0.1% 960 
+
+to +0.1%. 961 
+
+We use data of 200 stocks with minimal ID from all 3214 stocks due to our memory limit. The start 962 
+
+of train day is from day 10 to day 41, the start of test day is from 41 to 61. The sampling number of 963 
+
+agent is 200. The experiment was performed 5 times to reduce the influence of randomness. The 964 
+
+proxy metric is the last 10 days’ RoI. 965 
+
+## E Assumption assessment 966 
+
+Due to the limitation of computation resources and the difference of addressed problems, we do not 967 
+
+use the deep learning models for observation data as base learners of our evaluation models, such 968 
+
+as CEVAE (Louizos et al. [2017]), BNR (Li and Fu [2017]), BNN (Johansson et al. [2016]), SITE 969 
+
+(Yao et al. [2018]), GANITE (Yoon et al. [2018]), DeepMatch (Kallus [2020]), Dragonnet (Shi et al. 970 
+
+[2019]), TARNet/CFR (Shalit et al. [2017]), TabPFN (Hollmann et al. [2025]), deconfounder (Wang 971 
+
+and and [2019]), time-series deconfounder (Bica et al. [2020]). Table 6 and table 7 are assumption 972 
+
+assessment results of 7 kinds of evaluation models with swift base learners for continuous and discrete 973 
+
+target respectively. From the tables, we can see that the IIDE assumption (IID check and ID check) 974 
+
+and unbiased evaluation model assumption (Bias Check and GroupBias Check) was not violated 975 
+
+obviously with a high probability (>0.8) except the cases that using MLP and SVR as base regression 976 
+
+learners of HetEM. 977 
+
+Ratio p > = 0 .05 TERECO Calculus kin8nm nuscale ad Het(Linear)-IID-RMSE 0.93 0.87 0.97 0.9 0.97 Het(Linear)-IID-R2 0.93 1.0 0.9 0.93 0.83 Het(Linear)-ID-RMSE 1.0 0.47 0.87 1.0 0.93 Het(Linear)-ID-R2 0.97 0.43 0.93 0.97 0.87 Het(Linear)-Bias-RMSE 0.9 0.43 0.77 0.8 0.77 Het(Linear)-Bias-R2 0.9 0.33 0.8 0.77 0.77 Het(Linear)-GroupBias-RMSE 0.92 0.85 0.87 0.87 0.85 25 Het(Linear)-GroupBias-R2 0.90 0.85 0.86 0.84 0.89 Het(MLP)-IID-RMSE 1.0 0.93 0.83 1.0 0.9 Het(MLP)-IID-R2 0.9 0.97 0.93 0.97 0.97 Het(MLP)-ID-RMSE 0.73 0.37 0.87 0.73 0.77 Het(MLP)-ID-R2 0.9 0.3 0.77 0.77 0.67 Het(MLP)-Bias-RMSE 0.5 0.26 0.57 0.57 0.5 Het(MLP)-Bias-R2 0.57 0.17 0.53 0.57 0.57 Het(MLP)-GroupBias-RMSE 0.68 0.40 0.86 0.70 0.72 Het(MLP)-GroupBias-R2 0.70 0.31 0.71 0.67 0.68 Het(SVR)-IID-RMSE 0.97 0.97 0.97 1.0 0.87 Het(SVR)-IID-R2 0.93 0.9 1.0 0.9 0.97 Het(SVR)-ID-RMSE 0.0 0.0 0.27 0.4 0.1 Het(SVR)-ID-R2 0.0 0.0 0.0 0.2 0.0 Het(SVR)-Bias-RMSE 0.0 0.0 0.1 0.17 0.03 Het(SVR)-Bias-R2 0.0 0.23 0.0 0.03 0.0 Het(SVR)-GroupBias-RMSE 0.0 0.01 0.19 0.34 0.11 Het(SVR)-GroupBias-R2 0.0 0.44 0.00 0.19 0.02 Het(RF)-IID-RMSE 0.97 0.93 0.97 0.97 0.93 Het(RF)-IID-R2 1.0 0.97 0.97 1.0 0.97 Het(RF)-ID-RMSE 0.93 0.87 0.9 0.97 0.83 Het(RF)-ID-R2 0.93 0.93 0.93 0.9 0.73 Het(RF)-Bias-RMSE 0.93 0.57 0.9 0.9 0.8 Het(RF)-Bias-R2 0.83 0.63 0.93 0.87 0.8 Het(RF)-GroupBias-RMSE 0.87 0.85 0.91 0.90 0.86 Het(RF)-GroupBias-R2 0.89 0.86 0.91 0.88 0.86 Het(LGBM)-IID-RMSE 0.87 0.93 0.97 1.0 0.93 Het(LGBM)-IID-R2 1.0 0.97 0.97 0.93 0.97 Het(LGBM)-ID-RMSE 0.93 0.9 0.9 0.97 0.83 Het(LGBM)-ID-R2 0.9 0.93 0.83 0.97 0.93 Het(LGBM)-Bias-RMSE 0.9 0.7 0.8 0.9 0.77 Het(LGBM)-Bias-R2 0.93 0.7 0.77 0.9 0.83 Het(LGBM)-GroupBias-RMSE 0.89 0.85 0.90 0.88 0.85 Het(LGBM)-GroupBias-R2 0.89 0.86 0.97 0.88 0.87 Het(XGBoost)-IID-RMSE 1.0 0.93 0.93 1.0 0.87 Het(XGBoost)-IID-R2 0.93 0.93 0.93 0.97 0.93 Het(XGBoost)-ID-RMSE 0.93 0.9 1.0 0.93 0.97 Het(XGBoost)-ID-R2 0.93 0.9 0.93 0.93 0.87 Het(XGBoost)-Bias-RMSE 0.97 0.53 0.77 0.87 0.87 Het(XGBoost)-Bias-R2 0.83 0.5 0.9 0.87 0.83 Het(XGBoost)-GroupBias-RMSE 0.92 0.84 0.83 0.86 0.88 Het(XGBoost)-GroupBias-R2 0.87 0.82 0.90 0.84 0.88 Het(CatBoost)-IID-RMSE 0.87 0.97 0.97 1.0 1.0 Het(CatBoost)-IID-R2 0.87 0.97 0.93 0.93 1.0 Het(CatBoost)-ID-RMSE 0.93 0.87 0.93 0.97 0.97 Het(CatBoost)-ID-R2 0.97 0.9 0.93 0.97 1.0 Het(CatBoost)-Bias-RMSE 0.93 0.6 0.97 0.8 0.83 Het(CatBoost)-Bias-R2 0.93 0.63 0.93 0.8 0.87 Het(CatBoost)-GroupBias-RMSE 0.90 0.90 0.92 0.87 0.87 Het(CatBoost)-GroupBias-R2 0.90 0.87 0.90 0.86 0.88 Table 6: The ratio that the p-value of test is larger than or equal to 0.05 in the 30 repeated experi-ments for regression base learners. The name of each row is “EvaluationModelName”-“TestName”-“MetricName”. The name of each column is the scene name. 26 Ratio p > = 0 .05 withdraw higgs grid insurance climate alert Het(Linear)-IID-ROCAUC 0.96 0.93 0.93 0.93 1.0 0.97 Het(Linear)-IID-ACC 0.93 0.97 0.9 0.9 0.97 0.97 Het(Linear)-ID-ROCAUC 1.0 0.97 0.87 0.9 1.0 0.97 Het(Linear)-ID-ACC 0.93 0.97 0.87 0.93 0.93 1.0 Het(Linear)-Bias-ROCAUC 0.77 0.83 0.83 0.9 0.9 0.9 Het(Linear)-Bias-ACC 0.83 0.87 0.87 0.8 0.83 0.93 Het(Linear)-GroupBias-ROCAUC 0.83 0.88 0.87 0.88 0.91 0.87 Het(Linear)-GroupBias-ACC 0.87 0.89 0.87 0.88 0.87 0.89 Het(MLP)-IID-ROCAUC 0.97 1.0 0.97 0.97 0.93 0.93 Het(MLP)-IID-ACC 0.93 0.93 0.97 0.9 0.97 0.97 Het(MLP)-ID-ROCAUC 0.8 0.87 0.77 0.87 0.87 0.7 Het(MLP)-ID-ACC 0.8 0.83 0.83 0.8 0.73 0.8 Het(MLP)-Bias-ROCAUC 0.43 0.57 0.53 0.53 0.63 0.47 Het(MLP)-Bias-ACC 0.67 0.6 0.57 0.57 0.43 0.6 Het(MLP)-GroupBias-ROCAUC 0.70 0.76 0.71 0.73 0.77 0.69 Het(MLP)-GroupBias-ACC 0.77 0.73 0.77 0.74 0.63 0.73 Het(SVM)-IID-ROCAUC 0.97 0.97 0.93 0.97 0.97 1.0 Het(SVM)-IID-ACC 0.97 0.97 0.97 0.97 1.0 1.0 Het(SVM)-ID-ROCAUC 0.73 0.5 0.9 0.6 0.83 0.8 Het(SVM)-ID-ACC 0.9 0.67 0.37 0.97 0.97 0.97 Het(SVM)-Bias-ROCAUC 0.4 0.27 0.1 0.37 0.53 0.47 Het(SVM)-Bias-ACC 0.97 0.37 0.43 0.93 0.8 0.93 Het(SVM)-GroupBias-ROCAUC 0.63 0.48 0.36 0.52 0.69 0.66 Het(SVM)-GroupBias-ACC 0.90 0.56 0.62 0.90 0.85 0.86 Het(RF)-IID-ROCAUC 0.97 0.97 0.9 0.97 0.97 0.97 Het(RF)-IID-ACC 0.93 0.97 0.87 0.93 0.9 0.9 Het(RF)-ID-ROCAUC 0.97 0.87 0.9 0.9 0.83 0.97 Het(RF)-ID-ACC 1.0 0.87 0.9 0.97 1.0 0.87 Het(RF)-Bias-ROCAUC 0.73 0.9 0.77 0.87 0.93 0.87 Het(RF)-Bias-ACC 0.9 0.93 0.8 0.97 0.8 0.7 Het(RF)-GroupBias-ROCAUC 0.85 0.87 0.84 0.9 0.91 0.86 Het(RF)-GroupBias-ACC 0.87 0.89 0.85 0.89 0.88 0.85 Het(LGBM)-IID-ROCAUC 1.0 0.97 0.97 0.97 0.87 1.0 Het(LGBM)-IID-ACC 0.93 0.97 0.93 0.9 1.0 0.9 Het(LGBM)-ID-ROCAUC 1.0 0.87 0.93 0.93 0.87 0.93 Het(LGBM)-ID-ACC 0.97 0.83 0.97 1.0 0.97 0.97 Het(LGBM)-Bias-ROCAUC 0.7 0.93 0.83 0.73 0.97 0.9 Het(LGBM)-Bias-ACC 0.83 0.9 0.77 0.83 0.8 0.8 Het(LGBM)-GroupBias-ROCAUC 0.81 0.88 0.85 0.89 0.91 0.86 Het(LGBM)-GroupBias-ACC 0.88 0.88 0.84 0.90 0.86 0.85 Het(XGBoost)-IID-ROCAUC 1.0 0.97 1.0 0.8 0.93 1.0 Het(XGBoost)-IID-ACC 0.93 1.0 0.97 1.0 0.93 0.87 Het(XGBoost)-ID-ROCAUC 0.9 0.83 0.9 0.9 0.87 1.0 Het(XGBoost)-ID-ACC 0.97 0.87 0.93 0.97 0.93 0.97 Het(XGBoost)-Bias-ROCAUC 0.83 0.97 0.83 0.9 0.83 0.83 Het(XGBoost)-Bias-ACC 0.87 0.93 0.9 0.83 0.8 0.87 Het(XGBoost)-GroupBias-ROCAUC 0.88 0.89 0.90 0.90 0.87 0.89 Het(XGBoost)-GroupBias-ACC 0.88 0.89 0.88 0.88 0.89 0.88 Het(CatBoost)-IID-ROCAUC 0.93 0.8 0.9 0.97 0.93 0.9 Het(CatBoost)-IID-ACC 1.0 0.9 1.0 0.87 1.0 0.97 Het(CatBoost)-ID-ROCAUC 0.97 0.93 0.93 0.93 0.87 0.97 Het(CatBoost)-ID-ACC 0.97 0.93 0.83 0.97 0.97 0.97 Het(CatBoost)-Bias-ROCAUC 0.83 0.87 0.8 0.8 0.9 0.87 Het(CatBoost)-Bias-ACC 0.87 0.9 0.93 0.87 0.8 0.8 Het(CatBoost)-GroupBias-ROCAUC 0.86 0.89 0.88 0.86 0.89 0.87 27 Het(CatBoost)-GroupBias-ACC 0.85 0.89 0.89 0.90 0.86 0.86 Table 7: The ratio that the p-value of test is larger than or equal to 0.05 in the 30 repeated experiments for classification base learners. The name of each row is “EvaluationModelName”-“TestName”-“MetricName”. The name of each column is the scene name. We also visualization the Q-Q plot of the baseline evaluation model in figure 6 and the assumption 978 
+
+assessment result of our evaluation model in table 8. From the visualization, the error distribution of 979 
+
+baseline is close to normal distribution. Although the HetEM-Linear and HetEM-CatBoost does not 980 
+
+pass our ID check and Bias check, the dramatically empirical error reduction of our evaluation model 981 
+
+is still believed as valuable if upper bound existed. Of course it can be not used to calculate the upper 982 
+
+bound of the two evaluation models by theorem 4 directly in this scene. 983 
+
+Ratio p ≥ 0.05 A-Share Trade Het(Linear)-IID 1.0 Het(Linear)-ID 0.0 Het(Linear)-Bias 0.0 Het(CatBoost)-IID 1.0 Het(CatBoost)-ID 0.0 Het(CatBoost)-Bias 0.0 Table 8: The ratio that p-value of test is larger than or equal to 0.05 in the 5 repeated experiments for A-share trade scene. The name of each row is “EvaluationModelName”-“TestName”-“MetricName”. The name of each column is the scene name. 
+
+Figure 6: Q-Q plot of evaluation error of Baseline (Last10DayRoI). 
+
+## F Hyper-parameters of evaluation model 984 
+
+There are 7 kinds of base learners for the evaluation model learning in our experiments. We use the 985 
+
+default hyper-parameters for the 7 kinds of base learners in 6 scenes where evaluation metrics are 986 
+
+RMSE and R2 as following. 987 
+
+{988 
+
+"Linear Regression": { 989 
+
+"copy_X": true, 990 
+
+"fit_intercept": true, 991 
+
+"positive": false 992 
+
+}, 993 
+
+"MLP": { 994 
+
+"activation": "relu", 995 
+
+"alpha": 0.0001, 996 
+
+"batch_size": "auto", 997 
+
+"beta_1": 0.9, 998 
+
+"beta_2": 0.999, 999 
+
+"early_stopping": false, 1000 
+
+"epsilon": 1e-08, 1001 
+
+"hidden_layer_sizes": [ 1002 
+
+100 1003 
+
+], 1004 
+
+"learning_rate": "constant", 1005 
+
+28 "learning_rate_init": 0.001, 1006 
+
+"max_fun": 15000, 1007 
+
+"max_iter": 200, 1008 
+
+"momentum": 0.9, 1009 
+
+"n_iter_no_change": 10, 1010 
+
+"nesterovs_momentum": true, 1011 
+
+"power_t": 0.5, 1012 
+
+"shuffle": true, 1013 
+
+"solver": "adam", 1014 
+
+"tol": 0.0001, 1015 
+
+"validation_fraction": 0.1, 1016 
+
+"verbose": false, 1017 
+
+"warm_start": false 1018 
+
+}, 1019 
+
+"SVM": { 1020 
+
+"C": 1.0, 1021 
+
+"cache_size": 200, 1022 
+
+"coef0": 0.0, 1023 
+
+"degree": 3, 1024 
+
+"epsilon": 0.1, 1025 
+
+"gamma": "scale", 1026 
+
+"kernel": "rbf", 1027 
+
+"max_iter": -1, 1028 
+
+"shrinking": true, 1029 
+
+"tol": 0.001, 1030 
+
+"verbose": false 1031 
+
+}, 1032 
+
+"RF": { 1033 
+
+"bootstrap": true, 1034 
+
+"ccp_alpha": 0.0, 1035 
+
+"criterion": "squared_error", 1036 
+
+"max_features": 1.0, 1037 
+
+"min_impurity_decrease": 0.0, 1038 
+
+"min_samples_leaf": 1, 1039 
+
+"min_samples_split": 2, 1040 
+
+"min_weight_fraction_leaf": 0.0, 1041 
+
+"n_estimators": 100, 1042 
+
+"verbose": 0, 1043 
+
+"warm_start": false 1044 
+
+}, 1045 
+
+"XGBoost": { 1046 
+
+"objective": "reg:squarederror", 1047 
+
+"missing": "nan", 1048 
+
+"n_estimators": 100 1049 
+
+}, 1050 
+
+"LightGBM": { 1051 
+
+"boosting_type": "gbdt", 1052 
+
+"colsample_bytree": 1.0, 1053 
+
+"importance_type": "split", 1054 
+
+"learning_rate": 0.1, 1055 
+
+"max_depth": -1, 1056 
+
+"min_child_samples": 20, 1057 
+
+"min_child_weight": 0.001, 1058 
+
+"min_split_gain": 0.0, 1059 
+
+"n_estimators": 100, 1060 
+
+"num_leaves": 31, 1061 
+
+"reg_alpha": 0.0, 1062 
+
+"reg_lambda": 0.0, 1063 
+
+"subsample": 1.0, 1064 
+
+29 "subsample_for_bin": 200000, 1065 
+
+"subsample_freq": 0 1066 
+
+}, 1067 
+
+"CatBoost": { 1068 
+
+"loss_function": "RMSE" 1069 
+
+}1070 
+
+}1071 
+
+The default hyper-parameters of the 7 kinds of base learners in 5 scenes where evaluation metrics are 1072 
+
+ROC-AUC and ACC as following. 1073 
+
+{1074 
+
+"LogisticRegression": { 1075 
+
+"C": 1.0, 1076 
+
+"dual": false, 1077 
+
+"fit_intercept": true, 1078 
+
+"intercept_scaling": 1, 1079 
+
+"max_iter": 100, 1080 
+
+"multi_class": "deprecated", 1081 
+
+"penalty": "l2", 1082 
+
+"solver": "lbfgs", 1083 
+
+"tol": 0.0001, 1084 
+
+"verbose": 0, 1085 
+
+"warm_start": false 1086 
+
+}, 1087 
+
+"MLP": { 1088 
+
+"activation": "relu", 1089 
+
+"alpha": 0.0001, 1090 
+
+"batch_size": "auto", 1091 
+
+"beta_1": 0.9, 1092 
+
+"beta_2": 0.999, 1093 
+
+"early_stopping": false, 1094 
+
+"epsilon": 1e-08, 1095 
+
+"hidden_layer_sizes": [100], 1096 
+
+"learning_rate": "constant", 1097 
+
+"learning_rate_init": 0.001, 1098 
+
+"max_fun": 15000, 1099 
+
+"max_iter": 200, 1100 
+
+"momentum": 0.9, 1101 
+
+"n_iter_no_change": 10, 1102 
+
+"nesterovs_momentum": true, 1103 
+
+"power_t": 0.5, 1104 
+
+"shuffle": true, 1105 
+
+"solver": "adam", 1106 
+
+"tol": 0.0001, 1107 
+
+"validation_fraction": 0.1, 1108 
+
+"verbose": false, 1109 
+
+"warm_start": false 1110 
+
+}, 1111 
+
+"SVM": { 1112 
+
+"C": 1.0, 1113 
+
+"break_ties": false, 1114 
+
+"cache_size": 200, 1115 
+
+"coef0": 0.0, 1116 
+
+"decision_function_shape": "ovr", 1117 
+
+"degree": 3, 1118 
+
+"gamma": "scale", 1119 
+
+"kernel": "rbf", 1120 
+
+"max_iter": -1, 1121 
+
+"probability": false, 1122 
+
+30 "shrinking": true, 1123 
+
+"tol": 0.001, 1124 
+
+"verbose": false 1125 
+
+}, 1126 
+
+"RandomForest": { 1127 
+
+"bootstrap": true, 1128 
+
+"ccp_alpha": 0.0, 1129 
+
+"criterion": "gini", 1130 
+
+"max_features": "sqrt", 1131 
+
+"min_impurity_decrease": 0.0, 1132 
+
+"min_samples_leaf": 1, 1133 
+
+"min_samples_split": 2, 1134 
+
+"min_weight_fraction_leaf": 0.0, 1135 
+
+"n_estimators": 100, 1136 
+
+"oob_score": false, 1137 
+
+"verbose": 0, 1138 
+
+"warm_start": false 1139 
+
+}, 1140 
+
+"XGBoost": { 1141 
+
+"objective": "binary:logistic", 1142 
+
+"enable_categorical": false, 1143 
+
+"missing": "NaN" 1144 
+
+}, 1145 
+
+"LightGBM": { 1146 
+
+"boosting_type": "gbdt", 1147 
+
+"colsample_bytree": 1.0, 1148 
+
+"importance_type": "split", 1149 
+
+"learning_rate": 0.1, 1150 
+
+"max_depth": -1, 1151 
+
+"min_child_samples": 20, 1152 
+
+"min_child_weight": 0.001, 1153 
+
+"min_split_gain": 0.0, 1154 
+
+"n_estimators": 100, 1155 
+
+"num_leaves": 31, 1156 
+
+"reg_alpha": 0.0, 1157 
+
+"reg_lambda": 0.0, 1158 
+
+"subsample": 1.0, 1159 
+
+"subsample_for_bin": 200000, 1160 
+
+"subsample_freq": 0 1161 
+
+}, 1162 
+
+"CatBoost": {} 1163 
+
+}1164 
+
+We also use the Grid search for the hyperparameter searching in quantum trade scene, the searched 1165 
+
+range is listed as following, the cross validation for the searching is 3-fold cross validation. 1166 
+
+"CatBoost" = { 1167 
+
+‘iterations’: [100, 200], 1168 
+
+‘depth’: [6, 8], 1169 
+
+‘learning_rate’: [0.01, 0.1], 1170 
+
+‘l2_leaf_reg’: [1, 3], 1171 
+
+‘border_count’: [32, 64], 1172 
+
+}1173 
+
+## G Original evaluation errors 1174 
+
+We listed the original average root mean square evaluation errors for 4 different evaluation metrics: 1175 
+
+ROC-AUC, ACC, RMSE, R2 in the 11 scenes for evaluation model learning. The reason we do 1176 
+
+not use the policy risk, Area Under the Qini Curve (Qini Coefficient, Radcliffe [2007]) and Area 1177 
+
+31 Under the Uplift Curve (AUCC, Radcliffe [2007]) for discrete target is that not all models return a 1178 
+
+probability for classification. For example, the output continuous value of logistic regression can not 1179 
+
+be used to represent the probability that it belongs to a class. 1180 
+
+RMSE TERECO Calculus kin8nm NuScale Ad Holdout-100 0.45471 0.26197 0.00499 0.01521 0.10611 Holdout-50 0.28538 0.32978 0.00435 0.01328 0.19199 Holdout-20 0.49894 0.29417 0.03387 0.01584 0.21959 Holdout-10 0.39836 0.22317 0.00591 0.01706 0.21805 CV-5 0.43369 0.25795 0.00525 0.01518 0.07848 CV-10 0.39857 0.25568 0.00551 0.01513 0.06187 Bootstrap 0.46825 0.26353 0.00977 0.01544 0.13219 Het-Linear 0.00474 0.00918 0.00027 0.00077 0.00555 Het-MLP 0.03528 0.31249 0.02601 0.05205 0.03862 Het-SVR 0.03881 0.04573 0.03729 0.02167 0.03665 Het-RF 0.01348 0.00513 0.00193 0.00335 0.01378 Het-LGBM 0.00998 0.00530 0.00219 0.00301 0.00985 Het-XGBoost 0.01223 0.00549 0.00235 0.00331 0.01183 Het-CatBoost 0.00756 0.00468 0.00159 0.00241 0.00695 Table 9: Evaluation error when evaluation metric is RMSE. RMSE TERECO Calculus kin8nm NuScale Ad Holdout-100 0.12591 0.38410 0.01355 0.00946 0.19670 Holdout-50 0.11428 0.53892 0.04429 0.01026 7.52594 Holdout-20 0.20604 0.74010 0.03152 0.01594 6.24597 Holdout-10 0.15633 0.70377 0.04148 0.02123 5.58360 CV-5 0.19360 0.42477 0.01200 0.00950 2.98845 CV-10 0.25662 0.43089 0.01052 0.00961 3.72466 Bootstrap 0.27573 0.39105 0.01911 0.01065 0.24769 Het-Linear 0.01689 0.00061 0.00061 0.00174 0.01208 Het-MLP 0.04252 0.02690 0.02690 0.05219 0.04072 Het-SVR 0.06077 0.04628 0.04628 0.03578 0.05020 Het-RF 0.04748 0.00441 0.00441 0.00770 0.03020 Het-LGBM 0.03539 0.00508 0.00508 0.00702 0.02145 Het-XGBoost 0.04258 0.00521 0.00521 0.00756 0.02537 Het-CatBoost 0.02669 0.00368 0.00368 0.00553 0.01515 Table 10: Evaluation error when evaluation metric is R2.RMSE Withdraw Higgs Grid Insurance Climate Alert Holdout-100 0.02443 0.02132 0.01162 0.04982 0.06820 0.02185 Holdout-50 0.03003 0.02323 0.01125 0.08180 0.07170 0.02442 Holdout-20 0.03636 0.02878 0.01143 0.08537 0.07966 0.02515 Holdout-10 0.04218 0.04217 0.01355 0.09063 0.12213 0.03166 CV-5 0.02445 0.02115 0.01161 0.06179 0.06894 0.02144 CV-10 0.02435 0.02118 0.01164 0.06180 0.06924 0.02159 Bootstrap 0.02634 0.02335 0.01236 0.04996 0.07509 0.02387 Het-Linear 0.01587 0.01438 0.00723 0.01148 0.05123 0.01391 Het-MLP 0.04397 0.04000 0.03974 0.05053 0.06654 0.04581 Het-SVR 0.03433 0.02250 0.05526 0.03135 0.06141 0.07091 Het-RF 0.02107 0.01608 0.01014 0.01645 0.05892 0.02255 Het-LGBM 0.01934 0.01517 0.01056 0.01407 0.05555 0.01890 Het-XGBoost 0.02116 0.01635 0.01016 0.01595 0.05970 0.02229 Het-CatBoost 0.01748 0.01432 0.00888 0.01262 0.05232 0.01839 32 Table 11: Evaluation error when evaluation metric is ROC-AUC. RMSE Withdraw Higgs Grid Insurance Climate Alert Holdout-100 0.05444 0.03244 0.01145 0.17974 0.10162 0.02764 Holdout-50 0.06632 0.02550 0.01119 0.22168 0.13740 0.03271 Holdout-20 0.06731 0.03507 0.01056 0.26858 0.16551 0.03930 Holdout-10 0.06710 0.04374 0.01312 0.28142 0.19290 0.03623 CV-5 0.05443 0.03244 0.01145 0.17974 0.10145 0.02764 CV-10 0.05443 0.03244 0.01145 0.17973 0.10135 0.02765 Bootstrap 0.05489 0.03481 0.01266 0.17976 0.10362 0.02825 Het-Linear 0.01850 0.01438 0.00696 0.01887 0.03357 0.01391 Het-MLP 0.04886 0.03994 0.03924 0.05166 0.06719 0.04581 Het-SVR 0.07261 0.03029 0.03749 0.07211 0.06634 0.07091 Het-RF 0.03444 0.01641 0.00973 0.03068 0.05216 0.02255 Het-LGBM 0.02929 0.01526 0.00972 0.02610 0.04359 0.02255 Het-XGBoost 0.03395 0.01656 0.01000 0.02981 0.05219 0.01890 Het-CatBoost 0.02655 0.01443 0.00879 0.02426 0.04645 0.01839 Table 12: Evaluation error when evaluation metric is ACC. 
+
+## H Evaluation cost 1181 
+
+We list the table to compare the average evaluation time of experimental (simulation-based) evaluation 1182 
+
+and our computation evaluation as following table 13. We use the open-source data in table 13 to 1183 
+
+build the benchmark to test the computational evaluation methods. 1184 
+
+Scenes Experiment (Simulation) Time Computation Time Alert (Wilson et al. [2021]) 1 year, 8 months, and 15 days 0.176s Withdraw (Wilson et al. [2023]) 1 year, 3 months, and 13 days 0.077s Grid-S (Schäfer et al. [2016]) 1500s 0.198s Higgs-S (Baldi et al. [2014]) (expected) 15 hours 0.151s Insurance (Kumar [2023]) >1 year 0.500s Climate-S (Lucas et al. [2013]) unknown 0.132s TERECO (Li et al. [2022]) 34 weeks 0.014s Calculus (Kramer et al. [2023]) 3 semesters 0.035s Ad (Gokagglers [2018]) 3 campaigns 0.034s kin8nm-S (Fischer [2022]) unknown 0.038s NuScale-S (Huu Tiep [2024]) 1600 hours 0.046s A-Share Trade 10 days 0.103s Table 13: Expected evaluation time comparison in 12 scenes per agent.“S” means simulation. 
+
+## I Upper bounds tables 1185 
+
+We list the upper bound of generalized evaluation error and generalized causal effect evaluation error 1186 
+
+in the table 14 and table 15 for researchers’ quick query before data collection and upper bound 1187 
+
+estimation after learning. 1188 
+
+## J Paradigm of computational evaluation 1189 
+
+In order to help user to better understand the paradigm of computational evaluation, we plot the 1190 
+
+decision tree to help evaluatology researchers conduct their own research as shown in the figure 7. 1191 
+
+33 Do you believe human /model can predict M by 
+
+computation from C and S with acceptable accuracy? 
+
+Do you really need 
+
+causal relationship? 
+
+Can you control the 
+
+evaluation subject? 
+
+Do you believe you can infer 
+
+P(M(S)|C) from P(M|C, S)? 
+
+Computational Evaluation with 
+
+GEE minimization as target 
+
+Yes 
+
+Yes 
+
+Yes 
+
+No 
+
+No 
+
+No 
+
+Yes 
+
+Computational Evaluation with 
+
+GCEE minimization as target 
+
+Do you believe your evaluation task can produce 
+
+sufficient social and economic value? 
+
+Change your 
+
+evaluation task 
+
+Yes No 
+
+Do you believe you can get the 
+
+data of C, S and M? 
+
+Yes 
+
+No 
+
+No 
+
+Use P(M|C, S) to infer the P(M(S)|C) by 
+
+your causal identification algorithm 
+
+Estimate minimum sample 
+
+number for GEE and GCEE 
+
+Subject Iteration ( AI, 
+
+CPU, Crop , Fertilizer )
+
+Benefit -concerned 
+
+Report for Stakeholders 
+
+# …… Figure 7: The decision tree that how to use computational evaluation models in your own evaluation task. The GEE means generalized evaluation error and the GCEE means generalized causal evaluation error. C is evaluation condition, S is evaluation subject, and M is evaluation metric. P (M (S)|EC ) is the potential outcome of evaluation metric after deploying the subject given evaluation condition. 34 Samples/Confidence 0.5 0.95 0.99 0.999 10 E + 0 .186 E + 0 .387 E + 0 .480 E + 0 .588 
+
+20 E + 0 .132 E + 0 .274 E + 0 .339 E + 0 .416 
+
+30 E + 0 .107 E + 0 .223 E + 0 .277 E + 0 .339 
+
+100 E + 0 .059 E + 0 .122 E + 0 .152 E + 0 .186 
+
+1000 E + 0 .0186 E + 0 .0387 E + 0 .0480 E + 0 .0588 
+
+10000 E + 0 .00589 E + 0 .0122 E + 0 .0151 E + 0 .0186 
+
+100000 E + 0 .00186 E + 0 .00387 E + 0 .00480 E + 0 .00588 
+
+1000000 E + 0 .000589 E + 0 .00122 E + 0 .00152 E + 0 .00186 
+
+10000000 E + 0 .000186 E + 0 .000387 E + 0 .000480 E + 0 .000588 
+
+100000000 E + 0 .0000589 E + 0 .000122 E + 0 .000152 E + 0 .000186 
+
+1000000000 E + 0 .0000186 E + 0 .0000387 E + 0 .0000480 E + 0 .0000588 
+
+Table 14: Upper bound of normalized generalized error. E is the empirical prediction error. Samples/Confidence 0.5 0.95 0.99 0.999 10 2E + 0 .372 2E + 0 .774 2E + 0 .960 2E + 1 .18                                                                                 
+
+> 20 2E+ 0 .263 2E+ 0 .547 2E+ 0 .678 2E+ 0 .831
+> 30 2E+ 0 .215 2E+ 0 .447 2E+ 0 .554 2E+ 0 .679
+> 100 2E+ 0 .118 2E+ 0 .245 2E+ 0 .303 2E+ 0 .372
+> 1000 2E+ 0 .0372 2E+ 0 .0774 2E+ 0 .0960 2E+ 0 .118
+> 10000 2E+ 0 .0118 2E+ 0 .0245 2E+ 0 .0303 2E+ 0 .0372
+> 100000 2E+ 0 .00372 2E+ 0 .00774 2E+ 0 .00960 2E+ 0 .0118
+> 1000000 2E+ 0 .00118 2E+ 0 .00245 2E+ 0 .00303 2E+ 0 .00372
+> 10000000 2E+ 0 .000372 2E+ 0 .000774 2E+ 0 .000960 2E+ 0 .00118
+> 100000000 2E+ 0 .000118 2E+ 0 .000245 2E+ 0 .000303 2E+ 0 .000372
+> 1000000000 2E+ 0 .0000372 2E+ 0 .0000774 2E+ 0 .0000960 2E+ 0 .000118
+
+Table 15: Upper bound of normalized generalized causal effect error. E is the empirical prediction error. 35 NeurIPS Paper Checklist 1192 
+
+1. Claims 1193 
+
+Question: Do the main claims made in the abstract and introduction accurately reflect the 1194 
+
+paper’s contributions and scope? 1195 
+
+Answer: [Yes] 1196 
+
+Justification: Section 1 is introduction. 1197 
+
+Guidelines: 1198 
+
+• The answer NA means that the abstract and introduction do not include the claims 1199 
+
+made in the paper. 1200 
+
+• The abstract and/or introduction should clearly state the claims made, including the 1201 
+
+contributions made in the paper and important assumptions and limitations. A No or 1202 
+
+NA answer to this question will not be perceived well by the reviewers. 1203 
+
+• The claims made should match theoretical and experimental results, and reflect how 1204 
+
+much the results can be expected to generalize to other settings. 1205 
+
+• It is fine to include aspirational goals as motivation as long as it is clear that these goals 1206 
+
+are not attained by the paper. 1207 
+
+2. Limitations 1208 
+
+Question: Does the paper discuss the limitations of the work performed by the authors? 1209 
+
+Answer: [Yes] 1210 
+
+Justification: Section 7 is limitation and conclusion. 1211 
+
+Guidelines: 1212 
+
+• The answer NA means that the paper has no limitation while the answer No means that 1213 
+
+the paper has limitations, but those are not discussed in the paper. 1214 
+
+• The authors are encouraged to create a separate "Limitations" section in their paper. 1215 
+
+• The paper should point out any strong assumptions and how robust the results are to 1216 
+
+violations of these assumptions (e.g., independence assumptions, noiseless settings, 1217 
+
+model well-specification, asymptotic approximations only holding locally). The authors 1218 
+
+should reflect on how these assumptions might be violated in practice and what the 1219 
+
+implications would be. 1220 
+
+• The authors should reflect on the scope of the claims made, e.g., if the approach was 1221 
+
+only tested on a few datasets or with a few runs. In general, empirical results often 1222 
+
+depend on implicit assumptions, which should be articulated. 1223 
+
+• The authors should reflect on the factors that influence the performance of the approach. 1224 
+
+For example, a facial recognition algorithm may perform poorly when image resolution 1225 
+
+is low or images are taken in low lighting. Or a speech-to-text system might not be 1226 
+
+used reliably to provide closed captions for online lectures because it fails to handle 1227 
+
+technical jargon. 1228 
+
+• The authors should discuss the computational efficiency of the proposed algorithms 1229 
+
+and how they scale with dataset size. 1230 
+
+• If applicable, the authors should discuss possible limitations of their approach to 1231 
+
+address problems of privacy and fairness. 1232 
+
+• While the authors might fear that complete honesty about limitations might be used by 1233 
+
+reviewers as grounds for rejection, a worse outcome might be that reviewers discover 1234 
+
+limitations that aren’t acknowledged in the paper. The authors should use their best 1235 
+
+judgment and recognize that individual actions in favor of transparency play an impor-1236 
+
+tant role in developing norms that preserve the integrity of the community. Reviewers 1237 
+
+will be specifically instructed to not penalize honesty concerning limitations. 1238 
+
+3. Theory assumptions and proofs 1239 
+
+Question: For each theoretical result, does the paper provide the full set of assumptions and 1240 
+
+a complete (and correct) proof? 1241 
+
+Answer: [Yes] 1242 
+
+36 Justification: Section 3 and appendix C are theoretical results and proofs. 1243 
+
+Guidelines: 1244 
+
+• The answer NA means that the paper does not include theoretical results. 1245 
+
+• All the theorems, formulas, and proofs in the paper should be numbered and cross-1246 
+
+referenced. 1247 
+
+• All assumptions should be clearly stated or referenced in the statement of any theorems. 1248 
+
+• The proofs can either appear in the main paper or the supplemental material, but if 1249 
+
+they appear in the supplemental material, the authors are encouraged to provide a short 1250 
+
+proof sketch to provide intuition. 1251 
+
+• Inversely, any informal proof provided in the core of the paper should be complemented 1252 
+
+by formal proofs provided in appendix or supplemental material. 1253 
+
+• Theorems and Lemmas that the proof relies upon should be properly referenced. 1254 
+
+4. Experimental result reproducibility 1255 
+
+Question: Does the paper fully disclose all the information needed to reproduce the main ex-1256 
+
+perimental results of the paper to the extent that it affects the main claims and/or conclusions 1257 
+
+of the paper (regardless of whether the code and data are provided or not)? 1258 
+
+Answer: [Yes] 1259 
+
+Justification: The experimental details were in appendix D, E, F. 1260 
+
+Guidelines: 1261 
+
+• The answer NA means that the paper does not include experiments. 1262 
+
+• If the paper includes experiments, a No answer to this question will not be perceived 1263 
+
+well by the reviewers: Making the paper reproducible is important, regardless of 1264 
+
+whether the code and data are provided or not. 1265 
+
+• If the contribution is a dataset and/or model, the authors should describe the steps taken 1266 
+
+to make their results reproducible or verifiable. 1267 
+
+• Depending on the contribution, reproducibility can be accomplished in various ways. 1268 
+
+For example, if the contribution is a novel architecture, describing the architecture fully 1269 
+
+might suffice, or if the contribution is a specific model and empirical evaluation, it may 1270 
+
+be necessary to either make it possible for others to replicate the model with the same 1271 
+
+dataset, or provide access to the model. In general. releasing code and data is often 1272 
+
+one good way to accomplish this, but reproducibility can also be provided via detailed 1273 
+
+instructions for how to replicate the results, access to a hosted model (e.g., in the case 1274 
+
+of a large language model), releasing of a model checkpoint, or other means that are 1275 
+
+appropriate to the research performed. 1276 
+
+• While NeurIPS does not require releasing code, the conference does require all submis-1277 
+
+sions to provide some reasonable avenue for reproducibility, which may depend on the 1278 
+
+nature of the contribution. For example 1279 
+
+(a) If the contribution is primarily a new algorithm, the paper should make it clear how 1280 
+
+to reproduce that algorithm. 1281 
+
+(b) If the contribution is primarily a new model architecture, the paper should describe 1282 
+
+the architecture clearly and fully. 1283 
+
+(c) If the contribution is a new model (e.g., a large language model), then there should 1284 
+
+either be a way to access this model for reproducing the results or a way to reproduce 1285 
+
+the model (e.g., with an open-source dataset or instructions for how to construct 1286 
+
+the dataset). 1287 
+
+(d) We recognize that reproducibility may be tricky in some cases, in which case 1288 
+
+authors are welcome to describe the particular way they provide for reproducibility. 1289 
+
+In the case of closed-source models, it may be that access to the model is limited in 1290 
+
+some way (e.g., to registered users), but it should be possible for other researchers 1291 
+
+to have some path to reproducing or verifying the results. 1292 
+
+5. Open access to data and code 1293 
+
+Question: Does the paper provide open access to the data and code, with sufficient instruc-1294 
+
+tions to faithfully reproduce the main experimental results, as described in supplemental 1295 
+
+material? 1296 
+
+37 Answer: [Yes] 1297 
+
+Justification: The code was in the supplementary material. The data is download or scrawled 1298 
+
+from website as shown in appendix D. We will push the source code, download link, 1299 
+
+preprocessed data, intermediate data, generated data to the GitHub in future. 1300 
+
+Guidelines: 1301 
+
+• The answer NA means that paper does not include experiments requiring code. 1302 
+
+• Please see the NeurIPS code and data submission guidelines ( https://nips.cc/ 1303 
+
+public/guides/CodeSubmissionPolicy ) for more details. 1304 
+
+• While we encourage the release of code and data, we understand that this might not be 1305 
+
+possible, so “No” is an acceptable answer. Papers cannot be rejected simply for not 1306 
+
+including code, unless this is central to the contribution (e.g., for a new open-source 1307 
+
+benchmark). 1308 
+
+• The instructions should contain the exact command and environment needed to run to 1309 
+
+reproduce the results. See the NeurIPS code and data submission guidelines ( https: 1310 
+
+//nips.cc/public/guides/CodeSubmissionPolicy ) for more details. 1311 
+
+• The authors should provide instructions on data access and preparation, including how 1312 
+
+to access the raw data, preprocessed data, intermediate data, and generated data, etc. 1313 
+
+• The authors should provide scripts to reproduce all experimental results for the new 1314 
+
+proposed method and baselines. If only a subset of experiments are reproducible, they 1315 
+
+should state which ones are omitted from the script and why. 1316 
+
+• At submission time, to preserve anonymity, the authors should release anonymized 1317 
+
+versions (if applicable). 1318 
+
+• Providing as much information as possible in supplemental material (appended to the 1319 
+
+paper) is recommended, but including URLs to data and code is permitted. 1320 
+
+6. Experimental setting/details 1321 
+
+Question: Does the paper specify all the training and test details (e.g., data splits, hyper-1322 
+
+parameters, how they were chosen, type of optimizer, etc.) necessary to understand the 1323 
+
+results? 1324 
+
+Answer: [Yes] 1325 
+
+Justification: The experimental details were in appendix D, E, and F. 1326 
+
+Guidelines: 1327 
+
+• The answer NA means that the paper does not include experiments. 1328 
+
+• The experimental setting should be presented in the core of the paper to a level of detail 1329 
+
+that is necessary to appreciate the results and make sense of them. 1330 
+
+• The full details can be provided either with the code, in appendix, or as supplemental 1331 
+
+material. 1332 
+
+7. Experiment statistical significance 1333 
+
+Question: Does the paper report error bars suitably and correctly defined or other appropriate 1334 
+
+information about the statistical significance of the experiments? 1335 
+
+Answer: [Yes] 1336 
+
+Justification: Section 6 reports 95% confidence interval in figure 3 with empirical distribu-1337 
+
+tion. 1338 
+
+Guidelines: 1339 
+
+• The answer NA means that the paper does not include experiments. 1340 
+
+• The authors should answer "Yes" if the results are accompanied by error bars, confi-1341 
+
+dence intervals, or statistical significance tests, at least for the experiments that support 1342 
+
+the main claims of the paper. 1343 
+
+• The factors of variability that the error bars are capturing should be clearly stated (for 1344 
+
+example, train/test split, initialization, random drawing of some parameter, or overall 1345 
+
+run with given experimental conditions). 1346 
+
+• The method for calculating the error bars should be explained (closed form formula, 1347 
+
+call to a library function, bootstrap, etc.) 1348 
+
+38 • The assumptions made should be given (e.g., Normally distributed errors). 1349 
+
+• It should be clear whether the error bar is the standard deviation or the standard error 1350 
+
+of the mean. 1351 
+
+• It is OK to report 1-sigma error bars, but one should state it. The authors should 1352 
+
+preferably report a 2-sigma error bar than state that they have a 96% CI, if the hypothesis 1353 
+
+of Normality of errors is not verified. 1354 
+
+• For asymmetric distributions, the authors should be careful not to show in tables or 1355 
+
+figures symmetric error bars that would yield results that are out of range (e.g. negative 1356 
+
+error rates). 1357 
+
+• If error bars are reported in tables or plots, The authors should explain in the text how 1358 
+
+they were calculated and reference the corresponding figures or tables in the text. 1359 
+
+8. Experiments compute resources 1360 
+
+Question: For each experiment, does the paper provide sufficient information on the com-1361 
+
+puter resources (type of compute workers, memory, time of execution) needed to reproduce 1362 
+
+the experiments? 1363 
+
+Answer: [Yes] 1364 
+
+Justification: Appendix D introduces the computer resources. 1365 
+
+Guidelines: 1366 
+
+• The answer NA means that the paper does not include experiments. 1367 
+
+• The paper should indicate the type of compute workers CPU or GPU, internal cluster, 1368 
+
+or cloud provider, including relevant memory and storage. 1369 
+
+• The paper should provide the amount of compute required for each of the individual 1370 
+
+experimental runs as well as estimate the total compute. 1371 
+
+• The paper should disclose whether the full research project required more compute 1372 
+
+than the experiments reported in the paper (e.g., preliminary or failed experiments that 1373 
+
+didn’t make it into the paper). 1374 
+
+9. Code of ethics 1375 
+
+Question: Does the research conducted in the paper conform, in every respect, with the 1376 
+
+NeurIPS Code of Ethics https://neurips.cc/public/EthicsGuidelines ?1377 
+
+Answer: [Yes] 1378 
+
+Justification: We checked the NeuralIPS Code of Ethics. 1379 
+
+Guidelines: 1380 
+
+• The answer NA means that the authors have not reviewed the NeurIPS Code of Ethics. 1381 
+
+• If the authors answer No, they should explain the special circumstances that require a 1382 
+
+deviation from the Code of Ethics. 1383 
+
+• The authors should make sure to preserve anonymity (e.g., if there is a special consid-1384 
+
+eration due to laws or regulations in their jurisdiction). 1385 
+
+10. Broader impacts 1386 
+
+Question: Does the paper discuss both potential positive societal impacts and negative 1387 
+
+societal impacts of the work performed? 1388 
+
+Answer: [No] 1389 
+
+Justification: It is mainly a theoretical research and it will not increase the gated release of 1390 
+
+models significantly because the computation requirement is not very high. There are some 1391 
+
+potential societal consequences of our work, none of which we feel must be specifically 1392 
+
+highlighted here. 1393 
+
+Guidelines: 1394 
+
+• The answer NA means that there is no societal impact of the work performed. 1395 
+
+• If the authors answer NA or No, they should explain why their work has no societal 1396 
+
+impact or why the paper does not address societal impact. 1397 
+
+39 • Examples of negative societal impacts include potential malicious or unintended uses 1398 
+
+(e.g., disinformation, generating fake profiles, surveillance), fairness considerations 1399 
+
+(e.g., deployment of technologies that could make decisions that unfairly impact specific 1400 
+
+groups), privacy considerations, and security considerations. 1401 
+
+• The conference expects that many papers will be foundational research and not tied 1402 
+
+to particular applications, let alone deployments. However, if there is a direct path to 1403 
+
+any negative applications, the authors should point it out. For example, it is legitimate 1404 
+
+to point out that an improvement in the quality of generative models could be used to 1405 
+
+generate deepfakes for disinformation. On the other hand, it is not needed to point out 1406 
+
+that a generic algorithm for optimizing neural networks could enable people to train 1407 
+
+models that generate Deepfakes faster. 1408 
+
+• The authors should consider possible harms that could arise when the technology is 1409 
+
+being used as intended and functioning correctly, harms that could arise when the 1410 
+
+technology is being used as intended but gives incorrect results, and harms following 1411 
+
+from (intentional or unintentional) misuse of the technology. 1412 
+
+• If there are negative societal impacts, the authors could also discuss possible mitigation 1413 
+
+strategies (e.g., gated release of models, providing defenses in addition to attacks, 1414 
+
+mechanisms for monitoring misuse, mechanisms to monitor how a system learns from 1415 
+
+feedback over time, improving the efficiency and accessibility of ML). 1416 
+
+11. Safeguards 1417 
+
+Question: Does the paper describe safeguards that have been put in place for responsible 1418 
+
+release of data or models that have a high risk for misuse (e.g., pretrained language models, 1419 
+
+image generators, or scraped datasets)? 1420 
+
+Answer: [Yes] 1421 
+
+Justification: Despite the open data we used, we also scraped a dataset of A-share stocks in 1422 
+
+China by the AkShare with MIT License. 1423 
+
+Guidelines: 1424 
+
+• The answer NA means that the paper poses no such risks. 1425 
+
+• Released models that have a high risk for misuse or dual-use should be released with 1426 
+
+necessary safeguards to allow for controlled use of the model, for example by requiring 1427 
+
+that users adhere to usage guidelines or restrictions to access the model or implementing 1428 
+
+safety filters. 1429 
+
+• Datasets that have been scraped from the Internet could pose safety risks. The authors 1430 
+
+should describe how they avoided releasing unsafe images. 1431 
+
+• We recognize that providing effective safeguards is challenging, and many papers do 1432 
+
+not require this, but we encourage authors to take this into account and make a best 1433 
+
+faith effort. 1434 
+
+12. Licenses for existing assets 1435 
+
+Question: Are the creators or original owners of assets (e.g., code, data, models), used in 1436 
+
+the paper, properly credited and are the license and terms of use explicitly mentioned and 1437 
+
+properly respected? 1438 
+
+Answer: [Yes] 1439 
+
+Justification: The website and license of used data have been introduced in the appendix D. 1440 
+
+Guidelines: 1441 
+
+• The answer NA means that the paper does not use existing assets. 1442 
+
+• The authors should cite the original paper that produced the code package or dataset. 1443 
+
+• The authors should state which version of the asset is used and, if possible, include a 1444 
+
+URL. 1445 
+
+• The name of the license (e.g., CC-BY 4.0) should be included for each asset. 1446 
+
+• For scraped data from a particular source (e.g., website), the copyright and terms of 1447 
+
+service of that source should be provided. 1448 
+
+40 • If assets are released, the license, copyright information, and terms of use in the 1449 
+
+package should be provided. For popular datasets, paperswithcode.com/datasets 1450 
+
+has curated licenses for some datasets. Their licensing guide can help determine the 1451 
+
+license of a dataset. 1452 
+
+• For existing datasets that are re-packaged, both the original license and the license of 1453 
+
+the derived asset (if it has changed) should be provided. 1454 
+
+• If this information is not available online, the authors are encouraged to reach out to 1455 
+
+the asset’s creators. 1456 
+
+13. New assets 1457 
+
+Question: Are new assets introduced in the paper well documented and is the documentation 1458 
+
+provided alongside the assets? 1459 
+
+Answer: [Yes] 1460 
+
+Justification: We collected A-share data in China by AKshare. The dataset is too large to 1461 
+
+upload. We uploaded the code to collect the data. 1462 
+
+Guidelines: 1463 
+
+• The answer NA means that the paper does not release new assets. 1464 
+
+• Researchers should communicate the details of the dataset/code/model as part of their 1465 
+
+submissions via structured templates. This includes details about training, license, 1466 
+
+limitations, etc. 1467 
+
+• The paper should discuss whether and how consent was obtained from people whose 1468 
+
+asset is used. 1469 
+
+• At submission time, remember to anonymize your assets (if applicable). You can either 1470 
+
+create an anonymized URL or include an anonymized zip file. 1471 
+
+14. Crowdsourcing and research with human subjects 1472 
+
+Question: For crowdsourcing experiments and research with human subjects, does the paper 1473 
+
+include the full text of instructions given to participants and screenshots, if applicable, as 1474 
+
+well as details about compensation (if any)? 1475 
+
+Answer: [NA] 1476 
+
+Justification: [NA] 1477 
+
+Guidelines: 1478 
+
+• The answer NA means that the paper does not involve crowdsourcing nor research with 1479 
+
+human subjects. 1480 
+
+• Including this information in the supplemental material is fine, but if the main contribu-1481 
+
+tion of the paper involves human subjects, then as much detail as possible should be 1482 
+
+included in the main paper. 1483 
+
+• According to the NeurIPS Code of Ethics, workers involved in data collection, curation, 1484 
+
+or other labor should be paid at least the minimum wage in the country of the data 1485 
+
+collector. 1486 
+
+15. Institutional review board (IRB) approvals or equivalent for research with human 1487 
+
+subjects 1488 
+
+Question: Does the paper describe potential risks incurred by study participants, whether 1489 
+
+such risks were disclosed to the subjects, and whether Institutional Review Board (IRB) 1490 
+
+approvals (or an equivalent approval/review based on the requirements of your country or 1491 
+
+institution) were obtained? 1492 
+
+Answer: [NA] 1493 
+
+Justification: [NA] 1494 
+
+Guidelines: 1495 
+
+• The answer NA means that the paper does not involve crowdsourcing nor research with 1496 
+
+human subjects. 1497 
+
+• Depending on the country in which research is conducted, IRB approval (or equivalent) 1498 
+
+may be required for any human subjects research. If you obtained IRB approval, you 1499 
+
+should clearly state this in the paper. 1500 
+
+41 • We recognize that the procedures for this may vary significantly between institutions 1501 
+
+and locations, and we expect authors to adhere to the NeurIPS Code of Ethics and the 1502 
+
+guidelines for their institution. 1503 
+
+• For initial submissions, do not include any information that would break anonymity (if 1504 
+
+applicable), such as the institution conducting the review. 1505 
+
+16. Declaration of LLM usage 1506 
+
+Question: Does the paper describe the usage of LLMs if it is an important, original, or 1507 
+
+non-standard component of the core methods in this research? Note that if the LLM is used 1508 
+
+only for writing, editing, or formatting purposes and does not impact the core methodology, 1509 
+
+scientific rigorousness, or originality of the research, declaration is not required. 1510 
+
+Answer: [NA] 1511 
+
+Justification: [NA] 1512 
+
+Guidelines: 1513 
+
+• The answer NA means that the core method development in this research does not 1514 
+
+involve LLMs as any important, original, or non-standard components. 1515 
+
+• Please refer to our LLM policy ( https://neurips.cc/Conferences/2025/LLM )1516 
+
+for what should or should not be described. 1517 
+
+42
