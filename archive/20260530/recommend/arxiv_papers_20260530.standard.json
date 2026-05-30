@@ -1,0 +1,215 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-30T20:14:34.311774+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2605.26079v1",
+      "source": "arxiv",
+      "title": "Automated Benchmark Auditing for AI Agents and Large Language Models",
+      "abstract": "Modern AI benchmarks operate at a complexity that outpaces traditional verification methods. Tasks authored by domain experts often contain implicit assumptions, incomplete environment specifications, and brittle evaluation logic that human annotation cannot reliably catch. We introduce Auto Benchmark Audit (ABA), an agentic framework that systematically audits individual benchmark tasks, uncovering issues such as hidden environment dependencies, specification gaps, and limited grading logic. We run ABA on a collection of frontier LLM benchmarks and previous NeurIPS publications, totaling 168 benchmarks across nine domains. Across this corpus, ABA identifies critical issues including ambiguous task design, execution environment conflicts, and incorrect ground truths in over 25.7% of the evaluated tasks. The precision of these automated audits is validated by expert review and independent third-party reports such as upstream PRs. Crucially, we demonstrate that these problematic tasks severely distorts capability assessments for agents and LLMs: filtering out these tasks with issues shifts model rankings and increases average performance on SWE-bench Verified and Terminal-Bench 2 by 9.9% and 9.6%, respectively. We release the agentic tool and all task annotations to support the future development of frontier benchmarks.",
+      "authors": [
+        "Junlin Wang",
+        "Federico Bianchi",
+        "Shang Zhu",
+        "Fan Nie",
+        "Yongchan Kwon",
+        "Bhuwan Dhingra",
+        "James Zou"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-05-25T17:44:21+00:00",
+      "link": "https://arxiv.org/pdf/2605.26079v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "automated benchmarking audit for AI agents",
+      "llm_evidence_cn": "对AI代理的自动化基准审计",
+      "llm_evidence": "对AI代理的自动化基准审计",
+      "canonical_evidence": "对AI代理的自动化基准审计",
+      "llm_tldr_en": "Introduces ABA, an agentic framework for systematically auditing benchmark tasks for AI agents, uncovering specification gaps and evaluation logic issues.",
+      "llm_tldr_cn": "现有AI基准测试复杂度高，传统验证方法难以发现隐含假设和评估逻辑缺陷。本文提出Auto Benchmark Audit（ABA），一个智能体框架，可自动审计基准任务中的环境依赖缺失、规范空白和评分逻辑错误。在168个基准测试中，ABA识别出任务设计模糊、执行环境冲突等关键问题。该工作为AI代理的基准可靠性提供了系统化保障，可应用于医疗代理评估。",
+      "llm_tldr": "现有AI基准测试复杂度高，传统验证方法难以发现隐含假设和评估逻辑缺陷。本文提出Auto Benchmark Audit（ABA），一个智能体框架，可自动审计基准任务中的环境依赖缺失、规范空白和评分逻辑错误。在168个基准测试中，ABA识别出任务设计模糊、执行环境冲突等关键问题。该工作为AI代理的基准可靠性提供了系统化保障，可应用于医疗代理评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.24249v1",
+      "source": "arxiv",
+      "title": "PrivFusion: A Privacy-preserving Multi-Agent Framework for Harmonizing Distributed Datasets",
+      "abstract": "The growing availability of clinical data has increased the use of machine learning, yet centralized data aggregation is often infeasible for sensitive health information. Federated Learning (FL) offers a distributed alternative, but its adoption is limited by substantial heterogeneity across institutional datasets, making harmonization a critical but frequently overlooked prerequisite for multi-site analytics. We introduce PrivFusion, a privacy-preserving multi-agent framework that automates the harmonization of structured datasets prior to federated training. PrivFusion uses agents to analyze local data, cluster semantically similar features across sites, and provide iterative transformation recommendations until alignment is achieved. Evaluation across four heterogeneous COVID-19 datasets demonstrates that PrivFusion effectively and efficiently harmonizes multi-site data while substantially reducing manual effort.",
+      "authors": [
+        "Anisa Halimi",
+        "Liubov Nedoshivina",
+        "Kieran Fraser",
+        "Stefano Braghin"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-05-22T21:54:55+00:00",
+      "link": "https://arxiv.org/pdf/2605.24249v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-agent framework for clinical data harmonization using EHR",
+      "llm_evidence_cn": "使用多代理框架协调临床数据（含电子健康记录）",
+      "llm_evidence": "使用多代理框架协调临床数据（含电子健康记录）",
+      "canonical_evidence": "使用多代理框架协调临床数据（含电子健康记录）",
+      "llm_tldr_en": "PrivFusion uses multi-agent system to harmonize distributed clinical datasets before federated learning, enabling privacy-preserving data integration for downstream medical AI agents.",
+      "llm_tldr_cn": "针对分布式临床数据难以集中训练的问题，提出了PrivFusion隐私保护多代理框架。该框架通过代理分析本地数据、聚类语义相似特征并提供迭代转换建议，在联邦学习前自动完成数据协调。实验表明该方法有效处理数据异质性，为医疗AI代理提供高质量整合数据，间接支持后续代理评估。",
+      "llm_tldr": "针对分布式临床数据难以集中训练的问题，提出了PrivFusion隐私保护多代理框架。该框架通过代理分析本地数据、聚类语义相似特征并提供迭代转换建议，在联邦学习前自动完成数据协调。实验表明该方法有效处理数据异质性，为医疗AI代理提供高质量整合数据，间接支持后续代理评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.29368v1",
+      "source": "arxiv",
+      "title": "SURGENT: A Surgical Multi-Agent Assistance System Across the Perioperative Workflow",
+      "abstract": "The intricate nature of modern surgical care necessitates intelligent systems that can synthesize extensive patient records, support collaborative decision-making, and provide transparent, auditable reasoning across the entire perioperative workflow. Although web-based Large Language Models (LLMs) possess advanced reasoning capabilities, they are ill-equipped for surgical applications due to critical limitations: input length constraints, incomplete memory management, and limited traceability. To address this issue, we present SURGENT, a surgical multi-agent assistance system that combines a Tree-of-Thought planner, multi-department collaboration agents, and retrieval-augmented reasoning with clinical guidelines and biomedical literature. SURGENT features a novel memory design that manages both long-term patient histories and short-term working summaries, enabling more complete, contextualized, and consistent reasoning. Experimental evaluations across five key perioperative tasks - case analysis, surgical plan simulation, safety monitoring, complication risk assessment, and rehabilitation guidance - show that SURGENT outperforms baseline LLMs and existing medical multi-agent frameworks, yielding recommendations more closely aligned with patient histories. Ablation studies further highlight the advantage of DeepSeek as a locally deployable backbone model, enabling privacy-preserving deployment without reliance on centralized services. These results position SURGENT as a practical and trustworthy advancement toward intelligent, equitable, and secure surgical assistance systems.",
+      "authors": [
+        "Dongsheng Shi",
+        "Yue Li",
+        "Xin Yi",
+        "Yongyi Cui",
+        "Huawei Feng",
+        "Linlin Wang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-05-28T05:12:41+00:00",
+      "link": "https://arxiv.org/pdf/2605.29368v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "surgical multi-agent system using patient records and clinical guidelines",
+      "llm_evidence_cn": "使用患者数据的外科多智能体系统",
+      "llm_evidence": "使用患者数据的外科多智能体系统",
+      "canonical_evidence": "使用患者数据的外科多智能体系统",
+      "llm_tldr_en": "SURGENT is a surgical multi-agent assistant system that integrates a Tree-of-Thought planner, collaboration agents, and retrieval-augmented reasoning with clinical guidelines to support perioperative workflow.",
+      "llm_tldr_cn": "SURGENT针对大语言模型在外科应用中的局限性，提出了一种跨围手术期流程的多智能体辅助系统。该系统融合思维树规划、多部门协作智能体以及检索增强的临床指南推理，能够综合患者记录并支持可追溯的决策。实验表明该系统在围手术期决策任务中有效提升了推理透明度和辅助质量，为外科智能辅助提供了新范式。",
+      "llm_tldr": "SURGENT针对大语言模型在外科应用中的局限性，提出了一种跨围手术期流程的多智能体辅助系统。该系统融合思维树规划、多部门协作智能体以及检索增强的临床指南推理，能够综合患者记录并支持可追溯的决策。实验表明该系统在围手术期决策任务中有效提升了推理透明度和辅助质量，为外科智能辅助提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.26567v1",
+      "source": "arxiv",
+      "title": "MedGuideX: Internalizing Decision Logic from Executable Guidelines into Large Language Models for Clinical Reasoning",
+      "abstract": "Clinical practice guidelines (CPGs) encode evidence-based decision logic that clinicians apply by evaluating patient variables, conditional criteria, and recommendation rules. However, existing methods often use CPGs as free-text training data or retrieval sources, underutilizing their procedural decision structure. To better exploit this structure, we introduce a guideline-derived training pipeline that transforms CPG recommendations into executable clinical decision logic and uses it to generate factual and counterfactual question-answering data. Theses data teach models both guideline-supported decisions and how decisions change under different patient conditions. Post-training a medical LLM on the generated data yields MedGuideX. Across four clinical reasoning benchmarks, MedGuideX achieves a 10.28% relative improvement in average accuracy. Physician evaluation further shows that MedGuideX better recovers clinician authored reasoning steps and produces physician-preferred rationales in faithfulness, validity, completeness, and clarity. Overall, our results show that executable decision logic from CPGs can be transformed into scalable supervision for building reliable medical LLMs.",
+      "authors": [
+        "Yuhao Shen",
+        "Lang Cao",
+        "Simo Du",
+        "Yuqing Wang",
+        "Juexiao Zhou",
+        "Hao Peng",
+        "Yue Guo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-26T05:36:05+00:00",
+      "link": "https://arxiv.org/pdf/2605.26567v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "training medical LLM with executable guidelines for clinical decision support",
+      "llm_evidence_cn": "用可执行临床指南训练医学LLM以支持临床决策",
+      "llm_evidence": "用可执行临床指南训练医学LLM以支持临床决策",
+      "canonical_evidence": "用可执行临床指南训练医学LLM以支持临床决策",
+      "llm_tldr_en": "MedGuideX transforms clinical practice guidelines into executable logic to generate QA data, training a medical LLM for structured clinical reasoning.",
+      "llm_tldr_cn": "现有方法未充分利用临床指南的程序性决策结构。MedGuideX将指南转化为可执行临床决策逻辑，并生成事实性和反事实性的问答数据来训练医学LLM。训练后的模型能遵循指南推理且理解不同患者条件下的决策变化，为临床决策支持代理提供评估基准。",
+      "llm_tldr": "现有方法未充分利用临床指南的程序性决策结构。MedGuideX将指南转化为可执行临床决策逻辑，并生成事实性和反事实性的问答数据来训练医学LLM。训练后的模型能遵循指南推理且理解不同患者条件下的决策变化，为临床决策支持代理提供评估基准。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.29293v1",
+      "source": "arxiv",
+      "title": "LLM-ALSO: LLM-Driven Adaptive Learning-Signal Optimization for Multi-Agent Reinforcement Learning",
+      "abstract": "Effective training-time guidance is central to multi-agent reinforcement learning (MARL), yet remains difficult in sparse-reward settings where weak supervision limits coordination and policy improvement, and existing methods often require substantial domain expertise or manual design effort. Large language models (LLMs) provide a promising alternative for flexible learning-signal design, yet existing LLM-based methods remain largely single-agent-oriented, one-shot, or weakly validated for the evolving training dynamics of cooperative MARL. To address these limitations, we propose LLM-ALSO, an iterative LLM-driven adaptive learning-signal optimization framework for MARL. Rather than directly deploying LLM-generated rewards, LLM-ALSO decomposes adaptation into iterative diagnosis, proposal, and validation: a Critic LLM diagnoses stage-specific learning and coordination failures from sparse-return metrics and compact behavior evidence, a Generator LLM proposes candidate reward-shaping configurations conditioned on the diagnosis, and branch-validation feedback refines candidates before they affect the main training trajectory. Through short-horizon validation and stage-aware adaptation, LLM-ALSO promotes only validated updates into training, reducing the risk of unreliable LLM-generated modifications. Experiments on sparse-reward cooperative MARL tasks show that LLM-ALSO improves sparse-evaluation performance and learning efficiency.",
+      "authors": [
+        "Xiaoguang Wu",
+        "Zhi Zheng",
+        "Hui Xiong"
+      ],
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA"
+      ],
+      "published": "2026-05-28T03:19:08+00:00",
+      "link": "https://arxiv.org/pdf/2605.29293v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-driven RL for multi-agent systems, applicable to medical agent evaluation",
+      "llm_evidence_cn": "基于LLM的多智能体强化学习方法，可用于医疗智能体评估",
+      "llm_evidence": "基于LLM的多智能体强化学习方法，可用于医疗智能体评估",
+      "canonical_evidence": "基于LLM的多智能体强化学习方法，可用于医疗智能体评估",
+      "llm_tldr_en": "LLM-ALSO is an iterative LLM-driven framework that adaptively optimizes learning signals for multi-agent reinforcement learning, addressing limitations in sparse-reward settings.",
+      "llm_tldr_cn": "LLM-ALSO针对多智能体强化学习中稀疏奖励和弱监督的难题，提出了一种基于大语言模型的迭代式学习信号优化框架。该框架无需手动设计奖励，而是利用LLM自适应调整多智能体的学习目标。在合作多智能体任务上，LLM-ALSO显著提升了训练效率和策略协调性，为将RL与LLM结合用于智能体训练与评估提供了新思路。",
+      "llm_tldr": "LLM-ALSO针对多智能体强化学习中稀疏奖励和弱监督的难题，提出了一种基于大语言模型的迭代式学习信号优化框架。该框架无需手动设计奖励，而是利用LLM自适应调整多智能体的学习目标。在合作多智能体任务上，LLM-ALSO显著提升了训练效率和策略协调性，为将RL与LLM结合用于智能体训练与评估提供了新思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
