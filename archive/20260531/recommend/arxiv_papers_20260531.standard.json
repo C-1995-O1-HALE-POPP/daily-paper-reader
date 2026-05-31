@@ -1,0 +1,222 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-05-31T20:43:12.006647+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2605.27860v1",
+      "source": "arxiv",
+      "title": "C-MIG: Multi-view Information Gain-based Retrieval-Augmented Generation for Clinical Diagnosis Reasoning",
+      "abstract": "Retrieval-augmented generation combined with reinforcement learning has shown promise for grounding large language models in trustworthy medical evidence. However, existing methods rely on exact-match binary rewards, which in clinical diagnosis cause two issues: (i) semantically relevant but non-verbatim steps receive zero signal, discarding valuable learning signals; and (ii) uni-dimensional rewards cannot effectively supervise heterogeneous reasoning capabilities. To address these issues, we propose C-MIG, a Multi-view Information Gain-based retrieval-augmented generation framework for Clinical diagnosis. C-MIG estimates information gain under a frozen reference model from two complementary views, retrieved-document and document-refinement, to jointly guide what to retrieve and how to refine, alleviating the issues of valuable reward signal loss and credit assignment. We further design a multi-subquery retrieval augmentation strategy that improves knowledge recall coverage in clinical diagnostic scenarios. Comprehensive experiments on four medical benchmarks demonstrate that C-MIG achieves the best performance among all RAG-RL methods on both in-domain and out-of-domain sets, and outperforms state-of-the-art general-purpose LLMs for clinical diagnosis.",
+      "authors": [
+        "Yuwei Miao",
+        "Gen Li",
+        "Yunsheng Zeng",
+        "Xiandong Li",
+        "Yujin Wang",
+        "Siyu Chen",
+        "Luning Wang",
+        "Yunhao Qiao",
+        "Junfeng Wang",
+        "Jianwei Lv",
+        "Bo Yuan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-27T02:20:21+00:00",
+      "link": "https://arxiv.org/pdf/2605.27860v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning for clinical diagnosis reasoning",
+      "llm_evidence_cn": "用于临床诊断推理的强化学习",
+      "llm_evidence": "用于临床诊断推理的强化学习",
+      "canonical_evidence": "用于临床诊断推理的强化学习",
+      "llm_tldr_en": "C-MIG uses RL with multi-view information gain to train retrieval-augmented generation for clinical diagnosis, offering transferable rewards for agent evaluation.",
+      "llm_tldr_cn": "C-MIG针对临床诊断中检索增强生成与强化学习结合时精确匹配奖励信号不足的问题，提出基于多视角信息增益的奖励机制。该方法通过冻结参考模型从两个互补视角估计信息增益，有效监督异构推理能力。实验表明其在临床诊断推理任务上优于现有方法。该工作为医疗代理评估中RL奖励设计提供了可迁移的方法。",
+      "llm_tldr": "C-MIG针对临床诊断中检索增强生成与强化学习结合时精确匹配奖励信号不足的问题，提出基于多视角信息增益的奖励机制。该方法通过冻结参考模型从两个互补视角估计信息增益，有效监督异构推理能力。实验表明其在临床诊断推理任务上优于现有方法。该工作为医疗代理评估中RL奖励设计提供了可迁移的方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.26079v2",
+      "source": "arxiv",
+      "title": "Automated Benchmark Auditing for AI Agents and Large Language Models",
+      "abstract": "Modern AI benchmarks operate at a complexity that outpaces traditional verification methods. Tasks authored by domain experts often contain implicit assumptions, incomplete environment specifications, and brittle evaluation logic that human annotation cannot reliably catch. We introduce Auto Benchmark Audit (ABA), an agentic framework that systematically audits individual benchmark tasks, uncovering issues such as hidden environment dependencies, specification gaps, and limited grading logic. We run ABA on a collection of frontier LLM benchmarks and previous NeurIPS publications, totaling 168 benchmarks across nine domains. Across this corpus, ABA identifies critical issues including ambiguous task design, execution environment conflicts, and incorrect ground truths in over 25.7% of the evaluated tasks. The precision of these automated audits is validated by expert review and independent third-party reports such as upstream PRs. Crucially, we demonstrate that these problematic tasks severely distorts capability assessments for agents and LLMs: filtering out these tasks with issues shifts model rankings and increases average performance on SWE-bench Verified and Terminal-Bench 2 by 9.9% and 9.6%, respectively. We release the agentic tool and all task annotations to support the future development of frontier benchmarks.",
+      "authors": [
+        "Junlin Wang",
+        "Federico Bianchi",
+        "Shang Zhu",
+        "Fan Nie",
+        "Yongchan Kwon",
+        "Bhuwan Dhingra",
+        "James Zou"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-05-25T17:44:21+00:00",
+      "link": "https://arxiv.org/pdf/2605.26079v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Automated benchmark audit framework applicable to medical agent benchmarks",
+      "llm_evidence_cn": "适用于医疗代理基准测试的自动化基准审查框架",
+      "llm_evidence": "适用于医疗代理基准测试的自动化基准审查框架",
+      "canonical_evidence": "适用于医疗代理基准测试的自动化基准审查框架",
+      "llm_tldr_en": "Auto Benchmark Audit (ABA) systematically audits AI agent benchmarks, identifying issues like hidden dependencies and limited grading logic across 168 benchmarks. It provides a method to ensure benchmark quality for agent evaluation.",
+      "llm_tldr_cn": "现有的AI基准测试因复杂度高而常常包含隐含假设和脆弱的评估逻辑，传统人工验证难以发现。本文提出自动化基准审查框架ABA，由多个LLM代理协同工作，系统性地审计基准任务，识别隐藏的环境依赖、规格缺口和评分逻辑限制等问题。在涉及九个领域的168个基准上的实验结果显示，ABA能够有效发现关键设计缺陷。该方法为医疗代理基准的构建和评估提供了通用的质量保障工具，有助于提高医疗代理评估的可靠性和标准化。",
+      "llm_tldr": "现有的AI基准测试因复杂度高而常常包含隐含假设和脆弱的评估逻辑，传统人工验证难以发现。本文提出自动化基准审查框架ABA，由多个LLM代理协同工作，系统性地审计基准任务，识别隐藏的环境依赖、规格缺口和评分逻辑限制等问题。在涉及九个领域的168个基准上的实验结果显示，ABA能够有效发现关键设计缺陷。该方法为医疗代理基准的构建和评估提供了通用的质量保障工具，有助于提高医疗代理评估的可靠性和标准化。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.26352v1",
+      "source": "arxiv",
+      "title": "RICE-PO: Turning Retrieval Interactions into Credit Signals for Reasoning Agents",
+      "abstract": "Retrieval is increasingly moving from one-shot matching toward interactive reasoning, where language agents iteratively inspect evidence, reformulate queries, and search again. Training such agents raises a credit-assignment challenge: executable actions such as queries or summaries can be directly evaluated by the retriever, while latent reasoning steps are not directly observable and only affect future executable actions. This asymmetry makes outcome-level reward assignment unreliable, as the same final reward may credit reasoning steps that did not actually shape retrieval success. We propose RICE-PO, a critic-free policy optimization framework that converts retrieval interactions into localized learning signals. RICE-PO selects high-uncertainty executable actions as anchors, evaluates local counterfactual branches using retrieval metrics, and propagates credit to latent reasoning steps only when reasoning-to-action influence is strong and future residual effects are stable. On BRIGHT and BEIR, RICE-PO consistently outperforms prompt-based agents and group-based RL baselines under the same retriever setting. These results show that the structure of agent-environment interaction itself can provide useful supervision for training reasoning-based retrieval agents.",
+      "authors": [
+        "Mingchen Li",
+        "Hansi Zeng",
+        "Zhuo Qian",
+        "Jiatan Huang",
+        "Hamed Zamani",
+        "Hong Yu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-05-25T21:56:29+00:00",
+      "link": "https://arxiv.org/pdf/2605.26352v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "policy optimization framework for agent training using retrieval interactions",
+      "llm_evidence_cn": "利用检索交互进行代理训练的策略优化框架",
+      "llm_evidence": "利用检索交互进行代理训练的策略优化框架",
+      "canonical_evidence": "利用检索交互进行代理训练的策略优化框架",
+      "llm_tldr_en": "RICE-PO proposes a critic-free policy optimization that converts retrieval interactions into localized credit signals for reasoning agents, addressing credit assignment in interactive retrieval.",
+      "llm_tldr_cn": "RICE-PO针对交互式检索中推理代理的信用分配难题，提出无评论家的策略优化框架。该方法通过选择高不确定性步骤，将检索交互转化为局部学习信号，避免最终奖励不可靠分配。实验表明其能有效提升代理在推理任务中的表现，为医疗代理评估中RL训练提供可借鉴的信用分配方法。",
+      "llm_tldr": "RICE-PO针对交互式检索中推理代理的信用分配难题，提出无评论家的策略优化框架。该方法通过选择高不确定性步骤，将检索交互转化为局部学习信号，避免最终奖励不可靠分配。实验表明其能有效提升代理在推理任务中的表现，为医疗代理评估中RL训练提供可借鉴的信用分配方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.27621v1",
+      "source": "arxiv",
+      "title": "Agents that Matter: Optimizing Multi-Agent LLMs via Removal-Based Attribution",
+      "abstract": "As multi-agent systems (MAS) become increasingly complex, identifying the contributions of individual agents is critical for system optimization. However, existing approaches lack a rigorous, unified framework for credit assignment. In this work, we formalize agent attribution as a cooperative game, parameterized by the coalition distribution, removal protocol, and target metric. Using this framework, we show that Leave-One-Out (LOO) identifies bottleneck agents as effectively as combinatorial methods, but at a fraction of the computational cost. We also demonstrate that removal protocols induce distinct games: Agent ablation isolates structural bottlenecks, whereas introspective LLM judges fail to faithfully approximate this behavior. Furthermore, to evaluate the utility of specific agent backbones, we introduce attribution via model replacement. By substituting underlying models of low-contribution agents, we improve task performance by up to 17% while reducing cost by up to 35% across three benchmarks. Finally, we apply our framework to audit a medical MAS, revealing that agent contributions to diagnostic accuracy and ethical behavior are often decoupled. By intervening on counterproductive roles, we observe an increase in ethics alignment while maintaining diagnostic accuracy. Overall, this work provides a principled approach for cost-effective MAS attribution and intervention.",
+      "authors": [
+        "Mingyu Lu",
+        "Yushan Huang",
+        "Chris Lin",
+        "Su-In Lee"
+      ],
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA",
+        "cs.CL"
+      ],
+      "published": "2026-05-26T19:39:27+00:00",
+      "link": "https://arxiv.org/pdf/2605.27621v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "general method for multi-agent attribution and optimization relevant to medical agent evaluation",
+      "llm_evidence_cn": "多智能体归因优化的通用方法，可应用于医疗智能体评估",
+      "llm_evidence": "多智能体归因优化的通用方法，可应用于医疗智能体评估",
+      "canonical_evidence": "多智能体归因优化的通用方法，可应用于医疗智能体评估",
+      "llm_tldr_en": "Formalizes agent attribution as a cooperative game and shows Leave-One-Out effectively identifies bottleneck agents, providing a method for optimizing multi-agent systems that can transfer to medical agent evaluation.",
+      "llm_tldr_cn": "该论文将多智能体归因形式化为合作博弈，参数化联合分布、移除协议和目标指标，证明留一法可有效识别瓶颈智能体。实验显示留一法与组合方法效果相当但成本更低。该方法为多智能体系统优化提供通用框架，可迁移至医疗智能体评估中用于识别关键模块或评估贡献。",
+      "llm_tldr": "该论文将多智能体归因形式化为合作博弈，参数化联合分布、移除协议和目标指标，证明留一法可有效识别瓶颈智能体。实验显示留一法与组合方法效果相当但成本更低。该方法为多智能体系统优化提供通用框架，可迁移至医疗智能体评估中用于识别关键模块或评估贡献。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.29483v1",
+      "source": "arxiv",
+      "title": "VitalAgent: A Tool-Augmented Agent for Reactive and Proactive Physiological Monitoring over Wearable Health Data",
+      "abstract": "Wearable devices enable continuous monitoring of physiological signals such as ECG and PPG, but existing mHealth systems are largely limited to task-specific prediction pipelines or reactive question answering over static summaries. They lack the ability to support temporal reasoning, persistent physiological context, and proactive monitoring over long-term signal streams. We propose VitalAgent, a tool-augmented agentic framework for ECG/PPG-based mHealth that supports both reactive question answering and proactive monitoring. VitalAgent is built on a longitudinal physiological memory and a tool-augmented reasoning interface that enables dynamic computation over raw signals. We further introduce VitalBench, a longitudinal physiological monitoring benchmark dataset comprising 1,862 QA pairs for reactive question answering and 90.2 hours of continuous ECG/PPG recordings for proactive monitoring, covering cardiac, physical activity, and stress-related tasks. Experiments demonstrate that VitalAgent achieves over 30% improvement over prompt-based and ReAct baselines in reactive evaluation and supports proactive alert monitoring over long-term physiological signals, highlighting the importance of dynamic tool use and long-term physiological monitoring.",
+      "authors": [
+        "Di Zhu",
+        "Yu Yvonne Wu",
+        "Hong Jia",
+        "Aaqib Saeed",
+        "Vassilis Kostakos",
+        "Ting Dang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-28T07:10:14+00:00",
+      "link": "https://arxiv.org/pdf/2605.29483v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark for reactive and proactive physiological monitoring agents",
+      "llm_evidence_cn": "用于反应性和主动性生理监测智能体的基准",
+      "llm_evidence": "用于反应性和主动性生理监测智能体的基准",
+      "canonical_evidence": "用于反应性和主动性生理监测智能体的基准",
+      "llm_tldr_en": "Proposes VitalAgent, a tool-augmented agent for wearable health data monitoring, and VitalBench for evaluating reactive and proactive capabilities.",
+      "llm_tldr_cn": "可穿戴健康监测系统缺乏时序推理和主动监测能力。本文提出VitalAgent，一个工具增强的智能体框架，支持反应性问答和主动监测，并引入VitalBench基准评估其性能。实验表明VitalAgent在长序列数据处理和主动预警方面优于基线。该工作展示了工具增强智能体在可穿戴健康领域的潜力。",
+      "llm_tldr": "可穿戴健康监测系统缺乏时序推理和主动监测能力。本文提出VitalAgent，一个工具增强的智能体框架，支持反应性问答和主动监测，并引入VitalBench基准评估其性能。实验表明VitalAgent在长序列数据处理和主动预警方面优于基线。该工作展示了工具增强智能体在可穿戴健康领域的潜力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
