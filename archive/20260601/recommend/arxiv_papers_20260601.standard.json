@@ -1,0 +1,306 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-01T22:06:03.794657+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2605.30637v1",
+      "source": "arxiv",
+      "title": "EHRBench: An Automated and Reliable EHR-based Benchmark for Clinical Decision Making with LLMs",
+      "abstract": "Clinical decision-making (CDM) is central to real-world clinical workflows, where clinicians infer diagnoses, select treatments, or anticipate future health outcomes under incomplete evidence. LLMs are increasingly used to support these decisions due to strong language capabilities, broad biomedical knowledge, and efficiency, yet the reliability of LLMs on real-world clinical decision tasks remains insufficiently understood. To evaluate CDM models, especially LLM-based models, an ideal and practical medical decision benchmark should be constructed via an automated yet reliable pipeline to ensure both scale and quality. Moreover, the grounding of a CDM benchmark in real patient EHRs can better support evaluation on practical CDM tasks that require substantive biomedical knowledge and clinical inference. To fill the gaps, we introduce EHRBench, an automated and reliable EHR-grounded benchmark for evaluating LLM-based clinical decision-making at scale. To ensure scalability and reliability, EHRBench is constructed through an EHR-LLM-KB(knowledge-base) interaction pipeline. For efficiency, we use a specialized LLM to automatically convert encounter-level EHR trajectories into structured templates and deterministically instantiate the templates into QA items. In parallel, we apply systematic KB-based verification and enrichment to filter hallucinated or ambiguous relations and to improve reliability. Using this pipeline, we construct nearly 1M (960,067) QA items spanning three core inference-required clinical decision tasks: diagnosis, treatment, and prognosis. We benchmark more than 30 representative LLMs on EHRBench and provide detailed analyses of performance and robustness. The results show consistent capability trends across settings, further validating the reliability of EHRBench and highlighting actionable gaps toward clinically reliable LLM systems.",
+      "authors": [
+        "Yuzhang Xie",
+        "Keqi Han",
+        "Yunpeng Xiao",
+        "Hejie Cui",
+        "Guanchen Wu",
+        "Ziyang Zhang",
+        "Kai Shu",
+        "Jiaying Lu",
+        "Xiao Hu",
+        "Carl Yang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-28T22:38:26+00:00",
+      "link": "https://arxiv.org/pdf/2605.30637v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "EHR benchmark for clinical decision making with LLMs",
+      "llm_evidence_cn": "基于EHR的LLM临床决策基准",
+      "llm_evidence": "基于EHR的LLM临床决策基准",
+      "canonical_evidence": "基于EHR的LLM临床决策基准",
+      "llm_tldr_en": "EHRBench provides an automated, reliable EHR-based benchmark for evaluating LLMs on clinical decision-making tasks.",
+      "llm_tldr_cn": "临床决策是医疗工作流的核心，但LLM在真实决策中的可靠性未知。EHRBench通过自动化管线构建基于真实患者EHR的基准，涵盖诊断、治疗和预后任务。评估结果显示LLM在部分任务上表现不佳，强调了专门基准的必要性。",
+      "llm_tldr": "临床决策是医疗工作流的核心，但LLM在真实决策中的可靠性未知。EHRBench通过自动化管线构建基于真实患者EHR的基准，涵盖诊断、治疗和预后任务。评估结果显示LLM在部分任务上表现不佳，强调了专门基准的必要性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.30590v1",
+      "source": "arxiv",
+      "title": "Counterfactual Evaluation Reveals Hidden Capability Profiles in Clinical LLMs and Agents",
+      "abstract": "Two clinical AI systems can score nearly identically on coverage-based rubrics yet behave radically differently when their patient inputs change: one updates its recommendations to match the new clinical signal, while the other produces the same output regardless. We introduce the Causal Sensitivity Score (CSS), a pre-registered interventional metric that mutates oncology tumor-board cases along five clinically meaningful dimensions - biomarker flips, prior-treatment failures, biomarker removals, surgery-status changes, and stage perturbations - and scores whether each model updates its recommendations in the pre-registered correct direction using a {0, 0.5, 1.0} scale. Benchmarked against the Consensus Match Score (CMS), a coverage-based weighted recall metric, six frontier models from three labs evaluated in single-shot inference across 224 cases rank in nearly opposite orders: all six models change rank, the CMS-worst model becomes CSS-best, and one upper-mid CMS model ranks last on CSS. We further surface a universal safety blind spot: every frontier model fails on surgery-status interventions (at most 17.2% CSS on Family D), a finding CMS does not expose. The metric also transfers to tool-using agents: in a ReAct-style experiment, tool use improves CSS for five of six models (+2.5 to +20.3 percentage points), yet the lowest-CSS model retrieves the same chart sections and still fails to update its recommendations - revealing a structural responsiveness deficit visible only under counterfactual evaluation. Cross-judge replication and three-rater medical-professional validation confirm the aggregate findings. Interventional pre-registered metrics like CSS complement coverage-based evaluation for clinical AI agents: they capture responsiveness that coverage metrics miss and offer a candidate dense reward signal for future agentic RL systems.",
+      "authors": [
+        "Matt Turk"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-05-28T21:37:06+00:00",
+      "link": "https://arxiv.org/pdf/2605.30590v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "counterfactual evaluation metric for clinical LLMs and agents using oncology case mutations",
+      "llm_evidence_cn": "基于肿瘤病例突变的反事实评估指标，用于临床大语言模型和智能体",
+      "llm_evidence": "基于肿瘤病例突变的反事实评估指标，用于临床大语言模型和智能体",
+      "canonical_evidence": "基于肿瘤病例突变的反事实评估指标，用于临床大语言模型和智能体",
+      "llm_tldr_en": "Introduces Causal Sensitivity Score (CSS) that mutates clinical cases to reveal hidden differences in clinical LLM and agent behavior beyond coverage-based metrics.",
+      "llm_tldr_cn": "临床AI系统可能在覆盖度指标上分数相近，但对患者输入变化的反应却截然不同。本文提出因果敏感性评分（CSS），通过对肿瘤委员会病例进行五种有临床意义的维度突变（如生物标志物翻转、既往治疗失败等），评估模型是否按预期方向更新推荐。在大模型和智能体上的实验表明，CSS能揭示覆盖度指标隐藏的能力差异，提供了更细粒度的临床智能体评估方法。该工作为电子健康记录驱动的医疗智能体评估提供了新指标。",
+      "llm_tldr": "临床AI系统可能在覆盖度指标上分数相近，但对患者输入变化的反应却截然不同。本文提出因果敏感性评分（CSS），通过对肿瘤委员会病例进行五种有临床意义的维度突变（如生物标志物翻转、既往治疗失败等），评估模型是否按预期方向更新推荐。在大模型和智能体上的实验表明，CSS能揭示覆盖度指标隐藏的能力差异，提供了更细粒度的临床智能体评估方法。该工作为电子健康记录驱动的医疗智能体评估提供了新指标。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2605.29146v2",
+      "source": "arxiv",
+      "title": "SafeRx-Agent: A Knowledge-Grounded Multi-Agent Framework for Safe and Explainable Medication Recommendation",
+      "abstract": "Medication recommendation predicts medications for patient visits, but existing methods still face two key challenges. At the model level, traditional drug recommendation methods only predict structured drug codes with limited evidence grounding, while LLM agents can use richer clinical context but may lack safety verification and traceability. At the task level, existing benchmarks often use broad medication categories, which ignore subgroup-level safety differences and can lead to risk overestimation. We introduce the first fine-grained medication recommendation setting based on fourth-level ATC code generation. We propose Safe Prescription Agent (SafeRx-Agent), a knowledge-grounded multi-agent framework that uses patient context, external clinical knowledge, and safety verification to recommend traceable medication sets. Experimental results on MIMIC-III and MIMIC-IV datasets show that SafeRx-Agent improves fine-grained medication prediction accuracy while controlling drug interactions, contraindications, and medication set size.",
+      "authors": [
+        "Xinyu Wang",
+        "Hanwei Wu",
+        "Zhenghan Tai",
+        "Sicheng Lyu",
+        "Qincheng Lu",
+        "Ziyu Zhao",
+        "Jijun Chi",
+        "Jingrui Tian",
+        "Xiao-Wen Chang",
+        "Ziyang Song"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-05-27T22:15:48+00:00",
+      "link": "https://arxiv.org/pdf/2605.29146v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "medical agent for medication recommendation using clinical context",
+      "llm_evidence_cn": "医疗智能体用于用药推荐，使用临床上下文",
+      "llm_evidence": "医疗智能体用于用药推荐，使用临床上下文",
+      "canonical_evidence": "医疗智能体用于用药推荐，使用临床上下文",
+      "llm_tldr_en": "Same as v1: SafeRx-Agent framework for safe medication recommendation with multi-agent and knowledge grounding.",
+      "llm_tldr_cn": "与v1相同：SafeRx-Agent是基于知识的多智能体框架，用于安全用药推荐，在细粒度ATC代码生成任务上表现出色。",
+      "llm_tldr": "与v1相同：SafeRx-Agent是基于知识的多智能体框架，用于安全用药推荐，在细粒度ATC代码生成任务上表现出色。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2605.27922v1",
+      "source": "arxiv",
+      "title": "Harness-Bench: Measuring Harness Effects across Models in Realistic Agent Workflows",
+      "abstract": "LLM agents are increasingly deployed as executable systems that use tools, modify workspaces, and produce concrete artifacts. In such workflows, performance depends not only on the base model, but also on the harness: the system layer that manages context, tools, state, constraints, permissions, tracing, and recovery. However, existing benchmarks typically abstract away execution, compare complete agent systems, or hold the harness fixed, making execution-layer variation difficult to study. We introduce Harness-Bench, a diagnostic benchmark for evaluating configuration-level harness effects in realistic agent workflows. Harness-Bench evaluates representative harness configurations across multiple model backends under shared task environments, budgets, and evaluation protocols, while preserving each harness's native execution behavior. The benchmark contains 106 sandboxed offline tasks constructed from practical agent-use patterns and manually reviewed for realism, solvability, oracle-checkability, and integrity. Each run records final artifacts, execution traces, usage statistics, and validator outputs, enabling analysis beyond final completion. Across 5,194 execution trajectories, we observe substantial variation in completion, process quality, efficiency, and failure behavior across model-harness pairings. These results suggest that agent capability should be reported at the model-harness configuration level rather than attributed to the base model alone. Our analysis further identifies recurring execution-alignment failures, where plausible reasoning becomes decoupled from tool feedback, workspace state, evidence, or verifiable output contracts. Harness-Bench provides a reproducible foundation for diagnosing and improving reliable, efficient, and auditable agent execution stacks.",
+      "authors": [
+        "Yilun Yao",
+        "Xinyu Tan",
+        "Chao-Hsuan Liu",
+        "Yaoming Li",
+        "Zhengyang Wang",
+        "Wenhan Yu",
+        "Zhewen Tan",
+        "Yuxuan Tian",
+        "Guangxiang Zhao",
+        "Lin Sun",
+        "Xiangzheng Zhang",
+        "Tong Yang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-05-27T03:47:35+00:00",
+      "link": "https://arxiv.org/pdf/2605.27922v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "benchmark for agent workflow evaluation with harness configurations",
+      "llm_evidence_cn": "智能体工作流评估基准，关注harness配置",
+      "llm_evidence": "智能体工作流评估基准，关注harness配置",
+      "canonical_evidence": "智能体工作流评估基准，关注harness配置",
+      "llm_tldr_en": "Harness-Bench is a diagnostic benchmark for evaluating harness effects in agent workflows, enabling measurement of execution-layer variations.",
+      "llm_tldr_cn": "现有基准通常忽略智能体执行层的harness变化。本文提出Harness-Bench，一个诊断基准，系统评估不同harness配置对智能体性能的影响。在多种模型后端上测试，揭示了harness选择对结果的显著影响，为智能体评估方法提供重要参考。",
+      "llm_tldr": "现有基准通常忽略智能体执行层的harness变化。本文提出Harness-Bench，一个诊断基准，系统评估不同harness配置对智能体性能的影响。在多种模型后端上测试，揭示了harness选择对结果的显著影响，为智能体评估方法提供重要参考。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.26255v2",
+      "source": "arxiv",
+      "title": "Prospective evaluation of multimodal respiratory failure prediction: Do chest X-rays improve performance beyond EHR signals?",
+      "abstract": "Early prediction of respiratory failure is critical for timely clinical intervention in intensive care units. Existing electronic health record (EHR)-based models can continuously monitor physiologic deterioration, but they may not fully capture pulmonary pathophysiology reflected in chest radiographs (CXRs). In this study, we ask whether CXR information improves prospective prediction of invasive mechanical ventilation beyond EHR signals alone. We develop a gated multimodal framework that integrates structured EHR time-series data with CXR foundation-model representations. The gating module adaptively controls the contribution of imaging features based on patient-specific clinical context, allowing the model to selectively rely on imaging information when it is informative. We prospectively evaluate the framework for predicting invasive mechanical ventilation within 24 hours in ICU patients and compare it with an established EHR-only model (Ventio), physician predictions obtained at matched clinical time points, and alternative multimodal variants. The gated multimodal models achieved higher discrimination than the EHR-only baseline, with AUROC values of 0.860 and 0.858 using REMEDIS and MedInsight CXR representations, respectively, compared with 0.752 for Ventio. Relative to physician predictions, the multimodal framework substantially improved sensitivity while maintaining favorable specificity. Compared with the EHR-only model, multimodal integration increased specificity and positive predictive value, suggesting that CXR information can refine risk estimation in selected patients. These findings support adaptive multimodal fusion as a practical strategy for incorporating imaging into prospective respiratory failure prediction.",
+      "authors": [
+        "Xiaolei Lu",
+        "Shamim Nemati"
+      ],
+      "primary_category": "eess.IV",
+      "categories": [
+        "eess.IV",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-05-25T18:25:47+00:00",
+      "link": "https://arxiv.org/pdf/2605.26255v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uses EHR data and evaluates predictive model performance, relevant to evaluating clinical decision support with EHR",
+      "llm_evidence_cn": "使用EHR数据并评估预测模型性能，与基于EHR的临床决策支持评估相关",
+      "llm_evidence": "使用EHR数据并评估预测模型性能，与基于EHR的临床决策支持评估相关",
+      "canonical_evidence": "使用EHR数据并评估预测模型性能，与基于EHR的临床决策支持评估相关",
+      "llm_tldr_en": "Proposes a gated multimodal framework integrating EHR time-series with CXR foundation-model representations for respiratory failure prediction; prospective evaluation shows CXR adds predictive value beyond EHR signals alone.",
+      "llm_tldr_cn": "现有基于EHR的呼吸衰竭预测模型虽然能持续监测生理恶化，但可能无法充分反映胸部X光中的肺病理信息。本文开发了一种门控多模态框架，将结构化EHR时间序列数据与CXR基础模型表示相结合，并通过门控模块根据患者临床背景自适应调节影像特征的贡献。前瞻性评估结果表明，在EHR信号基础上加入CXR信息能显著提升对侵入性机械通气的预测性能。该工作为多模态临床决策支持系统的评估提供了实用方法学框架。",
+      "llm_tldr": "现有基于EHR的呼吸衰竭预测模型虽然能持续监测生理恶化，但可能无法充分反映胸部X光中的肺病理信息。本文开发了一种门控多模态框架，将结构化EHR时间序列数据与CXR基础模型表示相结合，并通过门控模块根据患者临床背景自适应调节影像特征的贡献。前瞻性评估结果表明，在EHR信号基础上加入CXR信息能显著提升对侵入性机械通气的预测性能。该工作为多模态临床决策支持系统的评估提供了实用方法学框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2605.28025v1",
+      "source": "arxiv",
+      "title": "MIRA: A Bilingual Benchmark for Medical Information Response Audit",
+      "abstract": "Large language models (LLMs) are increasingly used to provide public-facing health information, yet existing safety evaluations overlook whether responses preserve comparable medical information across different user phrasings of the same question. To address this, we introduce the Medical Information Response Audit (MIRA), a bilingual, controlled benchmark that assesses whether LLMs provide comparable medical information across user-side language, register, and health literacy signals. MIRA contains 4,320 prompts built from 60 medically reviewed, low-risk health questions. Across five mainstream LLMs, models answered all medical questions, but responses to low health-literacy signals consistently omitted more key information, provided fewer concrete next steps, and offered less support for independent judgment. We term this pattern Differential Information Dilution (DID). Language effects are model-specific rather than uniformly worse for non-English prompts. A comparison with 300 real-world health queries provides preliminary evidence of rank-order validity. A knowledge-guided mitigation prompt reduces information dilution for most models, with the largest reductions in underinformative simplification observed for Claude (~8%) and Qwen (~6%).",
+      "authors": [
+        "Mengyu Xu",
+        "Qiaoxin Yang",
+        "Qianqian Wang",
+        "Xiwei Dai",
+        "Weiyi Wu",
+        "Chongyang Gao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CY"
+      ],
+      "published": "2026-05-27T06:28:03+00:00",
+      "link": "https://arxiv.org/pdf/2605.28025v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "bilingual benchmark for medical LLM response audit",
+      "llm_evidence_cn": "双语医疗LLM响应审计基准",
+      "llm_evidence": "双语医疗LLM响应审计基准",
+      "canonical_evidence": "双语医疗LLM响应审计基准",
+      "llm_tldr_en": "MIRA is a bilingual controlled benchmark assessing whether LLMs provide comparable medical information across different user phrasings. It reveals that low health-literacy prompts cause omitted key information.",
+      "llm_tldr_cn": "MIRA是一个双语控噪基准，评估LLM在不同用户表述下是否提供等价的医疗信息。基准包含4320个提示，发现低健康素养表述会导致关键信息缺失。该基准为医疗信息响应的安全审计提供了标准化工具。",
+      "llm_tldr": "MIRA是一个双语控噪基准，评估LLM在不同用户表述下是否提供等价的医疗信息。基准包含4320个提示，发现低健康素养表述会导致关键信息缺失。该基准为医疗信息响应的安全审计提供了标准化工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2605.30680v1",
+      "source": "arxiv",
+      "title": "Healthcare Mechanisms from Policy-as-Code Search under Strategic Provider Response",
+      "abstract": "Healthcare mechanisms are inseparable from the strategic provider response they induce: existing healthcare AI benchmarks hold this response fixed and so cannot evaluate mechanisms by the equilibrium they produce. We recast hospital mechanism design as program synthesis for language models: typed, inspectable rule programs are executed and scored by Medi-Sim, a multi-agent simulator with five strategic provider channels (coding, selection, delay, effort, triage). An incentive sweep recovers classical health-economics findings as adjacent regimes -- up-coding and low-complexity-patient selection under profit pressure, and Goodhart-style drift where measured performance becomes anti-correlated with true outcomes -- and a single audit lever exposes pressure migration: closing the coding channel more than doubles low-complexity selection. LLM-guided evolutionary code search over the same rule-program space then synthesizes an inspectable mixed-objective program that eliminates up-coding, halves rejection, and retains most of the profit-oriented baseline's funds.",
+      "authors": [
+        "Zihan Wang",
+        "Xiang Xu",
+        "Hongyuan Zha",
+        "Wenhao Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA"
+      ],
+      "published": "2026-05-29T00:21:54+00:00",
+      "link": "https://arxiv.org/pdf/2605.30680v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "healthcare AI benchmark with multi-agent simulator for mechanism evaluation",
+      "llm_evidence_cn": "医疗AI基准，使用多智能体模拟器评估机制",
+      "llm_evidence": "医疗AI基准，使用多智能体模拟器评估机制",
+      "canonical_evidence": "医疗AI基准，使用多智能体模拟器评估机制",
+      "llm_tldr_en": "Proposes Medi-Sim, a multi-agent simulator to evaluate healthcare mechanisms under strategic provider responses, recovering classic health-economics findings.",
+      "llm_tldr_cn": "现有医疗AI基准固定了提供者响应，无法评估机制产生的均衡。本文提出Medi-Sim多智能体模拟器，将医院机制设计表述为程序合成，通过五个战略渠道模拟策略行为。实验恢复了健康经济学经典结果，为医疗智能体评估提供了新范式。",
+      "llm_tldr": "现有医疗AI基准固定了提供者响应，无法评估机制产生的均衡。本文提出Medi-Sim多智能体模拟器，将医院机制设计表述为程序合成，通过五个战略渠道模拟策略行为。实验恢复了健康经济学经典结果，为医疗智能体评估提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

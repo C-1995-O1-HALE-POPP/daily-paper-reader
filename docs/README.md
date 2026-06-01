@@ -6,38 +6,43 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-05-31
-- 运行时间：2026-05-31 20:46:33 UTC
+- 最新运行日期：2026-06-01
+- 运行时间：2026-06-01 22:11:12 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：0
-- 速读区：5
+- 本次总论文数：7
+- 精读区：3
+- 速读区：4
 
 ### 今日简报（AI）
-今日速读5篇论文，精读0篇，最高分7.0来自《C-MIG》。  
-最值得关注的是临床诊断推理的检索增强生成（C-MIG）和将检索交互转化为推理智能体信用信号的RICE-PO。  
-下一步可深入阅读这两篇，了解多视图信息增益与信用信号机制在AI推理中的应用。
-- 详情：[/202605/31/README](/202605/31/README)
+今日共推荐7篇论文，精读3篇、速读4篇，核心聚焦临床LLM的评估与医疗政策机制分析。  
+最值得关注的方向是EHRBench（10分）与反事实评估（9分），两者分别从自动基准和隐藏能力角度揭示LLM在临床决策中的可信度。  
+建议优先精读这两篇高分论文，理解如何通过自动化基准和反事实方法更可靠地评估医疗AI。
+- 详情：[/202606/01/README](/202606/01/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [EHRBench: An Automated and Reliable EHR-based Benchmark for Clinical Decision Making with LLMs](/202606/01/2605.30637v1-ehrbench-an-automated-and-reliable-ehr-based-benchmark-for-clinical-decision-making-with-llms)  
+   标签：评分：10.0/10、query:ehr-agent
+   evidence：基于EHR的LLM临床决策基准
+2. [Counterfactual Evaluation Reveals Hidden Capability Profiles in Clinical LLMs and Agents](/202606/01/2605.30590v1-counterfactual-evaluation-reveals-hidden-capability-profiles-in-clinical-llms-and-agents)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：基于肿瘤病例突变的反事实评估指标，用于临床大语言模型和智能体
+3. [SafeRx-Agent: A Knowledge-Grounded Multi-Agent Framework for Safe and Explainable Medication Recommendation](/202606/01/2605.29146v2-saferx-agent-a-knowledge-grounded-multi-agent-framework-for-safe-and-explainable-medication-recommendation)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：医疗智能体用于用药推荐，使用临床上下文
 
 ### 速读区论文标签
-1. [C-MIG: Multi-view Information Gain-based Retrieval-Augmented Generation for Clinical Diagnosis Reasoning](/202605/31/2605.27860v1-c-mig-multi-view-information-gain-based-retrieval-augmented-generation-for-clinical-diagnosis-reasoning)  
+1. [Harness-Bench: Measuring Harness Effects across Models in Realistic Agent Workflows](/202606/01/2605.27922v1-harness-bench-measuring-harness-effects-across-models-in-realistic-agent-workflows)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：用于临床诊断推理的强化学习
-2. [Automated Benchmark Auditing for AI Agents and Large Language Models](/202605/31/2605.26079v2-automated-benchmark-auditing-for-ai-agents-and-large-language-models)  
+   evidence：智能体工作流评估基准，关注harness配置
+2. [MIRA: A Bilingual Benchmark for Medical Information Response Audit](/202606/01/2605.28025v1-mira-a-bilingual-benchmark-for-medical-information-response-audit)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：双语医疗LLM响应审计基准
+3. [Healthcare Mechanisms from Policy-as-Code Search under Strategic Provider Response](/202606/01/2605.30680v1-healthcare-mechanisms-from-policy-as-code-search-under-strategic-provider-response)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：医疗AI基准，使用多智能体模拟器评估机制
+4. [Prospective evaluation of multimodal respiratory failure prediction: Do chest X-rays improve performance beyond EHR signals?](/202606/01/2605.26255v2-prospective-evaluation-of-multimodal-respiratory-failure-prediction-do-chest-x-rays-improve-performance-beyond-ehr-signals)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：适用于医疗代理基准测试的自动化基准审查框架
-3. [RICE-PO: Turning Retrieval Interactions into Credit Signals for Reasoning Agents](/202605/31/2605.26352v1-rice-po-turning-retrieval-interactions-into-credit-signals-for-reasoning-agents)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：利用检索交互进行代理训练的策略优化框架
-4. [Agents that Matter: Optimizing Multi-Agent LLMs via Removal-Based Attribution](/202605/31/2605.27621v1-agents-that-matter-optimizing-multi-agent-llms-via-removal-based-attribution)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：多智能体归因优化的通用方法，可应用于医疗智能体评估
-5. [VitalAgent: A Tool-Augmented Agent for Reactive and Proactive Physiological Monitoring over Wearable Health Data](/202605/31/2605.29483v1-vitalagent-a-tool-augmented-agent-for-reactive-and-proactive-physiological-monitoring-over-wearable-health-data)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：用于反应性和主动性生理监测智能体的基准
+   evidence：使用EHR数据并评估预测模型性能，与基于EHR的临床决策支持评估相关
 
 
 <div class="dpr-home-promo-card">
