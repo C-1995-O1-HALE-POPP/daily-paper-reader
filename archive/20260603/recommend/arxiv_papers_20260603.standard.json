@@ -1,0 +1,93 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-03T22:52:15.959186+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.01301v1",
+      "source": "arxiv",
+      "title": "Med-HEAL: Analyzing and Mitigating Hallucinations in Medical LLMs with Hallucination-Aware In-Context Learning",
+      "abstract": "Hallucinations in medical large language models (LLMs) pose serious risks for clinical decision support, particularly when models must reason over complex electronic health records (EHRs). However, existing benchmarks often lack a realistic clinical context and provide limited insight into how hallucinations can be mitigated in practice. We introduce Med-HEAL, a framework for systematically identifying, analyzing, and mitigating hallucinations in medical LLMs using clinically grounded data. Building on the EHRNoteQA benchmark derived from MIMIC-IV discharge summaries, we construct a hallucination dataset by evaluating BioMistral-7B on open-ended clinical question answering tasks. Model outputs are labeled through a dual evaluation pipeline that combines LLM-as-a-Judge assessment (GPT-4o) with human auditing by medical student reviewers, producing correctness judgments and annotations of reasoning errors via a custom web-based evaluation system.   We then leverage this dataset to investigate mitigation strategies: a self-critique pipeline, in which the test model reviews its own answers to detect potential errors and regenerates responses for flagged cases, and retrieval-augmented in-context learning (RA-ICL), which exposes the model to hallucinated and corrected examples. Experiments across five open-source LLMs-BioMistral, Llama-3.1, DeepSeek, Qwen2.5, and Qwen3, show that the self-critique strategy improves accuracy for three of five models (p < 0.05) without requiring parameter updates.   Med-HEAL provides both a reusable hallucination dataset and a practical framework for studying and mitigating hallucinations in medical LLMs, supporting safer deployment of AI systems in clinical environments. Our code and data are publicly available at https://github.com/yimingliao-blad/med-heal.git.",
+      "authors": [
+        "Yiming Liao",
+        "Zeno Franco",
+        "Jose Eduardo Lizarraga Mazaba",
+        "Keke Chen"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-05-31T15:43:42+00:00",
+      "link": "https://arxiv.org/pdf/2606.01301v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "medical LLM hallucination framework using EHRNoteQA from MIMIC-IV EHR data",
+      "llm_evidence_cn": "基于MIMIC-IV EHR数据的医学大语言模型幻觉分析与缓解框架",
+      "llm_evidence": "基于MIMIC-IV EHR数据的医学大语言模型幻觉分析与缓解框架",
+      "canonical_evidence": "基于MIMIC-IV EHR数据的医学大语言模型幻觉分析与缓解框架",
+      "llm_tldr_en": "Med-HEAL systematically identifies, analyzes, and mitigates hallucinations in medical LLMs using EHRNoteQA derived from MIMIC-IV, evaluating BioMistral-7B on open-ended clinical QA.",
+      "llm_tldr_cn": "医学大语言模型在电子健康记录推理时存在严重幻觉风险，但现有基准缺乏临床上下文。本文提出Med-HEAL框架，基于MIMIC-IV出院摘要构建的EHRNoteQA基准，创建幻觉数据集，系统评估BioMistral-7B在开放式临床问答中的幻觉，并通过幻觉感知的上下文学习进行缓解。实验证明该方法有效减少幻觉，为医学AI的安全应用提供保障。",
+      "llm_tldr": "医学大语言模型在电子健康记录推理时存在严重幻觉风险，但现有基准缺乏临床上下文。本文提出Med-HEAL框架，基于MIMIC-IV出院摘要构建的EHRNoteQA基准，创建幻觉数据集，系统评估BioMistral-7B在开放式临床问答中的幻觉，并通过幻觉感知的上下文学习进行缓解。实验证明该方法有效减少幻觉，为医学AI的安全应用提供保障。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.00922v1",
+      "source": "arxiv",
+      "title": "A Machine-to-Machine Knowledge-Guided LLM Agent for Generalizable Radiotherapy Treatment Planning",
+      "abstract": "In this work, we propose a prototype machine-to-machine (M2M) knowledge-guided Large Language Model (LLM) framework for automated radiotherapy treatment planning. In the proposed paradigm, Treatment Planning Parameter (TPP) distribution knowledge discovered by a Deep Reinforcement Learning (DRL) agent is transferred to an LLM agent through in-context learning, enabling autonomous iterative planning without human intervention. While standard LLM-based planning often lacks physical intuition and struggles with convergence, the integration of DRL-derived guidance constrains the agent to a physically valid parameter space. Experimental evaluations are performed across three diverse planning scenarios: basic prostate cases, complex prostate configurations with increased organ-at-risk (OAR) constraints, and liver cases. The evaluation results demonstrate that the guided LLM agent consistently achieves optimal planning scores while significantly reducing the number of iterations compared to unguided planning. Analysis of the final TPP configurations reveals that the agent successfully learns a hierarchical priority of objectives, effectively restoring a logical \"cause-and-effect\" relationship between parameter tuning and dosimetric outcomes. Crucially, this prototype framework exhibits robust generalizability, maintaining high planning quality regardless of specific patient anatomy, treatment site, or initial plan quality. By bridging the specialized optimization of DRL with the adaptive reasoning of LLMs, this M2M framework establishes a scalable foundation towards generalizable autonomous treatment planning, ultimately benefiting clinical practice in realistic environments.",
+      "authors": [
+        "Md Mainul Abrar",
+        "Xun Jia",
+        "Yujie Chi"
+      ],
+      "primary_category": "physics.med-ph",
+      "categories": [
+        "physics.med-ph",
+        "cs.RO"
+      ],
+      "published": "2026-05-30T23:14:30+00:00",
+      "link": "https://arxiv.org/pdf/2606.00922v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL-guided LLM agent for radiotherapy planning, combines RL and LLM in medical agent context",
+      "llm_evidence_cn": "强化学习指导的LLM放射治疗计划智能体，在医疗智能体中结合强化学习和大语言模型",
+      "llm_evidence": "强化学习指导的LLM放射治疗计划智能体，在医疗智能体中结合强化学习和大语言模型",
+      "canonical_evidence": "强化学习指导的LLM放射治疗计划智能体，在医疗智能体中结合强化学习和大语言模型",
+      "llm_tldr_en": "Proposes a DRL knowledge-guided LLM agent for radiotherapy planning, enabling autonomous iterative planning without human intervention.",
+      "llm_tldr_cn": "标准基于大语言模型的计划缺乏物理直觉且收敛困难。本文提出机器到机器知识引导框架，将深度强化学习代理发现的参数分布知识通过上下文学迁移给大语言模型代理，约束搜索空间。在前列腺等三种场景上验证，实现自主迭代计划。",
+      "llm_tldr": "标准基于大语言模型的计划缺乏物理直觉且收敛困难。本文提出机器到机器知识引导框架，将深度强化学习代理发现的参数分布知识通过上下文学迁移给大语言模型代理，约束搜索空间。在前列腺等三种场景上验证，实现自主迭代计划。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Reinforcement learning and LLM in medical agent evaluation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
