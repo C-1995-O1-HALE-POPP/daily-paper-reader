@@ -1,0 +1,720 @@
+Title: VentAgent: When LLMs Learn to Breathe – Multi-Objective Arbitration for ARDS Ventilation
+
+URL Source: https://arxiv.org/pdf/2606.04632v1
+
+Published Time: Thu, 04 Jun 2026 01:02:34 GMT
+
+Number of Pages: 22
+
+Markdown Content:
+# VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation 
+
+# Teqi Hao ∗
+
+School of Electronic and Electrical Engineering, Shanghai University of Engineering Science Shanghai, Shanghai, China 
+
+# Yuxuan Fu ∗
+
+School of Electronic and Electrical Engineering, Shanghai University of Engineering Science Shanghai, Shanghai, China 
+
+# Xiaoyu Tan ∗
+
+Tencent Youtu Lab Shanghai, Shanghai, China 
+
+# Shaojie Shi 
+
+Artificial Intelligence Innovation and Incubation Institute, Fudan University Shanghai, Shanghai, China 
+
+# Bohao Lv 
+
+Artificial Intelligence Innovation and Incubation Institute, Fudan University Shanghai, Shanghai, China 
+
+# Yinghui Xu 
+
+Artificial Intelligence Innovation and Incubation Institute, Fudan University Shanghai, Shanghai, China 
+
+# Xihe Qiu †
+
+School of Electronic and Electrical Engineering, Shanghai University of Engineering Science Shanghai, Shanghai, China qiuxihe1993@gmail.com 
+
+## Abstract 
+
+Mechanical ventilation for Acute Respiratory Distress Syndrome (ARDS) mandates a delicate equilibrium between competing phys-iological objectives: oxygenation, lung protection, and acid-base homeostasis. However, current data-driven paradigms, particularly those imitating retrospective Electronic Health Records (EHR), suf-fer fundamentally from imitation bias . Much like an image classifier relying on background scenery rather than the object, these models often capture superficial statistical correlations from inconsistent human demonstrations (e.g., associating passive settings with sur-vival simply because they are prevalent in stable patients), failing to generalize to volatile, out-of-distribution phenotypes. Further-more, standard Reinforcement Learning (RL) methods struggle to navigate the adversarial trade-offs inherent in critical care, often collapsing into opaque “black boxes” that lack clinical safety as-surances. To address these structural deficiencies, we introduce 
+
+VentAgent , a hierarchical framework where Large Language Mod-els (LLMs) learn to “breathe” by acting as transparent arbitrators. We reformulate the ventilation task not as a single-objective op-timization, but as a dynamic Multi-Objective Arbitration process. 
+
+VentAgent decouples decision-making into three interpretable stages: Perception , Planning , and Orchestration . By leveraging the  
+
+> ∗Both authors contributed equally to this work.
+> †Corresponding author. Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. Copyrights for components of this work owned by others than the author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee. Request permissions from permissions@acm.org.
+> KDD ’26, Jeju, Korea
+> ©2026 Copyright held by the owner/author(s). Publication rights licensed to ACM. ACM ISBN 978-1-4503-XXXX-X/2026/08 https://doi.org/XXXXXXX.XXXXXXX
+
+semantic reasoning capabilities of LLMs, the system synthesizes diverse strategies from heterogeneous experts and resolves conflict-ing clinical priorities through an explicit coordination mechanism. Systematic evaluations on a high-fidelity physiological simulator demonstrate that VentAgent significantly outperforms state-of-the-art RL and classical control baselines. Crucially, it transforms the control policy into a human-readable reasoning chain, establish-ing a new paradigm for safe, interpretable, and adaptable critical care automation. 
+
+## CCS Concepts 
+
+• Applied computing → Health informatics .
+
+## Keywords 
+
+LLM Agents, Multi-Objective Control, Clinical Decision Support, Mechanical Ventilation (ARDS) 
+
+ACM Reference Format: 
+
+Teqi Hao, Yuxuan Fu, Xiaoyu Tan, Shaojie Shi, Bohao Lv, Yinghui Xu, and Xihe Qiu. 2026. VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation. In Proceedings of Proceedings of the 32nd ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD ’26). ACM, New York, NY, USA, 22 pages. https://doi.org/XXXXXXX.XXXXXXX 
+
+## 1 Introduction 
+
+The clinical management of Acute Respiratory Distress Syndrome (ARDS) represents a quintessential high-stakes control challenge within critical care medicine [ 30 ]. Characterized by profound phys-iological heterogeneity, ranging from sepsis-induced alveolar col-lapse to trauma-related edema, ARDS necessitates a ventilation strategy that maintains a delicate dynamic equilibrium among com-peting therapeutic objectives. The crux of this challenge lies in navigating adversarial trade-offs : aggressive oxygenation often ne-cessitates high pressures that risk barotrauma (lung injury), while  
+
+> arXiv:2606.04632v1 [cs.LG] 3 Jun 2026 KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al.
+
+Figure 1: Comparison of three paradigms for ARDS ventilation control. Imitation Learning from EHRs suffers from spurious correlations and fails to uncover causal logic. Standard Reinforcement Learning collapses multi-objective goals into a scalar reward, ignoring safety constraints. Our proposed VentAgent reformulates the problem as interpretable, multi-objective control via LLM-based reasoning, enabling transparent arbitration of conflicting clinical priorities. 
+
+lung-protective strategies may lead to permissive hypercapnia (aci-dosis) [ 24 ]. Crucially, these trade-offs are highly phenotype-specific; a policy that is optimal for a patient with high lung recruitability may prove catastrophic for one with high dead-space ventilation [ 7]. This complexity imposes an immense cognitive load on clin-icians, demanding high-frequency, meticulous adjustments that often exceed human bandwidth in resource-constrained Intensive Care Units (ICUs). While data-driven automation offers a promising solution, ex-isting methodologies suffer from systemic structural deficiencies that limit their clinical deployment. First, regarding Imitation Learning (IL) from Electronic Health Records (EHRs): These approaches are fundamentally constrained by spurious correlations 
+
+and confounding biases . EHR data records actions taken by clinicians, but rarely the unobserved counterfactual reasoning behind them [ 44 ]. For instance, aggressive ventilation might statistically corre-late with higher mortality not because it is harmful, but because it is typically reserved for the sickest patients. Models trained on such data learn to mimic the “average” clinician behavior, often conser-vative and sub-optimal, rather than discovering the causal decision logic required for precise physiological regulation [ 13 , 19 , 21 , 31 ]. They fail to capture the “why” behind a trade-off, leading to poor generalization on out-of-distribution (OOD) phenotypes. 
+
+Second, regarding Reinforcement Learning (RL) in simula-tion: To overcome data sparsity and static biases, recent research has pivoted towards high-fidelity simulators (e.g., the Pulse Physiol-ogy Engine) [ 5 ]. However, standard RL paradigms typically collapse the rich, conflicting spectrum of clinical goals into a single scalar reward function [ 29 ]. We contend that this scalar reductionism is fundamentally flawed for critical care. Optimal ARDS management is not a maximization problem of a single numerical value; it is a dynamic multi-objective arbitration task. By forcing an agent to optimize a fixed weighted sum, existing RL methods obscure the inherent safety constraints and produce opaque, deterministic poli-cies that lack the flexibility to negotiate trade-offs dynamically (e.g., explicitly sacrificing partial oxygenation to prevent imminent lung rupture). To address these limitations, we propose VentAgent , a hierar-chical framework that reformulates ventilation control as a trans-parent arbitration process driven by Large Language Models (LLMs) [ 45 ]. Our core insight is that LLMs, unlike numerical optimizers, possess the semantic reasoning capabilities to explicitize and nego-tiate clinical trade-offs [ 26 , 35 ]. Rather than blindly maximizing a VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+reward, VentAgent learns to “breathe” by emulating the cognitive process of a senior clinician: observing physiological states ( Percep-tion ), soliciting proposals from diverse functional experts ( Planning ), and arbitrating the final decision based on safety boundaries and patient-specific needs ( Orchestration ) [43, 47]. This work establishes a new paradigm for interpretable critical care automation. Our main contributions are: 
+
+• Problem Reformulation: We redefine ARDS ventilation not as scalar reward maximization, but as a constrained multi-objective arbitration problem, identifying the struc-tural failures of scalar RL in adversarial medical settings. 
+
+• The VentAgent Framework: We introduce a novel three-stage architecture (Perception-Planning-Orchestration) that leverages heterogeneous LLM-based experts to synthesize conflicting clinical priorities into a unified, safe strategy. 
+
+• Interpretability by Design: Unlike “black-box” neural net-works, VentAgent generates structured, human-readable reasoning logs at every decision step, ensuring the decision trajectory is fully auditable and clinically transparent. 
+
+• Empirical Validation: We conduct systematic evaluations on a high-fidelity physiological simulator across twenty dis-tinct patient phenotypes. Results demonstrate that VentA-gent significantly outperforms state-of-the-art RL and clas-sical PID baselines in both safety and stability. 
+
+## 2 Related Work 2.1 Data-Driven Decision Support in Critical Care 
+
+Recent advances in retrospective medical AI have predominantly fo-cused on leveraging Electronic Health Records (EHRs) for outcome prediction and treatment recommendation [ 17 , 18 , 44 ]. Reinforce-ment Learning (RL) approaches, such as Deep Q-Networks (DQN) and Inverse RL, have been applied to optimize sepsis management and mechanical ventilation [ 19 , 20 , 28 , 48 ]. However, these methods face the intrinsic "Deadly Triad" of offline medical RL: data sparsity, irregular sampling, and, most critically, confounding bias [10 , 13 ]. Since EHRs only record executed actions without their counterfac-tual alternatives, RL agents often learn to mimic conservative or biased clinician behaviors rather than optimal physiological regula-tion [ 16 , 27 , 39 ]. Furthermore, deep RL models typically operate as opaque "black boxes," obscuring the rationale behind life-critical decisions. In contrast, VentAgent eschews purely statistical corre-lation in favor of LLM-driven causal reasoning, integrating medical domain knowledge to ensure clinical consistency and interpretabil-ity. 
+
+## 2.2 Simulation-Based Control & The Scalar Reward Trap 
+
+To circumvent the safety risks of exploring policies on real pa-tients, high-fidelity physiological simulators (e.g., Pulse Engine, SimGlucose) have emerged as essential testbeds for closed-loop control [ 5 ]. While simulation enables active exploration, existing RL-based control frameworks remain structurally limited by their objective formulation [ 21 , 32 ]. Predominant methods collapse com-plex, conflicting clinical goals (e.g., minimizing driving pressure vs. maintaining permissive hypercapnia) into a single scalar reward function [ 32 , 42 ]. This scalar reductionism forces the agent to learn a rigid policy that maximizes a numerical value, often failing to navigate the dynamic Pareto frontier of patient safety [ 2, 11 ]. More-over, many approaches bootstrap from fixed clinical guidelines, restricting the agent’s ability to adapt to severe, out-of-distribution phenotypes [ 3 , 24 , 30 ]. VentAgent departs from this paradigm by reformulating control as a multi-objective arbitration task, us-ing LLMs to dynamically negotiate trade-offs rather than blindly optimizing a fixed reward sum [1]. 
+
+## 2.3 LLM Agents in Medicine: From QA to Active Control 
+
+Large Language Models (LLMs) have demonstrated impressive capa-bilities in medical Question Answering (QA) and diagnostic reason-ing (e.g., Med-PaLM) [ 26 , 35 , 36 , 40 ]. However, the transition from "passive consultant" to "active agent" remains nascent [ 33 , 45 ]. Most current medical agents operate in open-loop settings (e.g., report generation, consultation), detached from real-time physiological feedback loops [ 38 ]. While recent works explore agents for soft-ware tasks or embodied robotics, their application in high-stakes physiological control is hampered by hallucinations and the lack of precise temporal regulation. Furthermore, existing architectures are often monolithic, struggling to handle the multidisciplinary complexity of ICU care [ 15 ]. VentAgent addresses these gaps by introducing a hierarchical, multi-expert agent framework specifi-cally designed for closed-loop critical care, bridging the gap between semantic medical reasoning and precise continuous control. 
+
+## 3 Preliminaries 
+
+Problem Formulation. We formalize ARDS ventilation man-agement as a Constrained Markov Decision Process (CMDP) [ 1, 2], defined by the tuple M = ⟨S , A, P, R, C, 𝛾 ⟩. Unlike standard MDPs with explicit transition matrices, the system dynamics P : S ×A → S are governed by the high-fidelity Pulse Physiology Engine, act-ing as an implicit environment [ 5]. At each discrete time step 𝑡 ,the agent observes a physiological state s𝑡 ∈ S and executes a continuous control action a𝑡 ∈ A . The objective is to maximize a vector-valued clinical utility R(s𝑡 , a𝑡 ) subject to safety constraints 
+
+C.
+
+State and Action Spaces. The observation space S ⊆ R24 repre-sents a comprehensive physiological snapshot, structured as the concatenation ( ⊕) of four clinical sub-domains: s𝑡 = [xoxy ⊕ xvent ⊕
+
+xmech ⊕ xhemo ]⊤, corresponding to gas exchange, acid-base bal-ance, lung mechanics, and hemodynamic stability, respectively. The action space A ⊆ R6 controls the Volume Control Continuous Mandatory Ventilation (VC-CMV) mode [ 9 ]. The action vector is defined as a𝑡 = [PEEP , FiO 2, RR , 𝑉 𝑇 ,𝑇 insp , ¤𝑉 ]⊤, bounded by clinical safety limits. 
+
+Clinical Utility Functions. To map complex physiological states to scalar rewards, we define three generic shaping primitives: a 
+
+Target Retention sigmoid Φ, a Minimization decay L, and a Hard KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+Constraint penalty Θ [25]. We formulate these as: 
+
+Φ(𝑥 ; 𝑥 ∗, 𝜖, 𝑘 ) = 21 + exp (𝑘 (| 𝑥 − 𝑥 ∗ | − 𝜖 )) − 1, (1) 
+
+L( 𝑥 ; 𝜏 ) = 1 − 𝜆 dec [𝑥 − 𝜏 ]+, (2) 
+
+Θ(𝑥 ; 𝜏 ) = −𝜆 step [𝑥 − 𝜏 ]+, (3) where [𝑧 ]+ ≜ max (0, 𝑧 ). Based on these primitives, the vector-valued reward r𝑡 = [𝑟 oxy , 𝑟 vent , 𝑟 mech ]⊤ is constructed as follows: 
+
+(1) Oxygenation ( 𝑟 oxy ): We employ a dynamic target SpO ∗ 
+
+> 2
+
+mod-ulated by patient severity (via the P/F ratio coefficient 𝛼 𝑡 ). The reward penalizes deviations from this target while strictly limiting oxygen toxicity: 
+
+𝑟 oxy = Usat (SpO 2; SpO ∗
+
+> 2
+
+) − 𝑤 tox [FiO 2 − 𝜉 tox ]+2. (4) 
+
+(2) Ventilation ( 𝑟 vent ): Prioritizing acid-base homeostasis, we introduce a conditional gating mechanism . PaCO 2 is rewarded only if pH is within a safe range ( pH > 𝜏 gate ), otherwise purely pH optimization takes precedence: 
+
+𝑟 vent = 𝑤 pH Φ(pH ) + 𝑤 CO 2 I(pH > 𝜏 gate )𝑟 CO 2 + 𝑤 RR Φ(RR ). (5) 
+
+(3) Mechanics & Safety ( 𝑟 mech ): This term enforces lung protec-tion by penalizing mechanical power ( 𝑃 pow ), driving pressure ( Δ𝑃 ), and plateau pressure ( 𝑃 plat ) [ 3, 9, 12 , 37 ]. A critical hemodynamic override is applied to prevent cardiovascular collapse: 
+
+𝑟 mech =
+
+(
+
+−1, if MAP < 𝜏 MAP ∧ PEEP > 𝜏 PEEP 
+
+𝑟 safe , otherwise , (6) where the stable state reward is defined as 𝑟 safe =
+
+Í𝑘 ∈ { Δ𝑃, pow } 𝑤 𝑘 L( 𝑘 ; 𝜏 𝑘 ) + 𝑤 plat Θ(𝑃 plat ).
+
+## 4 Methodology 
+
+We propose VentAgent , a hierarchical multi-agent decision frame-work designed to emulate the cognitive workflow of an ICU multi-disciplinary team. Grounded in the principle of cognitive decoupling ,the framework addresses the intractability of ARDS management by decomposing the clinical decision process into three progressive reasoning stages: Perception, Planning, and Orchestration. As illustrated in Fig. 2, at each timestep 𝑡 , the system trans-forms raw high-frequency telemetry into interpretable diagnostic semantics, navigates a complex action space through dynamically constructed experts, and achieves cross-dimensional value align-ment via multi-perspective arbitration. A sparse reflective memory module further facilitates closed-loop evolution by refining policies based on historical trajectories. 
+
+## 4.1 LLM as a Sequential Decision Operator 
+
+Unlike traditional RL approaches that parameterize policy as a “black-box” neural network 𝜋 𝜃 (a|s), we conceptualize the Large Language Model (LLM) as a Clinical Reasoning Operator augmented with domain logic. Formally, let L denote the pre-trained LLM. We define a generic reasoning agent G𝑖 as a mapping function: 
+
+o𝑖 = G𝑖 (s𝑡 , K𝑖 | P 𝑖 ) L
+
+−→ Reasoning Chain (7) where s𝑡 is the physiological state, K𝑖 represents injected domain knowledge (e.g., ARDSNet protocols), and P𝑖 is the role-specific system prompt. The output o𝑖 is a structured decision artifact de-rived via in-context learning [ 6 ]. The global decision process is modeled as a compositional function chain: 
+
+a∗ 
+
+> 𝑡
+
+= Gcoord ◦ G plan 
+
+| {z }
+
+> Decision Synthesis
+
+◦ Gpercept 
+
+| {z }
+
+> State Abstraction
+
+(s𝑡 ) (8) This architecture ensures that decision-making is not merely prob-abilistic token generation, but a structured derivation based on explicit clinical logic. 
+
+## 4.2 Perception Layer: Semantic State Abstraction 
+
+To bridge the gap between high-frequency telemetry and clinical cognition, we construct the Perception Layer as a unified diagnostic agent ( Gpercept ). Instead of processing raw signals in isolation, this agent projects the high-dimensional non-linear state s𝑡 into a latent semantic manifold ˆs𝑡 :
+
+ˆs𝑡 = Gpercept (s𝑡 ) = ⟨H sev , 𝜙 pheno , 𝜌 recruit , Cactive ⟩ (9) Specifically, it performs joint reasoning to extract: (1) Disease Severity Hsev and Inflammatory Phenotype 𝜙 pheno ; (2) Recruitabil-ity Potential 𝜌 recruit ; and crucially, (3) Active Constraints Cactive 
+
+(e.g., "Driving Pressure limit < 14 cmH 2O"). This semantic abstrac-tion ˆs𝑡 serves as the immutable ground truth for all downstream modules, ensuring decisions are grounded in a holistic pathological understanding rather than transient numerical fluctuations. 
+
+## 4.3 Planning Layer: Meta-Scenario Synthesis and Divergent Proposal 
+
+The planning phase addresses the combinatorial explosion of the action space. We introduce a Scenario Meta-Agent (Gmeta ) to first synthesize the semantic state ˆs𝑡 into a high-level strategic direc-tive S𝑡 (e.g., "Maximal Recruitment" vs. "Weaning Preparation"). This directive effectively prunes the search space, constraining downstream experts to physiologically relevant strategies. Guided by S𝑡 , two domain-specific experts operate in parallel to generate a candidate action set P𝑡 :
+
+• Oxygenation Expert ( Goxy ): Focuses on gas exchange (PEEP, FiO 2), balancing alveolar recruitment benefits against hemo-dynamic risks. 
+
+• Ventilation Expert ( Gvent ): Manages acid-base homeostasis (RR, V 𝑇 , flow), aiming to minimize mechanical power. Crucially, each expert generates a gradient of proposals (Conserva-tive, Standard, Aggressive). The final candidate pool P𝑡 = Poxy ×Pvent represents the Cartesian product of these domain-specific trajectories, providing a structured exploration space for the subse-quent arbitration. 
+
+## 4.4 Orchestration Layer: Multi-Perspective Arbitration 
+
+The Orchestration Layer resolves the inherent adversarial trade-offs (e.g., oxygenation vs. lung protection). We employ a genera-tive arbitration mechanism where three Perspective Refinement Agents acting as specialized consultants— Pulmonary Protection 
+
+(Gprotect ), Oxygenation Security (Gsecure ), and Acid-Base Homeostasis VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+Figure 2: The Hierarchical Architecture of VentAgent. Grounded in the principle of Cognitive Decoupling , the framework decomposes the decision process into three logical stages: (1) Perception Layer projects raw telemetry into a semantic manifold 
+
+ˆs𝑡 ; (2) Planning Layer generates diverse candidate strategies P𝑡 guided by meta-scenarios; (3) Orchestration Layer resolves adversarial trade-offs via multi-perspective arbitration. Parallel Memory and Audit modules ensure adaptive evolution and clinical safety boundaries. 
+
+(Gbase )—critique the candidate plans against their specific utility functions. The Clinical Coordinator (Gcoord ) synthesizes the final strategy 
+
+a∗ 
+
+> 𝑡
+
+by aggregating these conflicting perspectives: 
+
+a∗ 
+
+> 𝑡
+
+= arbitrate 
+
+> a∈ P 𝑡
+
+ {aprotect , asecure , abase } | ˆs𝑡 , Cactive 
+
+ (10) Unlike simple weighted averaging, Gcoord applies hierarchical logic to negotiate deadlocks (e.g., prioritizing mechanical safety limits over pH correction during "stiff lung" episodes), ensuring the final action lies on the optimal Pareto frontier of patient safety. 
+
+## 4.5 Sparse Reflective Memory: Closed-Loop Evolution 
+
+To mitigate the limitations of isolated single-step reasoning, we in-troduce a Memory Agent (Gmem ) that functions as a meta-cognitive observer. At each timestep, Gmem evaluates the alignment between the predicted outcome and the actual environmental feedback r𝑡 .Successful reasoning traces and identified attribution errors are dis-tilled into semantic reflections M𝑡 . These reflections are injected into the context of subsequent decision cycles as targeted feedback signals, enabling the system to perform online policy refinement (e.g., "Patient exhibits CO 2 retention tendency, increase baseline RR") without parameter updates [22, 34]. 
+
+## 4.6 Automated Trajectory Curation via Hierarchical Audit 
+
+To safeguard clinical integrity under LLM stochasticity, we deploy a parallel Audit Agent (Gaudit ) that performs layer-wise verification. We formalize this as a verification function Ψ:
+
+𝑣 𝑘 , ˜o𝑘 = Ψ(o𝑘 | s𝑡 , Kmed , Cconsistency ) (11) where o𝑘 is the intermediate output from any layer 𝑘 . The Audit Agent verifies three criteria: (1) Factual Accuracy against phys-iological laws; (2) Logical Coherence between diagnosis ˆs𝑡 and action; and (3) Completeness of safety constraints. If a violation is detected ( 𝑣 𝑘 = 0), the module triggers a regeneration or replaces the output with a rectified trace ˜o𝑘 . This "Cognitive Firewall" ensures that the final decision trajectory remains strictly within the bounds of clinical safety protocols [4, 22]. KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+Table 1: Performance comparison of LLM-based methods. The proposed VentAgent demonstrates superior robustness. Values in parentheses indicate the performance gap ( ↓) of baselines relative to VentAgent. Method Mild Moderate Severe 
+
+𝑟 𝑜𝑥 𝑦 𝑟 𝑣𝑒𝑛𝑡 𝑟 𝑚𝑒𝑐ℎ 𝑟 𝑜𝑥 𝑦 𝑟 𝑣𝑒𝑛𝑡 𝑟 𝑚𝑒𝑐ℎ 𝑟 𝑜𝑥 𝑦 𝑟 𝑣𝑒𝑛𝑡 𝑟 𝑚𝑒𝑐ℎ 
+
+Few-Shot 2155.17 (-725.24) 160.14 (-178.13) 548.38 (-477.16) 1945.63 (-750.26) 62.19 (-97.93) 305.82 (-282.64) 1488.45 (-751.88) -142.56 (-99.98) 82.11 (-93.53) 
+
+CoT 2265.42 (-614.99) 188.29 (-149.98) 598.14 (-427.40) 2110.37 (-585.52) 78.43 (-81.69) 345.58 (-242.88) 1605.81 (-634.52) -128.24 (-85.66) 95.67 (-79.97) 
+
+ReAct 2490.86 (-389.55) 212.53 (-125.74) 668.49 (-357.05) 2265.12 (-430.77) 92.68 (-67.44) 378.34 (-210.12) 1745.27 (-495.06) -110.85 (-68.27) 108.41 (-67.23) 
+
+Reflexion 2825.64 (-54.77) 248.18 (-90.09) 770.21 (-255.33) 2580.46 (-115.43) 125.59 (-34.53) 435.13 (-153.33) 1995.62 (-244.71) -102.37 (-59.79) 132.55 (-43.09) 
+
+Self-Consist. 2340.28 (-540.13) 195.84 (-142.43) 620.41 (-405.13) 2175.56 (-520.33) 85.39 (-74.73) 360.22 (-228.24) 1698.47 (-541.86) -118.63 (-76.05) 105.88 (-69.76) 
+
+Debate 2575.13 (-305.28) 218.49 (-119.78) 690.12 (-335.42) 2360.85 (-335.04) 98.24 (-61.88) 395.57 (-192.89) 1850.31 (-390.02) -105.46 (-62.88) 115.23 (-60.41) 
+
+ToT 2692.59 (-187.82) 232.65 (-105.62) 728.34 (-297.20) 2485.27 (-210.62) 112.43 (-47.69) 415.89 (-172.57) 1955.15 (-285.18) -95.82 (-53.24) 128.46 (-47.18) 
+
+VentAgent 2880.41 338.27 1025.54 2695.89 160.12 588.46 2240.33 -42.58 175.64 
+
+## 5 Experiments 5.1 Experimental Setups 
+
+Benchmark and Patient Cohorts. The efficacy of VentAgent is assessed using the Pulse Physiology Engine, a high-fidelity simu-lation platform that employs equivalent circuit modeling to repre-sent complex respiratory mechanics. The treatment cycle spans 24 hours, discretized into 𝑇 = 48 steps with an intervention interval of Δ𝑡 = 30 minutes. To ensure robust evaluation, we define two distinct cohorts: (1) The Sampling Cohort , comprising 20 unique patient configurations across three ARDS severities (mild, moder-ate, and severe), used to generate interaction data totaling 2, 880 
+
+state-action-state triplets; (2) The Evaluation Cohort , consisting of 100 virtual patients with a balanced demographic split (50 males, 50 females; ages 18–65), held out to rigorously assess generalization performance on unseen phenotypes. 
+
+Baselines. We comprehensively evaluate our framework against three classes of LLM inference paradigms, all utilizing gpt-4o-mini 
+
+[23] as the backbone model to ensure fair comparison: 
+
+• Linear Reasoning: Few-shot (providing clinical exemplars) and CoT (Chain-of-Thought). 
+
+• Feedback-Driven Reasoning: ReAct [47 ] (interleaving rea-soning and action generation) and Reflexion [ 34 ] (using ver-bal reinforcement to critique past actions). 
+
+• Ensemble Reasoning: Tree of Thoughts (ToT) [ 46 ] (explor-ing multiple reasoning branches via BFS/DFS), Debate [ 8](multi-agent discussion without hierarchical arbitration), and Self-Consistency [ 41 ] (majority voting on diverse rea-soning paths). 
+
+## 5.2 Main Results 
+
+The quantitative evaluation, detailed in Table 1, substantiates a significant performance disparity between VentAgent and existing baselines. While linear and feedback-driven paradigms achieve competence in Mild ARDS scenarios—exemplified by Reflexion attaining an oxygenation reward ( 𝑟 𝑜𝑥 𝑦 ) of 2825.64—their efficacy degrades precipitously as patient severity escalates. This trend highlights the limitation of monolithic reasoning architectures in navigating the adversarial trade-offs between oxygenation, acid-base homeostasis ( 𝑟 𝑣𝑒𝑛𝑡 ), and lung mechanics ( 𝑟 𝑚𝑒𝑐ℎ ) under high physiological heterogeneity. In the challenging Severe patient cohort, VentAgent establishes state-of-the-art performance, achieving a cumulative oxygenation reward of 2240.33 . This significantly surpasses the most robust en-semble baseline, Tree of Thoughts (ToT), which plateaus at 1955.15. The performance divergence is most critical in the ventilation met-ric ( 𝑟 𝑣𝑒𝑛𝑡 ), which penalizes deviations in pH and PaCO 2. Here, stan-dard prompting strategies exhibit catastrophic failure modes; Linear CoT and Few-Shot methods regress to deeply negative rewards of 
+
+-128.24 and -142.56 , respectively. Even advanced feedback mecha-nisms like Reflexion fail to arrest this decline (-102.37), suggesting that iterative verbal reinforcement alone cannot compensate for the lack of structured clinical priors. VentAgent, conversely, demon-strates superior stability, maintaining a ventilation score of -42.58 ,thereby minimizing iatrogenic risk while sustaining gas exchange. This resilience extends to mechanical safety ( 𝑟 𝑚𝑒𝑐ℎ ), where Vent-Agent secures a reward of 175.64 , substantially exceeding standard CoT (95.67). The systemic superiority over methods like ReAct and Debate is attributable to the hierarchical decoupling of the deci-sion process. Unlike "black-box" optimization that attempts to map high-dimensional states directly to actions, VentAgent leverages heterogeneous experts to explicitly delineate the Pareto frontier, successfully navigating the non-linear physiological constraints of severe ARDS. 
+
+## 5.3 Ablation Study 
+
+To validate the necessity of each component in the VentAgent hierarchical framework, we conducted a comprehensive ablation study (Table 2). The results demonstrate that performance stems from the synergistic integration of semantic awareness, decoupled planning, and multi-perspective coordination. 
+
+Impact of Semantic Perception on Safety Boundaries. Remov-ing the Perception Layer results in a systemic collapse, with the most profound deterioration observed in the Severe cohort ( 𝑟 𝑜𝑥 𝑦 VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+Table 2: Ablation study visualization. The layout is simplified by removing vertical lines and reducing horizontal separators. Whitespace is used to group related experiments. Method Mild Moderate Severe 
+
+𝑟 𝑜𝑥 𝑦 𝑟 𝑣𝑒𝑛𝑡 𝑟 𝑚𝑒𝑐ℎ 𝑟 𝑜𝑥 𝑦 𝑟 𝑣𝑒𝑛𝑡 𝑟 𝑚𝑒𝑐ℎ 𝑟 𝑜𝑥 𝑦 𝑟 𝑣𝑒𝑛𝑡 𝑟 𝑚𝑒𝑐ℎ 
+
+Full VentAgent (Ours) 2865.60 332.55 1016.35 2630.60 153.80 563.60 2181.45 -36.77 161.20 
+
+w/o Perception Layer 2728.85 (-136.75) 312.95 (-19.60) 931.65 (-84.70) 2496.30 (-134.30) 115.70 (-38.10) 427.10 (-136.50) 1927.85 (-253.60) -70.87 (-34.10) 77.20 (-84.00) 
+
+w/o Planning Layer 
+
+w/o Scenario Meta-Agent 2816.80 (-48.80) 308.45 (-24.10) 984.75 (-31.60) 2560.30 (-70.30) 106.80 (-47.00) 512.50 (-51.10) 2066.35 (-115.10) -88.77 (-52.00) 129.80 (-31.40) 
+
+w/o Domain Experts 2799.50 (-66.10) 295.55 (-37.00) 975.75 (-40.60) 2524.80 (-105.80) 119.80 (-34.00) 516.60 (-47.00) 2030.85 (-150.60) -79.57 (-42.80) 138.30 (-22.90) 
+
+w/o Orchestration Layer 
+
+w/o Pulm. Protection 2856.50 (-9.10) 326.05 (-6.50) 923.15 (-93.20) 2690.58 (+60.98) 141.90 (-11.90) 340.80 (-222.80) 2295.55 (+114.10) -39.77 (-3.00) 68.30 (-92.90) 
+
+w/o Oxy-Security 2649.80 (-215.80) 340.55 (+8.00) 1050.25 (+33.90) 2348.90 (-281.70) 170.52 (+16.72) 610.55 (+46.95) 1716.45 (-465.00) -25.55 (+11.22) 210.42 (+49.22) 
+
+w/o Acid-Base Homeost. 2870.55 (+4.95) 172.15 (-160.40) 993.55 (-22.80) 2640.25 (+9.65) -21.60 (-175.40) 543.00 (-20.60) 2154.05 (-27.40) -163.27 (-126.50) 170.25 (+9.05) 
+
+w/o Sparse Reflective Memory 2764.10 (-101.50) 295.65 (-36.90) 993.35 (-23.00) 2533.60 (-97.00) 129.00 (-24.80) 525.70 (-37.90) 2092.55 (-88.90) -53.17 (-16.40) 143.30 (-17.90) 
+
+w/o Hierarchical Audit 2795.40 (-70.20) 303.95 (-28.60) 998.35 (-18.00) 2564.30 (-66.30) 135.00 (-18.80) 539.10 (-24.50) 2114.75 (-66.70) -49.17 (-12.40) 149.20 (-12.00) 
+
+decreases by 253.60 and 𝑟 𝑚𝑒𝑐ℎ by 84.00). This confirms that raw high-dimensional telemetry alone is insufficient. Without the explicit state diagnosis provided by 𝐺 𝑝𝑒𝑟𝑐𝑒𝑝𝑡 , the agent loses its "seman-tic grounding," degenerating into a reactive controller unable to identify the safe operational boundaries ( R𝑠𝑎𝑓 𝑒 ). 
+
+Necessity of Strategic Decoupling in Planning. Ablating the 
+
+Scenario Meta-Agent leads to a significant drop in ventilation re-wards ( 𝑟 𝑣𝑒𝑛𝑡 decreases by 52.00 in Severe cases). This validates our hypothesis that a strategic intent (e.g., "rescue" phase) must pre-cede specific parameter adjustments. Similarly, removing Domain Experts constrains the exploration space, causing a consistent de-cline in oxygenation scores ( 𝑟 𝑜𝑥 𝑦 drops by 150.60), proving that a monolithic planner cannot effectively navigate the combinatorial complexity of the action space. 
+
+Orchestration as a Safety Valve. The ablation of the Orchestra-tion Layer provides strong evidence for our arbitration mechanism. (1) Lung Protection: Removing the Pulmonary Protection Assessor causes mechanical safety to plummet ( 𝑟 𝑚𝑒𝑐ℎ drops by 222.80 in Mod-erate cases), as the system aggressively over-ventilates to maximize blood gas metrics. (2) Oxygenation Security: Conversely, removing the Oxy-Security Assessor leads to a massive failure in oxygenation (𝑟 𝑜𝑥 𝑦 drops by 465.00 in Severe cases), highlighting that standard protocols cannot stabilize life-threatening hypoxemia without a dedicated safety override. 
+
+Long-term Consistency and Medical Integrity. The exclusion of Sparse Reflective Memory leads to consistent performance degra-dation (Severe 𝑟 𝑜𝑥 𝑦 drops by 88.90), underscoring the need for tem-poral context to resolve sub-optimal trends like CO 2 retention. Furthermore, removing the Hierarchical Audit module results in pervasive attenuation across all metrics (Severe 𝑟 𝑜𝑥 𝑦 declines by 66.70), highlighting the critical role of run-time verification in pre-venting sporadic reasoning hallucinations. 
+
+## 5.4 Clinical Safety and Constraint Analysis 
+
+We rigorously assess the clinical reliability of the proposed frame-work by analyzing constraint compliance (Figure 3). VentAgent 
+
+exhibits a systematic advantage in maintaining physiological safety 
+
+Figure 3: Comparative analysis of clinical safety violations. VentAgent (blue) minimizes critical violations compared to CoT (orange) and Few-Shot (green) baselines. 
+
+boundaries. In the high-risk domain of severe ARDS, baseline meth-ods such as Few-Shot and CoT manifest high failure rates, exhibiting respiratory acidosis violation rates ( 𝑝𝐻 < 7.15 ) as high as 36.57% and 28.06%, respectively. In contrast, VentAgent effectively delin-eates the Pareto frontier, reducing this risk to 7.98%. Simultaneously, it suppresses ventilator-induced lung injury (VILI) risks [ 37 ], main-taining Tidal Volume ( 𝑉 𝑇 ) violations at a negligible 1.19% compared to the 18.85% failure rate in Few-Shot approaches. Crucially, the Arbitration mechanism prevents the conflation of "hard" limits and "soft" targets. Standard baselines frequently treat a violation of Driving Pressure ( Δ𝑃 > 15 ) as a tradable penalty. KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+Table 3: Quantitative Analysis of Audit Interventions. We report the Correction Trigger Rate (CTR), the distribution of intercepted error types, and the Safety Recovery Rate (SRR). Notably, error distribution shifts from Completeness issues in mild cases to Logical inconsistencies in severe scenarios. Severity Stage CTR (%) Error Type Distribution (%) SRR (%) Fact. Logic. Comp. Mild                                              
+
+> Percept 1.2 85.4 8.2 6.4 98.5 Plan 2.5 12.1 15.3 72.6 99.1 Orch 1.1 5.5 12.4 82.1 99.0
+> Mod
+> Percept 3.4 76.2 14.5 9.3 96.2 Plan 6.8 15.6 62.4 22.0 95.8 Orch 2.9 10.2 58.7 31.1 97.4
+> Severe
+> Percept 4.5 68.9 21.5 9.6 92.1
+> Plan 11.5 11.2 78.4 10.4 94.2
+> Orch 4.2 8.5 35.1 56.4 95.5
+
+The high Δ𝑃 violation rate in baselines (12.75%) confirms this align-ment failure. Conversely, VentAgent’s hierarchical veto mechanism enforces mechanical safety unconditionally. 
+
+## 5.5 Mechanics of Self-Correction via Dynamic Intervention 
+
+We conducted a fine-grained analysis to quantify how VentAgent mitigates LLM stochasticity (Table 3). 1) Severity-Dependent Activation: The Correction Trigger Rate (CTR) scales monoton-ically with patient severity. While the module remains quiescent in Mild cases (CTR ≈ 1.2%), activation surges to 11.5% during Se-vere Planning. This reflects the escalating difficulty of adversarial trade-offs in critical states. 2) Shift in Error Typology: There is a distinct distributional shift in error modes. In Mild scenarios, interventions primarily address Completeness (72.6%), suggesting procedural omissions. Conversely, under Severe conditions, the dominant error mode transitions to Logical Coherence (peaking at 78.4%). Here, the Audit Agent actively rectifies contradictions, such as proposed volume increases that violate a "stiff lung" diagnosis. 
+
+3) Safety Assurance: Despite the complexity, the Safety Recovery Rate (SRR) remains robust ( > 92% across all strata), guaranteeing that robustness stems from active run-time self-correction. 
+
+## 5.6 Multi-Perspective Trade-off Analysis 
+
+Aggregated metrics often obscure the nuance of "clinical deadlocks." We analyze two specific scenarios to demonstrate VentAgent’s capacity to navigate adversarial trade-offs (Figure 4). 
+
+Scenario A: Resolution of Hypoxemia-Compliance Conflict. 
+
+In severe ARDS, aggressive recruitment risks barotrauma. While baselines (e.g., ReAct, ToT) exhibit stochastic volatility and fre-quently breach the Driving Pressure safety threshold ( Δ𝑃 > 15 
+
+cmH 2O), VentAgent adheres strictly to a lung-protective strategy. It maintains Δ𝑃 consistently within a safe range ( 12 –14 cmH 2O), yet successfully achieves the therapeutic oxygenation target ( 𝑆𝑝𝑂 2 ≥
+
+92% ) by Hour 9. This trajectory validates the Orchestration Layer’s efficacy in prioritizing mechanical safety over high-risk recruit-ment. 
+
+Figure 4: Resolution of clinical deadlocks. (Top) Scenario A: VentAgent maintains safe driving pressure (blue) unlike ToT (orange). (Bottom) Scenario B: VentAgent stabilizes mechani-cal power via permissive hypercapnia. Scenario B: Strategic Management of the "Power Trap". Ad-dressing severe respiratory acidosis ( 𝑝𝐻 < 7.15 ) often tempts a compensatory increase in ventilation, escalating Mechanical Power (𝑃 𝑝𝑜𝑤 ) and VILI risk [ 12 , 37 ]. VentAgent deploys a permissive hyper-capnia strategy, stabilizing 𝑃 𝑝𝑜𝑤 within a "Safety Corridor" ( ≈ 15 .5
+
+J/min) [ 14 ]. Unlike baselines that pursue rapid pH normalization at the cost of dangerous power surges ( > 18 J/min), VentAgent accepts a more gradual pH recovery (crossing 7.25 at Hour 11), effectively preventing ventilator-induced lung injury. 
+
+## 6 Conclusion and Future Work 
+
+In this work, we presented VentAgent , a hierarchical multi-agent framework that fundamentally reimagines physiological control not as a black-box optimization task, but as a transparent, multi-objective arbitration process. By operationalizing the principle of cognitive decoupling , our framework successfully emulates the "Perception-Planning-Orchestration" clinical workflow, enabling Large Language Models to navigate the adversarial trade-offs be-tween oxygenation, lung protection, and acid-base homeostasis VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+with unprecedented interpretability. Extensive evaluations on high-fidelity simulators demonstrate that VentAgent significantly out-performs state-of-the-art baselines, establishing a new paradigm for safe, consistent, and clinically aligned critical care automation. We believe this shift from opaque scalar rewards to structured se-mantic reasoning serves as a cornerstone for the next generation of trustworthy Medical AI. Looking ahead, our research trajectory focuses on bridging the gap between algorithmic reasoning and physical deployment: 
+
+• Hardware-in-the-Loop (HIL) Validation: To move be-yond digital simulation, we plan to deploy VentAgent on a physical test lung platform (e.g., ASL 5000). This will validate the system’s robustness against real-world sensor noise, actu-ator latency, and non-linear physical respiratory mechanics that pure software simulators may idealize. 
+
+• Adaptive Agent Collaboration: We aim to refine the struc-tural efficiency of the multi-agent framework. Future itera-tions will explore dynamic coalition formation, where the agent topology (e.g., the number of active experts) adapts in real-time to patient severity. This optimization intends to reduce token latency and computational overhead without compromising decision quality. 
+
+• Clinical Data Alignment: Finally, we will extend our evalu-ation to retrospective large-scale datasets (e.g., MIMIC-IV) to further verify the generalization capability of our arbitration logic across diverse human demographics and pathological subtypes. 
+
+## 7 Ethical Considerations 
+
+VentAgent functions strictly as a human-in-the-loop CDSS, not an autonomous substitute. Given inherent LLM stochasticity, clinical deployment mandates immutable hardware-level safety constraints (e.g., pressure valves) that unconditionally supersede algorithmic commands. Furthermore, continuous fairness auditing is imperative to detect latent biases in pre-trained models, ensuring equitable care across diverse patient demographics. 
+
+## References 
+
+[1] Joshua Achiam, David Held, Aviv Tamar, and Pieter Abbeel. 2017. Constrained policy optimization. In International conference on machine learning . PMLR, 22– 31. [2] Eitan Altman. 2021. Constrained Markov decision processes . Routledge. [3] Marcelo BP Amato, Maureen O Meade, Arthur S Slutsky, Laurent Brochard, Eduardo LV Costa, David A Schoenfeld, Thomas E Stewart, Matthias Briel, Daniel Talmor, Alain Mercat, et al . 2015. Driving pressure and survival in the acute respiratory distress syndrome. New England Journal of Medicine 372, 8 (2015), 747–755. [4] Yuntao Bai, Saurav Kadavath, Sandipan Kundu, Amanda Askell, Jackson Kernion, Andy Jones, Anna Chen, Anna Goldie, Azalia Mirhoseini, Cameron McKinnon, et al . 2022. Constitutional ai: Harmlessness from ai feedback. arXiv preprint arXiv:2212.08073 (2022). [5] Aaron Bray, Jeffrey B Webb, Andinet Enquobahrie, Jared Vicory, Jerry Heneghan, Robert Hubal, Stephanie TerMaath, Philip Asare, and Rachel B Clipp. 2019. Pulse physiology engine: an open-source software platform for computational modeling of human medical simulation. SN Comprehensive Clinical Medicine 1, 5 (2019), 362–377. [6] Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al . 2020. Language models are few-shot learners. Advances in neural information processing systems 33 (2020), 1877–1901. [7] Carolyn S Calfee, Kevin Delucchi, Polly E Parsons, B Taylor Thompson, Lorraine B Ware, and Michael A Matthay. 2014. Subphenotypes in acute respiratory distress syndrome: latent class analysis of data from two randomised controlled trials. 
+
+The Lancet Respiratory Medicine 2, 8 (2014), 611–620. [8] Yilun Du, Shuang Li, Antonio Torralba, Joshua B Tenenbaum, and Igor Mordatch. 2023. Improving factuality and reasoning in language models through multiagent debate. In Forty-first International Conference on Machine Learning .[9] Eddy Fan, Lorenzo Del Sorbo, Ewan C Goligher, Carol L Hodgson, Laveena Munshi, Allan J Walkey, Neill KJ Adhikari, Marcelo BP Amato, Richard Branson, Roy G Brower, et al . 2017. An official American Thoracic Society/European Society of Intensive Care Medicine/Society of Critical Care Medicine clinical practice guideline: mechanical ventilation in adult patients with acute respiratory distress syndrome. American journal of respiratory and critical care medicine 195, 9 (2017), 1253–1263. [10] Joseph Futoma, Michael C Hughes, and Finale Doshi-Velez. 2020. Popcorn: Partially observed prediction constrained reinforcement learning. arXiv preprint arXiv:2001.04032 (2020). [11] Javier Garcıa and Fernando Fernández. 2015. A comprehensive survey on safe reinforcement learning. Journal of Machine Learning Research 16, 1 (2015), 1437– 1480. [12] Luciano Gattinoni, Tommaso Tonetti, Massimo Cressoni, Paolo Cadringher, Peter Herrmann, Onnen Moerer, Alessandro Protti, Miriam Gotti, Chiara Chiurazzi, Eleonora Carlesso, et al . 2016. Ventilator-related causes of lung injury: the mechanical power. Intensive care medicine 42, 10 (2016), 1567–1575. [13] Omer Gottesman, Fredrik Johansson, Matthieu Komorowski, Aldo Faisal, David Sontag, Finale Doshi-Velez, and Leo Anthony Celi. 2019. Guidelines for reinforce-ment learning in healthcare. Nature medicine 25, 1 (2019), 16–18. [14] Keith G Hickling, John Walsh, Seton Henderson, and Rodger Jackson. 1994. Low mortality rate in adult respiratory distress syndrome using low-volume, pressure-limited ventilation with permissive hypercapnia: a prospective study. Critical care medicine 22, 10 (1994), 1530–1539. [15] Ziwei Ji, Nayeon Lee, Rita Frieske, Tiezheng Yu, Dan Su, Yan Xu, Etsuko Ishii, Ye Jin Bang, Andrea Madotto, and Pascale Fung. 2023. Survey of hallucination in natural language generation. ACM computing surveys 55, 12 (2023), 1–38. [16] Nan Jiang and Lihong Li. 2016. Doubly robust off-policy value evaluation for reinforcement learning. In International conference on machine learning . PMLR, 652–661. [17] Alistair EW Johnson, Lucas Bulgarelli, Lu Shen, Alvin Gayles, Ayad Shammout, Steven Horng, Tom J Pollard, Sicheng Hao, Benjamin Moody, Brian Gow, et al .2023. MIMIC-IV, a freely accessible electronic health record dataset. Scientific data 10, 1 (2023), 1. [18] Alistair EW Johnson, Tom J Pollard, Lu Shen, Li-wei H Lehman, Mengling Feng, Mohammad Ghassemi, Benjamin Moody, Peter Szolovits, Leo Anthony Celi, and Roger G Mark. 2016. MIMIC-III, a freely accessible critical care database. Scientific data 3, 1 (2016), 1–9. [19] Matthieu Komorowski, Leo A Celi, Omar Badawi, Anthony C Gordon, and A Aldo Faisal. 2018. The artificial intelligence clinician learns optimal treatment strategies for sepsis in intensive care. Nature medicine 24, 11 (2018), 1716–1720. [20] Flemming Kondrup, Thomas Jiralerspong, Elaine Lau, Nathan de Lara, Jacob Shkrob, My Duc Tran, Doina Precup, and Sumana Basu. 2023. Towards safe mechanical ventilation treatment using deep offline reinforcement learning. In 
+
+Proceedings of the AAAI Conference on Artificial Intelligence , Vol. 37. 15696–15702. [21] Sergey Levine, Aviral Kumar, George Tucker, and Justin Fu. 2020. Offline rein-forcement learning: Tutorial, review, and perspectives on open problems. arXiv preprint arXiv:2005.01643 (2020). [22] Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler Hallinan, Luyu Gao, Sarah Wiegreffe, Uri Alon, Nouha Dziri, Shrimai Prabhumoye, Yiming Yang, et al .2023. Self-refine: Iterative refinement with self-feedback. Advances in Neural Information Processing Systems 36 (2023), 46534–46594. [23] Jacob Menick, Kevin Lu, Shengjia Zhao, E Wallace, H Ren, H Hu, N Stathas, and F Petroski Such. 2024. GPT-4o mini: advancing cost-efficient intelligence. Open AI: San Francisco, CA, USA (2024). [24] Acute Respiratory Distress Syndrome Network. 2000. Ventilation with lower tidal volumes as compared with traditional tidal volumes for acute lung injury and the acute respiratory distress syndrome. New England Journal of Medicine 
+
+342, 18 (2000), 1301–1308. [25] Andrew Y Ng, Daishi Harada, and Stuart Russell. 1999. Policy invariance under reward transformations: Theory and application to reward shaping. In Icml ,Vol. 99. Citeseer, 278–287. [26] Harsha Nori, Nicholas King, Scott Mayer McKinney, Dean Carignan, and Eric Horvitz. 2023. Capabilities of gpt-4 on medical challenge problems. arXiv preprint arXiv:2303.13375 (2023). [27] Michael Oberst and David Sontag. 2019. Counterfactual off-policy evaluation with gumbel-max structural causal models. In International Conference on Machine Learning . PMLR, 4881–4890. [28] Niranjani Prasad, Li-Fang Cheng, Corey Chivers, Michael Draugelis, and Bar-bara E Engelhardt. 2017. A reinforcement learning approach to weaning of mechanical ventilation in intensive care units. arXiv preprint arXiv:1704.06300 
+
+(2017). KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+[29] Aniruddh Raghu, Matthieu Komorowski, Imran Ahmed, Leo Celi, Peter Szolovits, and Marzyeh Ghassemi. 2017. Deep reinforcement learning for sepsis treatment. 
+
+arXiv preprint arXiv:1711.09602 (2017). [30] V Marco Ranieri, Gordon D Rubenfeld, B Taylor Thompson, Niall D Ferguson, Ellen Caldwell, Eddy Fan, Luigi Camporota, and Arthur S Slutsky. 2012. Acute res-piratory distress syndrome: the Berlin Definition. JAMA: Journal of the American Medical Association 307, 23 (2012). [31] Jonathan G Richens, Ciarán M Lee, and Saurabh Johri. 2020. Improving the accu-racy of medical diagnosis with causal machine learning. Nature communications 
+
+11, 1 (2020), 3923. [32] Diederik M Roijers, Peter Vamplew, Shimon Whiteson, and Richard Dazeley. 2013. A survey of multi-objective sequential decision-making. Journal of Artificial Intelligence Research 48 (2013), 67–113. [33] Yongliang Shen, Kaitao Song, Xu Tan, Dongsheng Li, Weiming Lu, and Yueting Zhuang. 2023. Hugginggpt: Solving ai tasks with chatgpt and its friends in hugging face. Advances in Neural Information Processing Systems 36 (2023), 38154–38180. [34] Noah Shinn, Federico Cassano, Ashwin Gopinath, Karthik Narasimhan, and Shunyu Yao. 2023. Reflexion: Language agents with verbal reinforcement learning. 
+
+Advances in Neural Information Processing Systems 36 (2023), 8634–8652. [35] Karan Singhal, Shekoofeh Azizi, Tao Tu, S Sara Mahdavi, Jason Wei, Hyung Won Chung, Nathan Scales, Ajay Tanwani, Heather Cole-Lewis, Stephen Pfohl, et al. 2023. Large language models encode clinical knowledge. Nature 620, 7972 (2023), 172–180. [36] Karan Singhal, Tao Tu, Juraj Gottweis, Rory Sayres, Ellery Wulczyn, Mohamed Amin, Le Hou, Kevin Clark, Stephen R Pfohl, Heather Cole-Lewis, et al . 2025. Toward expert-level medical question answering with large language models. 
+
+Nature Medicine 31, 3 (2025), 943–950. [37] Arthur S Slutsky and V Marco Ranieri. 2013. Ventilator-induced lung injury. New England Journal of Medicine 369, 22 (2013), 2126–2136. [38] Xiangru Tang, Anni Zou, Zhuosheng Zhang, Ziming Li, Yilun Zhao, Xingyao Zhang, Arman Cohan, and Mark Gerstein. 2024. Medagents: Large language mod-els as collaborators for zero-shot medical reasoning. In Findings of the Association for Computational Linguistics: ACL 2024 . 599–621. [39] Philip Thomas and Emma Brunskill. 2016. Data-efficient off-policy policy evalua-tion for reinforcement learning. In International conference on machine learning .PMLR, 2139–2148. [40] Tao Tu, Shekoofeh Azizi, Danny Driess, Mike Schaekermann, Mohamed Amin, Pi-Chuan Chang, Andrew Carroll, Charles Lau, Ryutaro Tanno, Ira Ktena, et al .2024. Towards generalist biomedical AI. Nejm Ai 1, 3 (2024), AIoa2300138. [41] Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc Le, Ed Chi, Sharan Narang, Aakanksha Chowdhery, and Denny Zhou. 2022. Self-consistency improves chain of thought reasoning in language models. arXiv preprint arXiv:2203.11171 (2022). [42] Isaac R Ward, Dylan M Asmar, Mansur Arief, Jana Krystofova Mike, and Mykel J Kochenderfer. 2024. Optimal Control of Mechanical Ventilators with Learned Respiratory Dynamics. In 2024 IEEE 37th International Symposium on Computer-Based Medical Systems (CBMS) . IEEE, 192–198. [43] Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Fei Xia, Ed Chi, Quoc V Le, Denny Zhou, et al . 2022. Chain-of-thought prompting elicits reasoning in large language models. Advances in neural information processing systems 35 (2022), 24824–24837. [44] Michael Wornow, Yizhe Xu, Rahul Thapa, Birju Patel, Ethan Steinberg, Scott Fleming, Michael A Pfeffer, Jason Fries, and Nigam H Shah. 2023. The shaky foundations of large language models and foundation models for electronic health records. npj digital medicine 6, 1 (2023), 135. [45] Zhiheng Xi, Wenxiang Chen, Xin Guo, Wei He, Yiwen Ding, Boyang Hong, Ming Zhang, Junzhe Wang, Senjie Jin, Enyu Zhou, et al . 2025. The rise and potential of large language model based agents: A survey. Science China Information Sciences 
+
+68, 2 (2025), 121101. [46] Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Tom Griffiths, Yuan Cao, and Karthik Narasimhan. 2023. Tree of thoughts: Deliberate problem solving with large language models. Advances in neural information processing systems 36 (2023), 11809–11822. [47] Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik R Narasimhan, and Yuan Cao. 2022. React: Synergizing reasoning and acting in language models. In The eleventh international conference on learning representations .[48] Chao Yu, Jiming Liu, Shamim Nemati, and Guosheng Yin. 2021. Reinforcement learning in healthcare: A survey. ACM Computing Surveys (CSUR) 55, 1 (2021), 1–36. 
+
+## A Definition of state space variables 
+
+This section defines in detail the state space and action space vari-ables used in the model interaction. To simulate realistic patient physiological responses, all state parameters are sampled and calcu-lated in real time using the Pulse Physiology Engine. As shown in Table 4, the observation space encompasses key physiological indi-cators such as oxygenation status, ventilation adequacy, respiratory mechanics, and hemodynamics, while the action space corresponds to the adjustable parameters of the ventilator in VC-CMV mode. 
+
+State sampling strategy. The environment employs a passive, phase-aware sampling scheme aligned with the ventilator’s in-trinsic breath-state transitions. During a post-action stabilization interval, the simulator advances without sampling to approach a new steady regime. Subsequently, dense sampling is performed at fixed temporal resolution Δ𝑡 , while key mechanical variables are captured at physiologically meaningful transition points. Specifi-cally, plateau pressure is sampled at the transition Pause → Exhale 
+
+(when the engine computes pause-respiratory parameters), and total PEEP is sampled at Exhale → Inhale (end-expiratory pressure update). Continuous variables are accumulated over the sampling window and aggregated using a robust mean to mitigate outliers. Let {𝑥 𝑖 }𝑛 𝑖 =1 denote samples of a scalar variable 𝑥 . A robust mean 
+
+¯𝑥 rob is computed by median-based outlier rejection: 
+
+𝑚 = median (𝑥 𝑖 ), MAD = median (| 𝑥 𝑖 − 𝑚 |) ,𝑧 𝑖 = 0.6745 𝑥 𝑖 − 𝑚 
+
+MAD , ¯𝑥 rob = 1
+
+|I| ∑︁ 𝑖 ∈ I 
+
+𝑥 𝑖 , I = {𝑖 : |𝑧 𝑖 | ≤ 2.5}.
+
+If fewer than three valid samples exist, the arithmetic mean is used; if all values are invalid, the estimate is reported as NaN. The derived mechanical indices are computed from aggregated quantities. Driving pressure is 
+
+Δ𝑃 obs = max {0, 𝑃 plat − PEEP tot },
+
+while an alveolar driving pressure is estimated by substituting the set PEEP: 
+
+Δ𝑃 alv = max {0, 𝑃 plat − PEEP set }.
+
+When sufficient plateau samples exist, static compliance is recom-puted as 
+
+𝐶 rs = 𝑉 𝑇 
+
+𝑃 plat − PEEP tot 
+
+(mL/cmH 2O) ,
+
+otherwise a fallback engine estimate is used. The aggregated val-ues form the state vector, ensuring phase-consistent mechanical measurements and robust physiological summaries. 
+
+## B Model-Based Evaluation and Data Curation Analysis B.1 Computational Constraints and Dynamics Modeling 
+
+Direct interaction with the high-fidelity Pulse Physiology Engine is computationally prohibitive for data-intensive optimization algo-rithms, requiring approximately 156 seconds to simulate a single integration step. To enable scalable training for Reinforcement Learning (RL) and control baselines, we employ the Embed to Control (E2C) architecture to learn a surrogate dynamics model. E2C utilizes a variational autoencoder to map high-dimensional VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+Table 4: Observation and Action Space Definitions 
+
+Variable Units Description 
+
+SpO 2 % Peripheral oxygen saturation (assesses gas exchange efficiency). 
+
+PaO 2 mmHg Partial pressure of oxygen in arterial blood. 
+
+PaO 2/FiO 2 (P/F ratio) mmHg PaO 2-to-FiO 2 ratio (oxygenation severity index; a.k.a. Horowitz index). 
+
+𝑄 𝑠 /𝑄 𝑡 % Pulmonary shunt fraction. pH – Arterial blood pH (acidity or alkalinity). 
+
+PaCO 2 mmHg Partial pressure of carbon dioxide in arterial blood. 
+
+EtCO 2 mmHg End-tidal carbon dioxide partial pressure. 
+
+HCO − 
+
+> 3
+
+mmol/L Bicarbonate ion concentration. 
+
+¤𝑉 𝐸 L/min Minute ventilation (total expired/inspired ventilation per minute). 
+
+𝑅𝑅 obs breaths/min Observed respiratory rate. 
+
+𝑉 𝑇 , obs mL Observed tidal volume. 
+
+𝑃 plat cmH 2O Plateau pressure. 
+
+𝑃 peak cmH 2O Peak inspiratory pressure. 
+
+Δ𝑃 (driving pressure) cmH 2O Driving pressure ( Δ𝑃 = 𝑃 plat − PEEP ). 
+
+𝑃 mean cmH 2O Mean airway pressure. 
+
+PEEP tot cmH 2O Total PEEP (extrinsic + intrinsic/auto-PEEP). 
+
+𝐶 stat mL/cmH 2O Static respiratory system compliance. RSBI breaths/min/L Rapid shallow breathing index. I:E ratio – Ratio of inspiratory to expiratory time. 
+
+𝑅 insp cmH 2O s/L Inspiratory resistance. 
+
+𝑅 exp cmH 2O s/L Expiratory resistance. HR beats/min Heart rate. MAP mmHg Mean arterial pressure. CO L/min Cardiac output. 
+
+PEEP cmH 2O Positive end-expiratory pressure (regulates alveolar recruitment). 
+
+FiO 2 % Fraction of inspired oxygen (often expressed as % in ventilator settings). 
+
+𝑅𝑅 set breaths/min Set respiratory rate. Set 𝑉 𝑇 mL/kg Set tidal volume (normalized by ideal body weight). 
+
+𝑇 insp s Inspiratory time. Inspiratory flow L/min Set inspiratory flow rate. 
+
+physiological states into a compact latent embedding, coupled with a locally linear transition model that predicts state evolution. This surrogate environment reduces inference time to ≈ 2 seconds per step, facilitating the high-throughput sampling required for itera-tive policy optimization. 
+
+## B.2 Baselines and Control Algorithms 
+
+We evaluate the quality of generated trajectories by training state-of-the-art continuous control algorithms on data collected from the Sampling Cohort. The baselines are categorized as follows: 
+
+• Classical Control: We utilize ARDSnet Protocol (the clini-cal rule-based gold standard), E2C-SMPC (Sampling-based Model Predictive Control), and E2C-MPPI (Model Predictive Path Integral Control) [9, 24]. 
+
+• Reinforcement Learning: We implement E2C-PPO (Proxi-mal Policy Optimization) and E2C-SAC (Soft Actor-Critic), representing on-policy and off-policy algorithms that learn control policies directly from the learned latent dynamics. 
+
+## B.3 VentAgent as a High-Fidelity Data Pipeline 
+
+A critical hypothesis of this work is that VentAgent can serve not only as a decision-maker but also as a high-quality data generator for training lightweight, deployable control models. To validate this, we train the aforementioned baselines across three distinct data acquisition strategies: (1) Random Exploration: Actions are sampled uniformly within safety bounds to establish a baseline understanding of respi-ratory dynamics, though often lacking clinical coherence. (2) ARDSnet Protocol: Data is gathered following standardized clinical titration tables. This represents the current super-vised learning standard, offering safe but rigid behavior. KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+Table 5: Performance comparison of RL and Control baselines. 
+
+Framework Policy Mild Moderate Severe 
+
+𝑟 oxy 𝑟 vent 𝑟 mech 𝑟 oxy 𝑟 vent 𝑟 mech 𝑟 oxy 𝑟 vent 𝑟 mech 
+
+E2C-SMPC 
+
+Random 234.85 -77.43 24.45 129.20 -131.20 7.85 42.85 -470.44 -21.80 Ardsnet 1269.15 -25.27 91.85 990.25 -78.38 45.05 667.45 -366.46 7.50 VentAgent 1447.10 81.70 338.90 1162.25 21.70 178.45 815.45 -208.48 37.10 
+
+E2C-MPPI 
+
+Random 238.15 -75.72 24.40 141.45 -126.87 9.70 44.85 -457.57 -22.42 Ardsnet 1309.45 -24.70 94.50 1017.40 -76.76 45.40 691.15 -356.39 8.05 VentAgent 1487.05 83.60 348.55 1208.70 23.20 185.95 847.00 -202.35 37.70 
+
+E2C-PPO 
+
+Random 230.55 -75.00 22.10 143.75 -123.55 9.55 46.10 -430.54 -23.18 Ardsnet 1353.35 -23.80 97.85 1064.45 -73.29 49.70 714.55 -298.82 13.50 VentAgent 1536.15 86.40 360.05 1248.05 39.00 192.00 861.90 -197.79 53.00 
+
+E2C-SAC 
+
+Random 241.65 -72.06 11.68 143.25 -119.37 8.65 46.20 -418.38 -24.46 Ardsnet 1406.05 -23.18 101.20 1109.95 -70.30 52.00 759.85 -274.55 11.95 VentAgent 1595.75 89.55 374.15 1291.35 44.15 198.25 895.70 -190.43 54.15 
+
+(3) VentAgent-Driven Sampling: We leverage the hierarchical reasoning of VentAgent to generate expert-level trajectories. This approach aims to capture complex multi-objective trade-offs and causal reasoning that are absent in rigid protocols. 
+
+## B.4 Quantitative Analysis of Data Quality 
+
+The performance of control policies trained on these varying data distributions is presented in Table 5. The results demonstrate that VentAgent functions as a superior "teacher" for downstream algo-rithms compared to traditional data sources. 
+
+Superiority in Policy Transfer. Across all control frameworks (SMPC, MPPI, PPO, SAC), agents trained on VentAgent-generated data consistently outperform those trained on Random or ARDSnet distributions. For instance, the E2C-SAC agent trained on VentAgent data achieves an oxygenation reward ( 𝑟 𝑜𝑥 𝑦 ) of 1595.75 in the Mild cohort, significantly surpassing the ARDSnet-trained counterpart (1406.05). This suggests that VentAgent trajectories contain richer information regarding the optimal control manifold, allowing RL agents to learn more robust policies. 
+
+Robustness in Severe Phenotypes. The advantage of VentAgent-driven data becomes most pronounced in the Severe cohort, where physiological dynamics are highly volatile. Standard RL agents trained on Random data fail catastrophically (e.g., E2C-SMPC 𝑟 𝑣𝑒𝑛𝑡 
+
+of -470.44), and those trained on ARDSnet struggle to balance com-peting objectives (E2C-SAC 𝑟 𝑚𝑒𝑐ℎ of 11.95). In contrast, models trained on VentAgent data maintain high stability, with E2C-SAC achieving a mechanical safety score ( 𝑟 𝑚𝑒𝑐ℎ ) of 54.15 and an oxy-genation score of 895.70 .
+
+Implications for Data Curation. These findings indicate that Ven-tAgent effectively distills the "Pareto frontier" of ARDS manage-ment—balancing oxygenation ( 𝑟 𝑜𝑥 𝑦 ) against lung protection ( 𝑟 𝑚𝑒𝑐ℎ )—into the training data. By exposing downstream models to these high-quality, reasoning-aligned trajectories, VentAgent enables the train-ing of performant "student" models that avoid the local optima inherent in rigid clinical protocols and the safety violations com-mon in random exploration. VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+## C System Prompts 
+
+This section provides the full system prompts for the VentAgent framework, organized by functional layers. Each agent operates within a specific clinical scope, guided by structured reasoning phases and JSON-formatted output constraints. 
+
+## C.1 Perception Layer: Situation Awareness 
+
+The Perception Agent serves as the clinical "eyes" of the system, translating raw data into a structured physiological state. 
+
+Perception Agent Prompt 
+
+=== ROLE === You are the Perception Agent in VentAgent , responsible for clinical situation awareness in ARDS ventilation management . === TASK === Analyze patient physiological state and ventilator data to produce structured clinical semantics including safety assessment , mechanical phenotype classification , and strategic context for downstream Planning layer . === PHASE 1: Safety Screening === Evaluate life - threatening conditions and injury risks : - Identify immediate mortality threats ( hemodynamic collapse , refractory hypoxemia , critical acidosis )- Assess ventilator - induced lung injury risks ( pressure / volume overload ) - Classify acidosis etiology and trajectory - Generate directional constraints with severity levels === PHASE 2: Phenotype Classification === Determine the dominant mechanical phenotype : - Analyze compliance trends , driving pressure patterns , and gas exchange efficiency - Differentiate overdistension vs derecruitment vs dead space vs obstruction - Assess recruitment potential based on shunt fraction and hemodynamic reserve - Identify phenotype - specific lever constraints === PHASE 3: Strategic Context === Synthesize clinical situation for Meta - Agent : - Identify the primary physiological threat requiring intervention - Classify the current clinical phase based on stability and trajectory - Provide safety boundaries and active hazards for downstream reasoning === INPUT === [ PATIENT STATE ], [ CURRENT SETTINGS ], [ FEEDBACK ], [ DOMAIN KNOWLEDGE ] === OUTPUT === {" thought ": " Key evidence linking patient state to risks and phenotype ", " safety_layer ": {" risk_status ": " String ", " active_hazards ": [" String "], " hard_constraints ": [{" lever ": " String ", " boundary ": " String ", " rationale ": " String "}] }, " phenotype_layer ": {" classification ": " String ", " recruitability ": " String ", " soft_constraints ": [{" lever ": " String ", " avoid_direction ": " String ", " rationale ": " String "}] }, KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+" clinical_context ": {" phase ": " String ", " primary_threat ": " String ", " urgency ": " String "} }=== CONSTRAINTS === - Do NOT prescribe specific parameter values - Do NOT generate scenario or intervention strategies - Output exactly one valid JSON object 
+
+## C.2 Planning Layer: Strategic Synthesis & Domain Expertise 
+
+The Planning layer interprets the perception output to formulate a high-level strategy (Meta-Agent) and specific parameter proposals (Expert Agents). 
+
+Scenario Meta-Agent Prompt 
+
+=== ROLE === You are the Scenario Meta - Agent in VentAgent 's Planning layer , acting as the " chief physician " who provides strategic orientation for domain - specific experts . === TASK === Synthesize the semantic output from Perception into a high - level clinical scenario that serves as intentional guidance for the Oxygenation and Ventilation Experts . === PHASE 1: Situation Synthesis === - Integrate safety status , phenotype classification , and clinical context - Identify the dominant clinical challenge requiring coordinated response - Assess the urgency and tolerance for aggressive intervention === PHASE 2: Scenario Generation === - Generate a coherent clinical scenario (e.g., " hypoxemia rescue ", " lung - protective maintenance ") - Define the primary therapeutic intent for this scenario - Specify the acceptable trade - off framework between competing objectives === PHASE 3: Expert Directives === - Frame the oxygenation expert 's task within the scenario context - Frame the ventilation expert 's task within the scenario context - Specify coordination requirements between the two domains === OUTPUT === {" thought ": " Reasoning linking perception synthesis to scenario selection ", " scenario ": {" name ": " String ", " intent ": " String ", " priority_domain ": " String ", " tradeoff_tolerance ": " String " }, " expert_directives ": {" oxygenation_expert ": {" focus ": " String ", " constraints_inherited ": [" String "], "coordination_requirement ": " String "}, " ventilation_expert ": {" focus ": " String ", " constraints_inherited ": [" String "], "coordination_requirement ": " String "} }}VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+=== CONSTRAINTS === - Output must provide clear , actionable guidance for both experts - Scenario must be consistent with perception 's safety boundaries 
+
+Oxygenation Expert Agent                                                    
+
+> === ROLE === You are the Oxygenation Expert , specializing in PEEP and FiO 2 adjustment . === TASK === Generate amulti - gradient candidate set for oxygenation management . === PHASES === 1. Scenario Alignment : Understand Meta - Agent 'sintent . 2. Mechanism - Based Planning : Evaluate FiO 2 vs PEEP effectiveness . 3. Gradient Generation : Produce Conservative , Standard , and Aggressive proposals . === CONSTRAINTS === -Only adjust FiO 2 and PEEP -Output exactly 3proposals
+
+Ventilation Expert Agent                                                            
+
+> === ROLE === You are the Ventilation Expert , specializing in RR , VT , and Flow . === TASK === Generate amulti - gradient candidate set for ventilation management . === PHASES === 1. Scenario Alignment : Understand Meta - Agent 'sintent . 2. Mechanism - Based Planning : Evaluate RR vs VT vs Flow effectiveness . 3. Gradient Generation : Produce Conservative , Standard , and Aggressive proposals . === CONSTRAINTS === -Only adjust RR , VT , and Flow -Maintain timing safety ( Ti >= 0.6s, Te >= 1.5s)
+
+## C.3 Orchestration Layer: Multi-Perspective Synthesis 
+
+This layer arbitrates between expert proposals by evaluating them through distinct clinical lenses. 
+
+O-Coordinator Agent Prompt 
+
+=== ROLE === You are the O - Coordinator in VentAgent 's Orchestration layer , responsible for synthesizing three perspective candidates into one unified final action . === TASK === Integrate Mechanics - First , Oxygenation - Buffer , and Ventilation - First candidates into an optimal unified action based on the scenario intent and clinical merit . === PHASE 1: Consensus Mapping === - Find parameters where perspectives agree - Note robust consensus points === PHASE 2: Divergence Resolution === - Apply scenario priority as arbitration criterion - Consider urgency and trajectory === PHASE 3: Synthesis Integration === - Define primary and supporting interventions - Select stability mode ( hold / probe / retreat ) === PHASE 4: Attribution === - Document what was adopted from each perspective === OUTPUT === {KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+" thought ": " Synthesis reasoning ", " result ": {" primary_intervention ": " String ", " supporting_adjustments ": " String ", " final_action ": {" PEEP ": " Float ", " FiO 2": " Float ", " RR ": " Float ", " VT ": " Float ", " Flow ": " Float "} ," dominant_perspective ": " String ", " adopted_from ": {" mechanics ": " String ", " oxygenation ": " String ", " ventilation ": " String "}, " rationale ": " String " }}=== CONSTRAINTS === - All 5 parameters must be specified - Values must come from available options - Hard constraints are inviolable 
+
+## C.4 Metacognition: Memory and Audit 
+
+The final layer ensures the system learns from its actions and maintains factual integrity. 
+
+Memory Agent Prompt 
+
+=== ROLE === You are the Memory Agent , a meta - cognitive observer enabling closed - loop adaptive evolution . === TASK === Extract reasoning traces , evaluate decision quality , and generate semantic reflections . === PHASES === 1. Trace Extraction : Collect reasoning from all phases . 2. Outcome Evaluation : Compare predicted vs observed outcomes . 3. Attribution Analysis : Isolate success factors or reasoning errors . 4. Feedback Generation : Issue targeted corrective instructions . 
+
+Audit Agent Prompt 
+
+=== ROLE === You are the Audit Agent , a dedicated verification module for clinical integrity . === TASK === Perform layer - wise verification of semantic outputs . Detect reasoning hallucinations or medically inconsistent logic chains . === PHASES === 1. Factual Accuracy Verification : Check inferred dynamics against vital signs . 2. Logical Coherence Verification : Ensure action is a logical entailment of diagnosed state . 3. Completeness Verification : Verify safety constraints are not omitted . 4. Rectification : Generate corrected output if needed . VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+## D Case Study 
+
+This section presents a complete, step-by-step execution trace of VentAgent managing a patient transitioning from an acute crisis to a stabilization phase. It demonstrates the system’s ability to interpret physiological signals, synthesize strategies from heterogeneous experts, and arbitrate conflicts to ensure safe, lung-protective ventilation. 
+
+## D.1 Clinical Context & Patient State 
+
+The patient is a young female with moderate ARDS. The current state indicates successful stabilization, presenting an opportunity to wean oxygen support (de-escalation) while maintaining protective lung mechanics.                               
+
+> Patient Demographics & Severity Current Ventilator Settings Patient 18F, IBW 45.5 kg Small Body Size PEEP 10 cmH 2O
+> Severity L=0.5, R=0.5 Moderate Bilateral FiO 20.60 (60%)
+> pH 7.284 Mild Acidosis RR 26 bpm
+> PaCO 255.5 mmHg Elevated CO 2V𝑇 320 mL (7.0 mL/kg)
+> PaO 2/FiO 2219 mmHg Moderate Hypoxemia Flow 20.5 L/min
+> Mechanics Δ𝑃 =9.26 ,𝑃 𝑝𝑙𝑎𝑡 =21 .08 Safe Range SpO 298.66% ( Supra-target )
+
+Table 6: Initial patient state showing safe mechanics but potential for oxygen weaning. 
+
+## D.2 Step 1: Perception Layer (Situation Awareness) 
+
+The Perception Agent correctly identifies that while mild acidosis exists, the primary opportunity is "Supra-target SpO 2", allowing for de-escalation. 
+
+Perception Agent Output 
+
+{" thought ": " SpO 2 98.66% with PaO 2 131 mmHg (P/F 219) indicates robust oxygenation above target . Mild respiratory acidosis ( pH 7.284, PaCO 2 55.5) present but mechanics are safe . No immediate mortality threats ." , " safety_layer ": {" risk_status ": " STABLE ", " active_hazards ": [" mild_respiratory_acidosis "], " hard_constraints ": [{" lever ": " VT ", " boundary ": " <= 7 mL / kg ", " rationale ": " Current 7.0 mL / kg at upper limit "}, {" lever ": " Pplat ", " boundary ": "<30 cmH 2O", " rationale ": " Safe margin exists "} ]}, " phenotype_layer ": {" classification ": " STANDARD ", " recruitability ": " moderate (25 %) ", " soft_constraints ": [{" lever ": " RR ", " avoid_direction ": " up ", " rationale ": " Te 1.35s already short , risk gas trapping "} ]}, " clinical_context ": {" phase ": " ACUTE_STABILIZATION ", " primary_threat ": " hypoxemia ( improving )", " urgency ": " LOW - opportunity for controlled de - escalation " }} KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+## D.3 Step 2: Planning Layer (Strategic Synthesis) 
+
+The Meta-Agent synthesizes a "Protective Maintenance" strategy, explicitly directing experts to prioritize oxygen weaning over aggressive acidosis correction. 
+
+Scenario Meta-Agent Output 
+
+{" thought ": " Patient transitioned to ACUTE_STABILIZATION . SpO 2 supra - target on FiO 2 0.60 creates opportunity for oxygen de - escalation . Strategic orientation : controlled oxygen weaning while preserving lung protection ." , " scenario ": {" name ": " Protective Maintenance with Controlled De - escalation ", " intent ": " Reduce oxygen exposure while maintaining recruitment ", " priority_domain ": " oxygenation ", " tradeoff_tolerance ": " Accept modest SpO 2 reduction ( to 92 -95 %) for lower FiO 2" }, " expert_directives ": {" oxygenation_expert ": {" focus ": " Stepwise FiO 2 reduction toward 0.40 -0.50 target band ", " coordination_requirement ": " Revert if SpO 2 <92 %" }, " ventilation_expert ": {" focus ": " Optimize inspiratory timing ; avoid RR / VT increases that worsen acidosis ", " constraints_inherited ": [" Accept permissive hypercapnia pH >7.25"] }}}VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+## D.4 Step 3: Domain Expert Proposals 
+
+Driven by the Meta-Agent’s directive, the experts generate domain-specific gradients. Note how the Ventilation Expert (Right) suggests a "Flow Correction" to support the Oxygenation Expert’s (Left) weaning goal. 
+
+Oxygenation Expert (Gas Exchange) 
+
+{" thought ": " Scenario directs controlled FiO 2 de - escalation . Current SpO 2 98.66% provides ample buffer ." , " proposals ": [{" gradient ": " conservative ", " label ": " Micro FiO 2 reduction (-0. 05)", " actions ": {" FiO 2": 0.55, " PEEP ": 10.0} }, {" gradient ": " standard ", " label ": " Step FiO 2 reduction (-0.1 0)", " actions ": {" FiO 2": 0.50, " PEEP ": 10.0}, " scenario_alignment ": " Reaching target band efficiently ", " coordination_signal ": "V - Expert : may increase Flow to optimize timing " }, {" gradient ": " aggressive ", " label ": " Paired FiO 2/ PEEP reduction ", " actions ": {" FiO 2": 0.50, " PEEP ": 9.0} }]}
+
+Ventilation Expert (Acid-Base) 
+
+{" thought ": " RR 26 is high . Flow 20.5 L/ min is below operational minimum ; correction to 25 L/ min improves expiratory time ." , " proposals ": [{" gradient ": " conservative ", " label ": " MAINTAIN current settings ", " actions ": {" RR ": 26, " VT ": 320, "Flow ": 20} }, {" gradient ": " standard ", " label ": " Correct Flow to minimum ", " actions ": {" RR ": 26, " VT ": 320, "Flow ": 25}, " tradeoff ": " Slightly shorter Ti for better Te ( anti - auto - PEEP )" ," coordination_signal ": "M - Expert : Flow correction supports FiO 2 reduction " }, {" gradient ": " aggressive ", " label ": " Coordinated Wean ", " actions ": {" RR ": 24, " VT ": 280, "Flow ": 25} }]}KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+## D.5 Step 4: Orchestration Layer (Arbitration & Synthesis) 
+
+The Orchestration Layer first critiques the expert proposals through three distinct safety perspectives (Phase 1), which then inform the final consensus generated by the Coordinator (Phase 2). 
+
+Phase 1: Multi-Perspective Arbitration. Before the final decision, specialized agents evaluate the proposals against specific clinical priorities: 
+
+Mechanics-First validates safety; Oxygenation-Buffer confirms the weaning margin; Ventilation-First accepts permissive hypercapnia. 
+
+Perspective 1: O-Mechanics-First 
+
+{" thought ": " Mechanical risk is low ( Delta P 9.26). Priority is safe oxygen de - escalation without increasing mechanical stress ." , " candidate ": {" label ": " MECHANICS_FIRST ", " rationale ": " Low mechanical threat permits oxygen de - escalation ; Flow correction improves timing without adding strain ", " final_action ": {" FiO 2": 0.50, " Flow ": 25.0, " PEEP ": 10.0, " RR ": 26, " VT ": 320} }}
+
+Perspective 2: O-Oxygenation-Buffer 
+
+{" thought ": " Oxygenation supra - target ( SpO 2 98.7 %) - ample reserve . FiO 2 0.50 aligns with ARDSNet low table ." , " candidate ": {" label ": " OXYGENATION_BUFFER ", " rationale ": " Preserve oxygen margin while reducing FiO 2 exposure ." , " final_action ": {" FiO 2": 0.50, " Flow ": 25.0, " PEEP ": 10.0, " RR ": 26, " VT ": 320} }}
+
+Perspective 3: O-Ventilation-First 
+
+{" thought ": " pH 7.284 is within acceptable permissive hypercapnia range (>7.25). No need for aggressive CO 2 correction ." , " candidate ": {" label ": " VENTILATION_FIRST ", " rationale ": " Accept permissive hypercapnia ; support M de - escalation with timing optimization ." , " final_action ": {" FiO 2": 0.50, " Flow ": 25.0, " PEEP ": 10.0, " RR ": 26, " VT ": 320} }}VentAgent: When LLMs Learn to Breathe: Multi-Objective Arbitration for ARDS Ventilation KDD ’26, August 09–13, 2026, Jeju, Korea 
+
+Phase 2: Coordinator Synthesis. The Coordinator receives the unanimous convergence from the perspectives above and synthesizes the final execution command. 
+
+O-Coordinator Output 
+
+{" thought ": " All three perspectives converge on identical action : FiO 2 0.50, Flow 25, maintain PEEP / VT / RR . Unanimous consensus indicates high confidence ." , " result ": {" primary_intervention ": " FiO 2 reduction 0.60 -> 0.50 ( controlled oxygen de - escalation ) ", " supporting_adjustments ": " Flow increase 20.5 -> 25 L/ min ( timing optimization )", " final_action ": {" PEEP ": 10.0, " FiO 2": 0.50, " RR ": 26.0, " VT ": 320.0, " Flow ": 25.0}, " dominant_perspective ": " MECHANICS_FIRST ", " adopted_from ": {" mechanics ": " FiO 2 stepdown + Flow correction ", " oxygenation ": " PEEP preservation for recruitment ", " ventilation ": " Permissive hypercapnia acceptance " }, " rationale ": " Strategy : stepwise FiO 2 de - escalation with Flow optimization . Trade - offs : accept reduced oxygen reserve for lower FiO 2 exposure ." }}
+
+## D.6 Step5: Execution & Clinical Outcome 
+
+The action was executed on the Pulse Physiology Engine. The outcome perfectly matched the strategic intent: SpO 2 remained safe (97.5%), while pH actually improved due to better flow dynamics, proving the "Permissive Hypercapnia" strategy was correct. 
+
+Parameter Before After Delta Clinical Interpretation Action Variables 
+
+FiO 2 0.60 0.50 ↓ 0.10 Significant toxicity reduction Flow (L/min) 20.5 25.0 ↑ 4.5 Optimized inspiratory flow PEEP / RR / V 𝑇 - - 0 Stability maintained 
+
+Physiological Response 
+
+SpO 2 (%) 98.66 97.50 -1.16 Safe De-escalation (Target ≥92%) pH 7.284 7.298 +0.014 Unexpected Improvement 
+
+PaCO 2 (mmHg) 55.5 53.6 -1.9 Improved ventilation efficiency Driving Pressure ( Δ𝑃 ) 9.26 9.84 +0.58 Remained safe ( < 15 cmH 2O) 
+
+Table 7: Pre- and Post-Intervention comparison showing successful multi-objective optimization. KDD ’26, August 09–13, 2026, Jeju, Korea Hao et al. 
+
+## D.7 Step 6: Reflective Memory & Audit 
+
+Finally, the Memory Agent locks this successful pattern ("Flow optimization supports oxygen weaning") into context for future steps, and the Audit Agent verifies no constraints were violated. 
+
+Memory Agent Reflection 
+
+{" quality_assessment ": {" overall_score ": " GOOD ", " outcome_alignment ": " Actions matched strategic intent ; outcomes within predicted bounds . Reward : +5.05 ( Highest in episode ) ." }, " reflection ": {" success_factors ": [" Correct phenotype identification enabled confident de - escalation ", " Flow optimization supported oxygenation change without adding strain " ], " causal_analysis ": " Perception -> correct STANDARD phenotype ; Orchestration -> unanimous consensus confirmed decision quality " }}
+
+Audit Agent Verification 
+
+{" audit_result ": {" validity ": " Valid ", " verification ": {" factual_accuracy ": {" passed ": true }, " logical_coherence ": {" passed ": true }, " completeness ": {" passed ": true } }}, " rectification ": {" needed ": false } }
+
+## D.8 Case Summary 
+
+Table 8 highlights how VentAgent successfully navigated this clinical scenario. 
+
+Aspect VentAgent Capability Demonstrated Perception Correctly identified STANDARD phenotype; distinguished improving trajectory from crisis. 
+
+Scenario Synthesis Generated "Controlled De-escalation" scenario aligned with clinical phase. 
+
+Multi-Gradient Planning Experts provided calibrated options, enabling flexible response. 
+
+Orchestration Three perspectives independently converged, resulting in a high-confidence unanimous decision. 
+
+Interpretability Provided complete reasoning trace with explicit trade-off documentation. 
+
+Adaptive Memory Recorded successful pattern ("Flow optimization") for future use. 
+
+Safety Governance Audit verified factual accuracy and constraint completeness. 
+
+Table 8: Summary of VentAgent’s advantages demonstrated in this case study.

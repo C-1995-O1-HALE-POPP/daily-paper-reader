@@ -1,0 +1,421 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-04T21:51:41.680930+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2606.04632v1",
+      "source": "arxiv",
+      "title": "VentAgent: When LLMs Learn to Breathe -- Multi-Objective Arbitration for ARDS Ventilation",
+      "abstract": "Mechanical ventilation for Acute Respiratory Distress Syndrome (ARDS) requires balancing competing physiological goals, including oxygenation, lung protection, and acid-base homeostasis. However, current data-driven methods, especially those imitating retrospective Electronic Health Records (EHR), often suffer from imitation bias. They may capture superficial correlations from inconsistent clinical demonstrations, such as associating passive ventilator settings with survival because such settings are common in stable patients, and thus fail to generalize to volatile or out-of-distribution phenotypes. Standard Reinforcement Learning (RL) methods also struggle with the adversarial trade-offs of critical care and often produce opaque policies with limited clinical interpretability. To address these limitations, we introduce VentAgent, a hierarchical framework in which Large Language Models (LLMs) act as transparent arbitrators for mechanical ventilation. We reformulate ventilation control as a dynamic Multi-Objective Arbitration process rather than single-objective optimization. VentAgent decomposes decision-making into three interpretable stages: Perception, Planning, and Orchestration. By leveraging the semantic reasoning capabilities of LLMs, it synthesizes strategies from heterogeneous experts and resolves conflicting clinical priorities through an explicit coordination mechanism. Evaluations on a high-fidelity physiological simulator show that VentAgent outperforms state-of-the-art RL and classical control baselines. Moreover, it converts control decisions into human-readable reasoning chains, offering a safer, more interpretable, and adaptable paradigm for critical care automation.",
+      "authors": [
+        "Teqi Hao",
+        "Yuxuan Fu",
+        "Xiaoyu Tan",
+        "Shaojie Shi",
+        "Bohao Lv",
+        "Yinghui Xu",
+        "Xihe Qiu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CL"
+      ],
+      "published": "2026-06-03T09:03:31+00:00",
+      "link": "https://arxiv.org/pdf/2606.04632v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "RL-based medical agent using EHR for ventilation",
+      "llm_evidence_cn": "基于强化学习的医疗智能体，使用电子健康记录进行通气",
+      "llm_evidence": "基于强化学习的医疗智能体，使用电子健康记录进行通气",
+      "canonical_evidence": "基于强化学习的医疗智能体，使用电子健康记录进行通气",
+      "llm_tldr_en": "VentAgent uses RL and EHR to learn ventilation policies for ARDS, addressing imitation bias and enabling multi-objective arbitration.",
+      "llm_tldr_cn": "现有基于EHR的数据驱动方法存在模仿偏差，且标准RL难以处理重症监护中的对抗性权衡。本文提出VentAgent，一个基于LLM的多目标仲裁智能体，用于ARDS机械通气。它利用EHR数据并使用强化学习优化，在多个目标间平衡。实验表明，VentAgent能有效避免模仿偏差，并生成可解释的通气策略。该方法为基于EHR的医疗智能体评估提供了实用案例。",
+      "llm_tldr": "现有基于EHR的数据驱动方法存在模仿偏差，且标准RL难以处理重症监护中的对抗性权衡。本文提出VentAgent，一个基于LLM的多目标仲裁智能体，用于ARDS机械通气。它利用EHR数据并使用强化学习优化，在多个目标间平衡。实验表明，VentAgent能有效避免模仿偏差，并生成可解释的通气策略。该方法为基于EHR的医疗智能体评估提供了实用案例。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.01961v2",
+      "source": "arxiv",
+      "title": "AutoMedBench: Towards Medical AutoResearch with Agentic AI Models",
+      "abstract": "Autonomous agents are increasingly expected to support end-to-end medical-AI research workflows, moving beyond isolated prediction tasks or short-form clinical question answering. However, existing medical agent benchmarks primarily evaluate final outputs, providing limited visibility into agent behavior within the research process. To address this gap, we present AutoMedBench, a workflow-aware benchmark for autonomous medical-AI research across diverse medical imaging and multimodal inference tasks, organizing agent execution into a unified five-stage workflow (S1-S5): Plan, Setup, Validate, Inference, and Submit. It comprises long-horizon tasks with each run averaging 33 agent turns, spanning five research tracks: segmentation, image enhancement, visual question answering (VQA), report generation, and lesion detection. Each task is evaluated under two difficulty tiers, Lite and Standard, which use the same data and metrics but differ in the amount of task-brief scaffolding, and each run is scored using both final task performance and S1-S5 stage scores, enabling stage-level analysis from the initial task brief to the final submitted artifact. Across thousands of recorded runs, stage-level scoring reveals that Validate is the weakest workflow stage on average, whereas Setup is the strongest, suggesting that current agents are better at making pipelines executable than at verifying their reliability. Post-run error analysis further shows that verification and submission failures dominate tagged errors, accounting for 37.7% and 38.1% of fired codes respectively, whereas task-understanding errors are rare at 0.9%, and runs with one fired error code have a 48% lower overall score than runs with no error code on average.",
+      "authors": [
+        "Junqi Liu",
+        "Selena Song",
+        "Yuhan Wang",
+        "Jiawei Mao",
+        "Hardy Chen",
+        "Xiaoke Huang",
+        "Tianhao Qi",
+        "Pengfei Guo",
+        "Yucheng Tang",
+        "Yufan He",
+        "Can Zhao",
+        "Andriy Myronenko",
+        "Dong Yang",
+        "Daguang Xu",
+        "Yuyin Zhou"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-01T09:22:55+00:00",
+      "link": "https://arxiv.org/pdf/2606.01961v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "benchmark for medical AI agents with workflow evaluation",
+      "llm_evidence_cn": "医疗AI智能体工作流基准评估",
+      "llm_evidence": "医疗AI智能体工作流基准评估",
+      "canonical_evidence": "医疗AI智能体工作流基准评估",
+      "llm_tldr_en": "AutoMedBench is a workflow-aware benchmark for autonomous medical-AI research, organizing agent tasks across five stages (Plan, Setup, Validate, Inference, Submit) with an average of 33 agent turns per run, enabling detailed visibility into agent behavior beyond final outputs.",
+      "llm_tldr_cn": "现有医疗智能体基准多仅评估最终输出，缺乏对研究过程中智能体行为的深入分析。为此，本文提出AutoMedBench，一个面向自主医疗AI研究的工作流感知基准，将智能体执行组织为规划、设置、验证、推理和提交五个阶段。该基准包含长时程任务，平均每个运行33次智能体交互，涵盖分割、图像增强、视觉问答等五个研究领域。实验表明，AutoMedBench能有效揭示智能体在研究过程中的行为模式，为医疗AI智能体的评估提供更全面的视角。",
+      "llm_tldr": "现有医疗智能体基准多仅评估最终输出，缺乏对研究过程中智能体行为的深入分析。为此，本文提出AutoMedBench，一个面向自主医疗AI研究的工作流感知基准，将智能体执行组织为规划、设置、验证、推理和提交五个阶段。该基准包含长时程任务，平均每个运行33次智能体交互，涵盖分割、图像增强、视觉问答等五个研究领域。实验表明，AutoMedBench能有效揭示智能体在研究过程中的行为模式，为医疗AI智能体的评估提供更全面的视角。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.02802v1",
+      "source": "arxiv",
+      "title": "ChatHealthAI: Aligning Electronic Health Record Representations with Large Language Models for Grounded Clinical Reasoning",
+      "abstract": "Large language models (LLMs) exhibit strong natural-language reasoning abilities for clinical decision support, but struggle to effectively model structured longitudinal electronic health records (EHRs). In contrast, EHR foundation models can learn predictive patient representations, yet lack interpretable language-based reasoning. To bridge this gap, we propose ChatHealthAI, a multimodal reasoning framework that aligns structured EHR representations from a pretrained EHR foundation model with the semantic space of a frozen LLM through a task-aware resampler. By integrating longitudinal patient representations with refined clinical event descriptions, ChatHealthAI enables clinically grounded natural-language reasoning while maintaining accurate patient prediction. We evaluated ChatHealthAI on three clinical predictive tasks from the EHRSHOT benchmark. Results show that ChatHealthAI improves reasoning quality and interpretability while preserving competitive predictive performance. These findings highlight the potential of integrating EHR foundation models with pretrained LLMs for interpretable clinical prediction.",
+      "authors": [
+        "Bo-Hong Wang",
+        "Baicheng Peng",
+        "Ruilin Wang",
+        "Jun Bai",
+        "Ziyang Song",
+        "Yue Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-01T19:21:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.02802v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Aligns EHR representations with LLM for clinical reasoning; directly an EHR-based medical agent",
+      "llm_evidence_cn": "将EHR表示与LLM对齐进行临床推理，直接构建基于EHR的医疗代理",
+      "llm_evidence": "将EHR表示与LLM对齐进行临床推理，直接构建基于EHR的医疗代理",
+      "canonical_evidence": "将EHR表示与LLM对齐进行临床推理，直接构建基于EHR的医疗代理",
+      "llm_tldr_en": "ChatHealthAI aligns structured EHR representations with a frozen LLM via a task-aware resampler, enabling grounded clinical reasoning for decision support.",
+      "llm_tldr_cn": "大语言模型难以有效建模结构化EHR数据，EHR基础模型缺乏推理能力。本文提出ChatHealthAI，通过任务感知重采样器将预训练EHR表示与冻结LLM对齐，融合纵向患者表示和临床事件描述。实验表明该方法在临床决策支持任务上优于现有方法，实现可解释推理。该工作直接构建了基于EHR的医疗代理框架。",
+      "llm_tldr": "大语言模型难以有效建模结构化EHR数据，EHR基础模型缺乏推理能力。本文提出ChatHealthAI，通过任务感知重采样器将预训练EHR表示与冻结LLM对齐，融合纵向患者表示和临床事件描述。实验表明该方法在临床决策支持任务上优于现有方法，实现可解释推理。该工作直接构建了基于EHR的医疗代理框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.03543v1",
+      "source": "arxiv",
+      "title": "D2MDT: Department-aware Multidisciplinary Team Consultation with Deliberation for Efficient Clinical Prediction",
+      "abstract": "Electronic health records (EHRs) are central to clinical prediction, but existing methods either rely on correlation-driven deep models or use single large language models (LLMs), making it difficult to support multidisciplinary clinical reasoning. Recent multi-agent systems (MAS) provide a promising alternative, yet current EHR-grounded MAS methods still suffer from weak evidence differentiation across agents and redundant multi-round interaction. We propose D2MDT, a Department-aware MultiDisciplinary Team Consultation with Deliberation for Efficient clinical prediction. D2MDT first constructs structured EHR evidence and consultation-ready semantic evidence for multi-agent consultation. It then assigns patient-specific department perspectives to doctor agents and retrieves complementary evidence for collaborative consultation. To improve efficiency, D2MDT further introduces residual deliberation, which updates only unresolved consensus rather than replaying the full discussion history. Finally, D2MDT fuses the refined consensus report with structured EHR representations for prediction. Experiments on mortality prediction show that D2MDT improves both predictive performance and consultation efficiency. We release the code online to ease the reproducibility of this paper.",
+      "authors": [
+        "Yongqi Liang",
+        "Qidong Liu",
+        "Chunze Yang",
+        "Lei Wu",
+        "Jiusong Ge",
+        "Ni Zhang",
+        "Chen Li"
+      ],
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA"
+      ],
+      "published": "2026-06-02T12:07:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.03543v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "EHR-based multi-agent system for clinical prediction",
+      "llm_evidence_cn": "基于EHR的多智能体系统用于临床预测",
+      "llm_evidence": "基于EHR的多智能体系统用于临床预测",
+      "canonical_evidence": "基于EHR的多智能体系统用于临床预测",
+      "llm_tldr_en": "D2MDT is a department-aware multi-agent system that uses EHR evidence for multidisciplinary clinical prediction with deliberation, improving efficiency.",
+      "llm_tldr_cn": "现有临床预测方法或依赖深度学习模型，或使用单一LLM，难以支持多学科推理。本文提出D2MDT，构建结构化EHR证据和语义证据，为多智能体分配科室角色进行会诊。实验表明该方法在保持高准确率的同时减少交互轮次。该工作为基于EHR的多智能体医疗代理提供了有效范式。",
+      "llm_tldr": "现有临床预测方法或依赖深度学习模型，或使用单一LLM，难以支持多学科推理。本文提出D2MDT，构建结构化EHR证据和语义证据，为多智能体分配科室角色进行会诊。实验表明该方法在保持高准确率的同时减少交互轮次。该工作为基于EHR的多智能体医疗代理提供了有效范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.02812v1",
+      "source": "arxiv",
+      "title": "Traj-Evolve: A Self-Evolving Multi-Agent System for Patient Trajectory Modeling in Lung Cancer Early Detection",
+      "abstract": "Modeling patient trajectories from longitudinal electronic health records (EHRs) requires reasoning over sparse, noisy, and long-context multimodal sequences. Existing LLM-based multi-agent systems address context length but process patients in isolation, failing to mirror how clinicians leverage accumulated experience from similar prior cases. We present Traj-Evolve, a self-evolving multi-agent system with two complementary evolving mechanisms. First, an Experience Pool (ExPool) acts as a non-parametric memory, indexing rejection-sampled reasoning traces to retrieve similar patients as few-shot contexts. Second, multi-agent reinforcement learning (MARL) via reward-ranked fine-tuning parametrically optimizes inter-agent and agent-memory collaboration. A leave-one-out cross-retrieval strategy unifies the two, aligning training- and inference-time behavior under retrieval augmentation. On a lung cancer prediction task utilizing up to five years of multimodal EHRs, Traj-Evolve outperforms 9 strong baselines on the overall population and a challenging never-smoker population. Analysis of the evolving dynamics highlights three key findings: (1) expanding the ExPool shifts optimal retrieval from diverse to specific samples; (2) under MARL, the manager agent's prediction loss converges quickly while the worker agents' temporal reasoning continues to benefit from more verified patients; and (3) the two mechanisms are complementary on the predicted risk, where ExPool improves specificity while MARL improves sensitivity.",
+      "authors": [
+        "Sihang Zeng",
+        "Matthew Thompson",
+        "Ruth Etzioni",
+        "Meliha Yetisgen"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-01T19:30:07+00:00",
+      "link": "https://arxiv.org/pdf/2606.02812v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Traj-Evolve uses EHRs for patient trajectory modeling with multi-agent reinforcement learning",
+      "llm_evidence_cn": "Traj-Evolve利用EHR进行患者轨迹建模，采用多智能体强化学习",
+      "llm_evidence": "Traj-Evolve利用EHR进行患者轨迹建模，采用多智能体强化学习",
+      "canonical_evidence": "Traj-Evolve利用EHR进行患者轨迹建模，采用多智能体强化学习",
+      "llm_tldr_en": "Traj-Evolve is a self-evolving multi-agent system for patient trajectory modeling from longitudinal EHRs, using experience pooling and multi-agent RL, demonstrating the use of EHRs by medical agents.",
+      "llm_tldr_cn": "该论文针对EHR数据稀疏、噪声大、上下文长的问题，提出Traj-Evolve自进化多智能体系统。系统包含经验池实现基于相似患者的非参数记忆检索，以及多智能体强化学习进行参数优化。在肺癌早期检测任务上，该方法通过利用既往病例经验提升了轨迹建模的准确性，展示了医疗智能体如何有效使用EHR数据。",
+      "llm_tldr": "该论文针对EHR数据稀疏、噪声大、上下文长的问题，提出Traj-Evolve自进化多智能体系统。系统包含经验池实现基于相似患者的非参数记忆检索，以及多智能体强化学习进行参数优化。在肺癌早期检测任务上，该方法通过利用既往病例经验提升了轨迹建模的准确性，展示了医疗智能体如何有效使用EHR数据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.01815v1",
+      "source": "arxiv",
+      "title": "CRAB-Bench: Evaluating LLM Agents under Complex Task Dependencies and Human-aligned User Simulation",
+      "abstract": "Evaluating LLM agents in realistic service scenarios requires complex task dependencies, imperfect user behavior, and an evaluation that accommodates multiple valid solutions. We introduce CRAB-Bench (Constraint-based Realistic Agent Benchmark) and RUSE (Realistic User Simulation Engine) to address this gap. CRAB-Bench generates tasks via a constraint graph over multiple interdependent entities with structured distractors, requiring agents to reason carefully over thousands of misleading candidates where only a tiny fraction of solutions are valid. RUSE replaces cooperative, template-like simulators with realistic users grounded in human behavioral studies, instantiated across diverse personas and four behavioral dimensions. Experiments on four frontier LLM agents show that the best model achieves only 61% pass@1 on CRAB-Bench, and switching to RUSE causes further drops of up to 57%, concentrated in task-solving ability rather than conversational quality. Information Disclosure is the most damaging behavioral dimension, and agents interacting with RUSE are less likely to admit mistakes, instead masking errors through implicit corrections.",
+      "authors": [
+        "Danqing Wang",
+        "Akshay Sivaraman",
+        "Lei Li"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-01T07:31:04+00:00",
+      "link": "https://arxiv.org/pdf/2606.01815v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark for evaluating LLM agents with complex dependencies; transferable to medical agents",
+      "llm_evidence_cn": "通用LLM代理评估基准可转移至医疗代理",
+      "llm_evidence": "通用LLM代理评估基准可转移至医疗代理",
+      "canonical_evidence": "通用LLM代理评估基准可转移至医疗代理",
+      "llm_tldr_en": "CRAB-Bench evaluates LLM agents under complex task dependencies and realistic user simulation, offering a general framework applicable to medical agent benchmarking.",
+      "llm_tldr_cn": "现有LLM代理评估缺乏复杂任务依赖和真实用户行为模型。本文提出CRAB-Bench和RUSE仿真引擎，通过约束图生成包含大量干扰项的任务，并模拟多维度行为的用户。实验结果揭示现有代理在复杂场景下的不足。该工作为医疗代理评估提供了可迁移的方法论和基准设计思路。",
+      "llm_tldr": "现有LLM代理评估缺乏复杂任务依赖和真实用户行为模型。本文提出CRAB-Bench和RUSE仿真引擎，通过约束图生成包含大量干扰项的任务，并模拟多维度行为的用户。实验结果揭示现有代理在复杂场景下的不足。该工作为医疗代理评估提供了可迁移的方法论和基准设计思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.03157v1",
+      "source": "arxiv",
+      "title": "ClinicalMC: A Benchmark for Multi-Course Clinical Decision-Making with Large Language Models",
+      "abstract": "Large language models (LLMs) have been widely adopted in healthcare, yet they still encounter significant challenges in complex clinical decision-making scenarios. Existing benchmarks primarily assess LLM performance in single-course settings and lack systematic evaluation in multi-course scenarios, where a patient's condition evolves over time. To address this gap, we propose ClinicalMC, a benchmark for multi-course clinical decision-making. It includes 1,275 Chinese and 5,804 English samples across four stages from admission to discharge. These stages cover triage, first-course examination/diagnosis/treatment, subsequent multi-course examination/assessment/treatment, and final diagnosis. In ClinicalMC, patients in the English dataset undergo an average of 5.11 clinical courses, whereas those in the Chinese dataset undergo 3.42. To assess LLM performance, we construct a multi-agent evaluation framework that includes patient, examiner, and doctor agents. Based on the benchmark and framework, we design two experimental settings -- a single-turn static setting and a multi-turn dynamic setting -- and assess three categories of LLMs: 1) closed-source LLMs like GPT5-mini; 2) open-source LLMs like DeepSeek-V3.2; and 3) medical LLMs like HuatuoGPT-o1. Through extensive evaluation, we aim to better understand LLM performance in the medical domain and support its effective deployment in healthcare.",
+      "authors": [
+        "Ruihui Hou",
+        "Siyi Zhu",
+        "Ziyue Huai",
+        "Guangya Yu",
+        "Yongqi Fan",
+        "Chunming Wang",
+        "Tong Ruan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-02T05:09:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.03157v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Benchmark for multi-course clinical decision making with LLMs; likely uses clinical data",
+      "llm_evidence_cn": "多病程临床决策基准，可能基于临床数据",
+      "llm_evidence": "多病程临床决策基准，可能基于临床数据",
+      "canonical_evidence": "多病程临床决策基准，可能基于临床数据",
+      "llm_tldr_en": "ClinicalMC is a benchmark for multi-course clinical decision-making with LLMs, covering 7,079 samples from admission to discharge across four stages.",
+      "llm_tldr_cn": "现有基准仅评估单病程临床决策。本文提出ClinicalMC，包含1275中文和5804英文样本，覆盖入院、首诊、多病程和最终诊断四个阶段。评估大语言模型在病情演变下的决策能力。该基准为临床决策支持代理评估提供了更现实的场景。",
+      "llm_tldr": "现有基准仅评估单病程临床决策。本文提出ClinicalMC，包含1275中文和5804英文样本，覆盖入院、首诊、多病程和最终诊断四个阶段。评估大语言模型在病情演变下的决策能力。该基准为临床决策支持代理评估提供了更现实的场景。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.03203v1",
+      "source": "arxiv",
+      "title": "MedCUA-Bench: A Screenshot-Only Benchmark for Clinical Computer-Use Agents",
+      "abstract": "Computer-use agents could automate repetitive screen-based clinical work, but their reliability in medical graphical user interfaces remains largely unvalidated. Existing benchmarks focus on general web or desktop tasks and underrepresent medical software, which requires domain knowledge, exhibits markedly different UI design from mainstream applications, lacks public testing environments, and demands safety validation beyond task completion. We introduce MedCUA-Bench, an interactive benchmark for clinical computer-use agents. It covers 18 clinical scenarios across 10 medical domains, reconstructed from real product manuals and open-source medical systems to capture authentic clinical interfaces while avoiding licensing and privacy constraints. Each task ships with paired intent- and step-level goals to disentangle clinical reasoning from UI execution, and is evaluated by a deterministic checker over task completion and five clinical safety dimensions. Across 23 agents, the best closed-source model reaches 54.2% strict success, while all models remain below 9% on the real OpenEMR. Open-source agents average only 2.5%, with the best reaching 16.2%. MedCUA-Bench exposes the gap between current agents and reliable clinical software use, providing a reproducible testbed for future research.",
+      "authors": [
+        "Jia Yu",
+        "Zilong Wang",
+        "Xinyang Jiang",
+        "Dongsheng Li",
+        "Shuo Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-02T06:02:35+00:00",
+      "link": "https://arxiv.org/pdf/2606.03203v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Clinical computer-use agent benchmark with 18 medical scenarios",
+      "llm_evidence_cn": "包含18个医疗场景的临床计算机使用Agent基准",
+      "llm_evidence": "包含18个医疗场景的临床计算机使用Agent基准",
+      "canonical_evidence": "包含18个医疗场景的临床计算机使用Agent基准",
+      "llm_tldr_en": "MedCUA-Bench is an interactive benchmark for evaluating clinical computer-use agents on 18 scenarios across 10 medical domains, capturing authentic clinical interfaces.",
+      "llm_tldr_cn": "该论文针对临床计算机使用Agent的可靠性验证问题，提出MedCUA-Bench基准。它覆盖10个医疗领域的18个临床场景，通过真实产品手册和开源医疗系统重建界面，既避免许可问题又保留临床真实性。该基准为评估临床Agent的UI交互能力提供了专有测试环境，但未直接使用EHR数据。",
+      "llm_tldr": "该论文针对临床计算机使用Agent的可靠性验证问题，提出MedCUA-Bench基准。它覆盖10个医疗领域的18个临床场景，通过真实产品手册和开源医疗系统重建界面，既避免许可问题又保留临床真实性。该基准为评估临床Agent的UI交互能力提供了专有测试环境，但未直接使用EHR数据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.03416v1",
+      "source": "arxiv",
+      "title": "MeDxAgent: Multi-Agent Consultation for Interactive Medical Diagnosis",
+      "abstract": "Large language models (LLMs) are increasingly used for health-related decision support. Yet most evaluations treat diagnosis as a single-shot task with complete information provided upfront, often as a multiple-choice selection. This diverges from clinical practice, where diagnosis is interactive and open-ended, involving sequential hypothesis refinement through targeted questioning. We address this gap. We build MeDxBench, a large-scale benchmark of 4,421 clinical cases across 20 specialties. We further propose MeDxAgent, a multi-agent consultation system for interactive diagnosis, and systematically study its prompt-, flow- and agent-level design choices. MeDxAgent achieves a 10.3% accuracy gain over the baseline on MeDxBench, closing 52.3% of the gap to a full-information oracle. We find that specific design choices: collecting demographics first, passing summarized dialogue for diagnosis, and feeding candidate diagnoses for targeted questioning, improve accuracy, mirroring how physicians reason, though their effect emerges fully only in combination. Code and dataset will be released upon publication.",
+      "authors": [
+        "Akshat Sanghvi",
+        "Naren Akash",
+        "Raza Imam",
+        "Amit Sharma",
+        "Mohit Jain"
+      ],
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA"
+      ],
+      "published": "2026-06-02T10:00:59+00:00",
+      "link": "https://arxiv.org/pdf/2606.03416v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "builds MeDxBench benchmark for interactive medical diagnosis agents",
+      "llm_evidence_cn": "构建了交互式医疗诊断智能体基准MeDxBench",
+      "llm_evidence": "构建了交互式医疗诊断智能体基准MeDxBench",
+      "canonical_evidence": "构建了交互式医疗诊断智能体基准MeDxBench",
+      "llm_tldr_en": "MeDxAgent proposes a multi-agent consultation system and MeDxBench benchmark for interactive diagnosis, achieving 10.3% accuracy gain. Closely related to benchmarking medical agents but lacks explicit EHR use.",
+      "llm_tldr_cn": "该论文针对现有诊断评估与临床实践脱节的问题，提出了MeDxAgent多智能体咨询系统和包含4421例临床病例的MeDxBench基准。MeDxAgent在交互式诊断中通过提示、流程和智能体设计选择，比基线准确率提升10.3%，缩小了52.3%的性能差距。虽然该基准并非基于EHR，但其对医疗智能体性能的评估方法与用户需求高度相关。",
+      "llm_tldr": "该论文针对现有诊断评估与临床实践脱节的问题，提出了MeDxAgent多智能体咨询系统和包含4421例临床病例的MeDxBench基准。MeDxAgent在交互式诊断中通过提示、流程和智能体设计选择，比基线准确率提升10.3%，缩小了52.3%的性能差距。虽然该基准并非基于EHR，但其对医疗智能体性能的评估方法与用户需求高度相关。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.05112v1",
+      "source": "arxiv",
+      "title": "Evaluating Large Language Models in Dynamic Clinical Decision-Making with Standardized Patient Cases",
+      "abstract": "Large language models (LLMs) are increasingly proposed as clinical agents, yet static, single-turn benchmarks cannot capture how a model dynamically delivers care across an encounter: gathering information, planning treatment, and adapting longitudinal management across successive patient states. Medical education has long addressed an analogous challenge through standardized patients (SPs): trained actors who consistently portray clinical cases, enabling realistic practice and objective, scripted assessment. Here we introduce MedSP1000, an SP-derived interactive benchmark for clinical-agent evaluation, including 1,638 SP cases with 24,602 trajectory-level peer-reviewed rubrics. MedSP1000 converts peer-reviewed SP teaching cases into executable scenarios with defined SP case scripts, clinical environment contexts, and human-validated structured rubric. In each simulation evaluation run, a clinical agent interacts in closed loop with a patient agent and an environment controller, and its behaviour is scored throughout the encounter against expert criteria specified in the original materials. Applying MedSP1000 to a range of general-purpose and medically specialized LLMs, we find that performance on static benchmarks does not reliably translate to such educational scenarios. The best-performing model, GPT-5.5, completes only 60.4% of expert-defined rubric items, whereas the strongest medically specialized model reaches 40.0%; increasing test-time compute produces no measurable gain. These results suggest that current LLMs, including agentic systems tuned for medicine, are not yet reliable enough to be safely integrated into actual clinical practice. More broadly, MedSP1000 shows how process-level, SP-style evaluation can reveal clinically relevant failure modes that single-turn benchmarks miss.",
+      "authors": [
+        "Cheng Liang",
+        "Pengcheng Qiu",
+        "Ya Zhang",
+        "Yanfeng Wang",
+        "Chaoyi Wu",
+        "Weidi Xie"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-03T17:17:16+00:00",
+      "link": "https://arxiv.org/pdf/2606.05112v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "interactive benchmark for evaluating clinical LLM agents using standardized patients",
+      "llm_evidence_cn": "使用标准化病人评估临床LLM智能体的交互式基准",
+      "llm_evidence": "使用标准化病人评估临床LLM智能体的交互式基准",
+      "canonical_evidence": "使用标准化病人评估临床LLM智能体的交互式基准",
+      "llm_tldr_en": "MedSP1000 introduces a standardized-patient-derived interactive benchmark for evaluating clinical agents, with 1,638 cases and 24,602 trajectory-level rubrics, enabling dynamic assessment of information gathering, treatment planning, and longitudinal management.",
+      "llm_tldr_cn": "静态、单轮基准无法捕捉临床智能体在动态诊疗中的表现。本文借鉴医学教育中的标准化病人方法，构建MedSP1000交互式基准，包含1638个病例和24602条轨迹级评分标准。该基准评估智能体在信息收集、治疗计划和纵向管理等多轮交互中的表现，为临床智能体评估提供了更真实的测试环境。",
+      "llm_tldr": "静态、单轮基准无法捕捉临床智能体在动态诊疗中的表现。本文借鉴医学教育中的标准化病人方法，构建MedSP1000交互式基准，包含1638个病例和24602条轨迹级评分标准。该基准评估智能体在信息收集、治疗计划和纵向管理等多轮交互中的表现，为临床智能体评估提供了更真实的测试环境。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
