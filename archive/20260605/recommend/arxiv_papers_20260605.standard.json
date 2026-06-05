@@ -1,0 +1,138 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-05T21:12:40.423783+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2606.03198v1",
+      "source": "arxiv",
+      "title": "AI Rater Discrimination Depends on Scoring Protocol in Complex Clinical Decision-Making",
+      "abstract": "Clinical AI evaluation increasingly delegates scoring to large language models (LLMs) acting as AI raters, yet their scoring behavior across evaluation conditions has not been quantitatively characterized. We address this gap through a factorial study of AI rater behavior in adult type 2 diabetes (T2D) pharmacotherapy at 12-month outpatient follow-up, a clinical task involving complex decision-making operationalized across seven evaluation questions. Four open-source LLMs served simultaneously as clinical decision support system (CDSS) models and AI raters. Each CDSS output was scored under two scoring protocols: a rubric-anchored Gold Rubric (GR) protocol incorporating a patient-specific rubric, and a rubric-free Non Gold Rubric (Non-GR) protocol. Linear mixed effects models crossed the scoring protocol factor with five design factors -- CDSS model, CDSS prompt configuration (document-referenced generation [DRG] vs.\\ Baseline), rater model, prompt character, and prompt type -- and estimated main effects together with their protocol interactions. Across all questions, AI raters yielded consistently higher scores within a very narrow range (74--78 points on average) under Non-GR compared to those under GR (7.69 to 49.64 points lower mean scores; 1.68 to 3.67 times wider interquartile ranges). Within each question, GR amplified the AI rater's discrimination between DRG and Baseline CDSS outputs by factors of 1.76 to 5.10, while also revealing substantial behavioral variation across rater models that Non-GR suppressed. These findings support rubric anchoring as the scoring protocol that preserves discriminative power in clinical AI evaluation; rubric-free scoring cannot substitute when questions require patient-specific or jurisdiction-specific criteria that rater models cannot infer from parametric knowledge alone.",
+      "authors": [
+        "Sangwon Baek",
+        "Kyu Yeon Hur",
+        "Kyunga Kim"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-02T05:58:23+00:00",
+      "link": "https://arxiv.org/pdf/2606.03198v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "directly evaluates clinical decision support AI (CDSS) with LLM raters using patient-specific rubric",
+      "llm_evidence_cn": "直接评估临床决策支持AI，使用LLM评分器和患者特定评分标准",
+      "llm_evidence": "直接评估临床决策支持AI，使用LLM评分器和患者特定评分标准",
+      "canonical_evidence": "直接评估临床决策支持AI，使用LLM评分器和患者特定评分标准",
+      "llm_tldr_en": "Study of LLM-as-rater for clinical decision support in diabetes, showing scoring protocol affects discrimination.",
+      "llm_tldr_cn": "临床AI评估越来越多地委托给LLM作为评分器，但其评分行为尚未被量化。本文针对2型糖尿病药物决策任务，通过析因实验比较了两种评分协议：基于患者特定评分标准的金标协议和无标准协议。发现评分器歧视性严重依赖于协议设计。该研究为临床AI评估方法提供了重要指导。",
+      "llm_tldr": "临床AI评估越来越多地委托给LLM作为评分器，但其评分行为尚未被量化。本文针对2型糖尿病药物决策任务，通过析因实验比较了两种评分协议：基于患者特定评分标准的金标协议和无标准协议。发现评分器歧视性严重依赖于协议设计。该研究为临床AI评估方法提供了重要指导。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.04952v1",
+      "source": "arxiv",
+      "title": "Clinical Assistant for Remote Engagement Link (CARE-link): A Web-Based Electronic Health Records Software for Managing Diabetes",
+      "abstract": "CARE-link is an open-source, web-based clinical support platform designed to improve the management of gestational diabetes by linking clinicians and patients through an LLM-mediated workflow. The system aggregates patient-generated data outside the hospital, summarizes relevant clinical information, and delivers context-aware decision support to clinicians. For patients, CARE-link provides clear explanations of management plans and delivers timely lifestyle guidance through a WhatsApp interface. The integrated dual-facing design aims to promote continuous monitoring, support individualized care, and reduce the burden of in-clinic follow-ups. Built with a modular architecture, the platform can be adapted to other chronic conditions requiring longitudinal tracking and behavioral support. CARE-link has the potential to enhance clinical oversight, promote patient compliance, and strengthen continuity of care particularly in resource-constrained settings.",
+      "authors": [
+        "Prince Ebenezer Adjei",
+        "Joshua Teye Tettey",
+        "Toufiq Musah",
+        "Audrey Agbeve",
+        "John Amuasi"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC",
+        "cs.CL"
+      ],
+      "published": "2026-06-03T14:39:29+00:00",
+      "link": "https://arxiv.org/pdf/2606.04952v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "medical agent using EHRs for diabetes management with LLM mediation",
+      "llm_evidence_cn": "基于EHR和LLM的糖尿病管理医疗agent",
+      "llm_evidence": "基于EHR和LLM的糖尿病管理医疗agent",
+      "canonical_evidence": "基于EHR和LLM的糖尿病管理医疗agent",
+      "llm_tldr_en": "CARE-link is an open-source web platform linking clinicians and patients via LLM, using EHR data to support diabetes management.",
+      "llm_tldr_cn": "妊娠糖尿病管理需要持续监测和决策支持。CARE-link平台通过LLM整合患者自报数据和EHR，为临床医生提供上下文感知决策支持，并为患者提供解释和生活方式指导。其模块化架构可扩展。",
+      "llm_tldr": "妊娠糖尿病管理需要持续监测和决策支持。CARE-link平台通过LLM整合患者自报数据和EHR，为临床医生提供上下文感知决策支持，并为患者提供解释和生活方式指导。其模块化架构可扩展。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.05463v1",
+      "source": "arxiv",
+      "title": "PSEBench: A Controllable and Verifiable Benchmark for Evaluating LLMs in Patient Safety Event Triage",
+      "abstract": "Patient safety event triage, determining whether a clinical event is reportable under jurisdiction-specific policy, is a high-stakes task typically performed manually by patient safety experts. Although LLMs may support this workflow, reliable evaluation is limited by the lack of benchmarks to capture evidence-grounded policy reasoning, proactive information seeking for incomplete reports, and principled abstention in irreducibly ambiguous cases. We address this gap with a policy-grounded construction methodology centered on the clause card, a structured representation that factorizes regulatory text into auditable decision specifications. Combining clause cards with anchor-driven instantiation and closed-loop verification, our scalable pipeline produces narratives with by-construction ground truth and naturally supports generating missing information and uncertain variants. We instantiate this method on Minnesota's 29 Reportable Adverse Health Events, producing PSEBench, a 5,074-case benchmark with an agentic evaluation environment. Evaluation on 15 representative LLMs reveals consistent capability trends, demonstrates the benchmark's utility, and identifies actionable gaps toward reliable LLM-based patient safety event triage.",
+      "authors": [
+        "Keqi Han",
+        "Ryan Young",
+        "Annabel Strauss",
+        "Lindsey Hughes",
+        "Katharine M. Nesbitt",
+        "Nicole Schueler",
+        "Che Ngufor",
+        "Carl Yang",
+        "Yuan Xue",
+        "Zhijun Yin"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-03T21:41:39+00:00",
+      "link": "https://arxiv.org/pdf/2606.05463v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark for evaluating LLMs in patient safety event triage",
+      "llm_evidence_cn": "评估LLM在患者安全事件分类中的基准",
+      "llm_evidence": "评估LLM在患者安全事件分类中的基准",
+      "canonical_evidence": "评估LLM在患者安全事件分类中的基准",
+      "llm_tldr_en": "Introduces PSEBench, a controllable and verifiable benchmark for evaluating LLMs in patient safety event triage using clause cards.",
+      "llm_tldr_cn": "针对患者安全事件分类缺乏可靠基准的问题，本文提出了PSEBench，基于条款卡的策略驱动构建方法，实现可验证评估。该基准涵盖证据推理、主动信息寻求和原则性弃权等能力。实验证明了基准的有效性。为医疗领域LLM评估提供了标准化工具。",
+      "llm_tldr": "针对患者安全事件分类缺乏可靠基准的问题，本文提出了PSEBench，基于条款卡的策略驱动构建方法，实现可验证评估。该基准涵盖证据推理、主动信息寻求和原则性弃权等能力。实验证明了基准的有效性。为医疗领域LLM评估提供了标准化工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
