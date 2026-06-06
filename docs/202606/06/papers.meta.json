@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-06",
+  "date": "2026-06-06",
+  "generated_at": "2026-06-06T20:24:10",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/06/2606.05872v1-entropy-based-evaluation-of-ai-agents-a-lightweight-framework-for-measuring-behavioral-patterns",
+      "section": "quick",
+      "title_en": "Entropy-Based Evaluation of AI Agents: A Lightweight Framework for Measuring Behavioral Patterns",
+      "authors": "Olasimbo Ayodeji Arigbabu",
+      "date": "2026-06-04",
+      "pdf": "https://arxiv.org/pdf/2606.05872v1",
+      "score": "7.0",
+      "evidence": "基于熵的AI智能体评估框架",
+      "tldr": "传统AI智能体评估指标（如任务完成率、奖励）忽略了行为模式的多样性。本文提出基于熵的轻量级评估框架EEA，通过动作熵、轨迹熵、工具熵、信息增益、探索效率和鲁棒性熵来量化智能体的决策结构。该框架可补充传统评估，并提供Python实现以集成LangChain等框架。实验表明熵指标能有效捕捉重复性、探索过度等行为特征。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "AI agents are commonly evaluated using task success, reward, latency, and cost. These metrics are useful, but they often miss important aspects of agent behavior: whether an agent explores too much, repeats itself too rigidly, uses tools effectively, reduces uncertainty over time, or remains robust across repeated runs. This paper proposes Entropy-Based Evaluation of AI Agents (EEA), a lightweight framework for measuring agent behavior through entropy. Rather than treating intelligence as only final task completion, EEA studies the structure of the agents decision process. The framework introduces action entropy, trajectory entropy, tool entropy, information gain, exploration efficiency, and robustness entropy. These metrics are intended to complement, not replace, traditional evaluation methods. We also present a practical Python implementation designed to integrate with agent frameworks such as LangChain, Google ADK, custom agent loops, and stored observability traces.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/06/2606.02458v1-beyond-one-shot-ai-agents-for-learning-in-field-experiments",
+      "section": "quick",
+      "title_en": "Beyond One-shot: AI Agents for Learning in Field Experiments",
+      "authors": "Junjie Luo, Ritu Agarwal, Gordon Gao",
+      "date": "2026-06-01",
+      "pdf": "https://arxiv.org/pdf/2606.02458v1",
+      "score": "6.0",
+      "evidence": "在医疗领域进行实地实验评估AI智能体从先前数据中学习的能力",
+      "tldr": "现场实验数据通常未有效用于后续干预设计。本文提出工具增强的代理型AI，自动从实验数据中学习并生成新干预措施。在医疗处方信息实验中，AI代理生成的最佳消息点击率达69.8%，比基线提升6.5个百分点。研究表明，AI能从领域特定实验数据中学习，将行为实验从一次性评估转化为累积设计学习系统。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Organizations routinely run experiments for A/B testing, yet the data generated from one experiment is underutilized to inform subsequent intervention design. Significant barriers exist to extracting actionable knowledge from prior experimental data to inform new interventions. We study whether tool-augmented agentic AI can automatically learn from experimental data to generate new interventions in subsequent experiments. Through two-stage field experiments in healthcare prescription messaging (693,139 patient visits), we compare a Human + Chatbot method (Stage 1: behavioral experts with conversational AI co-designing 13 message variants, 444,691 patient visits) against a Tool-Augmented Agentic AI method (Stage 2: AI autonomously extracting principles from Stage 1 data to generate 17 new variants, 248,448 patient visits). The Agentic AI method, equipped with analytical tools, structured Data-Information-Knowledge-Wisdom (DIKW) reasoning agents, and transparent evidence chains, produces superior interventions: the best AI-generated message achieved a 69.8% CTR (+6.5 percentage points over baseline). Critically, our results suggest that the value comes from domain-specific experimental data, not from general reasoning ability: frontier LLMs operating without experimental data failed to predict which interventions would succeed. The field experiments also revealed that general-purpose behavioral theories used for intervention design do not extend uniformly to specific healthcare contexts, motivating an agentic AI approach to theory audits at field-experiment scale. Our research shows that tool-augmented AI can learn from experimental data and generate improved domain-relevant interventions, transforming behavioral experimentation from one-shot evaluation into a scalable system for cumulative design learning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

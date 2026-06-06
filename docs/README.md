@@ -6,29 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-05
-- 运行时间：2026-06-05 21:16:36 UTC
+- 最新运行日期：2026-06-06
+- 运行时间：2026-06-06 20:24:03 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：2
-- 速读区：1
+- 本次总论文数：2
+- 精读区：0
+- 速读区：2
 
 ### 今日简报（AI）
-今天精读2篇、速读1篇，聚焦AI临床评分公平性与糖尿病远程管理工具。最值得看的是9.0分《AI Rater Discrimination Depends on Scoring Protocol》揭示评分协议决定AI偏见程度，以及8.0分《CARE-link》展示的糖尿病网络化管理方案。建议优先精读这两篇高评分论文，深入理解AI评分机制设计对患者结果的影响，并关注CARE-link在真实场景中的可及性。
-- 详情：[/202606/05/README](/202606/05/README)
+今日速读2篇AI智能体研究，聚焦行为模式评估与实地实验学习。  
+最值得关注的是《Entropy-Based Evaluation of AI Agents》提出的轻量级行为熵评估框架（7.0分），以及《Beyond One-shot》中智能体在实地实验中的持续学习机制（6.0分）。  
+建议优先了解基于熵的评估方法，为判断AI智能体行为合理性提供新视角。
+- 详情：[/202606/06/README](/202606/06/README)
 
 ### 精读区论文标签
-1. [AI Rater Discrimination Depends on Scoring Protocol in Complex Clinical Decision-Making](/202606/05/2606.03198v1-ai-rater-discrimination-depends-on-scoring-protocol-in-complex-clinical-decision-making)  
-   标签：评分：9.0/10、query:ehr-agent
-   evidence：直接评估临床决策支持AI，使用LLM评分器和患者特定评分标准
-2. [Clinical Assistant for Remote Engagement Link (CARE-link): A Web-Based Electronic Health Records Software for Managing Diabetes](/202606/05/2606.04952v1-clinical-assistant-for-remote-engagement-link-care-link-a-web-based-electronic-health-records-software-for-managing-diabetes)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：基于EHR和LLM的糖尿病管理医疗agent
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [PSEBench: A Controllable and Verifiable Benchmark for Evaluating LLMs in Patient Safety Event Triage](/202606/05/2606.05463v1-psebench-a-controllable-and-verifiable-benchmark-for-evaluating-llms-in-patient-safety-event-triage)  
+1. [Entropy-Based Evaluation of AI Agents: A Lightweight Framework for Measuring Behavioral Patterns](/202606/06/2606.05872v1-entropy-based-evaluation-of-ai-agents-a-lightweight-framework-for-measuring-behavioral-patterns)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：基于熵的AI智能体评估框架
+2. [Beyond One-shot: AI Agents for Learning in Field Experiments](/202606/06/2606.02458v1-beyond-one-shot-ai-agents-for-learning-in-field-experiments)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：评估LLM在患者安全事件分类中的基准
+   evidence：在医疗领域进行实地实验评估AI智能体从先前数据中学习的能力
 
 
 <div class="dpr-home-promo-card">

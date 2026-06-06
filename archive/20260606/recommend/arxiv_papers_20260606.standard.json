@@ -1,0 +1,90 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-06T20:22:01.839179+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.05872v1",
+      "source": "arxiv",
+      "title": "Entropy-Based Evaluation of AI Agents: A Lightweight Framework for Measuring Behavioral Patterns",
+      "abstract": "AI agents are commonly evaluated using task success, reward, latency, and cost. These metrics are useful, but they often miss important aspects of agent behavior: whether an agent explores too much, repeats itself too rigidly, uses tools effectively, reduces uncertainty over time, or remains robust across repeated runs. This paper proposes Entropy-Based Evaluation of AI Agents (EEA), a lightweight framework for measuring agent behavior through entropy. Rather than treating intelligence as only final task completion, EEA studies the structure of the agents decision process. The framework introduces action entropy, trajectory entropy, tool entropy, information gain, exploration efficiency, and robustness entropy. These metrics are intended to complement, not replace, traditional evaluation methods. We also present a practical Python implementation designed to integrate with agent frameworks such as LangChain, Google ADK, custom agent loops, and stored observability traces.",
+      "authors": [
+        "Olasimbo Ayodeji Arigbabu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-06-04T08:46:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.05872v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Entropy-based evaluation framework for AI agents",
+      "llm_evidence_cn": "基于熵的AI智能体评估框架",
+      "llm_evidence": "基于熵的AI智能体评估框架",
+      "canonical_evidence": "基于熵的AI智能体评估框架",
+      "llm_tldr_en": "Proposes a lightweight entropy-based evaluation framework (EEA) with metrics like action entropy and trajectory entropy, applicable to medical agent benchmarking.",
+      "llm_tldr_cn": "该论文提出基于熵的AI智能体评估框架（EEA），引入动作熵、轨迹熵、工具熵等六种指标，从决策过程结构而非仅最终结果衡量智能体行为。该框架可直接迁移至医疗智能体的benchmarking，为性能评估提供新维度。",
+      "llm_tldr": "该论文提出基于熵的AI智能体评估框架（EEA），引入动作熵、轨迹熵、工具熵等六种指标，从决策过程结构而非仅最终结果衡量智能体行为。该框架可直接迁移至医疗智能体的benchmarking，为性能评估提供新维度。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.02458v1",
+      "source": "arxiv",
+      "title": "Beyond One-shot: AI Agents for Learning in Field Experiments",
+      "abstract": "Organizations routinely run experiments for A/B testing, yet the data generated from one experiment is underutilized to inform subsequent intervention design. Significant barriers exist to extracting actionable knowledge from prior experimental data to inform new interventions. We study whether tool-augmented agentic AI can automatically learn from experimental data to generate new interventions in subsequent experiments. Through two-stage field experiments in healthcare prescription messaging (693,139 patient visits), we compare a Human + Chatbot method (Stage 1: behavioral experts with conversational AI co-designing 13 message variants, 444,691 patient visits) against a Tool-Augmented Agentic AI method (Stage 2: AI autonomously extracting principles from Stage 1 data to generate 17 new variants, 248,448 patient visits). The Agentic AI method, equipped with analytical tools, structured Data-Information-Knowledge-Wisdom (DIKW) reasoning agents, and transparent evidence chains, produces superior interventions: the best AI-generated message achieved a 69.8% CTR (+6.5 percentage points over baseline). Critically, our results suggest that the value comes from domain-specific experimental data, not from general reasoning ability: frontier LLMs operating without experimental data failed to predict which interventions would succeed. The field experiments also revealed that general-purpose behavioral theories used for intervention design do not extend uniformly to specific healthcare contexts, motivating an agentic AI approach to theory audits at field-experiment scale. Our research shows that tool-augmented AI can learn from experimental data and generate improved domain-relevant interventions, transforming behavioral experimentation from one-shot evaluation into a scalable system for cumulative design learning.",
+      "authors": [
+        "Junjie Luo",
+        "Ritu Agarwal",
+        "Gordon Gao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-01T16:30:42+00:00",
+      "link": "https://arxiv.org/pdf/2606.02458v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "field experiment in healthcare evaluating AI agent's ability to learn from prior data",
+      "llm_evidence_cn": "在医疗领域进行实地实验评估AI智能体从先前数据中学习的能力",
+      "llm_evidence": "在医疗领域进行实地实验评估AI智能体从先前数据中学习的能力",
+      "canonical_evidence": "在医疗领域进行实地实验评估AI智能体从先前数据中学习的能力",
+      "llm_tldr_en": "Studies whether tool-augmented agentic AI can automatically learn from experimental data to generate interventions, tested in healthcare prescription messaging with 693k patient visits.",
+      "llm_tldr_cn": "组织常进行A/B测试但未充分利用实验数据。本文通过两阶段实地实验（693,139次就诊）研究工具增强型AI智能体是否能从先前实验数据自动学习并生成新干预措施。将人类+聊天机器人方法与AI智能体方法比较，后者自主从第一阶段数据中提取原则生成新消息变体。结果表明AI智能体可有效利用实验数据。",
+      "llm_tldr": "组织常进行A/B测试但未充分利用实验数据。本文通过两阶段实地实验（693,139次就诊）研究工具增强型AI智能体是否能从先前实验数据自动学习并生成新干预措施。将人类+聊天机器人方法与AI智能体方法比较，后者自主从第一阶段数据中提取原则生成新消息变体。结果表明AI智能体可有效利用实验数据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
