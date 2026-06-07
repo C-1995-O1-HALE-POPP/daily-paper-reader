@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-07",
+  "date": "2026-06-07",
+  "generated_at": "2026-06-07T20:08:18",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/07/2606.03239v1-arbor-online-process-rewards-via-a-reusable-rubric-buffer-for-search-agents",
+      "section": "quick",
+      "title_en": "ARBOR: Online Process Rewards via a Reusable Rubric Buffer for Search Agents",
+      "authors": "Zheng Liu, Longxiang Zhang, Xintong Wang, Zhiang Xu, Shaoxiong Zhan, Xin Shan, Wen Huang, Tao Dai, Shu-Tao Xia, Chengfu Huo, Liang Ding",
+      "date": "2026-06-02",
+      "pdf": "https://arxiv.org/pdf/2606.03239v1",
+      "score": "7.0",
+      "evidence": "ARBOR通过可复用评分缓冲提供过程奖励，可直接应用于医疗代理的强化学习评估",
+      "tldr": "LLM搜索智能体通常仅使用结果奖励，导致过程监督缺失，尤其在结果同质组中梯度为零。现有过程监督方法成本高或每查询rubric不一致且无法重用。ARBOR维护一个跨查询共享的rubric记忆，通过对比轨迹生成局部草稿并合并为公共rubric，用稀疏成对判断评分，提供过程级梯度。在四个多跳QA基准上，ARBOR持续优于GRPO和DAPO，LLM判分准确率提升4.2点，并将42%的零梯度训练组转化为信息组。该工作提出了一种低成本、可重用的过程奖励方法，有效改善了搜索智能体的训练监督。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "LLM-based search agents are trained predominantly with outcome-only reward, leaving the search process itself unsupervised. This signal degenerates on outcome-homogeneous groups where all sampled trajectories share the same correctness, yielding zero within-group advantage and no gradient. Existing process supervision either trains a costly verifier or generates per-query rubrics that are inconsistent across queries and discarded after one use. We propose ARBOR (Adaptive Rubric Buffer for Online Reward), a reusable process-reward framework that maintains a rubric memory shared across queries. Query-local drafts induced from contrastive trajectories are admitted, consolidated into cross-query common rubrics, and retired as the policy evolves. A small active subset of common rubrics scores trajectories via sparse pairwise judging, and the resulting scores are added to the base reward, providing process-level gradient even when outcome reward is uniform. ARBOR consistently outperforms GRPO and DAPO baselines on four multi-hop QA benchmarks, raising average LLM-judge accuracy by up to 4.2 points and converting up to 42% of otherwise-zero-gradient training groups into informative ones.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/07/2606.02536v1-tracking-the-behavioral-trajectories-of-adapting-agents",
+      "section": "quick",
+      "title_en": "Tracking the Behavioral Trajectories of Adapting Agents",
+      "authors": "Jonah Leshin, Manish Shah, Ian Timmis",
+      "date": "2026-06-01",
+      "pdf": "https://arxiv.org/pdf/2606.02536v1",
+      "score": "6.0",
+      "evidence": "提出通过技能文件差异追踪代理行为特质的方法，可迁移至医疗代理评估",
+      "tldr": "代理的行为由文本文件（如技能文件、记忆文件）定义，这些文件不断更新直接改变行为。本文提出在文本嵌入空间中定义代理特质方向，训练线性模型从编辑差异中学习特质向量，并用于评估任意编辑的影响。在68个标注样本上，对敏感数据倾向性特质的分类准确率达91.2%，Spearman相关系数0.82。该方法被构建为代理间协议，使一个代理能通过可信中介评估另一个代理的技能文件更新。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Text files such as skill files, memory files, and behavioral configuration files play a central role in defining how modern agents act. Through edits by humans or the agents themselves, these files may evolve over time, directly steering the agent's behavior in future interactions. We present a methodology and framework for measuring agent $traits$ by defining traits as directions in the embedding space of a text embedding model. We train a linear model on labeled \"before\" versus \"after\" skill file diffs to learn a trait vector, then score arbitrary skill edits by projecting their embedding diffs onto this vector. Evaluated on 68 labeled skill diff pairs for the trait of propensity to seek sensitive data, our method achieves 91.2% sign classification accuracy and a Spearman rank correlation of $ρ= 0.82$ under leave-one-out cross-validation. We build this trait evaluation into a broader agent-to-agent protocol that enables one agent to evaluate another's skill file updates through a trusted intermediary.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/07/2606.04990v1-from-agent-traces-to-trust-evidence-tracing-and-execution-provenance-in-llm-agents",
+      "section": "quick",
+      "title_en": "From Agent Traces to Trust: Evidence Tracing and Execution Provenance in LLM Agents",
+      "authors": "Yiqi Wang, Jiaqi Zhang, Taotao Cai, Zirui Liu, Qingqiang Sun, Zequn Sun, Zhangkai Wu, Mingkai Zhang, Yanming Zhu",
+      "date": "2026-06-03",
+      "pdf": "https://arxiv.org/pdf/2606.04990v1",
+      "score": "6.0",
+      "evidence": "通过追踪评估LLM智能体行为的方法",
+      "tldr": "LLM智能体通过外部工具、检索和记忆模块增强自治性，但行为验证和审计困难。本文提出证据追踪与执行溯源框架，系统建模检索证据、工具输出、记忆、环境观测、中间主张与最终答案的连接。综述了溯源表示、证据归因、工具使用溯源、运行时防护、溯源记忆、可观测性和故障诊断等关键方法。将评估重心从最终答案正确性转向过程级问责，并指出统一溯源模式、语义溯源和隐私感知审计等开放挑战。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Large language model (LLM)-based agents increasingly solve complex tasks by interacting with external tools, retrieval systems, memory modules, environments, and other agents. These capabilities expand agent autonomy, but also make agent behavior harder to verify, debug, and audit. Final-answer accuracy alone cannot explain how an output was produced, which evidence supported each claim, whether tool calls were justified, how memory influenced later decisions, or where execution failures originated. Evidence tracing and execution provenance address this gap by modeling how retrieved evidence, tool outputs, memory items, environment observations, intermediate claims, actions, and final answers are connected throughout agent execution. This survey provides a systematic review and conceptual framework for evidence tracing and execution provenance in LLM agents. We organize related work around a unified provenance perspective that connects retrieval grounding, claim support, tool-use safety, memory lineage, observability, debugging, audit, and recovery. We introduce a taxonomy covering trace sources, evidence and execution units, provenance relations, tracing granularity and timing, representation forms, and trust functions. We review key methodological directions, including provenance representation, evidence attribution, tool-use provenance, runtime guardrails, provenance-bearing memory, trace-based observability, and failure diagnosis. We also map existing benchmarks, datasets, and evaluation metrics to provenance-related capabilities, and discuss how evaluation can move from final-answer correctness toward process-level accountability. Finally, we outline open challenges, including unified trace schemas, claim-level and semantic provenance, provenance-aware safety mechanisms, realistic execution-trace benchmarks, recovery-oriented evaluation, and privacy-aware audit infrastructure.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

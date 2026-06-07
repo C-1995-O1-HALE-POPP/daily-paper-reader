@@ -6,29 +6,30 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-06
-- 运行时间：2026-06-06 20:24:03 UTC
+- 最新运行日期：2026-06-07
+- 运行时间：2026-06-07 20:08:10 UTC
 - 运行状态：成功
-- 本次总论文数：2
+- 本次总论文数：3
 - 精读区：0
-- 速读区：2
+- 速读区：3
 
 ### 今日简报（AI）
-今日速读2篇AI智能体研究，聚焦行为模式评估与实地实验学习。  
-最值得关注的是《Entropy-Based Evaluation of AI Agents》提出的轻量级行为熵评估框架（7.0分），以及《Beyond One-shot》中智能体在实地实验中的持续学习机制（6.0分）。  
-建议优先了解基于熵的评估方法，为判断AI智能体行为合理性提供新视角。
-- 详情：[/202606/06/README](/202606/06/README)
+今日速读3篇论文，聚焦LLM智能体的过程奖励、行为轨迹及信任溯源。最值关注的是《ARBOR》提出的可复用评分缓冲机制，能有效提升搜索智能体的在线奖励效率。建议普通读者从智能体行为的可解释性和信任评估角度切入，理解其实际应用价值。
+- 详情：[/202606/07/README](/202606/07/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Entropy-Based Evaluation of AI Agents: A Lightweight Framework for Measuring Behavioral Patterns](/202606/06/2606.05872v1-entropy-based-evaluation-of-ai-agents-a-lightweight-framework-for-measuring-behavioral-patterns)  
+1. [ARBOR: Online Process Rewards via a Reusable Rubric Buffer for Search Agents](/202606/07/2606.03239v1-arbor-online-process-rewards-via-a-reusable-rubric-buffer-for-search-agents)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：基于熵的AI智能体评估框架
-2. [Beyond One-shot: AI Agents for Learning in Field Experiments](/202606/06/2606.02458v1-beyond-one-shot-ai-agents-for-learning-in-field-experiments)  
+   evidence：ARBOR通过可复用评分缓冲提供过程奖励，可直接应用于医疗代理的强化学习评估
+2. [Tracking the Behavioral Trajectories of Adapting Agents](/202606/07/2606.02536v1-tracking-the-behavioral-trajectories-of-adapting-agents)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：在医疗领域进行实地实验评估AI智能体从先前数据中学习的能力
+   evidence：提出通过技能文件差异追踪代理行为特质的方法，可迁移至医疗代理评估
+3. [From Agent Traces to Trust: Evidence Tracing and Execution Provenance in LLM Agents](/202606/07/2606.04990v1-from-agent-traces-to-trust-evidence-tracing-and-execution-provenance-in-llm-agents)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：通过追踪评估LLM智能体行为的方法
 
 
 <div class="dpr-home-promo-card">

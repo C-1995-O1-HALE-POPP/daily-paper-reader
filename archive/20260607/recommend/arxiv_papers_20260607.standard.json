@@ -1,0 +1,143 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-07T20:06:08.937362+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.03239v1",
+      "source": "arxiv",
+      "title": "ARBOR: Online Process Rewards via a Reusable Rubric Buffer for Search Agents",
+      "abstract": "LLM-based search agents are trained predominantly with outcome-only reward, leaving the search process itself unsupervised. This signal degenerates on outcome-homogeneous groups where all sampled trajectories share the same correctness, yielding zero within-group advantage and no gradient. Existing process supervision either trains a costly verifier or generates per-query rubrics that are inconsistent across queries and discarded after one use. We propose ARBOR (Adaptive Rubric Buffer for Online Reward), a reusable process-reward framework that maintains a rubric memory shared across queries. Query-local drafts induced from contrastive trajectories are admitted, consolidated into cross-query common rubrics, and retired as the policy evolves. A small active subset of common rubrics scores trajectories via sparse pairwise judging, and the resulting scores are added to the base reward, providing process-level gradient even when outcome reward is uniform. ARBOR consistently outperforms GRPO and DAPO baselines on four multi-hop QA benchmarks, raising average LLM-judge accuracy by up to 4.2 points and converting up to 42% of otherwise-zero-gradient training groups into informative ones.",
+      "authors": [
+        "Zheng Liu",
+        "Longxiang Zhang",
+        "Xintong Wang",
+        "Zhiang Xu",
+        "Shaoxiong Zhan",
+        "Xin Shan",
+        "Wen Huang",
+        "Tao Dai",
+        "Shu-Tao Xia",
+        "Chengfu Huo",
+        "Liang Ding"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-02T06:58:54+00:00",
+      "link": "https://arxiv.org/pdf/2606.03239v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "ARBOR provides online process rewards via reusable rubric buffer for search agents, directly applicable to reinforcement learning for healthcare agent evaluation",
+      "llm_evidence_cn": "ARBOR通过可复用评分缓冲提供过程奖励，可直接应用于医疗代理的强化学习评估",
+      "llm_evidence": "ARBOR通过可复用评分缓冲提供过程奖励，可直接应用于医疗代理的强化学习评估",
+      "canonical_evidence": "ARBOR通过可复用评分缓冲提供过程奖励，可直接应用于医疗代理的强化学习评估",
+      "llm_tldr_en": "ARBOR is a reusable process-reward framework for LLM search agents, using a rubric buffer shared across queries to provide online process supervision without training a costly verifier.",
+      "llm_tldr_cn": "强化学习中的搜索代理通常仅使用结果奖励，导致过程无监督。现有过程监督方法要么昂贵，要么不一致。本文提出ARBOR，维护一个跨查询复用的评分缓冲，通过对比轨迹生成局部草稿并合并为通用评分，实现高效在线过程奖励。实验表明该方法在多个搜索任务中优于结果奖励和传统过程奖励。该框架可直接应用于医疗代理中的强化学习评估。",
+      "llm_tldr": "强化学习中的搜索代理通常仅使用结果奖励，导致过程无监督。现有过程监督方法要么昂贵，要么不一致。本文提出ARBOR，维护一个跨查询复用的评分缓冲，通过对比轨迹生成局部草稿并合并为通用评分，实现高效在线过程奖励。实验表明该方法在多个搜索任务中优于结果奖励和传统过程奖励。该框架可直接应用于医疗代理中的强化学习评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.02536v1",
+      "source": "arxiv",
+      "title": "Tracking the Behavioral Trajectories of Adapting Agents",
+      "abstract": "Text files such as skill files, memory files, and behavioral configuration files play a central role in defining how modern agents act. Through edits by humans or the agents themselves, these files may evolve over time, directly steering the agent's behavior in future interactions. We present a methodology and framework for measuring agent $traits$ by defining traits as directions in the embedding space of a text embedding model. We train a linear model on labeled \"before\" versus \"after\" skill file diffs to learn a trait vector, then score arbitrary skill edits by projecting their embedding diffs onto this vector. Evaluated on 68 labeled skill diff pairs for the trait of propensity to seek sensitive data, our method achieves 91.2% sign classification accuracy and a Spearman rank correlation of $ρ= 0.82$ under leave-one-out cross-validation. We build this trait evaluation into a broader agent-to-agent protocol that enables one agent to evaluate another's skill file updates through a trusted intermediary.",
+      "authors": [
+        "Jonah Leshin",
+        "Manish Shah",
+        "Ian Timmis"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-01T17:40:31+00:00",
+      "link": "https://arxiv.org/pdf/2606.02536v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "provides a method for tracking agent behavioral traits via skill file diffs, applicable to evaluating medical agents",
+      "llm_evidence_cn": "提出通过技能文件差异追踪代理行为特质的方法，可迁移至医疗代理评估",
+      "llm_evidence": "提出通过技能文件差异追踪代理行为特质的方法，可迁移至医疗代理评估",
+      "canonical_evidence": "提出通过技能文件差异追踪代理行为特质的方法，可迁移至医疗代理评估",
+      "llm_tldr_en": "Proposes a framework to measure agent traits by analyzing skill file diffs; method is general and could be adapted for medical agent evaluation.",
+      "llm_tldr_cn": "该论文提出了一种通过分析代理技能文件差异来衡量代理特质的方法，并展示了其在区分敏感数据寻求倾向上的有效性。该框架为代理行为评估提供了通用工具，可迁移至医疗领域，用于追踪医疗代理的行为变化，为基于EHR的医疗代理评估提供方法支持。",
+      "llm_tldr": "该论文提出了一种通过分析代理技能文件差异来衡量代理特质的方法，并展示了其在区分敏感数据寻求倾向上的有效性。该框架为代理行为评估提供了通用工具，可迁移至医疗领域，用于追踪医疗代理的行为变化，为基于EHR的医疗代理评估提供方法支持。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.04990v1",
+      "source": "arxiv",
+      "title": "From Agent Traces to Trust: Evidence Tracing and Execution Provenance in LLM Agents",
+      "abstract": "Large language model (LLM)-based agents increasingly solve complex tasks by interacting with external tools, retrieval systems, memory modules, environments, and other agents. These capabilities expand agent autonomy, but also make agent behavior harder to verify, debug, and audit. Final-answer accuracy alone cannot explain how an output was produced, which evidence supported each claim, whether tool calls were justified, how memory influenced later decisions, or where execution failures originated. Evidence tracing and execution provenance address this gap by modeling how retrieved evidence, tool outputs, memory items, environment observations, intermediate claims, actions, and final answers are connected throughout agent execution. This survey provides a systematic review and conceptual framework for evidence tracing and execution provenance in LLM agents. We organize related work around a unified provenance perspective that connects retrieval grounding, claim support, tool-use safety, memory lineage, observability, debugging, audit, and recovery. We introduce a taxonomy covering trace sources, evidence and execution units, provenance relations, tracing granularity and timing, representation forms, and trust functions. We review key methodological directions, including provenance representation, evidence attribution, tool-use provenance, runtime guardrails, provenance-bearing memory, trace-based observability, and failure diagnosis. We also map existing benchmarks, datasets, and evaluation metrics to provenance-related capabilities, and discuss how evaluation can move from final-answer correctness toward process-level accountability. Finally, we outline open challenges, including unified trace schemas, claim-level and semantic provenance, provenance-aware safety mechanisms, realistic execution-trace benchmarks, recovery-oriented evaluation, and privacy-aware audit infrastructure.",
+      "authors": [
+        "Yiqi Wang",
+        "Jiaqi Zhang",
+        "Taotao Cai",
+        "Zirui Liu",
+        "Qingqiang Sun",
+        "Zequn Sun",
+        "Zhangkai Wu",
+        "Mingkai Zhang",
+        "Yanming Zhu"
+      ],
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.AI"
+      ],
+      "published": "2026-06-03T15:12:47+00:00",
+      "link": "https://arxiv.org/pdf/2606.04990v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "method for evaluating LLM agent behavior through tracing",
+      "llm_evidence_cn": "通过追踪评估LLM智能体行为的方法",
+      "llm_evidence": "通过追踪评估LLM智能体行为的方法",
+      "canonical_evidence": "通过追踪评估LLM智能体行为的方法",
+      "llm_tldr_en": "Proposes evidence tracing and execution provenance for LLM agents to improve verification and debugging, applicable to medical agent evaluation.",
+      "llm_tldr_cn": "该论文针对LLM智能体行为难以验证和调试的问题，提出了证据追踪和执行溯源方法，通过建模检索证据、工具输出、记忆项等连接关系，提升智能体可解释性。该方法可作为医疗智能体评估的通用框架，有助于理解智能体如何利用EHR数据做出决策。",
+      "llm_tldr": "该论文针对LLM智能体行为难以验证和调试的问题，提出了证据追踪和执行溯源方法，通过建模检索证据、工具输出、记忆项等连接关系，提升智能体可解释性。该方法可作为医疗智能体评估的通用框架，有助于理解智能体如何利用EHR数据做出决策。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
