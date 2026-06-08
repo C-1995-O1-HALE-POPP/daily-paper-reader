@@ -6,30 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-07
-- 运行时间：2026-06-07 20:08:10 UTC
+- 最新运行日期：2026-06-08
+- 运行时间：2026-06-08 21:59:28 UTC
 - 运行状态：成功
-- 本次总论文数：3
+- 本次总论文数：5
 - 精读区：0
-- 速读区：3
+- 速读区：5
 
 ### 今日简报（AI）
-今日速读3篇论文，聚焦LLM智能体的过程奖励、行为轨迹及信任溯源。最值关注的是《ARBOR》提出的可复用评分缓冲机制，能有效提升搜索智能体的在线奖励效率。建议普通读者从智能体行为的可解释性和信任评估角度切入，理解其实际应用价值。
-- 详情：[/202606/07/README](/202606/07/README)
+今日速读三篇论文，聚焦药物信息问答、智能体规划与安全评估。  
+最值得关注的是两项7分工作：药物信息问答的权威基准《DrugClaw》与智能体规划诊断框架《Agent Planning Benchmark》。  
+建议普通读者优先阅读这两篇，了解如何构建可靠的药物问答系统及评估智能体规划能力。
+- 详情：[/202606/08/README](/202606/08/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [ARBOR: Online Process Rewards via a Reusable Rubric Buffer for Search Agents](/202606/07/2606.03239v1-arbor-online-process-rewards-via-a-reusable-rubric-buffer-for-search-agents)  
+1. [DrugClaw and DrugAudit: A Primary-Source-Grounded Agent and Authority-Aware Benchmark for Drug-Information Question Answering](/202606/08/2606.01434v1-drugclaw-and-drugaudit-a-primary-source-grounded-agent-and-authority-aware-benchmark-for-drug-information-question-answering)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：ARBOR通过可复用评分缓冲提供过程奖励，可直接应用于医疗代理的强化学习评估
-2. [Tracking the Behavioral Trajectories of Adapting Agents](/202606/07/2606.02536v1-tracking-the-behavioral-trajectories-of-adapting-agents)  
+   evidence：药物信息问答医疗智能体基准
+2. [Agent Planning Benchmark: A Diagnostic Framework for Planning Capabilities in LLM Agents](/202606/08/2606.04874v2-agent-planning-benchmark-a-diagnostic-framework-for-planning-capabilities-in-llm-agents)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：跨22个领域（包括医疗潜力）的LLM代理规划能力诊断基准
+3. [RUBAS: Rubric-Based Reinforcement Learning for Agent Safety](/202606/08/2606.04051v1-rubas-rubric-based-reinforcement-learning-for-agent-safety)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：提出通过技能文件差异追踪代理行为特质的方法，可迁移至医疗代理评估
-3. [From Agent Traces to Trust: Evidence Tracing and Execution Provenance in LLM Agents](/202606/07/2606.04990v1-from-agent-traces-to-trust-evidence-tracing-and-execution-provenance-in-llm-agents)  
+   evidence：基于规则的强化学习用于代理安全，可应用于医疗代理评估
+4. [Provably Auditable and Safe LLM Agents from Human-Authored Ontologies](/202606/08/2606.04903v1-provably-auditable-and-safe-llm-agents-from-human-authored-ontologies)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：通过追踪评估LLM智能体行为的方法
+   evidence：用于医疗账单合规的智能体，使用电子记录
+5. [Exploring Agentic Tool-Calling Decisions via Uncertainty-Aligned Reinforcement Learning](/202606/08/2606.06976v1-exploring-agentic-tool-calling-decisions-via-uncertainty-aligned-reinforcement-learning)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：不确定性对齐的强化学习用于代理工具调用决策
 
 
 <div class="dpr-home-promo-card">

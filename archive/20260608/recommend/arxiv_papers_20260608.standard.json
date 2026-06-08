@@ -1,0 +1,222 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-08T21:54:29.567238+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.01434v1",
+      "source": "arxiv",
+      "title": "DrugClaw and DrugAudit: A Primary-Source-Grounded Agent and Authority-Aware Benchmark for Drug-Information Question Answering",
+      "abstract": "Drug-information question answering is a high-stakes setting where hallucinated facts can mislead clinical decision-making and the provenance of each cited fact matters as much as the fact itself. We present DrugClaw, a multi-agent retrieval-augmented system that queries a registry of drug and pharmacovigilance skills via a reflection-driven state-machine workflow and returns answers grounded in primary regulatory or peer-reviewed records. We also contribute DrugAudit, a 3,772-item authority-aware benchmark with an evaluation panel that scores upstream-of-gold source match, token-level semantic snippet overlap, and citation faithfulness under a dual-judge LLM-as-judge protocol with inter-judge kappa = 0.88 (almost-perfect). Across DrugAudit plus drug-related subsets of MedQA (751) and PubMedQA (512), DrugClaw is top-1 on every column of the headline table: composite Evidence Index under both judges, judge-mediated answer correctness, primary-source rate (0.918, +10.1 pp over next-best), faithfulness (0.887, +5.9 pp), MedQA (0.920), and PubMedQA (0.693).",
+      "authors": [
+        "Qing Wang",
+        "Bo Li",
+        "Jialu Liang",
+        "Daling Shi",
+        "Bob Zhang",
+        "Qianqian Song"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-05-31T20:11:05+00:00",
+      "link": "https://arxiv.org/pdf/2606.01434v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "benchmark for medical agent in drug information QA",
+      "llm_evidence_cn": "药物信息问答医疗智能体基准",
+      "llm_evidence": "药物信息问答医疗智能体基准",
+      "canonical_evidence": "药物信息问答医疗智能体基准",
+      "llm_tldr_en": "DrugClaw is a multi-agent RAG system for drug information QA, and DrugAudit is a 3772-item authority-aware benchmark with dual-judge evaluation for source match and citation faithfulness.",
+      "llm_tldr_cn": "为解决药物信息问答中的幻觉和来源权威性问题，本文提出DrugClaw多智能体检索系统和DrugAudit基准。DrugClaw通过反射驱动状态机工作流从监管记录中检索答案；DrugAudit包含3772条数据，利用双法官评估协议打分。实验表明该框架能有效评估智能体在药物问答中的事实性和引用忠实度，为高风险医疗智能体评估提供了可复用的基准。",
+      "llm_tldr": "为解决药物信息问答中的幻觉和来源权威性问题，本文提出DrugClaw多智能体检索系统和DrugAudit基准。DrugClaw通过反射驱动状态机工作流从监管记录中检索答案；DrugAudit包含3772条数据，利用双法官评估协议打分。实验表明该框架能有效评估智能体在药物问答中的事实性和引用忠实度，为高风险医疗智能体评估提供了可复用的基准。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.04051v1",
+      "source": "arxiv",
+      "title": "RUBAS: Rubric-Based Reinforcement Learning for Agent Safety",
+      "abstract": "The evolution of LLMs into tool-enabled agents creates a new class of safety challenges associated with real-world execution rather than simple text generation. Existing alignment methods often rely on coarse refusal signals or static supervision, making it difficult to balance safety with useful tool execution across diverse agentic risks. We introduce RUBAS, a rubric-based reinforcement learning framework for agent safety. RUBAS decomposes agent behavior into four dimensions: tool-use safety, argument safety, response safety, and helpfulness. These structured rubrics provide fine-grained and interpretable rewards over complete agent trajectories, enabling reinforcement learning to optimize safe tool use while preserving task completion. Extensive experiments across multiple agent safety benchmarks and models show that RUBAS improves safety over standard alignment baselines, reduces tool-grounded hallucinations, and maintains competitive utility. Our results suggest that multi-dimensional rubric rewards provide an effective training signal for aligning LLM agents in safety-critical tool-use settings.",
+      "authors": [
+        "Xian Qi Loye",
+        "Qinglin Su",
+        "Zhexin Zhang",
+        "Shiyao Cui",
+        "Qi Zhu",
+        "Fei Mi",
+        "Hongning Wang",
+        "Minlie Huang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CR"
+      ],
+      "published": "2026-06-02T09:02:14+00:00",
+      "link": "https://arxiv.org/pdf/2606.04051v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "rubric-based reinforcement learning for agent safety, applicable to healthcare agent evaluation",
+      "llm_evidence_cn": "基于规则的强化学习用于代理安全，可应用于医疗代理评估",
+      "llm_evidence": "基于规则的强化学习用于代理安全，可应用于医疗代理评估",
+      "canonical_evidence": "基于规则的强化学习用于代理安全，可应用于医疗代理评估",
+      "llm_tldr_en": "RUBAS: a rubric-based RL framework for agent safety that decomposes behavior into four dimensions, providing fine-grained rewards for safe tool use.",
+      "llm_tldr_cn": "该论文针对LLM代理工具执行带来的安全挑战，提出RUBAS框架，将代理行为分解为工具使用安全、参数安全、响应安全和帮助性四个维度，通过结构化规则提供细粒度可解释奖励，利用强化学习优化安全工具使用同时保持任务完成。在多个实验上验证有效性。其强化学习方法可直接应用于医疗代理的安全评估，确保EHR使用中的工具安全。",
+      "llm_tldr": "该论文针对LLM代理工具执行带来的安全挑战，提出RUBAS框架，将代理行为分解为工具使用安全、参数安全、响应安全和帮助性四个维度，通过结构化规则提供细粒度可解释奖励，利用强化学习优化安全工具使用同时保持任务完成。在多个实验上验证有效性。其强化学习方法可直接应用于医疗代理的安全评估，确保EHR使用中的工具安全。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.04874v2",
+      "source": "arxiv",
+      "title": "Agent Planning Benchmark: A Diagnostic Framework for Planning Capabilities in LLM Agents",
+      "abstract": "Planning is central to LLM agents: before acting, an agent must decompose goals, select tools, reason over constraints, and decide when a task is infeasible. Yet existing agent evaluations often report only end-to-end success, making it difficult to determine whether failures stem from planning or execution. We introduce Agent Planning Benchmark (APB), a planning-specific diagnostic benchmark with 4,209 multimodal cases across 22 domains and five settings, covering holistic planning, feedback-conditioned step-wise planning, and robustness under extraneous tools, broken tools, and unsolvable tasks. Across 12 MLLMs, APB reveals systematic weaknesses in long-horizon planning, tool-noise robustness, calibrated refusal, and inference-time refinement. We further validate APB on 200 ToolSandbox tasks and 200 $τ^2$-bench tasks, where APB-guided refinement consistently improves plan correctness, plan grade, and downstream execution metrics across three representative models. APB thus serves as an upstream diagnostic complement to execution benchmarks. The APB benchmark and code are available in \\href{https://github.com/Mikivishy/AgentPlanningBenchmark}{this URL}.",
+      "authors": [
+        "Haoyu Sun",
+        "Wenxuan Wang",
+        "Mingyang Song",
+        "Jujie He",
+        "Weinan Zhang",
+        "Yang Liu",
+        "Yang Yang",
+        "Yu Cheng"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-03T13:37:47+00:00",
+      "link": "https://arxiv.org/pdf/2606.04874v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diagnostic benchmark for planning capabilities in LLM agents across 22 domains, including healthcare potential",
+      "llm_evidence_cn": "跨22个领域（包括医疗潜力）的LLM代理规划能力诊断基准",
+      "llm_evidence": "跨22个领域（包括医疗潜力）的LLM代理规划能力诊断基准",
+      "canonical_evidence": "跨22个领域（包括医疗潜力）的LLM代理规划能力诊断基准",
+      "llm_tldr_en": "APB: a planning-specific diagnostic benchmark with 4,209 multimodal cases across 22 domains, evaluating holistic planning, step-wise planning, and robustness under tool issues.",
+      "llm_tldr_cn": "该论文针对现有代理评估仅报告端到端成功率而无法区分规划与执行失败的问题，提出代理规划基准APB。包含4209个多模态案例、22个领域和五种设置，涵盖整体规划、反馈条件逐步规划、工具噪声鲁棒性、工具失效和不可解任务。在12个多模态大模型上的实验揭示了长程规划、工具噪声鲁棒性和校准拒绝等方面的系统性弱点。该基准提供通用评估框架，可直接应用于医疗代理的规划性能评估。",
+      "llm_tldr": "该论文针对现有代理评估仅报告端到端成功率而无法区分规划与执行失败的问题，提出代理规划基准APB。包含4209个多模态案例、22个领域和五种设置，涵盖整体规划、反馈条件逐步规划、工具噪声鲁棒性、工具失效和不可解任务。在12个多模态大模型上的实验揭示了长程规划、工具噪声鲁棒性和校准拒绝等方面的系统性弱点。该基准提供通用评估框架，可直接应用于医疗代理的规划性能评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.04903v1",
+      "source": "arxiv",
+      "title": "Provably Auditable and Safe LLM Agents from Human-Authored Ontologies",
+      "abstract": "We introduce the LLM agent architecture Agentic Redux, intended for use with nontrivial problem domains that require linear auditability. Using the typed lambda calculus, we prove that, run on appropriate domains, Agentic Redux executions are semantically guaranteed to be correct, with all decisions recorded in an append-only ledger. We present two production-grade appropriate domains, in healthcare billing compliance, and security vulnerability disclosure. Working code for Agentic Redux run on both domains is available in a supporting code repository. We also introduce Ontology-First Agent Design, a methodology for creation of agent frameworks on a problem domain, in which a human expert ontologizes the problem domain with Basic Formal Ontology, and then assigns an LLM to derive roles that agents and humans-in-the-loop can fill, in order to work the problems in the domain.",
+      "authors": [
+        "Aaron Sterling"
+      ],
+      "primary_category": "cs.LO",
+      "categories": [
+        "cs.LO",
+        "cs.AI",
+        "cs.MA",
+        "cs.PL"
+      ],
+      "published": "2026-06-03T14:01:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.04903v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "medical agent for healthcare billing compliance using electronic records",
+      "llm_evidence_cn": "用于医疗账单合规的智能体，使用电子记录",
+      "llm_evidence": "用于医疗账单合规的智能体，使用电子记录",
+      "canonical_evidence": "用于医疗账单合规的智能体，使用电子记录",
+      "llm_tldr_en": "Agentic Redux is a formally verified LLM agent architecture with append-only ledger for auditability, applied to healthcare billing and security domains. It guarantees semantic correctness via lambda calculus proofs.",
+      "llm_tldr_cn": "针对医疗合规等高风险领域需要可审计智能体的需求，本文提出Agentic Redux架构，利用类型化λ演算确保执行语义正确性，并通过附加账本记录所有决策。在医疗账单合规和漏洞披露两个实际领域验证了该方法，证明其可提供线性可审计性和形式化安全性保证。该工作为高可靠性医疗智能体设计提供了新范式。",
+      "llm_tldr": "针对医疗合规等高风险领域需要可审计智能体的需求，本文提出Agentic Redux架构，利用类型化λ演算确保执行语义正确性，并通过附加账本记录所有决策。在医疗账单合规和漏洞披露两个实际领域验证了该方法，证明其可提供线性可审计性和形式化安全性保证。该工作为高可靠性医疗智能体设计提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.06976v1",
+      "source": "arxiv",
+      "title": "Exploring Agentic Tool-Calling Decisions via Uncertainty-Aligned Reinforcement Learning",
+      "abstract": "Large language model (LLM)-based agents often make suboptimal tool-use decisions, including unsupported tool invocation and hallucinated direct responses, which may accumulate errors throughout multi-step interactions. Existing approaches mainly improve these behaviors through inference-time correction or coarse-grained reward signals based on decision outcomes and structured checklists, leaving the uncertainty characteristics of agent decisions underexplored. We observe that decision-oriented reinforcement learning tends to weaken the uncertainty separation between correct and incorrect actions, resulting in overconfident mistakes and weaker exploration signals. Therefore, we propose TRUST, which incorporates uncertainty quantification into reward design as a repulsive force for maintaining uncertainty separation, and labels lightweight key-turn annotations for unified post-training of multi-turn trajectories. Experimental results across diverse tool-use benchmarks show that TRUST consistently enhances both decision quality and agent performance while maintaining more reliable uncertainty estimates during optimization.",
+      "authors": [
+        "Yijin Zhou",
+        "Linqian Zeng",
+        "Xiaoya Lu",
+        "Wenyuan Xie",
+        "Dongrui Liu",
+        "Junchi Yan",
+        "Jing Shao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-05T07:08:34+00:00",
+      "link": "https://arxiv.org/pdf/2606.06976v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "uncertainty-aligned reinforcement learning for tool-calling decisions in agents",
+      "llm_evidence_cn": "不确定性对齐的强化学习用于代理工具调用决策",
+      "llm_evidence": "不确定性对齐的强化学习用于代理工具调用决策",
+      "canonical_evidence": "不确定性对齐的强化学习用于代理工具调用决策",
+      "llm_tldr_en": "TRUST: incorporates uncertainty quantification into RL to improve tool-calling decisions, preventing overconfident mistakes and enhancing exploration.",
+      "llm_tldr_cn": "该论文针对现有强化学习方法在代理工具调用决策中导致过分自信错误和弱探索信号的问题，提出TRUST框架，将不确定性量化融入强化学习，保持正确与错误动作之间的不确定性分离。实验表明该方法能减少无效工具调用和幻觉响应，提升多步交互中的决策质量。其不确定性对齐RL技术可直接用于医疗代理评估中的工具使用优化。",
+      "llm_tldr": "该论文针对现有强化学习方法在代理工具调用决策中导致过分自信错误和弱探索信号的问题，提出TRUST框架，将不确定性量化融入强化学习，保持正确与错误动作之间的不确定性分离。实验表明该方法能减少无效工具调用和幻觉响应，提升多步交互中的决策质量。其不确定性对齐RL技术可直接用于医疗代理评估中的工具使用优化。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Reinforcement learning and LLM in medical agent evaluation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
