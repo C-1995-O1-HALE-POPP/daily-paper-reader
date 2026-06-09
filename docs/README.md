@@ -6,38 +6,58 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-08
-- 运行时间：2026-06-08 21:59:28 UTC
+- 最新运行日期：2026-06-09
+- 运行时间：2026-06-09 20:49:50 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：0
-- 速读区：5
+- 本次总论文数：12
+- 精读区：5
+- 速读区：7
 
 ### 今日简报（AI）
-今日速读三篇论文，聚焦药物信息问答、智能体规划与安全评估。  
-最值得关注的是两项7分工作：药物信息问答的权威基准《DrugClaw》与智能体规划诊断框架《Agent Planning Benchmark》。  
-建议普通读者优先阅读这两篇，了解如何构建可靠的药物问答系统及评估智能体规划能力。
-- 详情：[/202606/08/README](/202606/08/README)
+今日精选12篇医学AI论文，精读2篇高分研究，速读3篇临床推理与智能体系统新作。  
+最值得看的方向：利用特权合成与分支共识学习多样化诊断策略（PACT），以及面向连续护理的临床级医疗智能体（Baichuan-M4）。  
+下一步建议：关注将电子健康记录与大语言模型对齐的临床推理方法，以及基于经验记忆的技能泛化机制。
+- 详情：[/202606/09/README](/202606/09/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [PACT: Learning Diverse Diagnostic Strategies via Privileged Synthesis and Branch Consensus](/202606/09/2606.08938v1-pact-learning-diverse-diagnostic-strategies-via-privileged-synthesis-and-branch-consensus)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：基于LLM的医疗诊断智能体，使用电子病历，包含评估和训练框架
+2. [Baichuan-M4: A Clinical-Grade Medical Agent System for Continuous Care](/202606/09/2606.08982v1-baichuan-m4-a-clinical-grade-medical-agent-system-for-continuous-care)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：使用电子病历的临床级医疗代理系统，采用持续护理强化学习
+3. [The Consistency Illusion: How Multi-Agent Debate Hides Reasoning Misalignment](/202606/09/2606.08457v1-the-consistency-illusion-how-multi-agent-debate-hides-reasoning-misalignment)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：医疗多智能体辩论评估指标
+4. [Can the Environment Speak for Itself? $T^{2}$-GRPO: A Turn-Trajectory Group Relative Policy Optimization for Caregiver Agents](/202606/09/2606.08875v1-can-the-environment-speak-for-itself-t2-grpo-a-turn-trajectory-group-relative-policy-optimization-for-caregiver-agents)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：用于医疗照护Agent评估的强化学习方法
+5. [H2HMem: A Multimodal Memory Benchmark for Agents in Human-Human Interactions](/202606/09/2606.09461v1-h2hmem-a-multimodal-memory-benchmark-for-agents-in-human-human-interactions)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：包含临床文档的多模态代理记忆基准
 
 ### 速读区论文标签
-1. [DrugClaw and DrugAudit: A Primary-Source-Grounded Agent and Authority-Aware Benchmark for Drug-Information Question Answering](/202606/08/2606.01434v1-drugclaw-and-drugaudit-a-primary-source-grounded-agent-and-authority-aware-benchmark-for-drug-information-question-answering)  
+1. [ChatHealthAI: Aligning Electronic Health Record Representations with Large Language Models for Grounded Clinical Reasoning](/202606/09/2606.02802v2-chathealthai-aligning-electronic-health-record-representations-with-large-language-models-for-grounded-clinical-reasoning)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：药物信息问答医疗智能体基准
-2. [Agent Planning Benchmark: A Diagnostic Framework for Planning Capabilities in LLM Agents](/202606/08/2606.04874v2-agent-planning-benchmark-a-diagnostic-framework-for-planning-capabilities-in-llm-agents)  
+   evidence：将EHR表示与大语言模型对齐以支持临床推理
+2. [Beyond Prompt-Based Planning: MCP-Native Graph Planning-based Biomedical Agent System](/202606/09/2606.04494v1-beyond-prompt-based-planning-mcp-native-graph-planning-based-biomedical-agent-system)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：跨22个领域（包括医疗潜力）的LLM代理规划能力诊断基准
-3. [RUBAS: Rubric-Based Reinforcement Learning for Agent Safety](/202606/08/2606.04051v1-rubas-rubric-based-reinforcement-learning-for-agent-safety)  
+   evidence：生物医学代理系统，属于医疗代理主题核心
+3. [Experience Makes Skillful: Enabling Generalizable Medical Agent Reasoning via Self-Evolving Skill Memory](/202606/09/2606.09365v1-experience-makes-skillful-enabling-generalizable-medical-agent-reasoning-via-self-evolving-skill-memory)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：医疗Agent的自演进技能记忆框架
+4. [Entropy-Based Evaluation of AI Agents: A Lightweight Framework for Measuring Behavioral Patterns](/202606/09/2606.05872v2-entropy-based-evaluation-of-ai-agents-a-lightweight-framework-for-measuring-behavioral-patterns)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：基于规则的强化学习用于代理安全，可应用于医疗代理评估
-4. [Provably Auditable and Safe LLM Agents from Human-Authored Ontologies](/202606/08/2606.04903v1-provably-auditable-and-safe-llm-agents-from-human-authored-ontologies)  
+   evidence：基于熵的Agent行为模式评估框架
+5. [Accelerating Reproducible Research in Synthetic EHR Generation](/202606/09/2606.06990v1-accelerating-reproducible-research-in-synthetic-ehr-generation)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：用于医疗账单合规的智能体，使用电子记录
-5. [Exploring Agentic Tool-Calling Decisions via Uncertainty-Aligned Reinforcement Learning](/202606/08/2606.06976v1-exploring-agentic-tool-calling-decisions-via-uncertainty-aligned-reinforcement-learning)  
+   evidence：提供了用于合成EHR评估的基准框架，可用于医疗代理评估
+6. [LLM-Guided Evolution for Medical Decision Pipelines](/202606/09/2606.07342v1-llm-guided-evolution-for-medical-decision-pipelines)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：不确定性对齐的强化学习用于代理工具调用决策
+   evidence：LLM引导进化优化医疗决策管道，包括分诊、咨询和图像分类
+7. [Online Agent-as-a-Judge: Situation-Generating Evaluation for Interactive Agents](/202606/09/2606.08200v1-online-agent-as-a-judge-situation-generating-evaluation-for-interactive-agents)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：为交互式Agent生成评估场景的通用框架
 
 
 <div class="dpr-home-promo-card">

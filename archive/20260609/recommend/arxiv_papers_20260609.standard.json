@@ -1,0 +1,523 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-09T20:38:17.767534+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 5,
+    "deep_cap": 6,
+    "deep_selected": 5,
+    "quick_candidates": 7,
+    "quick_skim_target": 11,
+    "quick_selected": 7
+  },
+  "deep_dive": [
+    {
+      "id": "2606.08938v1",
+      "source": "arxiv",
+      "title": "PACT: Learning Diverse Diagnostic Strategies via Privileged Synthesis and Branch Consensus",
+      "abstract": "Clinical diagnosis requires flexible use of multiple reasoning paradigms under incomplete patient information. Existing LLM-based medical agents show strong medical reasoning ability, but single-paradigm or naively mixed dialogue supervision makes these paradigms difficult to learn without interference. We propose \\textbf{PACT} (Periodic Anchor Consensus Training), a framework that couples supervised multi-paradigm dialogue synthesis with consensus-based Branch training. At the data level, \\textbf{DPS} (Doctor-Patient-Supervisor) uses complete electronic medical records (EMRs) for quality control while keeping the doctor agent restricted to patient-visible information. This produces validated dialogues under four diagnostic reasoning paradigms without leaking hidden clinical answers. At the training level, PACT trains one paradigm-specific LoRA Branch per paradigm and periodically aggregates Branches into a shared Anchor through sign consensus. We further construct a dynamic multi-turn Chinese medical diagnosis benchmark for interactive consultation. Experiments show that PACT achieves state-of-the-art performance among compared proprietary, medical-specialized, and task-adapted baselines on diagnostic outcome and consultation-process metrics.",
+      "authors": [
+        "Gen Li",
+        "Yuanze Hu",
+        "Zhichao Yang",
+        "Qingchen Yu",
+        "Jianwei Lv",
+        "Yue Guo",
+        "Yujing Liu",
+        "Faguo Wu",
+        "Hongwei Zheng",
+        "Xiandong Li",
+        "Bo Yuan",
+        "Yifan Sun",
+        "Zhaoxin Fan"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-08T02:34:12+00:00",
+      "link": "https://arxiv.org/pdf/2606.08938v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "LLM-based medical agents for diagnosis using EMRs with evaluation and training framework",
+      "llm_evidence_cn": "基于LLM的医疗诊断智能体，使用电子病历，包含评估和训练框架",
+      "llm_evidence": "基于LLM的医疗诊断智能体，使用电子病历，包含评估和训练框架",
+      "canonical_evidence": "基于LLM的医疗诊断智能体，使用电子病历，包含评估和训练框架",
+      "llm_tldr_en": "PACT trains LLM medical agents on EMR-synthesized dialogues to learn diverse diagnostic strategies via branch consensus, enabling better evaluation.",
+      "llm_tldr_cn": "现有LLM医疗智能体难以同时学习多种诊断推理范式。PACT框架通过特权合成多范式对话和分支共识训练，利用完整电子病历生成高质量对话，同时保持智能体受限信息。在四种诊断推理范式上，PACT提升了智能体的诊断准确性和策略多样性，为医疗智能体评估提供了新方法。",
+      "llm_tldr": "现有LLM医疗智能体难以同时学习多种诊断推理范式。PACT框架通过特权合成多范式对话和分支共识训练，利用完整电子病历生成高质量对话，同时保持智能体受限信息。在四种诊断推理范式上，PACT提升了智能体的诊断准确性和策略多样性，为医疗智能体评估提供了新方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08982v1",
+      "source": "arxiv",
+      "title": "Baichuan-M4: A Clinical-Grade Medical Agent System for Continuous Care",
+      "abstract": "Baichuan-M4 is Baichuan Intelligence's clinical-grade medical large model, designed for \\emph{continuous care} rather than single-turn medical question answering. It is built as a coordinated medical agent system around three pillars: \\textbf{Baichuan-Harness}, a unified runtime that keeps reinforcement-learning training and real-world deployment consistent while enforcing action constraints, tool use, long-term patient memory, and multi-agent coordination; a \\textbf{core reasoning model} trained with a continuous-care reinforcement-learning framework that integrates span-level reward modeling (SPAR++), reasoning-path compression, curriculum learning, and stabilized policy optimization; and a \\textbf{clinical tool layer} for patient-memory management, authoritative evidence-based retrieval, and multimodal medical perception across documents, X-rays, and dermatology. On a cross-dimensional medical evaluation suite, Baichuan-M4 attains leading results in static medical knowledge and safety, dynamic OSCE-style consultation, long-context clinical memory, evidence-based retrieval, medical document OCR, and multimodal image understanding, while lowering the hallucination rate to 3.3\\%.",
+      "authors": [
+        "Aiyuan Yang",
+        "Chengfeng Dou",
+        "Da Pan",
+        "Dian Wang",
+        "Fan Yang",
+        "Fei Deng",
+        "Fei Li",
+        "Guangwei Ai",
+        "Hui Liu",
+        "Hongda Zhang",
+        "Jinyang Tai",
+        "Kai Lu",
+        "Lijun Liu",
+        "Linwei Chen",
+        "Linyu Li",
+        "Meiqing Guo",
+        "Peidong Guo",
+        "Qiang Ju",
+        "Rihui Xin",
+        "Shuai Wang",
+        "XinKai Ma",
+        "Xudong Chen",
+        "Yichuan Mo",
+        "Canbin Piao",
+        "Leyi Pan",
+        "Yihe Luo",
+        "Zian Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-08T03:27:05+00:00",
+      "link": "https://arxiv.org/pdf/2606.08982v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "clinical-grade medical agent system using EHR via continuous care RL",
+      "llm_evidence_cn": "使用电子病历的临床级医疗代理系统，采用持续护理强化学习",
+      "llm_evidence": "使用电子病历的临床级医疗代理系统，采用持续护理强化学习",
+      "canonical_evidence": "使用电子病历的临床级医疗代理系统，采用持续护理强化学习",
+      "llm_tldr_en": "Baichuan-M4 is a clinical-grade medical agent system for continuous care, leveraging EHRs and reinforcement learning with span-level reward modeling. Directly addresses requirements for EHR-based medical agents and RL-based evaluation.",
+      "llm_tldr_cn": "本文介绍Baichuan-M4，一个临床级医疗代理系统，专为持续护理而非单轮问答设计。它整合了统一运行时Baichuan-Harness、连续护理强化学习框架（含跨度级奖励建模SPAR++）以及临床工具层。该系统在真实临床场景中展示了超越单轮问答的长期护理能力，为基于EHR的医疗代理评估提供了端到端平台。",
+      "llm_tldr": "本文介绍Baichuan-M4，一个临床级医疗代理系统，专为持续护理而非单轮问答设计。它整合了统一运行时Baichuan-Harness、连续护理强化学习框架（含跨度级奖励建模SPAR++）以及临床工具层。该系统在真实临床场景中展示了超越单轮问答的长期护理能力，为基于EHR的医疗代理评估提供了端到端平台。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08457v1",
+      "source": "arxiv",
+      "title": "The Consistency Illusion: How Multi-Agent Debate Hides Reasoning Misalignment",
+      "abstract": "Multi-agent LLM systems for medical question answering often treat consensus as a reliability signal: if multiple agents agree on an answer, it is presumed trustworthy. However, answer-level consensus does not entail reasoning-level alignment. We introduce CARA (Cross-Agent Reasoning Alignment), a family of automated metrics that measure whether agents who agree on an answer also agree on the reasoning. Applying CARA to a standard debate system on two medical QA benchmarks, MedQA-USMLE and MedThink-Bench, we identify the consistency illusion: a failure mode where debate reduces detectable contradictions between agents while simultaneously decreasing the semantic similarity of their reasoning chains; agents appear to agree more but reason less consistently. To improve this misalignment, we propose the Grounded Debate Protocol (GDP), a prompt-level intervention that requires agents to commit to named medical facts and take explicit stances on other agents' claims. GDP produces large, consistent alignment improvements, with Cohen's d ranging from +1.43 to +1.99, across two datasets and two backbone models, without adding LLM calls or modifying system architecture. Our results motivate cross-agent reasoning alignment as a quantity to audit alongside accuracy in safety-critical domains.",
+      "authors": [
+        "Xiaoyang Wang",
+        "Christopher C. Yang"
+      ],
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA"
+      ],
+      "published": "2026-06-07T05:14:26+00:00",
+      "link": "https://arxiv.org/pdf/2606.08457v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "medical multi-agent debate evaluation metrics",
+      "llm_evidence_cn": "医疗多智能体辩论评估指标",
+      "llm_evidence": "医疗多智能体辩论评估指标",
+      "canonical_evidence": "医疗多智能体辩论评估指标",
+      "llm_tldr_en": "Proposes CARA metrics to detect reasoning misalignment in multi-agent medical QA, revealing a consistency illusion where debate reduces detectable contradictions but decreases reasoning similarity.",
+      "llm_tldr_cn": "现有医疗多智能体系统常以共识作为可靠性信号，但答案层面的共识可能掩盖推理层面的不一致。本文提出CARA系列自动化指标，用于衡量智能体在答案一致时推理是否一致。在MedQA-USMLE和MedThink-Bench基准上的实验揭示了\"一致性错觉\"：辩论过程虽然减少了智能体间的可检测矛盾，却同时降低了推理链的语义相似性。该工作为医疗智能体的评估提供了更细致的视角。",
+      "llm_tldr": "现有医疗多智能体系统常以共识作为可靠性信号，但答案层面的共识可能掩盖推理层面的不一致。本文提出CARA系列自动化指标，用于衡量智能体在答案一致时推理是否一致。在MedQA-USMLE和MedThink-Bench基准上的实验揭示了\"一致性错觉\"：辩论过程虽然减少了智能体间的可检测矛盾，却同时降低了推理链的语义相似性。该工作为医疗智能体的评估提供了更细致的视角。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08875v1",
+      "source": "arxiv",
+      "title": "Can the Environment Speak for Itself? $T^{2}$-GRPO: A Turn-Trajectory Group Relative Policy Optimization for Caregiver Agents",
+      "abstract": "Optimizing large language models (LLMs) for long-horizon caregiver agents requires balancing delayed task objectives with immediate environment dynamics, such as patient distress and resistance. In dementia care, this balance is especially difficult: trajectory level rewards are too sparse for turn level credit assignment, while external LLM-based evaluators are costly and can misread fragmented or indirect patient responses. To address this issue, we propose \\textbf{T}urn-\\textbf{T}rajectory \\textbf{G}roup \\textbf{R}elative \\textbf{P}olicy \\textbf{O}ptimization (\\textbf{T$^{2}$-GRPO}), a framework that decouples caregiver RL into two normalized reward horizons and enforces safety through a binary hard veto. $T^2$-GRPO derives dense turn-level rewards directly from environment state transitions, measuring changes in patient distress and resistance from a frozen dementia patient simulator. These environment-grounded rewards are combined with trajectory-level evaluations through independent centered-rank normalization, which preserves heterogeneous reward signals and mitigates reward collapse. Extensive experiments on dementia caregivers show that T $^{2}$-GRPO outperforms competitive baselines, indicating a substantial improvement for emotionally sensitive caregiver scenarios that effectively handles immediate patient feedback, long-term care outcomes, and safety constraints.",
+      "authors": [
+        "Yutong Song",
+        "Jiang Wu",
+        "Pengfei Zhang",
+        "Wenjun Huang",
+        "Honghui Xu",
+        "Nikil Dutt",
+        "Amir M. Rahmani"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-07T23:04:55+00:00",
+      "link": "https://arxiv.org/pdf/2606.08875v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Reinforcement learning for healthcare caregiver agent evaluation",
+      "llm_evidence_cn": "用于医疗照护Agent评估的强化学习方法",
+      "llm_evidence": "用于医疗照护Agent评估的强化学习方法",
+      "canonical_evidence": "用于医疗照护Agent评估的强化学习方法",
+      "llm_tldr_en": "Proposes T2-GRPO, a turn-trajectory group relative policy optimization for caregiver agents in dementia care, balancing delayed rewards with environment dynamics.",
+      "llm_tldr_cn": "针对痴呆症照护Agent中远程奖励稀疏与环境即时反馈难以平衡的问题，本文提出T2-GRPO框架，将照护强化学习解耦为两个归一化的奖励范围，并引入二进制安全约束。该方法解决了轨迹级奖励无法用于回合级信用分配的难题，为医疗保健Agent的强化学习评估提供了新思路。实验结果证明了该框架在长周期照护任务中的有效性。",
+      "llm_tldr": "针对痴呆症照护Agent中远程奖励稀疏与环境即时反馈难以平衡的问题，本文提出T2-GRPO框架，将照护强化学习解耦为两个归一化的奖励范围，并引入二进制安全约束。该方法解决了轨迹级奖励无法用于回合级信用分配的难题，为医疗保健Agent的强化学习评估提供了新思路。实验结果证明了该框架在长周期照护任务中的有效性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.09461v1",
+      "source": "arxiv",
+      "title": "H2HMem: A Multimodal Memory Benchmark for Agents in Human-Human Interactions",
+      "abstract": "Large language model agents are increasingly deployed in human-human interaction settings, such as meeting assistants and clinical documentation systems, where they must observe conversations and retain information for downstream queries. Unlike traditional human-assistant settings, these environments are inherently multimodal, involve complex discourse phenomena such as anaphora and deixis, and contain asynchronous or conflicting information from multiple participants. However, existing memory benchmarks largely focus on single-user, text-only interactions, failing to capture these challenges. To address this gap, we introduce H2HMem, a Human-to-Human Multimodal Memory Benchmark for evaluating memory capabilities in complex human-human interactions. H2HMem includes both dyadic and multi-party conversations with multimodal information streams, and evaluates agents along three dimensions: memory recall, reasoning, and application. Experiments with advanced agents reveal substantial limitations in constructing, retaining, and utilizing memories across modalities, participants, and sessions, highlighting substantial room for improvement in next-generation LLM agents.",
+      "authors": [
+        "Shiping Zhu",
+        "Yibo Yang",
+        "Zhengyang Wang",
+        "Tiancheng Shen",
+        "Dandan Guo",
+        "Ming-Hsuan Yang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-08T13:17:16+00:00",
+      "link": "https://arxiv.org/pdf/2606.09461v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "multimodal memory benchmark for agents including clinical documentation",
+      "llm_evidence_cn": "包含临床文档的多模态代理记忆基准",
+      "llm_evidence": "包含临床文档的多模态代理记忆基准",
+      "canonical_evidence": "包含临床文档的多模态代理记忆基准",
+      "llm_tldr_en": "Introduces H2HMem benchmark for evaluating agent memory in multimodal human-human interactions, with clinical documentation as a key domain.",
+      "llm_tldr_cn": "本文提出了H2HMem基准，专门评估代理在多模态人机交互中的记忆能力，涵盖临床文档系统等场景。该基准涉及复杂的话语现象和多源信息，填补了现有单用户文本基准的空白。实验表明该基准能有效衡量代理在真实临床交互中的记忆表现。",
+      "llm_tldr": "本文提出了H2HMem基准，专门评估代理在多模态人机交互中的记忆能力，涵盖临床文档系统等场景。该基准涉及复杂的话语现象和多源信息，填补了现有单用户文本基准的空白。实验表明该基准能有效衡量代理在真实临床交互中的记忆表现。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.02802v2",
+      "source": "arxiv",
+      "title": "ChatHealthAI: Aligning Electronic Health Record Representations with Large Language Models for Grounded Clinical Reasoning",
+      "abstract": "Large language models (LLMs) exhibit strong natural-language reasoning abilities for clinical decision support, but struggle to effectively model structured longitudinal electronic health records (EHRs). In contrast, EHR foundation models can learn predictive patient representations, yet lack interpretable language-based reasoning. To bridge this gap, we propose ChatHealthAI, a multimodal reasoning framework that aligns structured EHR representations from a pretrained EHR foundation model with the semantic space of a frozen LLM through a task-aware resampler. By integrating longitudinal patient representations with refined clinical event descriptions, ChatHealthAI enables clinically grounded natural-language reasoning while maintaining accurate patient prediction. We evaluated ChatHealthAI on three clinical predictive tasks from the EHRSHOT benchmark. Results show that ChatHealthAI improves reasoning quality and interpretability while preserving competitive predictive performance. These findings highlight the potential of integrating EHR foundation models with pretrained LLMs for interpretable clinical prediction.",
+      "authors": [
+        "Bo-Hong Wang",
+        "Baicheng Peng",
+        "Ruilin Wang",
+        "Jun Bai",
+        "Ziyang Song",
+        "Yue Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-01T19:21:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.02802v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Aligning EHR representations with LLM for clinical reasoning",
+      "llm_evidence_cn": "将EHR表示与大语言模型对齐以支持临床推理",
+      "llm_evidence": "将EHR表示与大语言模型对齐以支持临床推理",
+      "canonical_evidence": "将EHR表示与大语言模型对齐以支持临床推理",
+      "llm_tldr_en": "ChatHealthAI aligns structured EHR representations from a pretrained EHR foundation model with a frozen LLM using a task-aware resampler, enabling grounded clinical reasoning without LLM fine-tuning.",
+      "llm_tldr_cn": "LLM擅长自然语言推理但难以建模结构化EHR，而EHR基础模型能学习患者表示但缺乏语言理解。本文提出ChatHealthAI，通过任务感知重采样器将预训练EHR基础模型的表示与固定LLM的语义空间对齐，无缝集成纵向患者表示与临床事件描述。实验表明该方法在临床推理任务上优于单独使用LLM或EHR模型，为EHR驱动的医疗Agent提供了基础框架。",
+      "llm_tldr": "LLM擅长自然语言推理但难以建模结构化EHR，而EHR基础模型能学习患者表示但缺乏语言理解。本文提出ChatHealthAI，通过任务感知重采样器将预训练EHR基础模型的表示与固定LLM的语义空间对齐，无缝集成纵向患者表示与临床事件描述。实验表明该方法在临床推理任务上优于单独使用LLM或EHR模型，为EHR驱动的医疗Agent提供了基础框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.05872v2",
+      "source": "arxiv",
+      "title": "Entropy-Based Evaluation of AI Agents: A Lightweight Framework for Measuring Behavioral Patterns",
+      "abstract": "AI agents are commonly evaluated using task success, reward, latency, and cost. These metrics are useful, but they often miss important aspects of agent behavior: whether an agent explores too much, repeats itself too rigidly, uses tools effectively, reduces uncertainty over time, or remains robust across repeated runs. This paper proposes Entropy-Based Evaluation of AI Agents (EEA), a lightweight framework for measuring agent behavior through entropy. Rather than treating intelligence as only final task completion, EEA studies the structure of the agents decision process. The framework introduces action entropy, trajectory entropy, tool entropy, information gain, exploration efficiency, and robustness entropy. These metrics are intended to complement, not replace, traditional evaluation methods. We also present a practical Python implementation designed to integrate with agent frameworks such as LangChain, Google ADK, custom agent loops, and stored observability traces.",
+      "authors": [
+        "Olasimbo Ayodeji Arigbabu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CV"
+      ],
+      "published": "2026-06-04T08:46:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.05872v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Entropy-based evaluation framework for measuring agent behavioral patterns",
+      "llm_evidence_cn": "基于熵的Agent行为模式评估框架",
+      "llm_evidence": "基于熵的Agent行为模式评估框架",
+      "canonical_evidence": "基于熵的Agent行为模式评估框架",
+      "llm_tldr_en": "EEA introduces six entropy-based metrics (action, trajectory, tool, information gain, exploration efficiency, robustness) to evaluate AI agents' behavioral patterns beyond task success, providing a lightweight framework for agent evaluation.",
+      "llm_tldr_cn": "传统Agent评估仅关注任务成功率、奖励等指标，忽略了探索程度、重复模式等行为特征。本文提出基于熵的Agent评估框架（EEA），引入动作熵、轨迹熵、工具熵、信息增益、探索效率和鲁棒性熵六个指标，从决策过程结构角度量化Agent行为。该框架轻量且通用，可适用于包括医疗Agent在内的各种AI系统评估。",
+      "llm_tldr": "传统Agent评估仅关注任务成功率、奖励等指标，忽略了探索程度、重复模式等行为特征。本文提出基于熵的Agent评估框架（EEA），引入动作熵、轨迹熵、工具熵、信息增益、探索效率和鲁棒性熵六个指标，从决策过程结构角度量化Agent行为。该框架轻量且通用，可适用于包括医疗Agent在内的各种AI系统评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.04494v1",
+      "source": "arxiv",
+      "title": "Beyond Prompt-Based Planning: MCP-Native Graph Planning-based Biomedical Agent System",
+      "abstract": "Biomedical agents promise to automate complex biological workflows, yet current systems face two fundamental bottlenecks: bioinformatics tools are highly heterogeneous in interfaces and execution environments, while agent planning still relies on flat prompt-retrieved tool descriptions. As biomedical software ecosystems grow, this coupling between tool coverage and context size leads to tool confusion, unstable planning, and inefficient execution. We introduce BioManus, an MCP-native biomedical agent built on graph-scaffolded planning over structured biological capabilities. BioManus first introduces the BioinfoMCP Compiler, which converts heterogeneous bioinformatics software into standardized MCP servers, yielding a large executable MCP ecosystem. It then organizes this ecosystem as a typed heterogeneous MCP graph over tools, operations, datatypes, and workflow stages. At inference time, BioManus retrieves compact task-specific subgraphs, synthesizes operation-level workflow scaffolds. This design decouples planning complexity from raw tool inventory size, achieving a context compression ratio of Theta(N / (h * m_bar)) under high-recall retrieval, where N is the total tool count, h is the workflow horizon, and m_bar (much smaller than N) is the average number of candidate tools per operation. Experiments on BioAgentBench and LAB-Bench show that BioManus improves execution accuracy, workflow validity, and context efficiency over advanced biomedical agent baselines. This work suggests a paradigm shift: scalable biomedical reasoning requires structured executable capability graphs rather than increasingly larger prompt-level tool retrieval.",
+      "authors": [
+        "Zhangtianyi Chen",
+        "Florensia Widjaja",
+        "Wufei Dai",
+        "Xiangjun Zhang",
+        "Yuhao Shen",
+        "Juexiao Zhou"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-03T06:19:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.04494v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "biomedical agent system with graph planning, central to medical agent theme",
+      "llm_evidence_cn": "生物医学代理系统，属于医疗代理主题核心",
+      "llm_evidence": "生物医学代理系统，属于医疗代理主题核心",
+      "canonical_evidence": "生物医学代理系统，属于医疗代理主题核心",
+      "llm_tldr_en": "Introduces BioManus, an MCP-native biomedical agent with graph-scaffolded planning over structured biological capabilities, converting heterogeneous bioinformatics tools into standardized MCP servers.",
+      "llm_tldr_cn": "本文提出了BioManus，一个基于MCP原生的生物医学代理系统，通过图结构规划整合异构生物信息学工具，解决了工具混乱和不稳定规划的问题。该系统利用BioinfoMCP编译器将生物软件标准化，展现了在自动化生物工作流中的潜力，但未涉及电子健康记录或代理评估基准。",
+      "llm_tldr": "本文提出了BioManus，一个基于MCP原生的生物医学代理系统，通过图结构规划整合异构生物信息学工具，解决了工具混乱和不稳定规划的问题。该系统利用BioinfoMCP编译器将生物软件标准化，展现了在自动化生物工作流中的潜力，但未涉及电子健康记录或代理评估基准。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.06990v1",
+      "source": "arxiv",
+      "title": "Accelerating Reproducible Research in Synthetic EHR Generation",
+      "abstract": "The generation of high-fidelity synthetic Electronic Health Records (EHR) is crucial for advancing medical research while preserving patient privacy. However, head-to-head comparison of existing generative models is hindered by disjointed codebases, incompatible data loaders, conflicting library dependencies, and inconsistent evaluation protocols. To address these gaps, we introduce a lightweight, end-to-end benchmarking framework for reproducible synthetic EHR evaluation, organized as a unified pipeline spanning data ingestion, standardized model training, and architecture-agnostic evaluation. Our current implementation targets the generation of longitudinal ICD diagnosis codes -- the most commonly studied modality in this literature -- and is built on the community-maintained PyHealth library. We reimplement and unify strong baselines (MedGAN, CorGAN, PromptEHR, HALO) under full ICD-9 vocabulary granularity, and add a lightweight GPT-2 baseline from the general-purpose sequence-modeling literature. We contribute a rigorous, architecture-agnostic privacy-utility evaluation suite that applies identically to GAN- and transformer-based generators, and report bootstrapped confidence intervals across all metrics. We further analyze the poor long-tailed performance of existing models and discuss the extensibility of our framework beyond diagnosis codes. By lowering the engineering barrier to running, extending, and evaluating under a single pipeline, we introduce a starting point for community-driven reproducibility and benchmarking synthetic EHR models.",
+      "authors": [
+        "Jalen Jiang",
+        "Chufan Gao",
+        "Ethan Rasmussen",
+        "Stephen Z. Xie",
+        "Jimeng Sun"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-05T07:28:26+00:00",
+      "link": "https://arxiv.org/pdf/2606.06990v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "provides a benchmarking framework for synthetic EHR evaluation, applicable to agent assessment",
+      "llm_evidence_cn": "提供了用于合成EHR评估的基准框架，可用于医疗代理评估",
+      "llm_evidence": "提供了用于合成EHR评估的基准框架，可用于医疗代理评估",
+      "canonical_evidence": "提供了用于合成EHR评估的基准框架，可用于医疗代理评估",
+      "llm_tldr_en": "Introduces a unified benchmarking framework for reproducible evaluation of synthetic EHR generation models, enabling standardized comparison.",
+      "llm_tldr_cn": "该论文针对合成电子健康记录（EHR）生成研究中的代码库分散和评估不一致问题，提出了一个轻量级端到端基准测试框架，统一了数据摄入、模型训练和评估流程。该框架支持纵向ICD诊断码生成，为EHR生成模型提供了可复现的比较平台，其评估方法也可迁移至其他基于EHR的任务。",
+      "llm_tldr": "该论文针对合成电子健康记录（EHR）生成研究中的代码库分散和评估不一致问题，提出了一个轻量级端到端基准测试框架，统一了数据摄入、模型训练和评估流程。该框架支持纵向ICD诊断码生成，为EHR生成模型提供了可复现的比较平台，其评估方法也可迁移至其他基于EHR的任务。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.09365v1",
+      "source": "arxiv",
+      "title": "Experience Makes Skillful: Enabling Generalizable Medical Agent Reasoning via Self-Evolving Skill Memory",
+      "abstract": "Medical agent systems are increasingly expected to support interactive clinical decision making rather than only static question answering. In such settings, effective agents must reuse prior experience across evolving cases, yet existing memory mechanisms often retain raw historical traces that are redundant, noisy, and difficult to govern. More importantly, they rarely distinguish which memories are truly useful for future reasoning. This limits their ability to accumulate compact and reliable experience for long-horizon clinical reasoning. To close this gap, we propose SkeMex, a post-deployment self-evolution framework that improves medical agents through a skill-based memory without updating model weights. SkeMex distills informative interaction trajectories into structured skills that encode reusable procedural knowledge, and organizes them into a multi-branch repository spanning general, task-specific, and action-level experience. To determine which memories should be reused and retained, SkeMex estimates context-dependent utility from environment feedback and uses it to guide value-aware retrieval and repository governance. A closed-loop ``Read--Write--Assess--Govern\" lifecycle further supports continual evolution by writing new skills, updating utilities, promoting useful memories, and removing harmful entries. Experiments across diverse clinical tasks show that SkeMex consistently outperforms representative memory-based agents in both offline and online settings. It also generalizes across model backbones and supports transferable skill memory. All data and code will be released publicly.",
+      "authors": [
+        "Haoran Sun",
+        "Wenjie Li",
+        "Yujie Zhang",
+        "Zekai Lin",
+        "Fanrui Zhang",
+        "Kaitao Chen",
+        "Xingqi He",
+        "Yichen Li",
+        "Mianxin Liu",
+        "Lei Liu",
+        "Yankai Jiang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-08T11:37:01+00:00",
+      "link": "https://arxiv.org/pdf/2606.09365v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Self-evolving skill memory framework for medical agent reasoning",
+      "llm_evidence_cn": "医疗Agent的自演进技能记忆框架",
+      "llm_evidence": "医疗Agent的自演进技能记忆框架",
+      "canonical_evidence": "医疗Agent的自演进技能记忆框架",
+      "llm_tldr_en": "SkeMex is a post-deployment self-evolution framework that improves medical agents by accumulating compact, reliable skill memories from prior experiences without updating model weights, enabling generalizable reasoning across clinical cases.",
+      "llm_tldr_cn": "现有医疗Agent的记忆机制往往保留冗余、噪声的原始历史轨迹，且难以判断哪些记忆对未来推理有用。本文提出SkeMex，一个部署后的自演进框架，通过基于技能的记忆在不更新模型权重的情况下提升Agent性能。该方法从经验中提取紧凑可靠的技能，使Agent能够跨病例泛化。实验表明，SkeMex显著提高了长程临床推理的准确性和效率。",
+      "llm_tldr": "现有医疗Agent的记忆机制往往保留冗余、噪声的原始历史轨迹，且难以判断哪些记忆对未来推理有用。本文提出SkeMex，一个部署后的自演进框架，通过基于技能的记忆在不更新模型权重的情况下提升Agent性能。该方法从经验中提取紧凑可靠的技能，使Agent能够跨病例泛化。实验表明，SkeMex显著提高了长程临床推理的准确性和效率。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.07342v1",
+      "source": "arxiv",
+      "title": "LLM-Guided Evolution for Medical Decision Pipelines",
+      "abstract": "Adapting large language models (LLMs) to clinical workflows often requires costly fine-tuning or manual prompt and pipeline engineering. We study LLM-guided MAP-Elites evolution as an inference-time alternative for discovering medical decision strategies and provide an implementation repository at https://github.com/univanxx/llm_guided_evo_medical. We formulate urgency triage, interactive consultation, and medical image classification as evolutionary searches over executable artifacts optimized by task-specific fitness functions.   Across all three settings, evolution improves over manually designed baselines under practical constraints. In triage, evolved programs increase Semigran accuracy from $77.3\\%$ to $87.1\\%$ and emergency recall from $0.60$ to $0.97$, while improving safety-weighted held-out MIMIC-ESI performance. In interactive consultation, evolved policies improve the accuracy--cost frontier across Llama-3, Qwen-3.5, and Gemma-4 and transfer to held-out iCRAFTMD. In PneumoniaMNIST, prompt-only evolution improves frozen MedGemma VLMs while preserving strict JSON outputs. Qualitative analysis shows that the gains come from interpretable program-level mechanisms, calibrated triage boundaries, targeted evidence acquisition, selective commitment, and finding-oriented visual decision rules, rather than superficial prompt rewording alone.",
+      "authors": [
+        "Ivan Sviridov",
+        "Artem Oskin",
+        "Ivan Panin",
+        "Iaroslav Bespalov",
+        "Dmitry Dylov",
+        "Ivan Oseledets",
+        "Aleksandr Nesterov"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.NE"
+      ],
+      "published": "2026-06-05T14:53:16+00:00",
+      "link": "https://arxiv.org/pdf/2606.07342v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM-guided evolution for medical decision pipelines, including triage, consultation, image classification",
+      "llm_evidence_cn": "LLM引导进化优化医疗决策管道，包括分诊、咨询和图像分类",
+      "llm_evidence": "LLM引导进化优化医疗决策管道，包括分诊、咨询和图像分类",
+      "canonical_evidence": "LLM引导进化优化医疗决策管道，包括分诊、咨询和图像分类",
+      "llm_tldr_en": "Uses LLM-guided MAP-Elites to evolve medical decision strategies across triage, consultation, and image classification tasks, improving performance over manual baselines.",
+      "llm_tldr_cn": "将LLM引导的MAP-Elites进化应用于医疗决策策略发现，在分诊、交互咨询和医学图像分类三个任务上，进化策略相比人工设计的基线在准确率和召回率上有显著提升。该方法无需微调或手工工程，为医疗智能体管道优化提供新思路。",
+      "llm_tldr": "将LLM引导的MAP-Elites进化应用于医疗决策策略发现，在分诊、交互咨询和医学图像分类三个任务上，进化策略相比人工设计的基线在准确率和召回率上有显著提升。该方法无需微调或手工工程，为医疗智能体管道优化提供新思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.08200v1",
+      "source": "arxiv",
+      "title": "Online Agent-as-a-Judge: Situation-Generating Evaluation for Interactive Agents",
+      "abstract": "Evaluating LLM-powered interactive social agents is challenging because socially relevant behaviors depend not only on isolated outputs, but also on prior interactions, social roles, and downstream actions. Existing methods typically allow a target agent to act freely in an environment and then score the resulting trajectory. However, this passive setup can miss capabilities that only become observable under specific social circumstances; for example, conflict handling may remain untested if no disagreement arises. We propose Online Agent-as-a-Judge, a situation-generating evaluation framework for interactive social agents. Online Agent-as-a-Judge deploys an in-world evaluator agent that interacts with the target agent through the environment's native dialogue and action protocol, actively eliciting situations relevant to the evaluation criteria. The resulting trajectories provide evidence for assessing both immediate responses and subsequent behavior. In a life-simulation environment with $32$ designer-authored social criteria, Online Agent-as-a-Judge improves criteria coverage and agreement with human labels, yielding more reliable evidence-grounded evaluations of behaviors that passive methods can leave unobserved.",
+      "authors": [
+        "Hyogon Ryu",
+        "Jeonghwan Kim",
+        "Yewon Lim",
+        "Chaeun Lee",
+        "Jeongwook Kim",
+        "Donghoon Ham"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-06T14:37:33+00:00",
+      "link": "https://arxiv.org/pdf/2606.08200v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Situation-generating evaluation framework for interactive agents",
+      "llm_evidence_cn": "为交互式Agent生成评估场景的通用框架",
+      "llm_evidence": "为交互式Agent生成评估场景的通用框架",
+      "canonical_evidence": "为交互式Agent生成评估场景的通用框架",
+      "llm_tldr_en": "Online Agent-as-a-Judge proposes a situation-generating evaluation framework where an in-world evaluator agent interacts with the target agent to test specific capabilities like conflict handling that may not arise in passive settings.",
+      "llm_tldr_cn": "现有交互式Agent评估依赖被动轨迹观察，可能遗漏重要能力。本文提出在线Agent作为裁判的评估框架，部署一个内置于环境中的评估Agent，主动生成特定社交情境（如冲突处理）来测试目标Agent。该方法能够更全面地暴露Agent行为弱点，为不同场景下的Agent评估提供了可迁移的方法论。",
+      "llm_tldr": "现有交互式Agent评估依赖被动轨迹观察，可能遗漏重要能力。本文提出在线Agent作为裁判的评估框架，部署一个内置于环境中的评估Agent，主动生成特定社交情境（如冲突处理）来测试目标Agent。该方法能够更全面地暴露Agent行为弱点，为不同场景下的Agent评估提供了可迁移的方法论。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
