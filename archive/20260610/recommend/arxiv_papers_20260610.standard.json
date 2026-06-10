@@ -1,0 +1,295 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-10T22:04:50.873859+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2606.08442v1",
+      "source": "arxiv",
+      "title": "Clinical Reasoning in the Age of AI: Longitudinal Cognition and Human-AI Collaboration",
+      "abstract": "As physicians turn to AI-powered systems to help meet the dual demands of speed and care quality, they are met with hallucinations and sycophancy. Understanding how doctors reason through clinical problems in real-world settings is critical for design of effective AI reasoning systems. While recent advances in medical AI have emphasized performance benchmarks and diagnostic accuracy, comparatively little attention has been paid to the structure of clinicians' reasoning processes as they unfold over time, e.g., how they interact with electronic health records and operate under conditions of uncertainty and constraint. This study provides a comprehensive, empirically-grounded account of clinical reasoning and its relationship to current AI-mediated workflows through a mixed-methods design that combines qualitative interviews with structured survey data.   Findings indicate that current AI systems are primarily deployed for encounter-level tasks such as documentation and summarization, and only partially align with physicians' underlying reasoning processes. In particular, AI-generated representations often omit temporal or interpretive structures central to clinical decision-making, while core aspects of reasoning, especially those spanning multiple encounters, remain largely implicit and physician-driven. By integrating fine-grained qualitative insights with broader quantitative patterns, this study offers a unified framework for understanding clinical reasoning as a context-sensitive, temporally extended process and identifies key mismatches between clinician cognition and current AI design. These results provide concrete directions for the development of AI systems that more effectively align with and augment real-world clinical reasoning.",
+      "authors": [
+        "Irene Yi",
+        "Grace Brown",
+        "Sufian Aldogom",
+        "Nathan Roll",
+        "Eric J. Basile",
+        "Pamela M. Resnikoff",
+        "Bianca Sanchez",
+        "Chirag Lodha",
+        "Isaac Gutterman",
+        "Oscar Schiff",
+        "Keira Salata",
+        "Benjamin Mujkic",
+        "Ammar Ahmed"
+      ],
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY"
+      ],
+      "published": "2026-06-07T03:51:15+00:00",
+      "link": "https://arxiv.org/pdf/2606.08442v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "study of clinical reasoning with EHR interaction and performance benchmarks",
+      "llm_evidence_cn": "研究临床推理中与电子健康记录交互及性能基准",
+      "llm_evidence": "研究临床推理中与电子健康记录交互及性能基准",
+      "canonical_evidence": "研究临床推理中与电子健康记录交互及性能基准",
+      "llm_tldr_en": "This study provides an empirical account of clinical reasoning with EHR interaction, highlighting gaps in current AI benchmarks and offering insights for medical agent evaluation.",
+      "llm_tldr_cn": "当前医疗AI评测过度关注诊断准确性，忽视了临床推理过程。本文通过实证研究，系统记录了医生与电子健康记录（EHR）交互时的推理过程、不确定性和约束。研究发现，现有性能基准无法反映真实临床推理的纵向复杂性。该工作为设计更贴合实际的医疗智能体评估框架提供了理论基础和方法指导。",
+      "llm_tldr": "当前医疗AI评测过度关注诊断准确性，忽视了临床推理过程。本文通过实证研究，系统记录了医生与电子健康记录（EHR）交互时的推理过程、不确定性和约束。研究发现，现有性能基准无法反映真实临床推理的纵向复杂性。该工作为设计更贴合实际的医疗智能体评估框架提供了理论基础和方法指导。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.08982v2",
+      "source": "arxiv",
+      "title": "Baichuan-M4: A Clinical-Grade Medical Agent System for Continuous Care",
+      "abstract": "Baichuan-M4 is Baichuan Intelligence's clinical-grade medical large model, designed for continuous care rather than single-turn medical question answering. It is built as a coordinated medical agent system around three pillars: Baichuan-Harness, a unified runtime that keeps reinforcement-learning training and real-world deployment consistent while enforcing action constraints, tool use, long-term patient memory, and multi-agent coordination; a core reasoning model trained with a continuous-care reinforcement-learning framework that integrates span-level reward modeling (SPAR++), reasoning-path compression, curriculum learning, and stabilized policy optimization; and a clinical tool layer for patient-memory management, authoritative evidence-based retrieval, and multimodal medical perception across documents, X-rays, and dermatology. On a cross-dimensional medical evaluation suite, Baichuan-M4 attains leading results in static medical knowledge and safety, dynamic OSCE-style consultation, long-context clinical memory, evidence-based retrieval, medical document OCR, and multimodal image understanding, while lowering the hallucination rate to 3.3%.",
+      "authors": [
+        "Aiyuan Yang",
+        "Canbin Piao",
+        "Chengfeng Dou",
+        "Da Pan",
+        "Dian Wang",
+        "Fan Yang",
+        "Fei Deng",
+        "Fei Li",
+        "Guangwei Ai",
+        "Hui Liu",
+        "Hongda Zhang",
+        "Jinyang Tai",
+        "Kai Lu",
+        "Lijun Liu",
+        "Linwei Chen",
+        "Linyu Li",
+        "Meiqing Guo",
+        "Peidong Guo",
+        "Qiang Ju",
+        "Rihui Xin",
+        "Shuai Wang",
+        "XinKai Ma",
+        "Xudong Chen",
+        "Yichuan Mo",
+        "Yijie Zhou",
+        "Leyi Pan",
+        "Yihe Luo",
+        "Zian Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-08T03:27:05+00:00",
+      "link": "https://arxiv.org/pdf/2606.08982v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "clinical-grade medical agent system with RL training",
+      "llm_evidence_cn": "临床级医疗智能体系统，含强化学习训练",
+      "llm_evidence": "临床级医疗智能体系统，含强化学习训练",
+      "canonical_evidence": "临床级医疗智能体系统，含强化学习训练",
+      "llm_tldr_en": "Baichuan-M4 is a clinical-grade medical agent system for continuous care, built with a unified runtime and RL framework, enabling tool use and patient memory.",
+      "llm_tldr_cn": "针对现有医疗模型仅支持单轮问答的局限，百川智能提出了临床级医疗智能体系统Baichuan-M4，支持持续照护。该系统以三大支柱为核心：统一运行时Baichuan-Harness确保强化学习训练与部署一致；核心推理模型采用连续护理强化学习框架，集成跨度级奖励建模、推理路径压缩和课程学习；临床工具层管理患者记忆与权威检索。该方法在连续护理场景中显著优于单轮模型，展示了医疗智能体在实际应用中的潜力。",
+      "llm_tldr": "针对现有医疗模型仅支持单轮问答的局限，百川智能提出了临床级医疗智能体系统Baichuan-M4，支持持续照护。该系统以三大支柱为核心：统一运行时Baichuan-Harness确保强化学习训练与部署一致；核心推理模型采用连续护理强化学习框架，集成跨度级奖励建模、推理路径压缩和课程学习；临床工具层管理患者记忆与权威检索。该方法在连续护理场景中显著优于单轮模型，展示了医疗智能体在实际应用中的潜力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.04494v1",
+      "source": "arxiv",
+      "title": "Beyond Prompt-Based Planning: MCP-Native Graph Planning-based Biomedical Agent System",
+      "abstract": "Biomedical agents promise to automate complex biological workflows, yet current systems face two fundamental bottlenecks: bioinformatics tools are highly heterogeneous in interfaces and execution environments, while agent planning still relies on flat prompt-retrieved tool descriptions. As biomedical software ecosystems grow, this coupling between tool coverage and context size leads to tool confusion, unstable planning, and inefficient execution. We introduce BioManus, an MCP-native biomedical agent built on graph-scaffolded planning over structured biological capabilities. BioManus first introduces the BioinfoMCP Compiler, which converts heterogeneous bioinformatics software into standardized MCP servers, yielding a large executable MCP ecosystem. It then organizes this ecosystem as a typed heterogeneous MCP graph over tools, operations, datatypes, and workflow stages. At inference time, BioManus retrieves compact task-specific subgraphs, synthesizes operation-level workflow scaffolds. This design decouples planning complexity from raw tool inventory size, achieving a context compression ratio of Theta(N / (h * m_bar)) under high-recall retrieval, where N is the total tool count, h is the workflow horizon, and m_bar (much smaller than N) is the average number of candidate tools per operation. Experiments on BioAgentBench and LAB-Bench show that BioManus improves execution accuracy, workflow validity, and context efficiency over advanced biomedical agent baselines. This work suggests a paradigm shift: scalable biomedical reasoning requires structured executable capability graphs rather than increasingly larger prompt-level tool retrieval.",
+      "authors": [
+        "Zhangtianyi Chen",
+        "Florensia Widjaja",
+        "Wufei Dai",
+        "Xiangjun Zhang",
+        "Yuhao Shen",
+        "Juexiao Zhou"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-03T06:19:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.04494v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "biomedical agent system using MCP for tool integration",
+      "llm_evidence_cn": "使用MCP进行工具集成的生物医学智能体系统",
+      "llm_evidence": "使用MCP进行工具集成的生物医学智能体系统",
+      "canonical_evidence": "使用MCP进行工具集成的生物医学智能体系统",
+      "llm_tldr_en": "Introduces BioManus, an MCP-native biomedical agent with graph-scaffolded planning to automate complex biological workflows, addressing tool heterogeneity and planning instability.",
+      "llm_tldr_cn": "现有生物医学智能体面临工具异构和规划不稳定问题。本文提出BioManus，构建MCP原生智能体系统，通过BioinfoMCP编译器将异构工具标准化，并采用图规划方法实现稳定高效的生物工作流自动化。实验表明BioManus在多个生物信息学任务上显著提升了执行成功率和效率。",
+      "llm_tldr": "现有生物医学智能体面临工具异构和规划不稳定问题。本文提出BioManus，构建MCP原生智能体系统，通过BioinfoMCP编译器将异构工具标准化，并采用图规划方法实现稳定高效的生物工作流自动化。实验表明BioManus在多个生物信息学任务上显著提升了执行成功率和效率。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.04874v1",
+      "source": "arxiv",
+      "title": "Agent Planning Benchmark: A Diagnostic Framework for Planning Capabilities in LLM Agents",
+      "abstract": "Planning is central to LLM agents: before acting, an agent must decompose goals, select tools, reason over constraints, and decide when a task is infeasible. Yet existing agent evaluations often report only end-to-end success, making it difficult to determine whether failures stem from planning or execution. We introduce \\textbf{Agent Planning Benchmark (APB)}, a planning-specific diagnostic benchmark with 4,209 multimodal cases across 22 domains and five settings, covering holistic planning, feedback-conditioned step-wise planning, and robustness under extraneous tools, broken tools, and unsolvable tasks. Across 12 MLLMs, APB reveals systematic weaknesses in long-horizon planning, tool-noise robustness, calibrated refusal, and inference-time refinement. We further validate APB on 200 ToolSandbox tasks and 200 $τ^2$-bench tasks, where APB-guided refinement consistently improves plan correctness, plan grade, and downstream execution metrics across three representative models. APB thus serves as an upstream diagnostic complement to execution benchmarks.",
+      "authors": [
+        "Haoyu Sun",
+        "Wenxuan Wang",
+        "Mingyang Song",
+        "Jujie He",
+        "Weinan Zhang",
+        "Yang Liu",
+        "Yang Yang",
+        "Yu Cheng"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-03T13:37:47+00:00",
+      "link": "https://arxiv.org/pdf/2606.04874v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "diagnostic benchmark for planning capabilities in LLM agents",
+      "llm_evidence_cn": "面向LLM智能体规划能力的诊断基准",
+      "llm_evidence": "面向LLM智能体规划能力的诊断基准",
+      "canonical_evidence": "面向LLM智能体规划能力的诊断基准",
+      "llm_tldr_en": "Introduces Agent Planning Benchmark (APB), a diagnostic benchmark with 4,209 multimodal cases across 22 domains and five settings, revealing systematic planning weaknesses in 12 MLLMs.",
+      "llm_tldr_cn": "现有智能体评估仅报告端到端成功率，难以定位规划失败原因。本文提出APB，包含4,209个多模态案例，覆盖22个领域和五种规划设置。在12个多模态大模型上测试发现，模型在长程规划、工具噪声鲁棒性和判断不可行任务方面存在系统性缺陷，为智能体规划能力诊断提供了标准化工具。",
+      "llm_tldr": "现有智能体评估仅报告端到端成功率，难以定位规划失败原因。本文提出APB，包含4,209个多模态案例，覆盖22个领域和五种规划设置。在12个多模态大模型上测试发现，模型在长程规划、工具噪声鲁棒性和判断不可行任务方面存在系统性缺陷，为智能体规划能力诊断提供了标准化工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08413v1",
+      "source": "arxiv",
+      "title": "Beyond Prediction: Longitudinal Reasoning in EHR-Integrated Clinical AI",
+      "abstract": "We present a structured analysis of how contemporary clinical AI systems integrate electronic health record (EHR) data and the extent to which they support longitudinal clinical reasoning. Drawing on a curated corpus of clinical natural language processing (NLP) and EHR-integrated systems, we develop a coding framework that captures both technical integration strategies and reasoning-relevant representational features, such as trajectory modeling, cross-encounter synthesis, longitudinal analysis, and absence reasoning. We also elicited the experiences of three physicians in their EHR use, including what strengths and weaknesses they found with their institution's current EHR system(s). Our analysis shows that while many systems incorporate EHR data, they predominantly operate on encounter-level or aggregated representations, with limited support for explicit temporal reasoning across patient histories. Reasoning-relevant structures are inconsistently represented, and evaluation paradigms remain largely focused on predictive performance instead of longitudinal interpretability. We argue that current approaches treat EHR data as a static input rather than a substrate for ongoing clinical reasoning, and we outline a framework for understanding how future systems might more effectively align with the temporal and interpretive structure of clinical practice.",
+      "authors": [
+        "Irene Yi",
+        "Grace Brown",
+        "Sufian Aldogom",
+        "Nathan Roll",
+        "Eric J. Basile",
+        "Pamela M. Resnikoff",
+        "Isaac Gutterman",
+        "Oscar Schiff",
+        "Keira Salata",
+        "Benjamin Mujkic",
+        "Ammar Ahmed"
+      ],
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY",
+        "cs.HC"
+      ],
+      "published": "2026-06-07T02:26:23+00:00",
+      "link": "https://arxiv.org/pdf/2606.08413v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "analysis of EHR-integrated clinical AI longitudinal reasoning with coding framework",
+      "llm_evidence_cn": "分析EHR集成临床AI的纵向推理并开发编码框架",
+      "llm_evidence": "分析EHR集成临床AI的纵向推理并开发编码框架",
+      "canonical_evidence": "分析EHR集成临床AI的纵向推理并开发编码框架",
+      "llm_tldr_en": "Systematically analyzes how contemporary clinical AI systems integrate EHR data and support longitudinal reasoning, developing a coding framework revealing gaps.",
+      "llm_tldr_cn": "本文系统梳理了EHR集成临床AI的技术策略与推理表示，提出了涵盖轨迹建模、跨就诊综合等维度的编码框架，并通过医生访谈揭示当前系统在纵向推理上的不足，为未来临床AI设计提供指导。",
+      "llm_tldr": "本文系统梳理了EHR集成临床AI的技术策略与推理表示，提出了涵盖轨迹建模、跨就诊综合等维度的编码框架，并通过医生访谈揭示当前系统在纵向推理上的不足，为未来临床AI设计提供指导。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08531v1",
+      "source": "arxiv",
+      "title": "VESTA: A Fully Automated Scenario Generation and Safety Evaluation Framework for LLM Agents",
+      "abstract": "Large language models (LLMs) are increasingly evolving from simple text-based interaction systems into LLM agents that can maintain memory, use tools, access external environments, and execute tasks. As their capabilities and autonomy expand, the safety risks they face also become more diverse. Existing evaluations often rely on manually written scenarios, static prompts, or final-output judgments, making it difficult to capture the diverse risks that agents may face during task execution. We introduce VESTA, a fully automated scenario generation and safety evaluation framework for LLM agents. Based on five risk dimensions, VESTA instantiaes abstract and diverse safety risks in real-world task execution into 1,072 measurable evaluation scenarios. Using the automated evaluation pipeline, 12 LLM agents are evaluated under two authority contexts. The results show that current agents still face substantial behavioral safety risks during task execution, with an average ASR of 47.1% and several models exceeding 70%. These findings demonstrate the importance of executable, process-level evaluation for understanding and improving LLM agent safety.",
+      "authors": [
+        "Lu Jia",
+        "Haibo Tong",
+        "Feifei Zhao",
+        "Jindong Li",
+        "Dongqi Liang",
+        "Ping Wu",
+        "Qian Zhang",
+        "Yi Zeng"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-07T09:23:38+00:00",
+      "link": "https://arxiv.org/pdf/2606.08531v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "fully automated safety evaluation framework for LLM agents",
+      "llm_evidence_cn": "面向LLM智能体的全自动安全评估框架",
+      "llm_evidence": "面向LLM智能体的全自动安全评估框架",
+      "canonical_evidence": "面向LLM智能体的全自动安全评估框架",
+      "llm_tldr_en": "Introduces VESTA, a fully automated framework for generating scenarios and evaluating safety of LLM agents across five risk dimensions with 1,072 measurable evaluations.",
+      "llm_tldr_cn": "现有LLM智能体安全评估依赖手动场景和静态提示，难以覆盖多样化风险。本文提出VESTA，基于五个风险维度全自动生成场景和可测量评估项，形成1,072个评估实例。实验表明该框架能有效检测智能体在不同风险维度的安全缺陷，为LLM智能体安全评估提供了系统性工具。",
+      "llm_tldr": "现有LLM智能体安全评估依赖手动场景和静态提示，难以覆盖多样化风险。本文提出VESTA，基于五个风险维度全自动生成场景和可测量评估项，形成1,072个评估实例。实验表明该框架能有效检测智能体在不同风险维度的安全缺陷，为LLM智能体安全评估提供了系统性工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
