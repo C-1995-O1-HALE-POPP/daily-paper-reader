@@ -1,0 +1,590 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-11T21:41:27.416973+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 11,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2606.11702v1",
+      "source": "arxiv",
+      "title": "MedCTA: A Benchmark for Clinical Tool Agents",
+      "abstract": "To make clinically grounded decisions, medical AI agents are expected to go beyond simple recognition and be capable of tool retrieval, evidence acquisition, and integration. Existing benchmarks largely evaluate isolated perception or single-turn question answering, and therefore provide limited visibility into failures of planning, tool recruitment, and rollout reliability. We introduce MedCTA, a benchmark for evaluating medical tool agents on clinician-validated, step-implicit tasks grounded in realistic multimodal clinical inputs, including radiology images, pathology slides, and reports. MedCTA comprises 107 real-world clinical tasks with clinician-verified executable trajectories over 5 deployed tools, and supports process-aware evaluation of tool selection, argument validity, execution stability, trajectory fidelity, and outcome quality. We benchmark 18 open- and closed-source multimodal models and find that even frontier systems remain brittle in multi-step clinical tool use: autonomous rollouts are dominated by protocol failures, premature stopping, and incorrect tool recruitment, while gold-standard tool routing yields large but still incomplete gains. These results show that strong backbone perception does not translate into reliable agentic behavior in clinical settings. MedCTA provides a rigorous testbed for auditing, diagnosing, and advancing trustworthy medical AI agents. The dataset and evaluation suite are available at https://ivul-kaust.github.io/MedCTA/",
+      "authors": [
+        "Tajamul Ashraf",
+        "Hyewon Jeong",
+        "Fida Mohammad Thoker",
+        "Bernard Ghanem"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-10T06:26:52+00:00",
+      "link": "https://arxiv.org/pdf/2606.11702v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "clinical tool agent benchmark with multimodal clinical inputs",
+      "llm_evidence_cn": "临床工具智能体基准测试，使用多模态临床输入",
+      "llm_evidence": "临床工具智能体基准测试，使用多模态临床输入",
+      "canonical_evidence": "临床工具智能体基准测试，使用多模态临床输入",
+      "llm_tldr_en": "MedCTA evaluates medical tool agents on clinician-validated tasks with multimodal clinical inputs, enabling process-aware evaluation.",
+      "llm_tldr_cn": "现有医疗AI智能体基准多局限于单轮问答或感知任务，无法评估临床工具使用中的规划与执行失败。本文提出MedCTA，一个包含107个真实世界临床任务的基准，基于放射影像、病理切片和报告等多模态输入，支持对工具选择、参数调用等环节的过程级评估。实验表明，该基准能有效揭示智能体在工具检索与证据整合中的缺陷，为临床工具智能体的开发提供标准化评测平台。",
+      "llm_tldr": "现有医疗AI智能体基准多局限于单轮问答或感知任务，无法评估临床工具使用中的规划与执行失败。本文提出MedCTA，一个包含107个真实世界临床任务的基准，基于放射影像、病理切片和报告等多模态输入，支持对工具选择、参数调用等环节的过程级评估。实验表明，该基准能有效揭示智能体在工具检索与证据整合中的缺陷，为临床工具智能体的开发提供标准化评测平台。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.12291v1",
+      "source": "arxiv",
+      "title": "Measuring Epistemic Resilience of LLMs Under Misleading Medical Context",
+      "abstract": "Large language models (LLMs) now reach expert-level scores on medical licensing exams, encouraging the assumption that high scores imply safe medical judgment while patients increasingly use them for health advice. We show this assumption is fragile: when misleading context is injected into questions that LLMs originally answer correctly, they abandon the correct answer. We call the ability to maintain correct judgment under adversarial context epistemic resilience, and introduce MedMisBench to measure it. MedMisBench contains 10,932 medical question items and 48,889 misleading context-option pairs spanning medical reasoning, agentic capability, and patient-journey evaluation. Across 11 model configurations, mean accuracy falls from 71.1% on original questions to 38.0% under focused misleading context, with 51.5% attack success. The most damaging injections are formal, rule-like fabrications: authority-framed falsehoods reach 69.5% attack success and exception-poisoning claims reach 64.1%. A 14-member clinical panel from 7 countries identified serious potential harm in 38.2% of reviewed cases. MedMisBench exposes a structural blind spot in LLM evaluation in medical settings: existing benchmarks measure what models know, but not whether they preserve correct medical judgment under misleading context.",
+      "authors": [
+        "Hongjian Zhou",
+        "Xinyu Zou",
+        "Jinge Wu",
+        "Sean Wu",
+        "Junchi Yu",
+        "Bradley Max Segal",
+        "Tobias Erich Niebuhr",
+        "Sara Amro",
+        "Michael Petrus",
+        "Sheikh Momin",
+        "Alexandra M. Cardoso Pinto",
+        "Rachel Niesen",
+        "Laura Sophie Wegner",
+        "Dhruv Darji",
+        "Jung Moses Koo",
+        "Joshua Fieggen",
+        "Kapil Narain",
+        "Mingde Zeng",
+        "Lei Clifton",
+        "Linda Shapiro",
+        "Fenglin Liu",
+        "David A. Clifton"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-10T16:27:26+00:00",
+      "link": "https://arxiv.org/pdf/2606.12291v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "benchmark for LLM agentic capability evaluation under misleading medical context",
+      "llm_evidence_cn": "在误导医疗情境下评估LLM Agent能力的基准",
+      "llm_evidence": "在误导医疗情境下评估LLM Agent能力的基准",
+      "canonical_evidence": "在误导医疗情境下评估LLM Agent能力的基准",
+      "llm_tldr_en": "MedMisBench evaluates LLMs epistemic resilience under misleading medical context, covering agentic capability and patient-journey evaluation, directly relevant to benchmarking medical agents.",
+      "llm_tldr_cn": "LLM在医学考试中获得高分，但在误导上下文中易被欺骗。本文提出MedMisBench，包含10932道医学问题和48889个误导选项对，覆盖医学推理、Agent能力和患者旅程评估。对11个模型测试发现，平均准确率从71.1%下降。该基准直接服务于医疗Agent的鲁棒性评估需求。",
+      "llm_tldr": "LLM在医学考试中获得高分，但在误导上下文中易被欺骗。本文提出MedMisBench，包含10932道医学问题和48889个误导选项对，覆盖医学推理、Agent能力和患者旅程评估。对11个模型测试发现，平均准确率从71.1%下降。该基准直接服务于医疗Agent的鲁棒性评估需求。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.05463v2",
+      "source": "arxiv",
+      "title": "PSEBench: A Controllable and Verifiable Benchmark for Evaluating LLMs in Patient Safety Event Triage",
+      "abstract": "Patient safety event triage, determining whether a clinical event is reportable under jurisdiction-specific policy, is a high-stakes task typically performed manually by patient safety experts. Although LLMs may support this workflow, reliable evaluation is limited by the lack of benchmarks to capture evidence-grounded policy reasoning, proactive information seeking for incomplete reports, and principled abstention in irreducibly ambiguous cases. We address this gap with a policy-grounded construction methodology centered on the clause card, a structured representation that factorizes regulatory text into auditable decision specifications. Combining clause cards with anchor-driven instantiation and closed-loop verification, our scalable pipeline produces narratives with by-construction ground truth and naturally supports generating missing information and uncertain variants. We instantiate this method on Minnesota's 29 Reportable Adverse Health Events, producing PSEBench, a 5,074-case benchmark with an agentic evaluation environment. Evaluation on 15 representative LLMs reveals consistent capability trends, demonstrates the benchmark's utility, and identifies actionable gaps toward reliable LLM-based patient safety event triage.",
+      "authors": [
+        "Keqi Han",
+        "Ryan Young",
+        "Annabel Strauss",
+        "Lindsey Hughes",
+        "Katharine M. Nesbitt",
+        "Nicole Schueler",
+        "Che Ngufor",
+        "Carl Yang",
+        "Yuan Xue",
+        "Zhijun Yin"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-03T21:41:39+00:00",
+      "link": "https://arxiv.org/pdf/2606.05463v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "benchmark for evaluating LLMs in patient safety event triage, relevant to clinical decision support agents",
+      "llm_evidence_cn": "用于评估LLM在患者安全事件分诊中的基准，与临床决策支持智能体相关",
+      "llm_evidence": "用于评估LLM在患者安全事件分诊中的基准，与临床决策支持智能体相关",
+      "canonical_evidence": "用于评估LLM在患者安全事件分诊中的基准，与临床决策支持智能体相关",
+      "llm_tldr_en": "PSEBench provides a controllable and verifiable benchmark for LLM evaluation in patient safety event triage, using clause cards to factorize regulatory text into auditable decision specifications.",
+      "llm_tldr_cn": "该论文提出PSEBench，一个可控且可验证的基准，用于评估LLM在患者安全事件分诊中的表现。通过条款卡片将监管文本分解为可审计的决策规范，结合锚定实例化和闭环验证，能够衡量模型的证据驱动推理、主动信息搜索和合理放弃能力。该基准填补了高临床安全环境中LLM评估的空白，可直接应用于临床决策支持智能体的评估。",
+      "llm_tldr": "该论文提出PSEBench，一个可控且可验证的基准，用于评估LLM在患者安全事件分诊中的表现。通过条款卡片将监管文本分解为可审计的决策规范，结合锚定实例化和闭环验证，能够衡量模型的证据驱动推理、主动信息搜索和合理放弃能力。该基准填补了高临床安全环境中LLM评估的空白，可直接应用于临床决策支持智能体的评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.06462v1",
+      "source": "arxiv",
+      "title": "Benchmark Everything Everywhere All at Once",
+      "abstract": "Benchmarks are fundamental for evaluating and advancing LLMs and MLLMs by providing standardized and explicit measures of performance. However, their construction is labor-intensive and hard to reuse, raising concerns about sustainability and scalability. Moreover, existing benchmarks often quickly reach performance saturation after their release, resulting in insufficient discrimination among state-of-the-art models. To address these challenges, we introduce Benchmark Agent, a fully autonomous agentic system designed for benchmark building. Our framework orchestrates the complete benchmark construction pipeline, from user query analysis and subtask design to data annotation and quality control. To assess Benchmark Agent, we implement it to produce 15 representative benchmarks, spanning diverse evaluation scenarios, including text understanding, multimodal understanding, and domain-specific reasoning. Extensive experiments, including human evaluation, LLM-as-a-judge assessment, and consistency checks, demonstrate Benchmark Agent can generate high-quality benchmark samples with minimal human involvement. More importantly, through continual evaluation, we observe several insightful findings, including that current models struggle with certain domain-specific reasoning tasks. We believe that rapidly evolving benchmarks can contribute significantly to the research community. The preview and code will be publicly available at the demo page and code repository.",
+      "authors": [
+        "Shiyun Xiong",
+        "Dongming Wu",
+        "Peiwen Sun",
+        "Yuang Ai",
+        "Bokang Yang",
+        "Wencheng Han",
+        "Xiao-Hui Li",
+        "Xiangyu Yue"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-04T17:52:04+00:00",
+      "link": "https://arxiv.org/pdf/2606.06462v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "autonomous benchmark building agent for LLMs and MLLMs, relevant to benchmarking medical agents",
+      "llm_evidence_cn": "用于LLM和多模态LLM的自主基准构建智能体，可应用于医疗智能体基准测试",
+      "llm_evidence": "用于LLM和多模态LLM的自主基准构建智能体，可应用于医疗智能体基准测试",
+      "canonical_evidence": "用于LLM和多模态LLM的自主基准构建智能体，可应用于医疗智能体基准测试",
+      "llm_tldr_en": "Benchmark Agent is a fully autonomous system for building benchmarks from user queries, orchestrating the entire pipeline from analysis to quality control.",
+      "llm_tldr_cn": "该论文提出Benchmark Agent，一个完全自主的智能体系统，能够根据用户查询自动构建基准，覆盖从需求分析、子任务设计到数据标注和质量控制的完整流程。通过生成15个代表性基准验证了其有效性，为解决基准构建劳动密集和难以复用的问题提供了可扩展方案，可迁移至医疗智能体评估领域。",
+      "llm_tldr": "该论文提出Benchmark Agent，一个完全自主的智能体系统，能够根据用户查询自动构建基准，覆盖从需求分析、子任务设计到数据标注和质量控制的完整流程。通过生成15个代表性基准验证了其有效性，为解决基准构建劳动密集和难以复用的问题提供了可扩展方案，可迁移至医疗智能体评估领域。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.05670v1",
+      "source": "arxiv",
+      "title": "Do More Agents Help? Controlled and Protocol-Aligned Evaluation of LLM Agent Workflows",
+      "abstract": "Does adding more agents help an LLM workflow once compared systems share the same benchmark loader, tool access, answer contract, usage accounting, and trajectory logging? We introduce BenchAgent, an evaluation framework that places single-agent, fixed multi-agent (MAS), and evolving MAS workflows under one normalized execution and logging protocol. BenchAgent evaluates these substrate-internal workflows across ten reasoning, coding, and tool-use benchmarks with GPT-4.1, and separately reports a Protocol-Aligned External (PAE) GAIA study of a runtime-generated workflow. Under SI conditions, at most one of six tested MAS exceeds the matched single-agent anchor on benchmark-balanced average accuracy: EvoAgent lies within the Wilson one-run guidance, while the remaining five trail by 2.56-11.29 points and occupy more expensive accuracy-cost trade-offs. On the PAE GAIA snapshot, a Claude-Code-style runtime workflow reaches 66.72% overall and 69.23% on Level 3, more than 20 points above the strongest non-Claude baseline, Jarvis, a fixed MAS.",
+      "authors": [
+        "Yuhang Fu",
+        "Ruishan Fang",
+        "Jiaqi Shao",
+        "Huiyu Zheng",
+        "Zhengtao Zhu",
+        "Bing Luo",
+        "Tao Lin"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-04T03:50:47+00:00",
+      "link": "https://arxiv.org/pdf/2606.05670v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "proposes BenchAgent evaluation framework for LLM agent workflows, directly applicable to benchmarking medical agent performance",
+      "llm_evidence_cn": "提出BenchAgent评估框架用于LLM智能体工作流，可直接用于医疗智能体性能基准测试",
+      "llm_evidence": "提出BenchAgent评估框架用于LLM智能体工作流，可直接用于医疗智能体性能基准测试",
+      "canonical_evidence": "提出BenchAgent评估框架用于LLM智能体工作流，可直接用于医疗智能体性能基准测试",
+      "llm_tldr_en": "Introduces BenchAgent, a normalized evaluation framework for comparing single and multi-agent LLM workflows across benchmarks, enabling fair benchmarking that can be adapted for medical agents.",
+      "llm_tldr_cn": "当前LLM智能体工作流的评估缺乏统一协议，导致结果难以比较。本文提出BenchAgent框架，通过标准化执行和日志记录协议，在多个推理、编码和工具使用基准上公平比较单智能体与多智能体工作流。实验表明，在受控条件下，大多数多智能体系统性能并不优于单智能体基线。该方法为医疗智能体评估提供了可复用的基准测试方法论。",
+      "llm_tldr": "当前LLM智能体工作流的评估缺乏统一协议，导致结果难以比较。本文提出BenchAgent框架，通过标准化执行和日志记录协议，在多个推理、编码和工具使用基准上公平比较单智能体与多智能体工作流。实验表明，在受控条件下，大多数多智能体系统性能并不优于单智能体基线。该方法为医疗智能体评估提供了可复用的基准测试方法论。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.07718v1",
+      "source": "arxiv",
+      "title": "A case study of evaluating AI agents on a neuroscience data-to-discovery pipeline",
+      "abstract": "Agentic AI tools offer a promising path to automating software development bottlenecks in scientific research pipelines, particularly for stages that take domain experts days to months to build, where scientists care about correctness and robustness, not implementation details. We present an empirical study of general-purpose coding agents on a fly optogenetics data-to-discovery pipeline. We assess agents on tasks substantially larger than existing benchmarks, datasets orders of magnitude bigger, and evaluation criteria grounded in domain expert standards. We show that agents can solve several individual pipeline stages, suggesting stage-level automation is tractable. By analyzing agents' code iterations, we show that they struggle most when there is not a pre-defined criterion to iterate on, and they must instead use their scientific judgment to assess their current solution, a key open challenge. Mirroring scientific practice, they sometimes attempt visual inspection of intermediate outputs for self-evaluation, but largely fail to interpret what they see or act on it appropriately. Solving the end-to-end pipeline correctly requires stringing together successes across all pipeline stages, and this is beyond agents' current abilities. We identify challenges largely absent from existing benchmarks, including computational resource management and generalization to large held-out data collections. Finally, we distill principles for constructing scientific tasks and rigorous evaluation criteria for open-ended problems.",
+      "authors": [
+        "Kai A. Horstmann",
+        "Ethan Lin",
+        "Alice A. Robie",
+        "Jennifer J. Sun",
+        "Kristin Branson"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-06-05T15:38:18+00:00",
+      "link": "https://arxiv.org/pdf/2606.07718v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "case study evaluating AI agents on a scientific pipeline, transferable to medical agent evaluation",
+      "llm_evidence_cn": "AI Agent在科学管道上的评估案例研究，可迁移至医疗Agent评估",
+      "llm_evidence": "AI Agent在科学管道上的评估案例研究，可迁移至医疗Agent评估",
+      "canonical_evidence": "AI Agent在科学管道上的评估案例研究，可迁移至医疗Agent评估",
+      "llm_tldr_en": "This paper evaluates general-purpose coding agents on a neuroscience data-to-discovery pipeline, providing insights on agent evaluation methodology transferable to medical agent benchmarking.",
+      "llm_tldr_cn": "科学研究管道中，Agent自动化开发是瓶颈。本文以果蝇光遗传学数据到发现管道为例，评估通用编码Agent在规模远超现有基准的任务上的表现。结果显示Agent能解决部分阶段，但在代码迭代中表现出局限。该评估方法论可迁移至医疗Agent基准测试。",
+      "llm_tldr": "科学研究管道中，Agent自动化开发是瓶颈。本文以果蝇光遗传学数据到发现管道为例，评估通用编码Agent在规模远超现有基准的任务上的表现。结果显示Agent能解决部分阶段，但在代码迭代中表现出局限。该评估方法论可迁移至医疗Agent基准测试。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.08671v1",
+      "source": "arxiv",
+      "title": "SkillHone: A Harness for Continual Agent Skill Evolution Through Persistent Decision History",
+      "abstract": "Agent skills extend language-model agents with task-specific procedures, scripts, and references, but the tasks and environments they target continually change. Existing methods improve skills in bounded runs and retain only the final artifact, discarding the decision history that later agents need to interpret prior revisions, evaluations, and rejected alternatives. We introduce SkillHone, a harness for continual agent skill evolution grounded in persistent decision history. SkillHone pairs skill revisions with evaluation-side evidence that supplies practice feedback, recording structured histories of diagnoses, revisions, evidence, and outcomes. Role-separated subagents run candidate skills on practice probes with redacted reporting and propose revisions informed by prior decisions, enabling cross-session refinement without rediscovering past rationale. We evaluate SkillHone on deep-research benchmarks in a raw open-web setting, where agents are not given an integrated search stack and must organize retrieval through portable skills. We compare against a deep-research agent backed by commercial retrieval services. With Qwen3.6-35B-A3B as the evaluation-time backbone, the resulting skills outperform the deep-research agent by 15.8 points on GAIA and 3.2 points on WebWalkerQA-EN, while also exceeding prior skill-evolution methods.",
+      "authors": [
+        "Zhiwei Li",
+        "Yong Hu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-07T15:21:08+00:00",
+      "link": "https://arxiv.org/pdf/2606.08671v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "general agent evaluation harness with persistent decision history",
+      "llm_evidence_cn": "通用Agent评估框架，包含持续决策历史",
+      "llm_evidence": "通用Agent评估框架，包含持续决策历史",
+      "canonical_evidence": "通用Agent评估框架，包含持续决策历史",
+      "llm_tldr_en": "SkillHone provides a harness for continual agent skill evolution with persistent decision history and evaluation-side evidence, transferable to medical agent evaluation.",
+      "llm_tldr_cn": "现有Agent技能进化方法丢弃决策历史，导致后续解释困难。本文提出SkillHone，一个基于持久决策历史的持续Agent技能进化框架，记录诊断、修订、证据和结果，并通过角色分离的子代理进行评估。该方法为医疗Agent的持续评估提供了可迁移的工具链。",
+      "llm_tldr": "现有Agent技能进化方法丢弃决策历史，导致后续解释困难。本文提出SkillHone，一个基于持久决策历史的持续Agent技能进化框架，记录诊断、修订、证据和结果，并通过角色分离的子代理进行评估。该方法为医疗Agent的持续评估提供了可迁移的工具链。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08093v1",
+      "source": "arxiv",
+      "title": "A Multi-modal Agentic Co-pilot for Evidence Grounded Computational Pathology",
+      "abstract": "Pathology is the cornerstone of modern medicine, where accurate decision-making relies heavily on evidence-based practices. While artificial intelligence (AI) has the potential to transform clinical workflows, the intersection of AI and evidence-based medicine remains under-explored, with primitive attempts restricted to text-only general medicine. In this work, we present PathPocket, a multimodal AI agentic co-pilot designed specifically for evidence grounded pathology. We construct the most comprehensive pathology evidence corpus to date, encompassing approximately 110,472 public and authorized documents structured across a rigorous hierarchy of evidence from clinical guideline to expert opinion. From this meticulously graded foundation, we build a large-scale multimodal pathology hypergraph containing over 4.55 million entities and 7.10 million relations. Serving as a robust knowledge engine, this hypergraph provides traceable evidence for a collaborative multi-agent reasoning framework integrating input understanding, evidence retrieval, filtering, and diagnosis generation. This enables PathPocket to seamlessly resolve a wide spectrum of clinical tasks, ranging from text-only queries to complex multimodal diagnostics involving region-of-interest (ROI) and gigapixel whole-slide images (WSIs). We rigorously evaluate the system on a multidimensional benchmark of over 200,000 real-world cases, where it significantly outperforms existing state-of-the-arts. Crucially, extensive user studies demonstrate that PathPocket substantially improves the diagnostic accuracy and confidence of pathologists. By directly grounding pathology interpretations in verifiable literature, PathPocket offers a practical and scalable solution for the future of evidence grounded computational pathology.",
+      "authors": [
+        "Zhe Xu",
+        "Zhengyu Zhang",
+        "Zhiyuan Cai",
+        "Jiahao Xu",
+        "Yijie Lin",
+        "Ziyi Liu",
+        "Junlin Hou",
+        "Hongyi Wang",
+        "Yuxiang Nie",
+        "Ling Liang",
+        "Yihui Wang",
+        "Yingxue Xu",
+        "Ronald Cheong Kin Chan",
+        "Li Liang",
+        "Hao Chen"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-06T10:36:30+00:00",
+      "link": "https://arxiv.org/pdf/2606.08093v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-modal AI agentic co-pilot for evidence-grounded pathology",
+      "llm_evidence_cn": "面向循证病理学的多模态AI代理协同工具",
+      "llm_evidence": "面向循证病理学的多模态AI代理协同工具",
+      "canonical_evidence": "面向循证病理学的多模态AI代理协同工具",
+      "llm_tldr_en": "Presents PathPocket, a multimodal AI agentic co-pilot for evidence-grounded computational pathology, with a comprehensive pathology evidence corpus of 110K documents.",
+      "llm_tldr_cn": "该论文针对病理学中AI与循证医学结合不足的问题，提出PathPocket多模态AI代理协同工具。构建了包含110,472篇文档的病理学证据语料库，按证据等级组织。该代理可检索证据并辅助病理决策，但未直接使用EHR数据。尽管如此，其评估方法和代理架构对医疗代理评估具有参考价值。",
+      "llm_tldr": "该论文针对病理学中AI与循证医学结合不足的问题，提出PathPocket多模态AI代理协同工具。构建了包含110,472篇文档的病理学证据语料库，按证据等级组织。该代理可检索证据并辅助病理决策，但未直接使用EHR数据。尽管如此，其评估方法和代理架构对医疗代理评估具有参考价值。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.09365v2",
+      "source": "arxiv",
+      "title": "Experience Makes Skillful: Enabling Generalizable Medical Agent Reasoning via Self-Evolving Skill Memory",
+      "abstract": "Medical agent systems are increasingly expected to support interactive clinical decision making rather than only static question answering. In such settings, effective agents must reuse prior experience across evolving cases, yet existing memory mechanisms often retain raw historical traces that are redundant, noisy, and difficult to govern. More importantly, they rarely distinguish which memories are truly useful for future reasoning. This limits their ability to accumulate compact and reliable experience for long-horizon clinical reasoning. To close this gap, we propose SkeMex, a post-deployment self-evolution framework that improves medical agents through a skill-based memory without updating model weights. SkeMex distills informative interaction trajectories into structured skills that encode reusable procedural knowledge, and organizes them into a multi-branch repository spanning general, task-specific, and action-level experience. To determine which memories should be reused and retained, SkeMex estimates context-dependent utility from environment feedback and uses it to guide value-aware retrieval and repository governance. A closed-loop ``Read--Write--Assess--Govern\" lifecycle further supports continual evolution by writing new skills, updating utilities, promoting useful memories, and removing harmful entries. Experiments across diverse clinical tasks show that SkeMex consistently outperforms representative memory-based agents in both offline and online settings. It also generalizes across model backbones and supports transferable skill memory. All data and code will be released publicly.",
+      "authors": [
+        "Haoran Sun",
+        "Wenjie Li",
+        "Yujie Zhang",
+        "Zekai Lin",
+        "Fanrui Zhang",
+        "Kaitao Chen",
+        "Xingqi He",
+        "Yichen Li",
+        "Mianxin Liu",
+        "Lei Liu",
+        "Yankai Jiang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-08T11:37:01+00:00",
+      "link": "https://arxiv.org/pdf/2606.09365v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "medical agent reasoning evaluation with skill memory",
+      "llm_evidence_cn": "医疗智能体推理评估与技能记忆",
+      "llm_evidence": "医疗智能体推理评估与技能记忆",
+      "canonical_evidence": "医疗智能体推理评估与技能记忆",
+      "llm_tldr_en": "Proposes SkeMex, a post-deployment self-evolution framework that improves clinical reasoning by accumulating compact skill-based memory without updating model weights.",
+      "llm_tldr_cn": "当前医疗智能体系统需要交互式临床决策，但现有记忆机制难以积累可靠经验。为弥补此不足，本文提出SkeMex框架，通过技能记忆实现无需权重更新的自我进化，使智能体能够跨病例泛化推理。实验表明该方法显著提升了长期临床推理的准确性和可迁移性，为医疗智能体评估提供了新的记忆基准工具。",
+      "llm_tldr": "当前医疗智能体系统需要交互式临床决策，但现有记忆机制难以积累可靠经验。为弥补此不足，本文提出SkeMex框架，通过技能记忆实现无需权重更新的自我进化，使智能体能够跨病例泛化推理。实验表明该方法显著提升了长期临床推理的准确性和可迁移性，为医疗智能体评估提供了新的记忆基准工具。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.09030v1",
+      "source": "arxiv",
+      "title": "TRIAGE: Dialectical Reasoning for Explainable Risk Prediction on Irregularly Sampled Medical Time Series with LLMs",
+      "abstract": "Clinical early warning systems built on electronic health records, in which clinical observations are recorded as irregularly sampled medical time series (ISMTS), must deliver both calibrated risk scores for patient triage and interpretable rationales that clinicians can verify. Large Language Models (LLMs) have been explored for this task, yet they collapse graded clinical risk into overconfident binary predictions. This risk polarization undermines both calibration and cross-patient comparability. To address this, we propose TRIAGE, a framework that trains an LLM to generate dialectical reasoning over competing clinical outcomes by eliciting outcome-specific rationales. This dialectical formulation mitigates risk polarization, enabling a single LLM to yield continuous risk scores grounded in explicit clinical reasoning. Evaluated on three ISMTS benchmarks, TRIAGE achieves an average AUPRC improvement of 3.3% and reduces calibration error by 81% compared to the competitive baselines. An LLM-as-a-judge assessment further shows that our rationales surpass post-hoc explanations from the baseline by 20% in clinical reasoning quality. The source code is available at https://github.com/HyeongWon-Jang/TRIAGE .",
+      "authors": [
+        "Hyeongwon Jang",
+        "Gyouk Chu",
+        "Changhun Kim",
+        "Joonhyung Park",
+        "Hangyul Yoon",
+        "Eunho Yang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-08T04:53:44+00:00",
+      "link": "https://arxiv.org/pdf/2606.09030v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "clinical decision support agent using EHR for risk prediction",
+      "llm_evidence_cn": "使用EHR进行风险预测的临床决策支持代理",
+      "llm_evidence": "使用EHR进行风险预测的临床决策支持代理",
+      "canonical_evidence": "使用EHR进行风险预测的临床决策支持代理",
+      "llm_tldr_en": "TRIAGE uses dialectical reasoning for explainable risk prediction on irregularly sampled EHR time series, serving as a clinical decision support agent with EHR evaluation.",
+      "llm_tldr_cn": "基于电子健康记录（EHR）的临床早期预警系统需要校准的风险评分和可解释理由。针对LLM在风险评估中过度自信的二元预测问题，提出TRIAGE框架，通过训练LLM生成竞争性临床结果的辩证推理，产出结果特异性理由。该方法缓解了风险极化，改善了校准性能。TRIAGE可视为一种基于EHR的临床决策支持代理，其评估方法可迁移到其他医疗代理评估。",
+      "llm_tldr": "基于电子健康记录（EHR）的临床早期预警系统需要校准的风险评分和可解释理由。针对LLM在风险评估中过度自信的二元预测问题，提出TRIAGE框架，通过训练LLM生成竞争性临床结果的辩证推理，产出结果特异性理由。该方法缓解了风险极化，改善了校准性能。TRIAGE可视为一种基于EHR的临床决策支持代理，其评估方法可迁移到其他医疗代理评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.10394v1",
+      "source": "arxiv",
+      "title": "STAGE-Claw: Automated State-based Agent Benchmarking for Realistic Scenarios",
+      "abstract": "Large language models are increasingly used to power personal agents for everyday applications, but evaluating these agents remains a challenge. Existing benchmarks still rely on sandboxed artifacts, static task design, and coarse scoring, which hinder scalability and limit progress toward reliable personal-agent evaluation. This paper introduces STAGE-Claw, an automated framework for building and evaluating realistic personal-agent scenarios in state-based personal-computing environments. Given a task hint, STAGE-Claw automatically creates and validates a realistic benchmark task with its environment, task prompts, ground truth, and related verification programs. Agents are then evaluated in realistic operating environments, where performance is measured by the correctness of the final system state rather than only the textual response. Using STAGE-Claw, this paper creates a benchmark with 40 challenging real scenario agent tasks, evaluates 11 frontier models, and analyzes their task scores, costs, tool-call reliability, and common failure patterns. Overall, STAGE-Claw offers a scalable, state-based way to evaluate agents in realistic user scenarios.",
+      "authors": [
+        "Sirui Liang",
+        "Bohan Yu",
+        "Peiyu Wang",
+        "Shiguang Guo",
+        "Wenxing Hu",
+        "Pengfei Cao",
+        "Jian Zhao",
+        "Cao Liu",
+        "Ke Zeng",
+        "Xunliang Cai",
+        "Kang Liu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-09T04:16:35+00:00",
+      "link": "https://arxiv.org/pdf/2606.10394v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "automated framework for building and evaluating agent benchmarks in realistic scenarios; method transferable to medical agent evaluation",
+      "llm_evidence_cn": "自动化构建和评估智能体基准测试框架，方法可迁移至医疗智能体评估",
+      "llm_evidence": "自动化构建和评估智能体基准测试框架，方法可迁移至医疗智能体评估",
+      "canonical_evidence": "自动化构建和评估智能体基准测试框架，方法可迁移至医疗智能体评估",
+      "llm_tldr_en": "STAGE-Claw automates creation and evaluation of realistic personal-agent benchmarks, providing a methodology that can be adapted for medical EHR-based agent evaluation.",
+      "llm_tldr_cn": "现有智能体基准测试依赖沙盒和静态任务，缺乏可扩展性。本文提出STAGE-Claw，自动根据任务提示创建并验证真实环境下的基准测试任务，包括环境、提示、真相和验证程序。该方法可应用于医疗领域，生成基于EHR的医疗智能体评估任务。",
+      "llm_tldr": "现有智能体基准测试依赖沙盒和静态任务，缺乏可扩展性。本文提出STAGE-Claw，自动根据任务提示创建并验证真实环境下的基准测试任务，包括环境、提示、真相和验证程序。该方法可应用于医疗领域，生成基于EHR的医疗智能体评估任务。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.11337v1",
+      "source": "arxiv",
+      "title": "Can AI Agents Synthesize Scientific Conclusions?",
+      "abstract": "Scientific AI agents increasingly retrieve evidence, reason across sources, and synthesize conclusions used in consequential decisions. Yet, their ability to do so in high-stakes domains such as health remains unclear. We introduce SciConBench, a large-scale live benchmark of 9.11K questions and expert-written conclusions from systematic reviews to evaluate open-domain scientific conclusion synthesis. The benchmark draws on an expert-validated automated evaluation pipeline that decomposes conclusions into atomic facts and measures correctness and comprehensiveness via factual precision and recall. To mitigate data leakage, we further introduce SciConHarness, a clean-room evaluation harness that equips agents with controlled web interaction to ensure valid measurement. Evaluating 8 frontier models and deep research agents, we find that factual quality remains low: under clean-room settings, the best agent achieves only a factual F1 of 0.337. Our clean-room setting consistently reduces performance relative to unconstrained evaluation, suggesting that leakage inflates estimates of models' true synthesis capabilities. Finally, we audit consumer-facing agents (e.g., Google AI Overview, OpenEvidence) and find they frequently generate incomplete and sometimes contradictory conclusions, even when the ground-truth answer is available. Overall, our results show that reliable synthesis of scientific conclusions remains an open challenge, and that clean-room evaluation is essential for assessing open-domain AI agents.",
+      "authors": [
+        "Hayoung Jung",
+        "Pedro Viana Diniz",
+        "José Reinaldo Corrêa Roveda",
+        "Abner Fernandes da Silva",
+        "Haeun Jung",
+        "Enoch Tsai",
+        "Aleksandra Korolova",
+        "Manoel Horta Ribeiro"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CY"
+      ],
+      "published": "2026-06-09T18:16:04+00:00",
+      "link": "https://arxiv.org/pdf/2606.11337v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark for evaluating AI agents in scientific conclusion synthesis, relevant to health",
+      "llm_evidence_cn": "用于评估AI代理科学结论综合的基准，涉及健康领域",
+      "llm_evidence": "用于评估AI代理科学结论综合的基准，涉及健康领域",
+      "canonical_evidence": "用于评估AI代理科学结论综合的基准，涉及健康领域",
+      "llm_tldr_en": "Introduces SciConBench, a large benchmark for evaluating AI agents' ability to synthesize scientific conclusions from evidence, with an automated evaluation pipeline for correctness and comprehensiveness.",
+      "llm_tldr_cn": "该论文针对AI代理在科学结论综合任务上的评估缺失，提出了SciConBench基准，包含9.11K个问题与专家撰写的结论。通过自动评估流水线，将结论分解为原子事实，计算事实精确率和召回率来衡量正确性和全面性。同时引入SciConHarness评估工具包以控制数据泄露。此基准为包括健康在内的高风险领域代理评估提供了有效手段。",
+      "llm_tldr": "该论文针对AI代理在科学结论综合任务上的评估缺失，提出了SciConBench基准，包含9.11K个问题与专家撰写的结论。通过自动评估流水线，将结论分解为原子事实，计算事实精确率和召回率来衡量正确性和全面性。同时引入SciConHarness评估工具包以控制数据泄露。此基准为包括健康在内的高风险领域代理评估提供了有效手段。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.11675v1",
+      "source": "arxiv",
+      "title": "Lung-R1: A Knowledge Graph-Guided LLM for Pulmonary Diagnostic Reasoning",
+      "abstract": "Diagnosing pulmonary diseases requires integrating heterogeneous evidence amid phenotypic variability and cross-disease overlap. Although large language models (LLMs) have shown progress on pulmonary knowledge question answering (QA) and information-processing tasks, reliable pulmonary diagnosis requires patient-specific, relation-aware reasoning over electronic medical record (EMR) evidence rather than isolated knowledge recall. We define this gap between pulmonary knowledge and case-level diagnostic reasoning as the Pulmonary Knowledge-to-Diagnosis Gap. To address it, we introduce LungKG, the first structured pulmonary knowledge graph for diagnostic knowledge organization and record-grounded reasoning. LungKG contains 59,038 nodes and 164,308 edges across 15 entity types and 112 relation types, serving as both a reusable pulmonary knowledge resource and the foundation for LungKG-guided model adaptation. Built on LungKG, we propose Lung-R1, a LungKG-guided pulmonary LLM trained through KG-constrained reasoning-chain construction and KG-guided reinforcement learning. In a 20-system evaluation, Lung-R1-14B achieves state-of-the-art performance across Choice, Pulmonary-QA, and EMR Diagnosis, reaching an EMR Diagnosis score of 4.3583 and surpassing the strongest non-Lung-R1 baseline by 0.1476 points. These results demonstrate the value of LungKG-guided training for EMR-based pulmonary diagnosis.",
+      "authors": [
+        "Haoyang Zeng",
+        "Yuanxi Fu",
+        "Rongzhen Li",
+        "Yuming Yang",
+        "Xiao Sun",
+        "Jingwang Huang",
+        "Gujie Shao",
+        "Guohui Xiang",
+        "Quan Lu",
+        "Dongfan Ye",
+        "Xuetao Chen",
+        "Jiang Zhong",
+        "Kaiwen Wei",
+        "Zhi Xu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-10T05:39:08+00:00",
+      "link": "https://arxiv.org/pdf/2606.11675v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "clinical decision support agent using EMR for pulmonary diagnosis",
+      "llm_evidence_cn": "使用电子病历进行肺病诊断的临床决策支持代理",
+      "llm_evidence": "使用电子病历进行肺病诊断的临床决策支持代理",
+      "canonical_evidence": "使用电子病历进行肺病诊断的临床决策支持代理",
+      "llm_tldr_en": "Lung-R1 integrates a pulmonary knowledge graph with LLM for patient-specific diagnostic reasoning from electronic medical records, serving as a clinical decision support agent with EHR.",
+      "llm_tldr_cn": "肺病诊断需整合异构证据，而LLM在可靠诊断上存在知识到诊断的鸿沟。构建了首个结构化肺病知识图谱LungKG（59,038节点、164,308边），并基于此提出Lung-R1框架，引导LLM从电子病历证据中进行患者特定的关系推理。该框架作为临床决策支持代理，使用EHR数据，其推理过程可解释，为医疗代理评估提供了基础。",
+      "llm_tldr": "肺病诊断需整合异构证据，而LLM在可靠诊断上存在知识到诊断的鸿沟。构建了首个结构化肺病知识图谱LungKG（59,038节点、164,308边），并基于此提出Lung-R1框架，引导LLM从电子病历证据中进行患者特定的关系推理。该框架作为临床决策支持代理，使用EHR数据，其推理过程可解释，为医疗代理评估提供了基础。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
