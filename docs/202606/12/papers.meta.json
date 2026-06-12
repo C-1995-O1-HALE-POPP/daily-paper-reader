@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-12",
+  "date": "2026-06-12",
+  "generated_at": "2026-06-12T20:51:58",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/12/2606.09365v2-experience-makes-skillful-enabling-generalizable-medical-agent-reasoning-via-self-evolving-skill-memory",
+      "section": "quick",
+      "title_en": "Experience Makes Skillful: Enabling Generalizable Medical Agent Reasoning via Self-Evolving Skill Memory",
+      "authors": "Haoran Sun, Wenjie Li, Yujie Zhang, Zekai Lin, Fanrui Zhang, Kaitao Chen, Xingqi He, Yichen Li, Mianxin Liu, Lei Liu, Yankai Jiang",
+      "date": "2026-06-08",
+      "pdf": "https://arxiv.org/pdf/2606.09365v2",
+      "score": "7.0",
+      "evidence": "基于技能记忆的医疗代理推理改进框架",
+      "tldr": "针对医疗代理在长期临床推理中难以有效积累和复用经验的问题，提出后部署自演化框架SkeMex。该方法将交互轨迹蒸馏为结构化技能，构建多分支记忆仓库，并利用环境反馈估计上下文效用以指导价值感知检索与治理。通过闭环“读-写-评估-治理”流程，无需更新模型权重即可实现持续演化。实验在多项临床任务中，SkeMex在离线与在线设置下均优于现有记忆型代理，且跨模型骨干泛化良好，支持技能记忆迁移。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Medical agent systems are increasingly expected to support interactive clinical decision making rather than only static question answering. In such settings, effective agents must reuse prior experience across evolving cases, yet existing memory mechanisms often retain raw historical traces that are redundant, noisy, and difficult to govern. More importantly, they rarely distinguish which memories are truly useful for future reasoning. This limits their ability to accumulate compact and reliable experience for long-horizon clinical reasoning. To close this gap, we propose SkeMex, a post-deployment self-evolution framework that improves medical agents through a skill-based memory without updating model weights. SkeMex distills informative interaction trajectories into structured skills that encode reusable procedural knowledge, and organizes them into a multi-branch repository spanning general, task-specific, and action-level experience. To determine which memories should be reused and retained, SkeMex estimates context-dependent utility from environment feedback and uses it to guide value-aware retrieval and repository governance. A closed-loop ``Read--Write--Assess--Govern\" lifecycle further supports continual evolution by writing new skills, updating utilities, promoting useful memories, and removing harmful entries. Experiments across diverse clinical tasks show that SkeMex consistently outperforms representative memory-based agents in both offline and online settings. It also generalizes across model backbones and supports transferable skill memory. All data and code will be released publicly.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/12/2606.05922v1-retrospective-harness-optimization-improving-llm-agents-via-self-preference-over-trajectory-rollouts",
+      "section": "quick",
+      "title_en": "Retrospective Harness Optimization: Improving LLM Agents via Self-Preference over Trajectory Rollouts",
+      "authors": "Wenbo Pan, Shujie Liu, Chin-Yew Lin, Jingying Zeng, Xianfeng Tang, Xiangyang Zhou, Yan Lu, Xiaohua Jia",
+      "date": "2026-06-04",
+      "pdf": "https://arxiv.org/pdf/2606.05922v1",
+      "score": "6.0",
+      "evidence": "自我监督的智能体框架优化方法，可用于医疗智能体评估",
+      "tldr": "现有LLM Agent优化依赖真实验证集，难以获取。RHO提出自监督方法，利用过去轨迹选择困难任务重新求解，通过自验证和自一致性分析，生成候选改进并用自偏好选择最优。在SWE-Bench Pro上，一次优化将pass率从59%提升至78%，无需外部评分。该方法有效针对失败模式，提升长时任务准确性。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "AI agents rely on a harness of skills, tools, and workflows to solve complex problems. Continually improving this harness is essential for adapting to new tasks. However, existing optimization methods typically require ground-truth validation sets, yet such labeled data is difficult to acquire in practical deployment settings. To address this problem, we introduce Retrospective Harness Optimization (RHO), a self-supervised method that optimizes the agent harness using only past trajectories. Specifically, RHO selects a diverse coreset of challenging tasks from past trajectories and re-solves them in parallel. The agent analyzes these rollouts using self-validation and self-consistency, then generates candidate harness updates and selects the most effective one by its own pairwise self-preference. We evaluate RHO across three diverse domains, spanning software engineering, technical work, and knowledge work. Notably, a single optimization round improves the pass rate on SWE-Bench Pro from 59% to 78% without any external grading. Furthermore, our analysis demonstrates that RHO effectively targets prior failure modes. As a result, the optimized harness alters the agent's behavior patterns and sustains higher accuracy during long-horizon sessions.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

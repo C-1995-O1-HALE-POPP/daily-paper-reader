@@ -1,0 +1,107 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-12T20:47:34.515218+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.09365v2",
+      "source": "arxiv",
+      "title": "Experience Makes Skillful: Enabling Generalizable Medical Agent Reasoning via Self-Evolving Skill Memory",
+      "abstract": "Medical agent systems are increasingly expected to support interactive clinical decision making rather than only static question answering. In such settings, effective agents must reuse prior experience across evolving cases, yet existing memory mechanisms often retain raw historical traces that are redundant, noisy, and difficult to govern. More importantly, they rarely distinguish which memories are truly useful for future reasoning. This limits their ability to accumulate compact and reliable experience for long-horizon clinical reasoning. To close this gap, we propose SkeMex, a post-deployment self-evolution framework that improves medical agents through a skill-based memory without updating model weights. SkeMex distills informative interaction trajectories into structured skills that encode reusable procedural knowledge, and organizes them into a multi-branch repository spanning general, task-specific, and action-level experience. To determine which memories should be reused and retained, SkeMex estimates context-dependent utility from environment feedback and uses it to guide value-aware retrieval and repository governance. A closed-loop ``Read--Write--Assess--Govern\" lifecycle further supports continual evolution by writing new skills, updating utilities, promoting useful memories, and removing harmful entries. Experiments across diverse clinical tasks show that SkeMex consistently outperforms representative memory-based agents in both offline and online settings. It also generalizes across model backbones and supports transferable skill memory. All data and code will be released publicly.",
+      "authors": [
+        "Haoran Sun",
+        "Wenjie Li",
+        "Yujie Zhang",
+        "Zekai Lin",
+        "Fanrui Zhang",
+        "Kaitao Chen",
+        "Xingqi He",
+        "Yichen Li",
+        "Mianxin Liu",
+        "Lei Liu",
+        "Yankai Jiang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-08T11:37:01+00:00",
+      "link": "https://arxiv.org/pdf/2606.09365v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "medical agent reasoning improvement framework using skill memory",
+      "llm_evidence_cn": "基于技能记忆的医疗代理推理改进框架",
+      "llm_evidence": "基于技能记忆的医疗代理推理改进框架",
+      "canonical_evidence": "基于技能记忆的医疗代理推理改进框架",
+      "llm_tldr_en": "SkeMex improves medical agents by enabling self-evolution through skill-based memory without weight updates, enhancing clinical reasoning.",
+      "llm_tldr_cn": "医疗代理系统需要重用经验进行临床决策，但现有记忆机制保留冗余历史痕迹且难以区分有用记忆。本文提出SkeMex，一种部署后自我进化框架，通过基于技能的记忆在不更新模型权重的情况下提升医疗代理的推理能力。实验表明，该方法能有效积累紧凑可靠的经验，显著改善长期临床推理性能。",
+      "llm_tldr": "医疗代理系统需要重用经验进行临床决策，但现有记忆机制保留冗余历史痕迹且难以区分有用记忆。本文提出SkeMex，一种部署后自我进化框架，通过基于技能的记忆在不更新模型权重的情况下提升医疗代理的推理能力。实验表明，该方法能有效积累紧凑可靠的经验，显著改善长期临床推理性能。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.05922v1",
+      "source": "arxiv",
+      "title": "Retrospective Harness Optimization: Improving LLM Agents via Self-Preference over Trajectory Rollouts",
+      "abstract": "AI agents rely on a harness of skills, tools, and workflows to solve complex problems. Continually improving this harness is essential for adapting to new tasks. However, existing optimization methods typically require ground-truth validation sets, yet such labeled data is difficult to acquire in practical deployment settings. To address this problem, we introduce Retrospective Harness Optimization (RHO), a self-supervised method that optimizes the agent harness using only past trajectories. Specifically, RHO selects a diverse coreset of challenging tasks from past trajectories and re-solves them in parallel. The agent analyzes these rollouts using self-validation and self-consistency, then generates candidate harness updates and selects the most effective one by its own pairwise self-preference. We evaluate RHO across three diverse domains, spanning software engineering, technical work, and knowledge work. Notably, a single optimization round improves the pass rate on SWE-Bench Pro from 59% to 78% without any external grading. Furthermore, our analysis demonstrates that RHO effectively targets prior failure modes. As a result, the optimized harness alters the agent's behavior patterns and sustains higher accuracy during long-horizon sessions.",
+      "authors": [
+        "Wenbo Pan",
+        "Shujie Liu",
+        "Chin-Yew Lin",
+        "Jingying Zeng",
+        "Xianfeng Tang",
+        "Xiangyang Zhou",
+        "Yan Lu",
+        "Xiaohua Jia"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-04T09:26:00+00:00",
+      "link": "https://arxiv.org/pdf/2606.05922v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "self-supervised agent harness optimization method adaptable to medical agent evaluation",
+      "llm_evidence_cn": "自我监督的智能体框架优化方法，可用于医疗智能体评估",
+      "llm_evidence": "自我监督的智能体框架优化方法，可用于医疗智能体评估",
+      "canonical_evidence": "自我监督的智能体框架优化方法，可用于医疗智能体评估",
+      "llm_tldr_en": "RHO uses self-preference over trajectory rollouts to optimize LLM agent harness without ground-truth labels, enabling performance evaluation in deployment settings.",
+      "llm_tldr_cn": "该论文提出回顾性框架优化（RHO），一种自我监督方法，通过分析历史轨迹中的多样化困难任务并重新求解，利用自我验证和一致性生成候选框架更新，从而优化LLM智能体的技能、工具和工作流。实验表明RHO无需标签数据即可持续提升智能体性能，该方法可直接迁移至医疗智能体的评估与调优场景中。",
+      "llm_tldr": "该论文提出回顾性框架优化（RHO），一种自我监督方法，通过分析历史轨迹中的多样化困难任务并重新求解，利用自我验证和一致性生成候选框架更新，从而优化LLM智能体的技能、工具和工作流。实验表明RHO无需标签数据即可持续提升智能体性能，该方法可直接迁移至医疗智能体的评估与调优场景中。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
