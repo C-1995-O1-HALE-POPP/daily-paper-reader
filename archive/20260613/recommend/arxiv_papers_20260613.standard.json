@@ -1,0 +1,315 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-13T20:23:19.671210+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2606.09365v2",
+      "source": "arxiv",
+      "title": "Experience Makes Skillful: Enabling Generalizable Medical Agent Reasoning via Self-Evolving Skill Memory",
+      "abstract": "Medical agent systems are increasingly expected to support interactive clinical decision making rather than only static question answering. In such settings, effective agents must reuse prior experience across evolving cases, yet existing memory mechanisms often retain raw historical traces that are redundant, noisy, and difficult to govern. More importantly, they rarely distinguish which memories are truly useful for future reasoning. This limits their ability to accumulate compact and reliable experience for long-horizon clinical reasoning. To close this gap, we propose SkeMex, a post-deployment self-evolution framework that improves medical agents through a skill-based memory without updating model weights. SkeMex distills informative interaction trajectories into structured skills that encode reusable procedural knowledge, and organizes them into a multi-branch repository spanning general, task-specific, and action-level experience. To determine which memories should be reused and retained, SkeMex estimates context-dependent utility from environment feedback and uses it to guide value-aware retrieval and repository governance. A closed-loop ``Read--Write--Assess--Govern\" lifecycle further supports continual evolution by writing new skills, updating utilities, promoting useful memories, and removing harmful entries. Experiments across diverse clinical tasks show that SkeMex consistently outperforms representative memory-based agents in both offline and online settings. It also generalizes across model backbones and supports transferable skill memory. All data and code will be released publicly.",
+      "authors": [
+        "Haoran Sun",
+        "Wenjie Li",
+        "Yujie Zhang",
+        "Zekai Lin",
+        "Fanrui Zhang",
+        "Kaitao Chen",
+        "Xingqi He",
+        "Yichen Li",
+        "Mianxin Liu",
+        "Lei Liu",
+        "Yankai Jiang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-08T11:37:01+00:00",
+      "link": "https://arxiv.org/pdf/2606.09365v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Proposes medical agent reasoning framework with self-evolving skill memory, directly relevant to medical agent evaluation and improvement",
+      "llm_evidence_cn": "提出具有自进化技能记忆的医疗智能体推理框架，直接关联医疗智能体评估与改进",
+      "llm_evidence": "提出具有自进化技能记忆的医疗智能体推理框架，直接关联医疗智能体评估与改进",
+      "canonical_evidence": "提出具有自进化技能记忆的医疗智能体推理框架，直接关联医疗智能体评估与改进",
+      "llm_tldr_en": "Proposes SkeMex, a self-evolution framework for medical agents that uses skill-based memory to improve clinical reasoning without weight updates, relevant to medical agent evaluation.",
+      "llm_tldr_cn": "现有医疗智能体记忆机制存在冗余和噪声，难以积累可靠经验。本文提出SkeMex框架，通过技能化记忆实现智能体后部署自进化，无需更新模型权重。在多个临床推理任务上，SkeMex显著提升了准确性和泛化能力。该框架为医疗智能体的持续学习和评估提供了新范式。",
+      "llm_tldr": "现有医疗智能体记忆机制存在冗余和噪声，难以积累可靠经验。本文提出SkeMex框架，通过技能化记忆实现智能体后部署自进化，无需更新模型权重。在多个临床推理任务上，SkeMex显著提升了准确性和泛化能力。该框架为医疗智能体的持续学习和评估提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.07929v1",
+      "source": "arxiv",
+      "title": "Stress-testing medical large language models reveals latent safety pathology beyond benchmark accuracy",
+      "abstract": "Large language models (LLMs) are entering clinical practice based on benchmark accuracy that may fail to detect safety-relevant failure modes. Here we present AI-MASLD, a stress-audit framework that adapts the logic of metabolic stress testing from hepatology to the evaluation of clinical LLMs. Using 240 clinical cases across six narrative perturbation probes, we subjected seven models to double-stress testing and quantified performance through three indices: metabolic index (MI), perturbation flip rate (PFR), and counterfactual fairness index (CFI). Under clean baseline conditions, all models performed uniformly well. Under realistic narrative stress, performance diverged sharply, revealing two distinct stress-response phenotypes. Quantized models exhibited pseudonormalization, in which low flip rates hid functional collapse. Medical supervised fine-tuning systematically degraded logical stability, fairness, and information extraction. An open-weight model matched or exceeded proprietary alternatives on every safety dimension. These findings establish narrative stress auditing as a necessary complement to accuracy-based evaluation.",
+      "authors": [
+        "Yuan Shen",
+        "Xiaojun Wu",
+        "Linghua Yu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-06T01:39:14+00:00",
+      "link": "https://arxiv.org/pdf/2606.07929v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "evaluation of medical LLMs using stress-testing with clinical cases",
+      "llm_evidence_cn": "使用临床案例对医疗LLM进行压力测试评估",
+      "llm_evidence": "使用临床案例对医疗LLM进行压力测试评估",
+      "canonical_evidence": "使用临床案例对医疗LLM进行压力测试评估",
+      "llm_tldr_en": "Stress-testing framework for medical LLMs reveals latent safety issues beyond benchmark accuracy, using clinical narrative perturbations.",
+      "llm_tldr_cn": "大型语言模型进入临床实践时，标准基准准确率可能掩盖安全故障。本文提出AI-MASLD压力审计框架，借鉴代谢压力测试逻辑，对240个临床病例进行六种叙事扰动测试，通过代谢指数、扰动翻转率和反事实公平性指数量化模型在压力下的表现。结果显示基线性能良好，但在压力下性能差异显著，揭示了模型的安全病理。该工作为医疗LLM评估提供了更全面的方法论。",
+      "llm_tldr": "大型语言模型进入临床实践时，标准基准准确率可能掩盖安全故障。本文提出AI-MASLD压力审计框架，借鉴代谢压力测试逻辑，对240个临床病例进行六种叙事扰动测试，通过代谢指数、扰动翻转率和反事实公平性指数量化模型在压力下的表现。结果显示基线性能良好，但在压力下性能差异显著，揭示了模型的安全病理。该工作为医疗LLM评估提供了更全面的方法论。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.11079v1",
+      "source": "arxiv",
+      "title": "VISTA: A Versatile Interactive User Simulation Toolkit for Agent Evaluation",
+      "abstract": "Evaluation remains a critical bottleneck for interactive agent development. Existing evaluation methods often rely on static benchmarks, which fail to capture the dynamic, multi-step nature of agentic behavior and struggle to expose meaningful failure modes. While user-simulation-based evaluation offers a promising alternative, existing simulation frameworks suffer from two major limitations. First, they provide limited mechanisms for evaluating the quality and comprehensiveness of simulated interactions, making it difficult to assess whether a simulator sufficiently explores an agent's capabilities and failure modes. Second, most frameworks are restricted to either UI-only actions or API-only actions, limiting their ability to model the full range of realistic user behaviors. To address these limitations, we propose VISTA, a Versatile Interactive user Simulation Toolkit for Agent evaluation. Our toolkit includes a suite of six metrics for measuring the realism, capability coverage, and interaction effectiveness of simulated interactions. In addition, we develop a hybrid user simulator that integrates both UI-based interactions and API-based interactions, enabling more realistic and comprehensive evaluation across diverse interactive environments. We evaluate VISTA in e-commerce shopping and education customer service settings and demonstrate that it produces more realistic and comprehensive evaluations than existing methods.",
+      "authors": [
+        "Yunan Lu",
+        "Ryan Shea",
+        "Yusen Zhang",
+        "Zhou Yu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-09T16:39:32+00:00",
+      "link": "https://arxiv.org/pdf/2606.11079v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "user simulation toolkit for interactive agent evaluation, transferable to medical domain",
+      "llm_evidence_cn": "交互式代理评估的用户仿真工具包，可迁移到医疗领域",
+      "llm_evidence": "交互式代理评估的用户仿真工具包，可迁移到医疗领域",
+      "canonical_evidence": "交互式代理评估的用户仿真工具包，可迁移到医疗领域",
+      "llm_tldr_en": "Versatile interactive user simulation toolkit for evaluating interactive agents, addressing limitations of static benchmarks.",
+      "llm_tldr_cn": "交互式代理评估是开发瓶颈，现有静态基准难以捕获动态多步行为。本文提出VISTA，一个通用的用户仿真工具包，允许评估模拟交互的质量和全面性，支持UI和API动作的混合建模。它为代理评估提供了更真实的交互环境，并可迁移至医疗领域用于评估基于EHR的医疗代理。",
+      "llm_tldr": "交互式代理评估是开发瓶颈，现有静态基准难以捕获动态多步行为。本文提出VISTA，一个通用的用户仿真工具包，允许评估模拟交互的质量和全面性，支持UI和API动作的混合建模。它为代理评估提供了更真实的交互环境，并可迁移至医疗领域用于评估基于EHR的医疗代理。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.07054v1",
+      "source": "arxiv",
+      "title": "TRACE: Trajectory Reasoning through Adaptive Cross-Step Evidence Aggregation for LLM Agents",
+      "abstract": "Autonomous LLM agents can pursue hidden malicious objectives through sequences of individually benign actions, making sabotage difficult to detect using standard trajectory-level monitoring. Existing approaches either evaluate complete trajectories in a single pass or partition them into independently scored windows, limiting their ability to connect evidence across temporally distant actions. We propose TRACE, a monitoring framework for long-horizon LLM agent trajectories. TRACE operates through a TIJ (Triage-Inspect-Judge) loop that identifies high-signal regions, performs targeted inspection while maintaining accumulated evidence across reasoning steps, and synthesizes a trajectory-level verdict. We evaluate TRACE on ten task domains from SHADE-Arena against state-of-the-art baselines. TRACE achieves an aggregate F1 of 0.713 and recall of 0.844, with the largest gains on tasks requiring long-range evidence linking.",
+      "authors": [
+        "Vijitha Mittapalli",
+        "Shreyaa Jayant Dani",
+        "Satya Srujana Pilli",
+        "Snigdha Ansu",
+        "Mohammadreza Teymoorianfard",
+        "Franck Dernoncourt",
+        "Hongjie Chen",
+        "Yu Wang",
+        "Ryan A. Rossi",
+        "Nesreen K. Ahmed"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.CR",
+        "cs.LG"
+      ],
+      "published": "2026-06-05T08:54:38+00:00",
+      "link": "https://arxiv.org/pdf/2606.07054v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "monitoring framework for long-horizon LLM agent trajectories, evaluation",
+      "llm_evidence_cn": "长周期大模型智能体轨迹监控与评估框架",
+      "llm_evidence": "长周期大模型智能体轨迹监控与评估框架",
+      "canonical_evidence": "长周期大模型智能体轨迹监控与评估框架",
+      "llm_tldr_en": "Proposes TRACE, a monitoring framework that aggregates evidence across steps to detect malicious intent in LLM agent trajectories, evaluated on ten domains.",
+      "llm_tldr_cn": "现有智能体轨迹评估方法或一次性评估整条轨迹，或按窗口独立评分，难以关联跨步骤证据。本工作提出TRACE框架，通过“分诊-检查-判断”循环识别高信号区域、累加跨步骤证据并合成轨迹级判决。在十个任务域上的评估表明，TRACE能有效检测基于序列动作的恶意意图，为智能体行为评估提供了可扩展方案。",
+      "llm_tldr": "现有智能体轨迹评估方法或一次性评估整条轨迹，或按窗口独立评分，难以关联跨步骤证据。本工作提出TRACE框架，通过“分诊-检查-判断”循环识别高信号区域、累加跨步骤证据并合成轨迹级判决。在十个任务域上的评估表明，TRACE能有效检测基于序列动作的恶意意图，为智能体行为评估提供了可扩展方案。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.07237v1",
+      "source": "arxiv",
+      "title": "When Large Language Models Fail in Healthcare: Evaluating Sensitivity to Prompt Variations",
+      "abstract": "Large Language Models (LLMs) are increasingly used in healthcare for tasks such as clinical question answering, diagnosis support, and report summarization. Despite their promise, these models remain highly sensitive to subtle prompt perturbations, both lexical and syntactic, posing serious risks in safety-critical clinical applications. In this study, we conduct a systematic sensitivity analysis to evaluate the robustness of both general-purpose (e.g., GPT-3.5, Llama3) and medical-specific LLMs (e.g., ClinicalBERT, BioLlama3, BioBERT) using the MedMCQA benchmark. We categorize perturbations into natural and adversarial types and examine their effect on model consistency, accuracy, and reliability in clinical reasoning tasks. Our findings reveal that medical LLMs are not intrinsically safe. Even minor variations in phrasing can alter clinical advice, and targeted adversarial prompts can provoke harmful outputs. In high-stakes settings like healthcare, such unpredictability is unacceptable-models that change diagnoses due to reworded inputs or hallucinate medications when slightly rephrased cannot be reliably trusted by clinicians. While models tend to show resilience to simple lexical substitutions or paraphrasing, they often break down under syntactic reordering or misleading contextual cues. This fragility is evident across both general-purpose and domain-specific LLMs. Notably, adversarial manipulations can lead to clinically dangerous outputs, such as recommending incorrect dosages or omitting critical findings.",
+      "authors": [
+        "Mahdi Alkaeed"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-05T13:07:11+00:00",
+      "link": "https://arxiv.org/pdf/2606.07237v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Evaluates LLM robustness in healthcare, relevant to medical agent benchmarking",
+      "llm_evidence_cn": "评估医疗LLM鲁棒性，与医疗智能体基准测试相关",
+      "llm_evidence": "评估医疗LLM鲁棒性，与医疗智能体基准测试相关",
+      "canonical_evidence": "评估医疗LLM鲁棒性，与医疗智能体基准测试相关",
+      "llm_tldr_en": "Evaluates sensitivity of LLMs to prompt variations in healthcare, using MedMCQA benchmark, relevant to medical agent evaluation.",
+      "llm_tldr_cn": "本文系统评估了大型语言模型在医疗领域对提示词扰动的敏感性，使用MedMCQA基准测试，发现模型在临床推理任务中易受词汇和句法变化影响。该研究为医疗智能体的可靠性评估提供了方法论参考。",
+      "llm_tldr": "本文系统评估了大型语言模型在医疗领域对提示词扰动的敏感性，使用MedMCQA基准测试，发现模型在临床推理任务中易受词汇和句法变化影响。该研究为医疗智能体的可靠性评估提供了方法论参考。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.08483v1",
+      "source": "arxiv",
+      "title": "Testing the Black Box: Structural Barriers to Independent Evaluation of Consumer-Facing Health LLMs",
+      "abstract": "Background: Consumer-facing large language models are now a common source of health information, and they interpret and personalize responses rather than retrieve them. Whether their responses vary across users is a clinical, equity, and governance question, sharpened by evidence that sycophantic responses can alter judgment and increase trust.   Objective: To evaluate response variation and sycophancy in consumer-facing health LLMs under conditions resembling ordinary patient use.   Methods: We constructed simulated user profiles differing in geography, browsing context, expressed beliefs, and social determinants of health, drawing on literature linking social context to health attitudes. We adapted validated instruments, including the Vaccination Attitudes Examination scale and reproductive attitudes scales, into multi-turn prompts designed to elicit clinically meaningful variation across users.   Results: The evaluation encountered five linked barriers. Factual prompts produced stable responses that masked sycophancy emerging over multi-turn conversation. Browser-based interfaces did not disclose which signals influence outputs and could not be reset to a clean baseline. Large-scale testing was restricted by terms of service, rate limits, and bot detection. Accuracy-based criteria could not capture tone, framing, or omission, and LLM-as-judge methods risked shared alignment bias. Models changed without traceable version identifiers, preventing reliable replication.   Conclusions: No reliable independent evaluation framework yet exists for examining how consumer-facing health LLMs behave in ordinary use. Oversight requires disclosure of personalization signals, stable version identifiers, researcher safe harbor programs, and post-deployment monitoring of health-related outputs.",
+      "authors": [
+        "Rahul Gorijavolu",
+        "Kaushik Madapati",
+        "Pritika Vig",
+        "Rawan Abulibdeh",
+        "Nikhil Jaiswal",
+        "Mahri Kadyrova",
+        "Zeamanuel Hailu Tesfaye",
+        "Charles Senteio",
+        "Paula Maurutto",
+        "Leo Anthony Celi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-07T07:01:15+00:00",
+      "link": "https://arxiv.org/pdf/2606.08483v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Evaluates consumer-facing health LLMs for response variation, relevant to medical agent evaluation",
+      "llm_evidence_cn": "评估面向消费者的健康LLM响应变化，与医疗智能体评估相关",
+      "llm_evidence": "评估面向消费者的健康LLM响应变化，与医疗智能体评估相关",
+      "canonical_evidence": "评估面向消费者的健康LLM响应变化，与医疗智能体评估相关",
+      "llm_tldr_en": "Systematically evaluates response variation and sycophancy in consumer-facing health LLMs using simulated user profiles, relevant to medical agent evaluation.",
+      "llm_tldr_cn": "消费者健康LLM在个性化回答时可能产生响应变异和谄媚现象，影响公平性。本文通过构建模拟用户档案，评估不同人群下LLM的回答一致性。研究发现模型会根据用户背景调整答案，带来临床和伦理风险。该评估方法可用于医疗智能体评估。",
+      "llm_tldr": "消费者健康LLM在个性化回答时可能产生响应变异和谄媚现象，影响公平性。本文通过构建模拟用户档案，评估不同人群下LLM的回答一致性。研究发现模型会根据用户背景调整答案，带来临床和伦理风险。该评估方法可用于医疗智能体评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.09032v1",
+      "source": "arxiv",
+      "title": "Bridging the Agent-World Gap: Text World Models for LLM-based Agents",
+      "abstract": "Large language model (LLM)-based agents are increasingly used in interactive textual environments, from web navigation and code editing to tool use and long-horizon dialogue. Yet many remain largely reactive, mapping observations to actions without an explicit model of how these environments are structured and evolve. This motivates text world models (TWMs): transition models over textual states that, given a state and a candidate action, predict the resulting webpage, terminal output, API response, or user reply, thereby supporting planning, efficient learning, and principled evaluation. We systematically review text world models for LLM-based agents, organized around a formal framework and the agent lifecycle: (1) Foundations, defining text world models and characterizing them by state representation and grounding domain; (2) Construction, taxonomizing LLM-as-WM and code-as-WM paradigms and reviewing methods for building them; (3) Application, examining how world models support agents at training time through experience synthesis and at inference time through planning, verification, and adaptation; and (4) Evaluation, covering both evaluation of the world model itself and its use as an evaluation environment for agents. We aim to consolidate this rapidly developing area, clarify its design space, and highlight open challenges for future research.",
+      "authors": [
+        "Yixia Li",
+        "Hongru Wang",
+        "Peng Lai",
+        "Zhiwen Ruan",
+        "He Zhu",
+        "Youxin Zhu",
+        "Ganlong Zhao",
+        "Minda Hu",
+        "Yun Chen",
+        "Sibei Yang",
+        "Peng Li",
+        "Jeff Z. Pan",
+        "Jia Pan",
+        "Guanhua Chen",
+        "Yang Liu",
+        "Guanbin Li"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-08T04:58:52+00:00",
+      "link": "https://arxiv.org/pdf/2606.09032v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "text world models for evaluating LLM agents",
+      "llm_evidence_cn": "文本世界模型用于评估大模型智能体",
+      "llm_evidence": "文本世界模型用于评估大模型智能体",
+      "canonical_evidence": "文本世界模型用于评估大模型智能体",
+      "llm_tldr_en": "Reviews text world models (TWMs) that predict environment dynamics, enabling principled evaluation and planning for LLM-based agents.",
+      "llm_tldr_cn": "大模型智能体在交互环境中通常反应式决策，缺乏对环境动态的显式建模。本综述系统梳理了文本世界模型（TWM），该模型根据状态和动作预测下一状态，支持规划、高效学习和原则性评估。文章构建了形式化框架并贯穿智能体生命周期，为通用智能体评估提供了方法论基础。",
+      "llm_tldr": "大模型智能体在交互环境中通常反应式决策，缺乏对环境动态的显式建模。本综述系统梳理了文本世界模型（TWM），该模型根据状态和动作预测下一状态，支持规划、高效学习和原则性评估。文章构建了形式化框架并贯穿智能体生命周期，为通用智能体评估提供了方法论基础。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
