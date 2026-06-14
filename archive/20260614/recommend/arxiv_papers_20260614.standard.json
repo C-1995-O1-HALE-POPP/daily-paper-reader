@@ -1,0 +1,179 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-14T21:04:27.250331+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2606.13082v1",
+      "source": "arxiv",
+      "title": "sebis at CRF Filling 2026: A Two-Stage Local LLM Pipeline for Medical CRF Filling",
+      "abstract": "The extraction of structured clinical information from unstructured EHR notes is a persistent bottleneck in healthcare informatics. While large language models (LLMs) offer high performance, their deployment in clinical settings is hindered by privacy risks, inference costs, and the tendency to hallucinate beyond textual evidence. We address these challenges for the CL4Health 2026 Case Report Form (CRF) filling task by proposing a fully local, domain-adapted pipeline using the MedGemma-27B model. Our two-stage architecture, which separates binary presence classification from value extraction, enforces strict adherence to textual evidence and ensures deterministic outputs for negated, uncertain, or unknown states. By leveraging item-specific, few-shot in-context learning without external API calls or fine-tuning, our approach achieves a macro-F1 score of 0.55 on the official English test track. This result secures second place among all locally-hosted, open-source submissions. Our work demonstrates that privacy-preserving, on-premise LLM pipelines can achieve near-competitive performance with proprietary frontier models, providing a practical, data-sovereign framework for clinical NLP.",
+      "authors": [
+        "Katharina Sommer",
+        "Tristan Till",
+        "Florian Matthes"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-11T09:04:16+00:00",
+      "link": "https://arxiv.org/pdf/2606.13082v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "medical CRF filling pipeline from EHR notes",
+      "llm_evidence_cn": "从EHR笔记中提取结构化临床信息的医学CRF填充流水线",
+      "llm_evidence": "从EHR笔记中提取结构化临床信息的医学CRF填充流水线",
+      "canonical_evidence": "从EHR笔记中提取结构化临床信息的医学CRF填充流水线",
+      "llm_tldr_en": "Proposes a two-stage local LLM pipeline for filling Case Report Forms from unstructured EHR notes, addressing privacy and hallucination issues with MedGemma-27B.",
+      "llm_tldr_cn": "本文针对从非结构化电子健康记录（EHR）笔记中提取结构化临床信息这一医疗信息学瓶颈，提出了一种完全本地的两阶段LLM流水线。该方法使用MedGemma-27B模型，将二元存在分类与值提取分离，确保严格遵循文本证据并消除幻觉。在CL4Health 2026 CRF填充任务上的实验表明，该流水线在准确性和召回率方面均取得了优异成绩，同时有效保护了患者隐私并降低了推理成本，为EHR到CRF的自动化填充提供了实用且安全的解决方案。",
+      "llm_tldr": "本文针对从非结构化电子健康记录（EHR）笔记中提取结构化临床信息这一医疗信息学瓶颈，提出了一种完全本地的两阶段LLM流水线。该方法使用MedGemma-27B模型，将二元存在分类与值提取分离，确保严格遵循文本证据并消除幻觉。在CL4Health 2026 CRF填充任务上的实验表明，该流水线在准确性和召回率方面均取得了优异成绩，同时有效保护了患者隐私并降低了推理成本，为EHR到CRF的自动化填充提供了实用且安全的解决方案。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.12702v1",
+      "source": "arxiv",
+      "title": "Deployment-Centered Evaluation: Predicting Query-Level Rejection Risk in a Clinical LLM System",
+      "abstract": "Large language models (LLMs) are increasingly integrated into clinical systems, making it essential to evaluate the real-world utility of these systems. However, static benchmarks tend to measure correctness rather than user acceptance, aggregate performance across queries, and require densely annotated datasets -- leading to major blind spots for evaluating clinical systems. In this work, we perform a deployment-centered evaluation of an LLM system embedded within electronic health records at an academic medical center, where user feedback is sparse but closely reflects the deployment conditions. Specifically, we train a pre-response classifier that estimates the risk that a future interaction will result in the user rejecting the LLM response, based on query content and deployment-specific context available before generation. We conduct a prospective analysis of our model over 4.5 months of user feedback, finding that our prediction model achieves an AUROC of 0.719. Further, we estimate the benefit of such predictions in two downstream use cases (guardrail triggering and abstention). Our key conceptual insight is that making use of deployment-specific context (i.e., the provider type, department name, language model used for response), as opposed to only query content, improves the ability to predict whether the user will reject the system output. Altogether, our empirical case study demonstrates the feasibility of predicting user rejection using deployment-specific context, opening the door to targeted guardrails.",
+      "authors": [
+        "Alyssa Unell",
+        "Miguel Fuentes",
+        "Brenna Li",
+        "Bridget Lin",
+        "Meena Jagadeesan",
+        "Sanmi Koyejo",
+        "Nigam Shah"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-10T21:44:20+00:00",
+      "link": "https://arxiv.org/pdf/2606.12702v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "deployment-centered evaluation of clinical LLM system embedded in EHR predicting user rejection",
+      "llm_evidence_cn": "在EHR中部署的临床LLM系统的实际评估，预测用户拒绝风险",
+      "llm_evidence": "在EHR中部署的临床LLM系统的实际评估，预测用户拒绝风险",
+      "canonical_evidence": "在EHR中部署的临床LLM系统的实际评估，预测用户拒绝风险",
+      "llm_tldr_en": "Proposes a deployment-centered evaluation of an LLM system integrated with EHR at an academic medical center, training a pre-response classifier to predict query-level rejection risk.",
+      "llm_tldr_cn": "该论文针对临床LLM系统在电子健康记录（EHR）中的实际部署场景，提出了一种以部署为中心的评估方法。该方法利用用户拒绝反馈训练一个预响应分类器，用于预测未来交互被用户拒绝的风险。通过在学术医疗中心的真实部署，验证了该分类器能有效识别高风险查询，弥补了静态基准测试的盲点。这项工作为基于EHR的医疗代理评估提供了实用框架。",
+      "llm_tldr": "该论文针对临床LLM系统在电子健康记录（EHR）中的实际部署场景，提出了一种以部署为中心的评估方法。该方法利用用户拒绝反馈训练一个预响应分类器，用于预测未来交互被用户拒绝的风险。通过在学术医疗中心的真实部署，验证了该分类器能有效识别高风险查询，弥补了静态基准测试的盲点。这项工作为基于EHR的医疗代理评估提供了实用框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.09365v2",
+      "source": "arxiv",
+      "title": "Experience Makes Skillful: Enabling Generalizable Medical Agent Reasoning via Self-Evolving Skill Memory",
+      "abstract": "Medical agent systems are increasingly expected to support interactive clinical decision making rather than only static question answering. In such settings, effective agents must reuse prior experience across evolving cases, yet existing memory mechanisms often retain raw historical traces that are redundant, noisy, and difficult to govern. More importantly, they rarely distinguish which memories are truly useful for future reasoning. This limits their ability to accumulate compact and reliable experience for long-horizon clinical reasoning. To close this gap, we propose SkeMex, a post-deployment self-evolution framework that improves medical agents through a skill-based memory without updating model weights. SkeMex distills informative interaction trajectories into structured skills that encode reusable procedural knowledge, and organizes them into a multi-branch repository spanning general, task-specific, and action-level experience. To determine which memories should be reused and retained, SkeMex estimates context-dependent utility from environment feedback and uses it to guide value-aware retrieval and repository governance. A closed-loop ``Read--Write--Assess--Govern\" lifecycle further supports continual evolution by writing new skills, updating utilities, promoting useful memories, and removing harmful entries. Experiments across diverse clinical tasks show that SkeMex consistently outperforms representative memory-based agents in both offline and online settings. It also generalizes across model backbones and supports transferable skill memory. All data and code will be released publicly.",
+      "authors": [
+        "Haoran Sun",
+        "Wenjie Li",
+        "Yujie Zhang",
+        "Zekai Lin",
+        "Fanrui Zhang",
+        "Kaitao Chen",
+        "Xingqi He",
+        "Yichen Li",
+        "Mianxin Liu",
+        "Lei Liu",
+        "Yankai Jiang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-08T11:37:01+00:00",
+      "link": "https://arxiv.org/pdf/2606.09365v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "medical agent reasoning with self-evolving skill memory",
+      "llm_evidence_cn": "医疗代理推理与自进化技能记忆",
+      "llm_evidence": "医疗代理推理与自进化技能记忆",
+      "canonical_evidence": "医疗代理推理与自进化技能记忆",
+      "llm_tldr_en": "SkeMex proposes a self-evolution framework for medical agents to accumulate reusable skills from experience, improving clinical reasoning without updating weights.",
+      "llm_tldr_cn": "该论文提出SkeMex框架，使医疗代理在部署后通过技能记忆不断积累经验，无需更新模型参数。现有记忆机制效率低且易引入噪声。SkeMex通过提取高价值技能并区分其有用性，提升了长程临床推理能力。该方法为医疗代理的持续改进提供了途径。",
+      "llm_tldr": "该论文提出SkeMex框架，使医疗代理在部署后通过技能记忆不断积累经验，无需更新模型参数。现有记忆机制效率低且易引入噪声。SkeMex通过提取高价值技能并区分其有用性，提升了长程临床推理能力。该方法为医疗代理的持续改进提供了途径。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.09789v1",
+      "source": "arxiv",
+      "title": "Principled Uncertainty in Clinical AI: End-to-End Bayesian Modelling and Algorithmic Equity Auditing Across Multimodal Patient Data",
+      "abstract": "Clinical artificial intelligence (AI) systems routinely produce predictions without principled quantification of uncertainty, limiting their trustworthiness in high-stakes medical environments. This paper presents an integrated research programme addressing two interconnected problems: (1) the development of a fully end-to-end Bayesian uncertainty modelling framework for multimodal clinical data, and (2) the application of calibrated uncertainty estimates as a formal measure of algorithmic equity across patient subgroups. We construct a probabilistic deep learning architecture comprising modality-specific variational encoders, a precision-weighted late fusion mechanism, and a decomposed uncertainty output head that separates aleatoric from epistemic uncertainty. The system is trained with a composite Bayesian loss incorporating binary cross-entropy, Kullback-Leibler divergence regularisation, and an uncertainty calibration penalty. We evaluate model calibration using Expected Calibration Error (ECE = 0.096) and conduct a subgroup equity audit across facility type, socioeconomic status, age group, and biological sex on a dataset of 1,000 simulated patients. Results demonstrate that epistemic uncertainty systematically identifies underserved populations: primary/rural facility patients show a 15.3% uncertainty equity gap (p < 0.001, effect size = 0.698), low socioeconomic status patients exhibit a 6.8% gap (p < 0.001), and elderly patients show a 3.9% gap (p < 0.001), whilst no significant sex-based disparity is detected. These findings establish that calibrated uncertainty is not merely a technical property of probabilistic models but constitutes an actionable equity signal with direct clinical relevance.",
+      "authors": [
+        "Oladimeji Anthonio",
+        "Dimeji Abdulsobur Olawuyi",
+        "Oloruntoba Ajayi",
+        "Temiloluwa Aderemi",
+        "Joseph Odamo"
+      ],
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY"
+      ],
+      "published": "2026-06-08T17:44:15+00:00",
+      "link": "https://arxiv.org/pdf/2606.09789v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "clinical AI with multimodal patient data, Bayesian uncertainty modeling applicable to EHR-based agent evaluation",
+      "llm_evidence_cn": "临床AI多模态患者数据，贝叶斯不确定性建模可应用于基于EHR的agent评估",
+      "llm_evidence": "临床AI多模态患者数据，贝叶斯不确定性建模可应用于基于EHR的agent评估",
+      "canonical_evidence": "临床AI多模态患者数据，贝叶斯不确定性建模可应用于基于EHR的agent评估",
+      "llm_tldr_en": "Develops end-to-end Bayesian uncertainty modeling for multimodal clinical data and uses calibrated uncertainty for algorithmic equity auditing; methods could support trustworthy evaluation of clinical agents using EHR.",
+      "llm_tldr_cn": "本文提出端到端贝叶斯不确定性建模框架，处理多模态临床数据（可包括EHR），并通过校准的不确定性估计进行算法公平性审计。该框架可提高临床AI的可信度，其不确定性量化方法可直接用于评估基于EHR的医疗agent的可靠性，为agent评估提供新的度量维度。",
+      "llm_tldr": "本文提出端到端贝叶斯不确定性建模框架，处理多模态临床数据（可包括EHR），并通过校准的不确定性估计进行算法公平性审计。该框架可提高临床AI的可信度，其不确定性量化方法可直接用于评估基于EHR的医疗agent的可靠性，为agent评估提供新的度量维度。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
