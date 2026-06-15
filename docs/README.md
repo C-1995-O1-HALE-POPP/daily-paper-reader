@@ -6,34 +6,37 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-14
-- 运行时间：2026-06-14 21:08:14 UTC
+- 最新运行日期：2026-06-15
+- 运行时间：2026-06-15 22:05:14 UTC
 - 运行状态：成功
-- 本次总论文数：4
-- 精读区：2
-- 速读区：2
+- 本次总论文数：5
+- 精读区：1
+- 速读区：4
 
 ### 今日简报（AI）
-1) 今日推荐精读两篇高分论文，聚焦医疗CRF填充的本地LLM管道与临床系统的拒绝风险预测。  
-2) 最值得关注方向：两阶段本地LLM在结构化医疗记录填充中的高效应用，以及基于部署评估的查询级风险预判方法。  
-3) 下步建议：优先探索本地化LLM如何平衡隐私与性能，同时学习临床AI中风险预警的实践思路。
-- 详情：[/202606/14/README](/202606/14/README)
+1) 今日精选5篇AI应用论文，重点剖析临床决策摩擦与智能体系统进化方向。  
+2) 精读揭示提问与“假设情景”在AI辅助诊断中的核心摩擦点，速读介绍HarnessX和SkillHone的智能体持续学习框架。  
+3) 建议优先关注临床场景中的人机交互设计，并留意可组合、自适应的智能体开发工具。
+- 详情：[/202606/15/README](/202606/15/README)
 
 ### 精读区论文标签
-1. [sebis at CRF Filling 2026: A Two-Stage Local LLM Pipeline for Medical CRF Filling](/202606/14/2606.13082v1-sebis-at-crf-filling-2026-a-two-stage-local-llm-pipeline-for-medical-crf-filling)  
-   标签：评分：9.0/10、query:ehr-agent
-   evidence：从EHR笔记中提取结构化临床信息的医学CRF填充流水线
-2. [Deployment-Centered Evaluation: Predicting Query-Level Rejection Risk in a Clinical LLM System](/202606/14/2606.12702v1-deployment-centered-evaluation-predicting-query-level-rejection-risk-in-a-clinical-llm-system)  
+1. [Friction in AI-Assisted Clinical Decision-Making: A Case Study on The Role of Questions and 'What-if' Scenarios](/202606/15/2606.14406v1-friction-in-ai-assisted-clinical-decision-making-a-case-study-on-the-role-of-questions-and-what-if-scenarios)  
    标签：评分：8.0/10、query:ehr-agent
-   evidence：在EHR中部署的临床LLM系统的实际评估，预测用户拒绝风险
+   evidence：评估临床决策支持智能体与医疗专家；使用真实决策任务和访谈
 
 ### 速读区论文标签
-1. [Experience Makes Skillful: Enabling Generalizable Medical Agent Reasoning via Self-Evolving Skill Memory](/202606/14/2606.09365v2-experience-makes-skillful-enabling-generalizable-medical-agent-reasoning-via-self-evolving-skill-memory)  
+1. [HarnessX: A Composable, Adaptive, and Evolvable Agent Harness Foundry](/202606/15/2606.14249v1-harnessx-a-composable-adaptive-and-evolvable-agent-harness-foundry)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：利用强化学习进行智能体框架演化，可迁移至医疗智能体评估
+2. [SkillHone: A Harness for Continual Agent Skill Evolution Through Persistent Decision History](/202606/15/2606.08671v1-skillhone-a-harness-for-continual-agent-skill-evolution-through-persistent-decision-history)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：医疗代理推理与自进化技能记忆
-2. [Principled Uncertainty in Clinical AI: End-to-End Bayesian Modelling and Algorithmic Equity Auditing Across Multimodal Patient Data](/202606/14/2606.09789v1-principled-uncertainty-in-clinical-ai-end-to-end-bayesian-modelling-and-algorithmic-equity-auditing-across-multimodal-patient-data)  
+   evidence：提供持续Agent技能演进的框架，包含评估证据记录
+3. [Can Post-Training Turn LLMs into Good Medical Coders? An Empirical Study of Generative ICD Coding](/202606/15/2606.13940v1-can-post-training-turn-llms-into-good-medical-coders-an-empirical-study-of-generative-icd-coding)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：临床AI多模态患者数据，贝叶斯不确定性建模可应用于基于EHR的agent评估
+   evidence：基于强化学习的后训练用于医疗编码，与医疗智能体评估相关
+4. [MedLatentDx: Latent Multi-Agent Communication for Cross-Hospital Rare-Disease Diagnosis](/202606/15/2606.13945v1-medlatentdx-latent-multi-agent-communication-for-cross-hospital-rare-disease-diagnosis)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：使用临床数据的跨医院罕见病诊断多智能体框架
 
 
 <div class="dpr-home-promo-card">

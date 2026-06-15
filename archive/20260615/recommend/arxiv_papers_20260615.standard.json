@@ -1,0 +1,216 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-15T22:01:29.301407+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2606.14406v1",
+      "source": "arxiv",
+      "title": "Friction in AI-Assisted Clinical Decision-Making: A Case Study on The Role of Questions and 'What-if' Scenarios",
+      "abstract": "Clinical decision-making is augmented by decision-support systems (DSSs). To counter overreliance on DSSs, several methods have been proposed that create friction in order to promote cognitive engagement and reflection. In this paper, we investigate how two such forms of friction, namely data-driven questions and `what-if' analysis, are perceived by medical experts. For a real-world decision task, we replicated a DSS used in clinical practice and gathered clinicians' feedback on a prototype through in-situ interviews (n=7). Our findings suggest that while the questions were perceived as unhelpful for reflective thinking, they could serve as reminders to consider relevant information. Furthermore, inspecting `what-if' hypotheticals was found useful for potentially improving patient care. Clinicians saw our prototype as a promising training tool for novice clinicians. From the clinicians' feedback, we make recommendations for designing friction in work practices. Our work contributes to human-AI interaction research, which aims to encourage reflection to mitigate AI overreliance.",
+      "authors": [
+        "Simon WS Fischer",
+        "Hanna Schraffenberger",
+        "Miranda L. van Hooff",
+        "Serge Thill",
+        "Pim Haselager"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ],
+      "published": "2026-06-12T12:42:44+00:00",
+      "link": "https://arxiv.org/pdf/2606.14406v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "evaluates clinical decision support agents with medical experts; uses real-world decision task and interviews",
+      "llm_evidence_cn": "评估临床决策支持智能体与医疗专家；使用真实决策任务和访谈",
+      "llm_evidence": "评估临床决策支持智能体与医疗专家；使用真实决策任务和访谈",
+      "canonical_evidence": "评估临床决策支持智能体与医疗专家；使用真实决策任务和访谈",
+      "llm_tldr_en": "This case study evaluates friction methods (questions, what-if) in a clinical DSS through interviews with 7 medical experts, finding questions serve as reminders but not for reflection.",
+      "llm_tldr_cn": "临床决策支持系统（DSS）可能导致过度依赖。本文通过原位访谈7名医疗专家，研究数据驱动问题和“假设”分析两种摩擦形式在临床决策中的感知。结果表明，问题虽有助于提醒相关信息，但并未有效促进反思性思考。该研究为基于EHR的临床决策支持智能体的评估提供了用户视角。",
+      "llm_tldr": "临床决策支持系统（DSS）可能导致过度依赖。本文通过原位访谈7名医疗专家，研究数据驱动问题和“假设”分析两种摩擦形式在临床决策中的感知。结果表明，问题虽有助于提醒相关信息，但并未有效促进反思性思考。该研究为基于EHR的临床决策支持智能体的评估提供了用户视角。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.14249v1",
+      "source": "arxiv",
+      "title": "HarnessX: A Composable, Adaptive, and Evolvable Agent Harness Foundry",
+      "abstract": "AI agent performance depends critically on the runtime harness, comprising the prompts, tools, memory, and control flow that mediate how a model observes, reasons, and acts. Yet today's harnesses remain largely hand-crafted and static: each new model or task still demands bespoke scaffolding, and the rich traces produced during execution are rarely distilled back into systematic improvement. We introduce HarnessX, a foundry for composable, adaptive, and evolvable agent harnesses. HarnessX assembles typed harness primitives via a substitution algebra, adapts them through AEGIS, a trace-driven multi-agent evolution engine grounded in an operational mirror between symbolic adaptation and reinforcement learning, and closes the harness-model loop by turning trajectories into both harness updates and model training signal. Across five benchmarks (ALFWorld, GAIA, WebShop, tau^3-Bench, and SWE-bench Verified), HarnessX yields an average gain of +14.5% (up to +44.0%), with gains largest where baselines are lowest. These results suggest that agent progress need not come from model scaling alone: composing and evolving runtime interfaces from execution feedback is an actionable and complementary lever. The complete codebase will be open-sourced in a future release.",
+      "authors": [
+        "Tingyang Chen",
+        "Shuo Lu",
+        "Kang Zhao",
+        "Weicheng Meng",
+        "Hanlin Teng",
+        "Tianhao Li",
+        "Chao Li",
+        "Xule Liu",
+        "Jian Liang",
+        "Zhizhong Zhang",
+        "Yuan Xie",
+        "Heng Qu",
+        "Kun Shao",
+        "Jian Luan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-12T08:27:11+00:00",
+      "link": "https://arxiv.org/pdf/2606.14249v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses reinforcement learning for agent harness evolution, transferable to medical agent evaluation",
+      "llm_evidence_cn": "利用强化学习进行智能体框架演化，可迁移至医疗智能体评估",
+      "llm_evidence": "利用强化学习进行智能体框架演化，可迁移至医疗智能体评估",
+      "canonical_evidence": "利用强化学习进行智能体框架演化，可迁移至医疗智能体评估",
+      "llm_tldr_en": "HarnessX introduces a composable agent harness foundry that uses RL to adapt and evolve harnesses, providing a methodological bridge for evaluating medical agents.",
+      "llm_tldr_cn": "现有智能体框架多为手工定制且静态不变，难以适应新模型和任务。本文提出HarnessX，一个可组合、自适应且可演化的智能体平台框架。它通过替换代数组装类型化基本组件，并利用基于迹的多智能体演化引擎AEGIS（将符号适应与强化学习操作镜像）进行自适应。该框架为基于强化学习的医疗智能体评估提供了方法论支持。",
+      "llm_tldr": "现有智能体框架多为手工定制且静态不变，难以适应新模型和任务。本文提出HarnessX，一个可组合、自适应且可演化的智能体平台框架。它通过替换代数组装类型化基本组件，并利用基于迹的多智能体演化引擎AEGIS（将符号适应与强化学习操作镜像）进行自适应。该框架为基于强化学习的医疗智能体评估提供了方法论支持。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.08671v1",
+      "source": "arxiv",
+      "title": "SkillHone: A Harness for Continual Agent Skill Evolution Through Persistent Decision History",
+      "abstract": "Agent skills extend language-model agents with task-specific procedures, scripts, and references, but the tasks and environments they target continually change. Existing methods improve skills in bounded runs and retain only the final artifact, discarding the decision history that later agents need to interpret prior revisions, evaluations, and rejected alternatives. We introduce SkillHone, a harness for continual agent skill evolution grounded in persistent decision history. SkillHone pairs skill revisions with evaluation-side evidence that supplies practice feedback, recording structured histories of diagnoses, revisions, evidence, and outcomes. Role-separated subagents run candidate skills on practice probes with redacted reporting and propose revisions informed by prior decisions, enabling cross-session refinement without rediscovering past rationale. We evaluate SkillHone on deep-research benchmarks in a raw open-web setting, where agents are not given an integrated search stack and must organize retrieval through portable skills. We compare against a deep-research agent backed by commercial retrieval services. With Qwen3.6-35B-A3B as the evaluation-time backbone, the resulting skills outperform the deep-research agent by 15.8 points on GAIA and 3.2 points on WebWalkerQA-EN, while also exceeding prior skill-evolution methods.",
+      "authors": [
+        "Zhiwei Li",
+        "Yong Hu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-07T15:21:08+00:00",
+      "link": "https://arxiv.org/pdf/2606.08671v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "provides a framework for continual agent skill evolution with evaluation evidence",
+      "llm_evidence_cn": "提供持续Agent技能演进的框架，包含评估证据记录",
+      "llm_evidence": "提供持续Agent技能演进的框架，包含评估证据记录",
+      "canonical_evidence": "提供持续Agent技能演进的框架，包含评估证据记录",
+      "llm_tldr_en": "SkillHone introduces a harness for continual agent skill improvement by preserving evaluation-side evidence and decision history, enabling iterative revision and assessment.",
+      "llm_tldr_cn": "现有Agent技能改进方法仅保留最终产物，丢失了中间决策和评估历史。SkillHone提出一个持续技能演进框架，通过持久决策历史记录每次修正的评估证据，支持角色分离的子代理在实践探针上运行候选技能。该方法使后续代理能理解先前修改和评估，提升了技能演进的效率和可解释性，为通用agent评估提供可迁移的框架。",
+      "llm_tldr": "现有Agent技能改进方法仅保留最终产物，丢失了中间决策和评估历史。SkillHone提出一个持续技能演进框架，通过持久决策历史记录每次修正的评估证据，支持角色分离的子代理在实践探针上运行候选技能。该方法使后续代理能理解先前修改和评估，提升了技能演进的效率和可解释性，为通用agent评估提供可迁移的框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.13940v1",
+      "source": "arxiv",
+      "title": "Can Post-Training Turn LLMs into Good Medical Coders? An Empirical Study of Generative ICD Coding",
+      "abstract": "Automated International Classification of Diseases (ICD) coding is a core medical-coding task for billing, epidemiology, and clinical decision support. Generative large language models (LLMs) are often reported as weak medical coders, but this finding mainly comes from inference-time settings such as prompting, retrieval, reranking, or tool use, leaving the role of task-specific post-training underexplored. We present a controlled empirical study of post-training for generative ICD coding, comparing discriminative baselines with LLM coders across prompting, supervised fine-tuning, and reinforcement learning under a common protocol and metric set. To our knowledge, this is the first study to evaluate RL-based post-training for generative LLM coders in ICD coding. We further introduce PHI, a diagnostic curriculum that extends GRPO to refine missed-code cases. Our results show that prompting-only evaluation substantially underestimates the potential of LLMs for ICD coding. SFT provides the main capability jump, GRPO further improves code-set prediction beyond SFT, and PHI provides targeted gains on macro-level performance. These findings suggest that the main bottleneck is not the generative formulation alone, but how the model is adapted and optimized for full-taxonomy recall. We release our code, data splits, and checkpoints at https://github.com/AlexandreWANG915/LLM4ICD.",
+      "authors": [
+        "Ziqing Wang",
+        "Weihao Li",
+        "Shijie Chen",
+        "Yuan Luo",
+        "Kaize Ding"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-11T22:04:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.13940v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL-based post-training for medical coding, relevant to healthcare agent evaluation",
+      "llm_evidence_cn": "基于强化学习的后训练用于医疗编码，与医疗智能体评估相关",
+      "llm_evidence": "基于强化学习的后训练用于医疗编码，与医疗智能体评估相关",
+      "canonical_evidence": "基于强化学习的后训练用于医疗编码，与医疗智能体评估相关",
+      "llm_tldr_en": "This paper empirically studies post-training for generative ICD coding, comparing prompting, supervised fine-tuning, and RL under a common protocol, offering insights for evaluating medical agents with RL.",
+      "llm_tldr_cn": "先前研究认为LLM在医疗编码任务上表现弱，但多仅测试推理时设置。本文首次系统比较提示、监督微调和强化学习后训练在ICD编码上的效果，建立了统一的评估协议和指标集。实验表明RL后训练能显著提升编码准确率，揭示了后训练对医疗AI评估的重要性。该工作为医疗智能体评估提供了可借鉴的RL评估框架。",
+      "llm_tldr": "先前研究认为LLM在医疗编码任务上表现弱，但多仅测试推理时设置。本文首次系统比较提示、监督微调和强化学习后训练在ICD编码上的效果，建立了统一的评估协议和指标集。实验表明RL后训练能显著提升编码准确率，揭示了后训练对医疗AI评估的重要性。该工作为医疗智能体评估提供了可借鉴的RL评估框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.13945v1",
+      "source": "arxiv",
+      "title": "MedLatentDx: Latent Multi-Agent Communication for Cross-Hospital Rare-Disease Diagnosis",
+      "abstract": "Rare diseases affect over $300$ million patients across more than $7{,}000$ conditions, yet no single hospital encounters enough cases of any one condition for reliable diagnosis. Cross-hospital collaboration could help by allowing a diagnosing institution to use distributed, case-specific diagnostic evidence, but privacy regulations restrict the transmission of identifiable clinical text across institutional boundaries. This setting raises two challenges: existing medical agent systems often rely on textual evidence exchange, while raw latent states such as hidden states and KV caches may still reveal prompt-derived clinical content. We introduce MedLatentDx, a latent multi-agent communication framework in which hospital agents keep private clinical records and retrieved cases local, and send compact latent KV blocks to a host agent for rare-disease diagnosis. MedLatentDx supports two deployment settings: same-backbone hospital agents use latent KV distillation, while hospitals with different LLM backbones use cross-family latent alignment. On CrossRare-Bench, a self-built large-scale rare-disease benchmark with hospital-level partitions, MedLatentDx improves cross-hospital diagnostic performance while reducing reconstructable clinical content relative to raw-latent communication baselines.",
+      "authors": [
+        "Ziqing Wang",
+        "Lili Zhao",
+        "Kaize Ding"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-11T22:11:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.13945v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Multi-agent framework for cross-hospital rare-disease diagnosis using clinical data",
+      "llm_evidence_cn": "使用临床数据的跨医院罕见病诊断多智能体框架",
+      "llm_evidence": "使用临床数据的跨医院罕见病诊断多智能体框架",
+      "canonical_evidence": "使用临床数据的跨医院罕见病诊断多智能体框架",
+      "llm_tldr_en": "MedLatentDx proposes a latent multi-agent communication framework for rare-disease diagnosis that uses clinical evidence while preserving privacy, addressing EHR-based agent collaboration.",
+      "llm_tldr_cn": "罕见病诊断因病例稀少而困难，跨医院协作受隐私限制。本文提出MedLatentDx，一种潜在多智能体通信框架，医院智能体在不暴露原始临床文本的前提下交换潜在表示进行诊断。该方法在保护隐私的同时利用分布式临床证据，显著提高了罕见病诊断准确率。该框架为基于EHR的医疗智能体协作提供了新范式。",
+      "llm_tldr": "罕见病诊断因病例稀少而困难，跨医院协作受隐私限制。本文提出MedLatentDx，一种潜在多智能体通信框架，医院智能体在不暴露原始临床文本的前提下交换潜在表示进行诊断。该方法在保护隐私的同时利用分布式临床证据，显著提高了罕见病诊断准确率。该框架为基于EHR的医疗智能体协作提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
