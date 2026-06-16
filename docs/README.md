@@ -6,37 +6,49 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-15
-- 运行时间：2026-06-15 22:05:14 UTC
+- 最新运行日期：2026-06-16
+- 运行时间：2026-06-16 23:01:45 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：1
-- 速读区：4
+- 本次总论文数：9
+- 精读区：3
+- 速读区：6
 
 ### 今日简报（AI）
-1) 今日精选5篇AI应用论文，重点剖析临床决策摩擦与智能体系统进化方向。  
-2) 精读揭示提问与“假设情景”在AI辅助诊断中的核心摩擦点，速读介绍HarnessX和SkillHone的智能体持续学习框架。  
-3) 建议优先关注临床场景中的人机交互设计，并留意可组合、自适应的智能体开发工具。
-- 详情：[/202606/15/README](/202606/15/README)
+今日阅读9篇临床AI相关文献，精读2篇高分研究聚焦电子病历问答与推理深度预测失败问题。  
+最值得关注：基于出院小结的多轮临床问答基准（EHRNote-ChatQA），以及Transformer组合性限制导致临床AI推理失败的新发现。  
+建议优先精读这两篇高分论文，速读中风护理合规检查与医疗研究智能体两篇，把握临床AI可靠性评估前沿。
+- 详情：[/202606/16/README](/202606/16/README)
 
 ### 精读区论文标签
-1. [Friction in AI-Assisted Clinical Decision-Making: A Case Study on The Role of Questions and 'What-if' Scenarios](/202606/15/2606.14406v1-friction-in-ai-assisted-clinical-decision-making-a-case-study-on-the-role-of-questions-and-what-if-scenarios)  
+1. [EHRNote-ChatQA: A Benchmark for Evidence-Grounded Multi-Turn Clinical Question Answering over Longitudinal Discharge Summaries](/202606/16/2606.15735v1-ehrnote-chatqa-a-benchmark-for-evidence-grounded-multi-turn-clinical-question-answering-over-longitudinal-discharge-summaries)  
    标签：评分：8.0/10、query:ehr-agent
-   evidence：评估临床决策支持智能体与医疗专家；使用真实决策任务和访谈
+   evidence：基于EHR纵向出院摘要的多轮临床问答基准
+2. [Compositional Reasoning Depth Predicts Clinical AI Failure: Empirical Evidence Consistent with Transformer Compositionality Limits in Electronic Health Record Question Answering](/202606/16/2606.16890v1-compositional-reasoning-depth-predicts-clinical-ai-failure-empirical-evidence-consistent-with-transformer-compositionality-limits-in-electronic-health-record-question-answering)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：使用跳数分类法评估LLM在EHR问答上的性能
+3. [DEEPRUBRIC: Evidence-Tree Rubric Supervision for Efficient Reinforcement Learning of Deep Research Agents](/202606/16/2606.17029v1-deeprubric-evidence-tree-rubric-supervision-for-efficient-reinforcement-learning-of-deep-research-agents)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：使用强化学习与评分规则优化深度研究智能体，直接适用于基于强化学习的医疗智能体评估
 
 ### 速读区论文标签
-1. [HarnessX: A Composable, Adaptive, and Evolvable Agent Harness Foundry](/202606/15/2606.14249v1-harnessx-a-composable-adaptive-and-evolvable-agent-harness-foundry)  
+1. [LLM-Orchestrated Conformance Checking in Stroke Care Without Computer-Interpretable Guidelines](/202606/16/2606.09489v1-llm-orchestrated-conformance-checking-in-stroke-care-without-computer-interpretable-guidelines)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：利用强化学习进行智能体框架演化，可迁移至医疗智能体评估
-2. [SkillHone: A Harness for Continual Agent Skill Evolution Through Persistent Decision History](/202606/15/2606.08671v1-skillhone-a-harness-for-continual-agent-skill-evolution-through-persistent-decision-history)  
+   evidence：使用电子健康记录出院小结进行一致性检查的LLM框架
+2. [Skill-Augmented AI Agents for Medical Research Analysis: An Exploratory Multi-Model Human Evaluation in an NSCLC Transcriptomic Biomarker Task](/202606/16/2606.11830v1-skill-augmented-ai-agents-for-medical-research-analysis-an-exploratory-multi-model-human-evaluation-in-an-nsclc-transcriptomic-biomarker-task)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：对医疗研究技能增强型AI代理进行多模型人工评估
+3. [Human-on-the-Bridge: Scalable Evaluation for AI Agents](/202606/16/2606.16871v1-human-on-the-bridge-scalable-evaluation-for-ai-agents)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：针对AI智能体的可扩展评估范式，可迁移至医疗智能体基准测试
+4. [Measuring Epistemic Resilience of LLMs Under Misleading Medical Context](/202606/16/2606.12291v2-measuring-epistemic-resilience-of-llms-under-misleading-medical-context)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：提供持续Agent技能演进的框架，包含评估证据记录
-3. [Can Post-Training Turn LLMs into Good Medical Coders? An Empirical Study of Generative ICD Coding](/202606/15/2606.13940v1-can-post-training-turn-llms-into-good-medical-coders-an-empirical-study-of-generative-icd-coding)  
+   evidence：医疗语境下LLM认知弹性基准
+5. [AgentBeats: Agentifying Agent Assessment for Openness, Standardization, and Reproducibility](/202606/16/2606.13608v1-agentbeats-agentifying-agent-assessment-for-openness-standardization-and-reproducibility)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：基于强化学习的后训练用于医疗编码，与医疗智能体评估相关
-4. [MedLatentDx: Latent Multi-Agent Communication for Cross-Hospital Rare-Disease Diagnosis](/202606/15/2606.13945v1-medlatentdx-latent-multi-agent-communication-for-cross-hospital-rare-disease-diagnosis)  
+   evidence：通用Agent评估框架可应用于医疗Agent
+6. [AgentFairBench: Do LLM Agents Discriminate When They Act?](/202606/16/2606.16723v1-agentfairbench-do-llm-agents-discriminate-when-they-act)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：使用临床数据的跨医院罕见病诊断多智能体框架
+   evidence：包含医疗分诊的LLM智能体公平性基准
 
 
 <div class="dpr-home-promo-card">

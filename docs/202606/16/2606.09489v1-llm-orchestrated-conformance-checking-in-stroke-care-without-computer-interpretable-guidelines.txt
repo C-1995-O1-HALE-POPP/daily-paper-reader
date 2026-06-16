@@ -1,0 +1,376 @@
+Title: LLM-Orchestrated Conformance Checking in Stroke Care Without Computer-Interpretable Guidelines
+
+URL Source: https://arxiv.org/pdf/2606.09489v1
+
+Published Time: Tue, 09 Jun 2026 02:19:24 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# LLM-Orchestrated Conformance Checking in Stroke Care Without Computer-Interpretable Guidelines 
+
+## Giorgio Leonardi a, Stefania Montani a,∗, Manuel Striani a, Alessandro Canessa b and Delfina Ferrandi b
+
+> a
+
+Computer Science Institute, DiSIT, University of Piemonte Orientale, Viale Teresa Michel, 11, Alessandria, 15121, Italy 
+
+> b
+
+Integrated Laboratory of AI and Medical Informatics, DAIRI, SS. Antonio e Biagio e Cesare Arrigo Hospital, Alessandria, Italy 
+
+A R T I C L E I N F O 
+
+Keywords :Medical Processes Large Language Models Conformance checking Stroke 
+
+A B S T R A C T 
+
+Objective Conformance checking in healthcare seeks to assess whether patient care pathways adhere to clinical guidelines. However, its practical application often depends on the availability of for-mal, machine-interpretable representations of guidelines, such as Computer-Interpretable Guidelines (CIGs), which are seldom available in real-world clinical settings. 
+
+Methods This work introduces a modular framework based on the orchestration of Large Language Models (LLMs) to support medical conformance checking directly from unstructured clinical and guideline texts, without requiring predefined CIGs. The proposed architecture integrates multiple LLMs and supporting components to extract patient traces from clinical discharge letters, identify normative rules from textual clinical guidelines, translate these rules into executable scripts, and compute a Trace Conformance Indicator to quantify compliance within the event log. 
+
+Results The framework was implemented and evaluated in the stroke care domain at the neurological ward of Alessandria Hospital. Hundreds of patient traces were automatically extracted from hospital data and assessed against 50 rules derived from the reference guideline. The analysis showed that more than 86% of the available traces were conformant. 
+
+Conclusion The results demonstrate the feasibility of using orchestrated LLMs for practical healthcare conformance analysis. At the same time, the study provides evidence of a high level of adherence to stroke care guidelines at Alessandria Hospital. 
+
+## 1. Introduction 
+
+Conformance checking is a fundamental activity in Process Mining (PM) (van der Aalst, 2016) that assesses whether an organization’s observed behavior complies with its prescribed processes. Observed behavior is typically captured in an event log, which consists of a collection of process traces (Reichert and Weber, 2012). Each trace records the sequence of activities carried out during routine operations, along with their timestamps. In the healthcare domain, a trace represents the ordered set of activities performed for a patient throughout a hospital stay. The behavior prescribed in this context is typically defined by a clinical guideline. Conformance checking techniques rely on two main inputs: the event log and a formal, machine-readable speci-fication of the normative process. This specification is com-monly provided as a graphical control-flow model expressed in a dedicated modeling language, which can be converted into the well-known Petri Net formalism (Desel, Reisig and Rozenberg, 2004). In healthcare settings, however, such formal representations are rarely available, as clinical guide-lines are usually documented in extensive and complex natural-language texts. Although methods for developing 
+
+> ∗
+
+Corresponding author  
+
+> giorgio.leonardi@uniupo.it
+
+(G. Leonardi);  
+
+> stefania.montani@uniupo.it
+
+(S. Montani); manuel.striani@uniupo.it (M. Striani); alessandro.canessa@ospedale.al.it (A. Canessa);  
+
+> dferrandi@ospedale.al.it
+
+(D. Ferrandi) 
+
+> ORCID
+
+(s): 0000-0002-9533-9722 (G. Leonardi); 0000-0002-5992-6735 
+
+(S. Montani); 0000-0002-7600-576X (M. Striani) 
+
+Computer-Interpretable Guidelines (CIGs) have been pro-posed (de Clercq, Kaiser and Hasman, 2008), they require significant effort in terms of knowledge elicitation and mod-eling. In this paper, we introduce a framework that orches-trates different Large Language Models (LLMs) to support medical conformance checking by validating patient traces directly on a textual guideline, without the need for an explicit CIG. Our approach complies with a recent trend in Artificial Intelligence (AI) applications, where we are assisting to a shift away from reliance on ever-larger standalone models toward compound systems, in which multiple components are deliberately orchestrated to solve complex tasks (Blog, 2024). These systems can integrate LLMs with auxiliary modules such as retrieval mechanisms, symbolic solvers, ex-ecution engines, and verification steps, and/or chain different LLMs to complete the task. Empirical evidence from state-of-the-art systems demonstrates that such structured com-positions can outperform monolithic models by enabling multi-step reasoning, solution filtering, and interaction with external knowledge sources. In practice, techniques such as chained reasoning pipelines have become common, under-scoring that system-level orchestration design choices often yield larger performance gains than additional model scaling alone (see, e.g., (Korotich, 2025; Palani and Ramos, 2025)). Within this line of investigation, our contribution con-sists in the design, implementation and testing of a modular architecture, where: 
+
+First Author et al.: Preprint submitted to Elsevier Page 1 of 10 
+
+> arXiv:2606.09489v1 [cs.AI] 8 Jun 2026 Short Title of the Article
+
+1. a first LLM extracts patient traces from unstructured clinical discharge letters, and exports them in XES format 1 for PM analyses; 2. a second LLM extracts normative behaviors from a textual guideline in the form of rules; 3. a third LLM filters out the un-useful rules, i.e., those that cannot be applied to the given event log (typically due to data unavailability); 4. a fourth LLM formalizes the rules into executable Python scripts; 5. a fifth LLM refines the formalized rules by eliminating noise and artifacts, as well as by correcting bugs; 6. a Python module ultimately computes the Trace Con-formance Indicator (   ), a metric that measures the proportion of event log traces satisfying each formal-ized rule. This enables clinicians and healthcare ad-ministrators to rapidly detect conformance violations or operational issues in real-world event logs. The overall architecture has been extensively tested in the domain of stroke care, where we were able to extract 463 patient traces from real discharge letters collected at Alessandria Hospital, and to assess their conformance to-wards one of the most recently published Italian stroke clinical guidelines (Italian Stroke Association). Details are provided in the following sections. In particular, section 2 reviews related work; section 3 technically describes the architecture; section 4 presents experimental results, while section 5 is devoted to conclusions. 
+
+## 2. Related Work 
+
+In this section, we present related work, focusing first on classical conformance checking approaches, then on the use of LLMs in Process Mining, and finally on LLM orchestra-tion. 
+
+2.1. Conformance checking 
+
+In the Process Mining literature (see, for example, (Dun-zer, Stierle, Matzner and Baier, 2019)), conformance check-ing techniques are commonly classified into three broad categories: log replay methods, trace alignment methods, and constraint-based approaches .
+
+Log replay methods simulate the execution of each trace from the event log on the prescribed process model. When the normative model is represented as a Petri Net, token-based replay techniques are typically employed (Rozinat and van der Aalst, 2008), allowing the generation of additional tokens to overcome deadlocks and complete the execution; conformance is then assessed based on the number of miss-ing or remaining tokens. In more general settings, where the model is not a Petri Net, conformance can be quantified using fitness metrics (Leemans, Fahland and van der Aalst, 2018), 
+
+> 1https://www.xes-standard.org/
+
+defined as the proportion of traces that can be successfully replayed with respect to the total number of traces. 
+
+Trace alignment methods identify deviations at the level of individual activities by detecting asynchronous moves, that is, steps where the trace and the model cannot advance simultaneously. Each deviation is associated with a cost, and an optimal alignment minimizing the overall cost is com-puted (Adriansyah, Munoz-Gama, Carmona, van Dongen and van der Aalst, 2012). While this approach yields more fine-grained and precise diagnostics than log replay, it is computationally more demanding, as the number of possible alignments increases rapidly with the size of the event log. 
+
+Constraint-based conformance checking approaches (e.g., (Borrego and Barba, 2014)) represent process behavior in terms of declarative rules and assess whether traces satisfy these constraints. The method proposed in this work falls within this category, with the key novelty that, to the best of our knowledge, it is the first to leverage an LLM to automatically extract such rules from a normative specification expressed in free natural language, within a larger orchestrated architecture for conformance checking in medicine. 
+
+2.2. LLMs in Process Mining 
+
+Large Language Models (LLMs), including BERT (De-vlin, Chang, Lee and Toutanova, 2019) and Google’s Gemini (Google DeepMind, 2025a), have significantly expanded the state of the art in Natural Language Processing (NLP) (Khurana, Koli, Khatter and Singh, 2023), opening up new possibilities for applications in Process Mining (PM). An overview of recent research at the intersection of LLMs and PM is provided in the survey by (Berti, Kourani, Hafke, Li and Schuster, 2024). According to the survey, on the one hand, LLMs have been used to automatically produce natural language text and explanations from event logs and process models (Berti, Schuster and van der Aalst, 2023; Kourani, Berti, Hennrich, Kratsch, Weidlich, Li, Arslan, Schuster and van der Aalst, 2024a), as well as from visual artifacts such as dotted charts (Qafari and van der Aalst, 2019). To improve process in-terpretability, researchers have adopted techniques including abstraction (Berti et al., 2023) and sophisticated prompt engineering strategies (Kourani et al., 2024a). LLMs have also been leveraged to support natural language querying of process data, for example to identify performance bottle-necks or detect fairness-related issues (Qafari and van der Aalst, 2019). On the other hand, LLMs have been used to extract process elements and/or process models from textual doc-uments, by leveraging prompt engineering, error correction, and code generation mechanisms (Kourani, Berti, Schuster and van der Aalst, 2024b). The work in (Susaiyah and Sidorova, 2025) adopts a LLM-based approach to extract event logs from a human-annotated dataset of nurse notes in the MIMICS-III dataset. The work in (Grohs, Abb, Elsayed and Rehse, 2023) explores the use of LLMs to derive both imperative and declarative process models from text and to   
+
+> First Author et al.: Preprint submitted to Elsevier Page 2 of 10 Short Title of the Article
+
+evaluate process suitability for robotic process automation, achieving improvements over earlier NLP-based techniques that were confined to narrower tasks. Interactive refine-ment of the generated models is also supported in (Kourani et al., 2024b). Beyond model extraction, LLMs have been applied to generate SQL queries for filtering and analyzing event logs stored in relational databases (Jessen, Sroka and Fahland, 2023). In contrast to prior work on declarative PM (see, e.g., (Grohs et al., 2023)), our objective is more focused: we do not seek to discover a complete declarative process model, and the required knowledge acquisition effort is correspond-ingly lower (while, at the same time, we also work on event log extraction from natural text, as in (Susaiyah and Sidorova, 2025)). Furthermore, among the existing litera-ture, only (Berti et al., 2023) explicitly addresses LLM-assisted conformance checking; however, its results on med-ical datasets are limited, and it does not propose a method for deriving rules directly from domain knowledge. 
+
+2.3. LLM orchestration 
+
+A growing number of AI architectures are being pro-posed in the literature, that orchestrate different LLMs, as well as other components, to complete a reasoning task, rather than developing excessively complex single models. Focusing on healthcare applications, LLM-Synergy (Yang, Li, Zhou, Xiao et al., 2025), for instance, is an ensemble learning framework that integrates outputs from multiple LLMs to improve performance on medical question-answering datasets. Always in medical question-answering, Health-Branches (Cosentino, Defilippo, Dossena, Irwin, Joubbi and Liò, 2025) first extracts structured clinical knowledge from medical literature, and then exploits it to score different LLMs’ answers through LLM-as-a-Judge evaluation. Orchestration can also take place in an agentic fashion: agentic AI denotes autonomous AI systems capable of defin-ing objectives, planning and reasoning about actions, and carrying out complex tasks with little human intervention. Unlike traditional command–response models, these sys-tems operate as independent agents that adapt to changing environments and learn from experience to accomplish their goals. Agentic AI typically integrates LLMs with additional tools and algorithms to coordinate multi-step workflows, enabling proactive problem solving. In healthcare, Rodella et al. (Rodella, Scalogna, Carenzo and Della Corte, 2025), for instance, describe an agentic AI workflow that integrates multiple specialized LLMs into a coordinated pipeline to automate the design of simulation scenarios. The system decomposes complex tasks (such as clinical narrative gener-ation, diagnostic data creation, and educational debriefing) into sub-tasks handled by different AI agents, and these are orchestrated using advanced techniques like prompt chain-ing, parallelization, retrieval augmentation, and iterative re-finement — demonstrating how orchestrated AI workflows can significantly improve efficiency and usability in medical applications. Our approach is not (yet) designed as agentic AI (this line of research will possibly be considered in the future). How-ever, it still addresses the goal of reducing the systematic biases that may emerge when fully relying on a single model, enhancing robustness and generalizability. To the best of our knowledge, it represents the first example of a LLM orchestration architecture able to support medical process conformance checking, drastically reducing the knowledge acquisition bottleneck from natural language, working at the same time both on the formalization of the event log and on the formalization of the normative rules. 
+
+## 3. LLM-assisted Conformance Checking 
+
+In our architecture, illustrated in Figure 1, we orchestrate four LLMs, as well as a final Python module, to realize a pipeline, which accomplishes the following steps: 1. Trace Extraction : by means of a first LLM (currently, Gemini 2.5 Flash (Google DeepMind, 2025a)), we process discharge letters, and convert them into an event log, formalized as a file of XES traces; 2. Rule Extraction : by means of a second LLM (cur-rently, NotebookLM (Google Labs, 2025)), we extract a set of semi-structured rules (in the IF-THEN form) from a textual clinical guideline; in order to solve possible issues, we implement a human-in-the-loop strategy, where the physician identifies incorrect or incomplete rules with respect to medical knowledge, and (possibly with the help of a technical expert) re-fines the prompt. The LLM is thus properly instructed to correct the original rule set, which is evaluated again, until the result is satisfactory; 3. Rule Filtering : by means of a third LLM (currently, Gemini 2.5 Flash (Google DeepMind, 2025a)), we filter out those rules that cannot be applied to the available event log. In fact, some rules refer to guide-line recommendations that are not meant to be applied in the hospitalization phase (e.g., they refer to pre-vention), or simply require patient data that were not routinely collected in our dataset (and thus they cannot be checked). Separating the rule filtering phase (which requires the provision of the event log to inform the LLM on what data are available) from the previous rule extraction phase allows us to obtain an initial rule set which is not biased by the current event log content, but only depends on the guideline; 4. Rule Coding : by means of a fourth LLM (currently, still Gemini 2.5 Flash (Google DeepMind, 2025a)), we convert the filtered rules into executable Python scripts; when applied to a trace, the script will provide one of the following answers: not applicable, confor-mant, not conformant . A rule may be not applicable 
+
+to a given trace because, e.g., it refers to a procedure that was not applied to that specific patient; not confor-mant , instead, means that the procedure was applied,   
+
+> First Author et al.: Preprint submitted to Elsevier Page 3 of 10
+
+Short Title of the Article Discharge Letters (Acute Ischemic Stroke) 
+
+> Trace
+> Extraction
+> Gemini
+> 2.5 Flash
+> Convert discharge
+> letters into event log
+
+1 Rule 
+
+> Extraction
+> Notebook LM
+> Extract rules from
+> clinical guideline
+
+2 Rule     
+
+> Filtering
+> Gemini
+> 2.5 Flash
+> The filtered rules do
+> not apply to the
+> event log
+
+3 Rule 
+
+> Formalizer
+> and Coding
+> Gemini
+> 2.5 Flash
+> Generate Python
+> source code from
+> filtered rules
+
+4 Rule 
+
+> Refinement
+> Gemini 3
+> Pro -Preview
+> Improve and fix the
+> Python rules
+
+5 Conformance   
+
+> Checking
+> •Apply refined -python rules to
+> event log
+> •Compute Trace Conformance
+> Indicator (TCI) and generate
+> statistics
+
+6
+
+> Rule check
+
+Figure 1: Orchestrated LLM pipeline for guideline-based conformance checking 
+
+but in a non-correct way with respect to the guideline directives (e.g., too late); 5. Rule Refinement : by means of a fifth LLM (currently, Gemini 3 Pro-Preview (Google DeepMind, 2025b)) we improve the Python rules, by fixing possible cod-ing bugs, and eliminating redundancy, noise and ar-tifacts; indeed, Gemini 3 Pro-Preview exceeds the capacity of the other LLM models, and is thus suitable to identify intrinsically flawed items; 6. Conformance Checking : by means of a last Python module, we apply the refined rules to the event log, and compute a metric that we termed Trace Confor-mance Indicator (   ), which provides the percent-age of conformant traces for each applicable rule. In order to extract traces from the discharge letters, we adopt a few-shot prompting technique (Liu, Yuan, Fu, Jiang, Hayashi and Neubig, 2023; Sahoo, Singh, Saha, Jain, Mondal and Chadha, 2025), where, along with the task description, we provide examples of trace format and con-tent (specifically XES tags, activity reference lists, activity names). Figure 2 illustrates the adopted prompt, highlighting the different strategies (Liu et al., 2023; Sahoo et al., 2025) we use. Specifically, we resort to: 
+
+• role prompting : we assert that the LLM is a medical PM expert, to force the model (which is a frozen one) to use already available domain knowledge, and an approach more focused to the task; 
+
+• contextual prompting : to build context, we provide the discharge letter, and an activity synonym reference list (i.e., a vocabulary). In particular, such a reference list had been learned by the LLM itself in a previous step of the work, where all the discharge letters were provided to the model; the list was then validated by medical experts. In the future we will consider to integrate a standard vocabulary, such as SNOMED-CT 2, along the lines described in (Bottrighi, Canessa, Ferrandi, Leonardi, Maconi, Massarino, Montani, Roveta and Striani, 2026), in a Retrieval Augmented Generation (RAG) (Lewis, Perez, Piktus, Petroni, Karpukhin, Goyal, Küttler, Lewis, tau Yih, Rocktäschel, Riedel and Kiela, 2020; Sahoo et al., 2025) fashion; 
+
+• system prompting : we establish some general rules that the model has to follow when completing the task, such as respecting the XES syntax, use reference list terms in the traces, use Italian. A similar strategy is used for prompting in the other phases of the work (i.e., rule extraction, rule filtering, rule coding and refinement). In particular, contextual prompting for rule filtering, as already observed, requires the provision of the event log, while rule coding requires a (random) example trace in order to infer its structure. As regards the choice of the LLMs, it was basically dictated by the availability of Google tools within an edu-cational agreement active at our university. In particular, we also tested Gemini for rule extraction, but it only provided a small rule set (16 rules), leading us to prefer NotebookLM for this task. NotebookLM, which extracted 161 rules (see section 4), also proved more accurate with respect to GPT-5 Thinking , which we tested in our past work (Leonardi, 
+
+> 2https://www.snomed.org/
+
+First Author et al.: Preprint submitted to Elsevier Page 4 of 10 Short Title of the Article 
+
+You are an expert in clinical process mining. 
+
+Your task is to analyze a hospital discharge letter and generate a process trace in XES format, following the official standard as rigorously as possible. 
+
+Follow these rules strictly and without exceptions: 1. XES STRUCTURE RULES*: 
+
+• The output must be a complete and valid XML file that starts with <?xml version="1.0" encoding="UTF-8"?> .
+
+• The root tag must include the necessary extensions: - <log xes.version="1.0" xmlns="http://www.xes-standard.org/"> 
+
+- <extension name="Concept" prefix="concept" uri="http://www.xes-standard.org/concept.xesext"/> 
+
+- <extension name="Time" prefix="time" uri="http://www.xes-standard.org/time.xesext"/> 
+
+• All events must be in strict chronological order and contained inside a <trace> tag. 
+
+• Each event ( <event> ) must contain EXACTLY the following tags and key attributes: - For the timestamp: <date key="time:timestamp" value="..."/> 
+
+- For the activity name: <string key="concept:name" value="..."/> 
+
+- For details: <string key="note" value="..."/> 
+
+2. RULES FOR ACTIVITY NAMES ( concept:name )*: 
+
+• LANGUAGE: The value attribute must ALWAYS be in Italian *. 
+
+• GOLDEN RULE OF STANDARDIZATION (MANDATORY)*: 
+
+For the value of <string key="concept:name" value="..."/> , you MUST use ONLY the STANDARD NAMES present in the reference list below. Analyze the letter text, identify an event, find its variant in the reference list, and use the corresponding STANDARD name. You are not allowed to invent new standard names if a mapping exists. The reference list has absolute priority. 
+
+• RULE FOR ACTIVITIES NOT PRESENT IN THE LIST*: 
+
+If an activity in the text does not match any variant in the reference list, create a new standard activity name. Use the structure of STANDARD names in the list (e.g., “Therapy Start...” , “Neurological Assessment...” , “CT Scan Execution...” ) and create a new name that is: - Concise and Clear*: ‘Noun + Adjective’ or ‘Verb + Object’ (e.g., “Cardiology Visit” ). - Consistent*: Same terminology and style as the list. - In Italian and with Capital Initials*. 
+
+> — START OF ACTIVITY REFERENCE LIST — {standardization_rules} — END OF ACTIVITY REFERENCE LIST —
+
+FINAL REVIEW*: Before generating the output, reread every tag <string key="concept:name" value="..."> and ensure its value complies with the rules. 
+
+Generate the XES trace for the following text: 
+
+> — START OF FILE — {letter_content} — END OF FILE —
+
+Legend 
+
+Role prompting System prompting Contextual prompting Few-shot prompting 
+
+* Implicit zero-shot prompting 
+
+Figure 2: Prompt template with color-coded prompting strategies. The original prompt (in Italian) has been translated into English for the sake of paper clarity. First Author et al.: Preprint submitted to Elsevier Page 5 of 10 Short Title of the Article 
+
+Montani and Striani, 2025) (where we adopted a different event log), that only provided 28 rules. Possible further tests will be considered in the future. 
+
+## 4. Experiments 
+
+Stroke is a serious medical emergency that occurs when blood supply to the brain is disrupted, leading to the death of brain cells. This disruption can result from ischemia—caused by a blood clot or embolus that deprives brain tissue of oxygen and glucose—or from hemorrhage. During the acute stage, stroke poses a significant threat to life, and survivors frequently experience severe complications that may result in long-term or permanent disability. Stroke is the primary cause of disability among adults in the United States and Europe and is the second leading cause of death worldwide. In our experiments, we considered 463 discharge letters of real stroke patients (properly anonymized), cared at the neurology ward of Alessandria Hospital (Italy), over the years 2022-2024 3. The aim of the study was that of trans-lating the letters into process traces, in order to automati-cally check the conformance of the implemented activities with respect to the Italian reference guideline, in a quality assessment perspective. Gemini 2.5 Flash extracted an event log of 463 items, composed of 47 activities on average, corresponding to a mean hospitalization duration of 10 days. In the current work, a random subsample (20%) of the extracted traces was checked and validated by medical experts. The physicians verified the coherence between the discharge letter informa-tion and the trace, the correctness of activity names (taking into account the synonym dictionary), the correctness of the timestamps (when available) and/or of the temporal ordering of the activities. All the checked traces were judged as correct and usable, and a human-in-the-loop iteration, asking the LLM to refine the output, was not implemented. Such an iterative perspec-tive can however be considered in the future, along the lines sketched in (Bottrighi et al., 2026). NotebookLM then extracted 161 rules from the Italian guideline (Italian Stroke Association), organized into 9 cat-egories: (1) diagnosis and initial imaging (20 rules); (2) acute phase management of ischemic stroke (19 rules); (3) acute phase management of hemorrhagic stroke (16 rules); (4) monitoring and complications (20 rules); (5) primary prevention (24 rules); (6) secondary prevention with an-tithrombotic therapy (15 rules); (7) secondary prevention with surgery (12 rules); (8) rehabilitation (19 rules); (9) special populations (16 rules). Our medical collaborators checked the rules extracted by the LLM, focusing especially on the first 4 categories, which are connected with the work of the neurological ward. Rules are expressed as simple IF-THEN statements, and were easy and fast to check by the human experts. The  
+
+> 3Patient data cannot be made available, due to privacy reasons. Instead, our code is available at https://osf.io/qv36n/overview?view_only=7a5f968e cbf143b09a407e9205546b9e
+
+rules were deemed both semantically accurate — reflecting the medical knowledge in the guideline — and clinically relevant, as their application is necessary for delivering correct and timely patient care. Overall, a good synthesis capability (with respect to the original, quite verbose textual guideline) was demonstrated by the LLM, with the exception of the secondary prevention rules, which did not differ much from synthetic guideline versions that are usually available to physicians for quick reference. It is however worth noting that secondary prevention rules do not relate to acute phase hospitalization, and were thus not considered in the further steps of our experiments. On a positive note, "less crucial" information (e.g., sum-maries of clinical trial outcomes, that the guideline reports to support recommendations) was properly left out, and the extracted rules were free from hallucinations. On a negative one, however, three rules were considered incomplete with respect to original guideline content. More-over, while four rules were devoted to the diagnosis of sub-arachnoid hemorrhage, the diagnosis of cerebral hemorrhage was not treated in depth. In order to solve these issues, as already observed, we have implemented a human-in-the-loop strategy, where the physician identified the problems, and (with the help of a technical expert) refined the prompt. In the case of cerebral hemorrhage rules, for instance, the prompt instructed the LLM to focus on such a diagnosis. In the next iteration, the LLM was thus asked to provide a more complete/correct rule set. In our experiments, one further iteration was enough. After filtering, only 50 rules survived, as applicable to the event log; as we already observed, most traces deal just with the first four rule categories (since other steps, such as prevention, do not take place in a neurological ward), which justifies most of the exclusions. In other cases, rules were not applicable because the data needed for the check were not collected on the patients at hand, or were not reported in the discharge letter. In the future, we may consider the opportunity to integrate the discharge letter information with other hospital data sources, for the sake of completeness. As an example, we show a rule which deals with the acute phase management of ischemic stroke: IF a patient has an occlusion of the intracranial internal carotid artery, middle cerebral artery, M1-M2 segments, or anterior cere-bral artery, A1 segment, AND is unresponsive or unable to undergo intravenous thrombolysis, THEN mechanical thrombectomy techniques are recommended within 6 hours of symptom onset. 
+
+Figure 3 reports part of the corresponding Python code, as produced after the refinement phase. As it can be ob-served, the script takes advantage of the activity synonym reference list to facilitate conformance checking of patient traces (where synonyms of the medical terms might have been used - see, e.g., the 𝑡ℎ𝑟𝑜𝑚𝑏𝑒𝑐𝑡𝑜𝑚𝑦 _𝑡𝑒𝑟𝑚𝑠 list in figure 3). Moreover, temporal constraints are properly calculated. Figure 4 shows a summary of our experimental results on conformance checking at the neurological ward of Alessan-dria Hospital.   
+
+> First Author et al.: Preprint submitted to Elsevier Page 6 of 10
+
+Short Title of the Article 
+
+Listing 1: Example of HTTP-REST Call to ChatGPT-4o API in Python— Rules Detection 
+
+1 def rule_thrombectomy ( trace : list [ dict ]) -> str : 
+
+2 def _search_term ( event : dict , terms : list ) -> bool : 
+
+3 for k , v in event . items () : 
+
+4 val = str (v). lower () 
+
+5 for t in terms : 
+
+6 if t. lower () in val : 
+
+7 return True 
+
+8 return False 
+
+910 occlusion_ica_terms = [" Occlusion ␣ of ␣ the ␣ intracranial ␣ internal ␣ carotid ␣ artery " , 
+
+11 " Intracranial ␣ ICA ␣ near - occlusion " , ...] 
+
+12 thrombectomy_terms = [" Mechanical ␣ thrombectomy " , " Endovascular ␣ thrombectomy " , ... ]
+
+13 onset_terms = [" stroke ␣ onset " , " onset " , " stroke ␣ detection " , ... ]
+
+14 ... 
+
+15 16 for event in trace : 
+
+17 if not has_occlusion_ica and _search_term ( event , occlusion_ica_terms ): 
+
+18 has_occlusion_ica = True 
+
+19 ... 
+
+20 if onset_ts is None and _search_term ( event , onset_terms ): 
+
+21 current_ts = parse_timestamp ( event . get ( ' time : timestamp ')) 
+
+22 if current_ts : 
+
+23 onset_ts = current_ts 
+
+24 if _search_term ( event , trombolysis_iv_terms ): 
+
+25 iv_trombolysis_administered = True 
+
+26 ... 
+
+27 if onset_ts is None and len ( trace ) > 0: 
+
+28 onset_ts = parse_timestamp ( trace [0]. get ( ' time : timestamp ')) 
+
+29 ... 
+
+30 31 if onset_ts is None : 
+
+32 return " NOT ␣ APPLICABLE " 
+
+33 34 if mechanical_thrombectomy_performed : 
+
+35 time_delta_minutes = get_time_delta_minutes ( onset_ts , mechanical_thrombectomy_ts ) 
+
+36 37 if time_delta_minutes is not None and time_delta_minutes <= 360: 
+
+38 return " CONFORMANT " 
+
+39 else : 
+
+40 return " NOT ␣ CONFORMANT " 
+
+41 else : 
+
+42 return " NOT ␣ CONFORMANT " 
+
+Figure 3: Part of the Python code generated by Gemini for an example rule. In the figure, only some sections of the code are shown, for the sake of simplicity, and terms in the activity synonym reference list have been translated into English 
+
+On the 50 rules, more than 86% were conformant to the clinical guideline, testifying a robust quality assessment performance for Alessandria. Nevertheless, the (few) non conformance examples testify that there is some space for further improvements. In the following, as an example, we report our investigation on two specific rules, one with a medium TCI value, and the other with a very low one. The first rule is expressed as follows: "IF a patient has cerebral hemorrhage, THEN it is suggested to start treating their high blood pressure and reversing any anticoagulant therapies as soon as they arrive at the emergency room". Such a rule obtained a TCI value of 62%. In most cases, non conformance was due to a delay to therapy administration, which was managed only in the neurological ward, and not in the emergency room, testifying a suboptimal communication between the two wards. In a specific example, however, looking at the trace and at the corresponding discharge letter, we were able to identify a delayed diagnosis: the patient was initially treated as the victim of a home accident, that caused the haemorrage, and only later it was understood that an ischemic stroke had determined the accident itself, 
+
+First Author et al.: Preprint submitted to Elsevier Page 7 of 10 Short Title of the Article 
+
+depicting a situation which was more complex than a simple cooordination bottleneck. We also investigated a second rule, expressed as follows: "If a patient has ischemic stroke AND hyperthermia, THEN pharmacological correction of hyperthermia is indicated (preferably with paracetamol), maintaining the temperature below 37 °C". This rule totalized a TCI value of only 6%. After analyzing the not conformant traces, we found that all the patients involved suffered from hyperthermia, but their treatment was different from paracetamol. Interestingly, however, most of these patients underwent a diagnostic path, which allowed physicians to identify the precise cause of hyperthermia, leading to a different, more proper therapeutic strategy. In particular, 69% of the traces are related to pa-tients who had contracted bacterial infections, and were thus treated with antibiotics; 6% of the traces relate to Covid-19-infected patient, who were treated with antivirals and anti-inflammatories. While these examples technically represent non conformances, in fact they were correct adaptations of the therapeutic strategy to the specific situations, with the objective of tackling the cause of the problem, instead of just reducing the symptoms (as paracetamol would do). The few remaining cases refer to patients having non-problematic hyperthermia (brief episodes resolved spontaneously), or to patients developing hyperthermia just before discharge or transfer to other wards, probably treated at destination. In conclusion, our tool enabled us to identify and exam-ine the non conformance examples experienced in Alessan-dria, highlighting some existing issues (e.g., a reduced co-ordination between the emergency room and the neurolog-ical ward), but also sheding light on cases which are only apparently suboptimal. 
+
+## 5. Conclusion 
+
+In this paper, we have proposed an architecture that integrates multiple LLMs and other supporting components to: (1) extract patient traces from clinical discharge letters, (2) infer normative rules from a textual clinical guideline, (3) formalize the relevant rules into executable representations, and (4) compute the   indicator, to measure trace con-formance, supporting quality assessment without requiring a time-consuming formalization of the guideline itself. Our contribution relies on the recent AI trend that moves towards system-level orchestration design, and, to the best of our knowledge, it is the first one able to cover the four tasks listed above, in an automatic and integrated way. Our experiments within the stroke management domain have showcased the real-world usability of the approach, while at the same time verifying the globally high quality of stroke care at the neurological ward of Alessandria Hos-pital, where major issues were not identified, but a possible organizational bottleneck was found. Collaboration with medical specialists, who verified the consistency of the extracted traces and rules with discharge letters and with established medical knowledge, has ensured the semantic validity of the current version of our approach. Nevertheless, we consider it valuable to evaluate trace/rule extraction testing alternative LLMs, particularly models trained on healthcare-specific data, such as Google’s Med-Gemini (Yang, Xu, Sellergren, Kohlberger, Zhou, Ktena, Kiraly, Ahmed, Hormozdiari, Jaroensri, Wang, Wulczyn, Jamil, Guidroz, Lau, Qiao, Liu, Goel, Park, Agharwal, George, Wang, Tanno, Barrett, Weng, Mahdavi, Saab, Tu, Kalidindi, Etemadi, Cuadros, Sorensen, Matias, Chou, Cor-rado, Barral, Shetty, Fleet, Eslami, Tse, Prabhakara, McLean, Steiner, Pilgrim, Kelly, Azizi and Golden, 2024), which might derive even clearer and accurate information, poten-tially reducing the effort required during expert validation. We also aim to advance toward the (partial) automa-tion of the trace/rule verification process. To this end, we plan to explore the research paradigm known as LLM-as-a-Judge (Gu, Jiang, Shi, Tan, Zhai, Xu, Li, Shen, Ma, Liu, Wang, Zhang, Wang, Gao, Ni and Guo, 2025), in which LLMs are used to evaluate the outputs of other LLMs on complex tasks. Although human assessment remains the gold standard, it is often time-consuming and expensive; in contrast, LLM-based evaluation can provide faster feedback and more consistent criteria, assuming that a well-defined evaluation framework is in place. While the adoption of LLM-as-a-Judge methods must be approached with cau-tion in medical contexts, such techniques could nonetheless accelerate validation by assigning an initial quality score, with selected cases subsequently reviewed by human experts when necessary. Additionally, in the future we plan to rely on the current framework to develop an education facility, testing the ca-pability of non-expert physicians in learning the guideline and identifying non-conformant traces with respect to it, and supporting them towards the acquisition of a stronger competence in the field. 
+
+Ethics Committee Approval The study was approved by Comitato Etico Territoriale Interaziendale AOU Maggiore della Carità di Novara (protocol code 216/CE and date of approval 19 March 2025). 
+
+## References         
+
+> van der Aalst, W.M.P., 2016. Process Mining - Data Science in Action, Second Edition. Springer. URL: https://doi.org/10.1007/978-3-662-4 9851-4 , doi: 10.1007/978-3-662-49851-4 .Adriansyah, A., Munoz-Gama, J., Carmona, J., van Dongen, B.F., van der Aalst, W.M.P., 2012. Alignment based precision checking, in: Rosa, M.L., Soffer, P. (Eds.), Business Process Management Workshops -BPM 2012 International Workshops, Tallinn, Estonia, September 3, 2012. Revised Papers, Springer. pp. 137–149. doi: 10.1007/978- 3- 642 -36285-9\_15 .Berti, A., Kourani, H., Hafke, H., Li, C.Y., Schuster, D., 2024. Evaluating large language models in process mining: Capabilities, benchmarks, and evaluation strategies. arXiv:2403.06749 .Berti, A., Schuster, D., van der Aalst, W.M.P., 2023. Abstractions, sce-narios, and prompt definitions for process mining with llms: A case study, in: Weerdt, J.D., Pufahl, L. (Eds.), Business Process Management Workshops - BPM 2023 International Workshops, Utrecht, The Nether-lands, September 11-15, 2023, Revised Selected Papers, Springer. pp. 427–439. URL: https://doi.org/10.1007/978- 3- 031- 50974- 2_32 ,doi: 10.1007/978-3-031-50974-2\_32 .
+
+First Author et al.: Preprint submitted to Elsevier Page 8 of 10 Short Title of the Article 
+
+Figure 4: Conformance analysis results. 
+
+Blog, B.A.R.B., 2024. The shift from models to compound ai systems. Berkeley AI Research Blog URL: https://bair.berkeley.edu/blog/202 4/02/18/compound-ai-systems/ .Borrego, D., Barba, I., 2014. Conformance checking and diagnosis for declarative business process models in data-aware scenarios. Expert Syst. Appl. 41, 5340–5352. doi: 10.1016/J.ESWA.2014.03.010 .Bottrighi, A., Canessa, A., Ferrandi, D., Leonardi, G., Maconi, A., Mas-sarino, C., Montani, S., Roveta, A., Striani, M., 2026. From discharge letters to process traces with llms: a human-in-the-loop pipeline, in: Giacomini, M., Delgado, J. (Eds.), Proceedings of Medical Informatics Europe (MIE), IOS Press. de Clercq, P.A., Kaiser, K., Hasman, A., 2008. Computer-interpretable guideline formalisms, in: ten Teije, A., Miksch, S., Lucas, P.J.F. (Eds.), Computer-based Medical Guidelines and Protocols: A Primer and Cur-rent Trends. IOS Press. volume 139 of Studies in Health Technology and Informatics , pp. 22–43. doi: 10.3233/978-1-58603-873-1-22 .Cosentino, C., Defilippo, A., Dossena, M., Irwin, C., Joubbi, S., Liò, P., 2025. Healthbranches: Synthesizing clinically-grounded question answering datasets via decision pathways. URL: https://arxiv.org/ abs/2508.07308 , arXiv:2508.07308 .Desel, J., Reisig, W., Rozenberg, G. (Eds.), 2004. Lectures on Concurrency and Petri Nets, Advances in Petri Nets [This tutorial volume originates from the 4th Advanced Course on Petri Nets, ACPN 2003, held in Eichstätt, Germany in September 2003. In addition to lectures given at ACPN 2003, additional chapters have been commissioned]. volume 3098 of Lecture Notes in Computer Science , Springer. URL: https: //doi.org/10.1007/b98282 , doi: 10.1007/B98282 .Devlin, J., Chang, M.W., Lee, K., Toutanova, K., 2019. BERT: Pre-training of deep bidirectional transformers for language understanding, in: Burstein, J., Doran, C., Solorio, T. (Eds.), Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), Association for Computational Linguistics, Minneapolis, Minnesota. pp. 4171–4186. URL: https://aclantholo gy.org/N19-1423 , doi: 10.18653/v1/N19-1423 .Dunzer, S., Stierle, M., Matzner, M., Baier, S., 2019. Conformance check-ing: a state-of-the-art literature review, in: Betz, S. (Ed.), Proceedings of the 11th International Conference on Subject-Oriented Business Process Management, S-BPM ONE 2019, Seville, Spain, June 26-28, 2019, ACM. pp. 4:1–4:10. doi: 10.1145/3329007.3329014 .Google DeepMind, 2025a. Gemini 2.5 flash. Large language model de-veloped by Google, optimized for low-latency and efficient multimodal reasoning. URL: https://en.wikipedia.org/wiki/Gemini_(langua ge_model) . part of the Gemini family of AI models; designed for fast, cost-effective AI reasoning and multimodal tasks. Google DeepMind, 2025b. Gemini 3 pro. Advanced large language model by Google with high reasoning and multimodal capabilities. URL: 
+
+> https://en.wikipedia.org/wiki/Gemini_(language_model)
+
+. part of the Gemini 3 series, combining deep reasoning, multimodal processing, and enhanced performance. Google Labs, 2025. Notebooklm. AI-powered research and note-taking tool by Google that synthesizes documents using Gemini models. URL: 
+
+> https://en.wikipedia.org/wiki/NotebookLM
+
+. uses Gemini family large language models (e.g., Gemini 2.5 Flash, Gemini 3) for document understanding and synthesis. Grohs, M., Abb, L., Elsayed, N., Rehse, J.R., 2023. Large language models can accomplish business process management tasks. arXiv:2307.09923 .Gu, J., Jiang, X., Shi, Z., Tan, H., Zhai, X., Xu, C., Li, W., Shen, Y., Ma, S., Liu, H., Wang, S., Zhang, K., Wang, Y., Gao, W., Ni, L., Guo, J., 2025. A survey on llm-as-a-judge. URL: https://arxiv.org/abs/2411.15594 ,
+
+> arXiv:2411.15594
+
+.Italian Stroke Association, . URL: https://isa-aii.com/linee-guida/linee -guida-attuali/ .Jessen, U., Sroka, M., Fahland, D., 2023. Chit-chat or deep talk: Prompt engineering for process mining. arXiv:2307.09909 .Khurana, D., Koli, A., Khatter, K., Singh, S., 2023. Natural language processing: state of the art, current trends and challenges. Multim. Tools Appl. 82, 3713–3744. URL: https://doi.org/10.1007/s11042-022-134 28-4 , doi: 10.1007/S11042-022-13428-4 .
+
+First Author et al.: Preprint submitted to Elsevier Page 9 of 10 Short Title of the Article 
+
+Korotich, A., 2025. Cpo predictions: The year ai finally learns to speak workflow. https://www.wrike.com/blog/ai- workflow- 2026/ . Industry analysis emphasizing cohesive AI ecosystems over standalone tools. Kourani, H., Berti, A., Hennrich, J., Kratsch, W., Weidlich, R., Li, C.Y., Arslan, A., Schuster, D., van der Aalst, W.M.P., 2024a. Leveraging large language models for enhanced process model comprehension. URL: 
+
+> https://arxiv.org/abs/2408.08892
+
+, arXiv:2408.08892 .Kourani, H., Berti, A., Schuster, D., van der Aalst, W.M., 2024b. Promoai: Process modeling with generative ai, in: Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence, International Joint Conferences on Artificial Intelligence Organization. Leemans, S.J.J., Fahland, D., van der Aalst, W.M.P., 2018. Scalable process discovery and conformance checking, pp. 599–631. URL: https://doi. org/10.1007/s10270-016-0545-x , doi: 10.1007/S10270-016-0545-X .Leonardi, G., Montani, S., Striani, M., 2025. Llm-powered conformance checking for medical processes, in: Bruno, P., Calimeri, F., Cauteruc-cio, F., Dragoni, M., Stella, F., Terracina, G. (Eds.), Proceedings of International Joint Workshop of Artificial Intelligence for Healthcare (HC@AIxIA) and HYbrid Models for Coupling Deductive and Induc-tive ReAsoning (HYDRA), CEUR. Lewis, P., Perez, E., Piktus, A., Petroni, F., Karpukhin, V., Goyal, N., Küttler, H., Lewis, M., tau Yih, W., Rocktäschel, T., Riedel, S., Kiela, D., 2020. Retrieval-augmented generation for knowledge-intensive nlp tasks, in: Advances in Neural Information Processing Systems, Curran Associates, Inc.. pp. 9459–9474. Liu, P., Yuan, W., Fu, J., Jiang, Z., Hayashi, H., Neubig, G., 2023. Pre-train, prompt, and predict: A systematic survey of prompting methods in natural language processing. ACM Computing Surveys 55, 1–35. Palani, S., Ramos, G., 2025. Orchid: Orchestrating context across creative workflows with generative ai. arXiv preprint arXiv:2508.19517 URL: 
+
+> https://arxiv.org/abs/2508.19517
+
+.Qafari, M.S., van der Aalst, W., 2019. Fairness-aware process mining, in: Panetto, H., Debruyne, C., Hepp, M., Lewis, D., Ardagna, C.A., Meersman, R. (Eds.), On the Move to Meaningful Internet Systems: OTM 2019 Conferences, Springer International Publishing, Cham. pp. 182–192. Reichert, M., Weber, B., 2012. Enabling Flexibility in Process-Aware Information Systems - Challenges, Methods, Technologies. Springer. URL: https://doi.org/10.1007/978-3-642-30409-5 , doi: 10.1007/978-3 -642-30409-5 .Rodella, G., Scalogna, A., Carenzo, L., Della Corte, F., 2025. From prompt to platform: an agentic ai workflow for healthcare simulation scenario design. Advances in Simulation 10. URL: https://advancesinsimu lation.biomedcentral.com/articles/10.1186/s41077- 025- 00357-z ,doi: 10.1186/s41077-025-00357-z .Rozinat, A., van der Aalst, W.M.P., 2008. Conformance checking of processes based on monitoring real behavior. Inf. Syst. 33, 64–95. URL: 
+
+> https://doi.org/10.1016/j.is.2007.07.001
+
+, doi: 10.1016/J.IS.2007.07.0 01 .Sahoo, P., Singh, A.K., Saha, S., Jain, V., Mondal, S., Chadha, A., 2025. A systematic survey of prompt engineering in large language models: Techniques and applications. URL: https://arxiv.org/abs/2402.07927 ,
+
+> arXiv:2402.07927
+
+.Susaiyah, A., Sidorova, N., 2025. Zero-shot approaches for the extraction of event logs from medical notes, in: Grabis, J., Vos, T.E.J., Escalona, M.J., Pastor, O. (Eds.), Research Challenges in Information Science, Springer Nature Switzerland, Cham. pp. 435–451. Yang, H., Li, M., Zhou, H., Xiao, Y., et al., 2025. Large language model synergy for ensemble learning in medical question answering: Design and evaluation study. Journal of Medical Internet Research URL: https: //pubmed.ncbi.nlm.nih.gov/40658884/ .Yang, L., Xu, S., Sellergren, A., Kohlberger, T., Zhou, Y., Ktena, I., Kiraly, A., Ahmed, F., Hormozdiari, F., Jaroensri, T., Wang, E., Wulczyn, E., Jamil, F., Guidroz, T., Lau, C., Qiao, S., Liu, Y., Goel, A., Park, K., Agharwal, A., George, N., Wang, Y., Tanno, R., Barrett, D.G.T., Weng, W.H., Mahdavi, S.S., Saab, K., Tu, T., Kalidindi, S.R., Etemadi, M., Cuadros, J., Sorensen, G., Matias, Y., Chou, K., Corrado, G., Barral, J., Shetty, S., Fleet, D., Eslami, S.M.A., Tse, D., Prabhakara, S., McLean, C., Steiner, D., Pilgrim, R., Kelly, C., Azizi, S., Golden, D., 2024. Advancing multimodal medical capabilities of gemini URL: https: //arxiv.org/abs/2405.03162 , arXiv:2405.03162 .
+
+First Author et al.: Preprint submitted to Elsevier Page 10 of 10

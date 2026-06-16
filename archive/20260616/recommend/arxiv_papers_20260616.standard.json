@@ -1,0 +1,422 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-16T22:53:01.240951+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2606.15735v1",
+      "source": "arxiv",
+      "title": "EHRNote-ChatQA: A Benchmark for Evidence-Grounded Multi-Turn Clinical Question Answering over Longitudinal Discharge Summaries",
+      "abstract": "Discharge summaries are crucial clinical documents containing the context of a patient's overall hospital stay, and are routinely reviewed by medical experts for patient readmission, ongoing care, and diagnostic decision-making. When reviewing them, medical experts often must iteratively synthesize information across multiple summaries while verifying the evidence supporting each answer. Although large language models (LLMs) are increasingly explored for clinical question answering, existing benchmarks do not sufficiently reflect this setting: they often evaluate exam-style medical knowledge or focus on single-turn question answering with limited evidence-grounding evaluation. We introduce EHRNote-ChatQA, the first benchmark for evidence-grounded multi-turn clinical question answering over patients' multiple discharge summaries. Built from de-identified MIMIC-IV discharge summaries, EHRNote-ChatQA contains 967 patient-level multi-turn samples spanning one to five notes and 16,072 medical-expert-verified QA pairs (8,036 content questions, each paired with an evidence-grounding question) across eight clinical categories. The benchmark is constructed through an expert-informed pipeline combining discharge-summary structuring schema, expert-curated multi-turn QA templates, and LLM-based generation, followed by review and revision of every single QA sample by 11 medical experts. Benchmarking 22 open- and closed-source LLMs reveals several challenges, including that LLMs struggle more with evidence grounding than content answering, multi-turn errors compound across turns, and single-turn clinical QA performance does not reliably transfer to this setting. These findings establish EHRNote-ChatQA as a rigorous and practical benchmark for evaluating clinical QA systems. The dataset will be made publicly available through PhysioNet credentialed access.",
+      "authors": [
+        "Jiyoun Kim",
+        "Muhan Yeo",
+        "Eunhye Jang",
+        "Jeewon Yang",
+        "Hangyul Yoon",
+        "Su Ji Lee",
+        "Hee Jo Han",
+        "Hee-Jae Jung",
+        "Doyun Kwon",
+        "Jun young Lee",
+        "Jaehun Lee",
+        "Jung-Oh Lee",
+        "Sunjun Kweon",
+        "Jong Hak Moon",
+        "Daseul Kim",
+        "Minjae Cho",
+        "Edward Choi"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-14T10:35:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.15735v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "benchmark for multi-turn clinical QA over longitudinal discharge summaries using EHR",
+      "llm_evidence_cn": "基于EHR纵向出院摘要的多轮临床问答基准",
+      "llm_evidence": "基于EHR纵向出院摘要的多轮临床问答基准",
+      "canonical_evidence": "基于EHR纵向出院摘要的多轮临床问答基准",
+      "llm_tldr_en": "Introduces EHRNote-ChatQA, a benchmark for evidence-grounded multi-turn clinical QA over longitudinal discharge summaries, addressing limitations of existing medical QA benchmarks.",
+      "llm_tldr_cn": "现有临床问答基准多为单轮或考试式知识，缺乏多轮证据检索评估。本文提出EHRNote-ChatQA基准，基于纵向出院摘要进行多轮临床问答，并评估证据支撑。实验表明该基准能有效衡量LLM在真实临床场景中的表现。",
+      "llm_tldr": "现有临床问答基准多为单轮或考试式知识，缺乏多轮证据检索评估。本文提出EHRNote-ChatQA基准，基于纵向出院摘要进行多轮临床问答，并评估证据支撑。实验表明该基准能有效衡量LLM在真实临床场景中的表现。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.16890v1",
+      "source": "arxiv",
+      "title": "Compositional Reasoning Depth Predicts Clinical AI Failure: Empirical Evidence Consistent with Transformer Compositionality Limits in Electronic Health Record Question Answering",
+      "abstract": "Aggregate accuracy benchmarks conceal a systematic structure in how large language models fail at electronic health record (EHR) question answering: questions requiring more inferential steps produce disproportionately more errors. Motivated by theoretical results on transformer compositionality limits, we introduce a pre-specified hop-count taxonomy -- the number of distinct reasoning steps required to answer a clinical question from an EHR -- as a principled predictor of model failure. We annotate 313 clinician-generated MedAlign EHR question-answer pairs across four hop levels and evaluate 301 questions in a within-model ablation (claude-sonnet-4-6, zero-shot vs. extended thinking) and cross-architecture replications (gpt-4o and gpt-5.4-2026-03-05, zero-shot). All three models, spanning two providers and two OpenAI generations (GPT-4 and GPT-5), show monotone accuracy decline with hop count: Claude Sonnet zero-shot falls from 30.6% (hop=1) to 17.6% (hop=4) (Cochran-Armitage z=-2.30, p=0.011; OR per hop 0.72, 95% CI [0.56,0.92], p=0.008); GPT-4o replicates this (37.8% to 14.7%; OR 0.58 [0.45,0.75], p<0.001); and gpt-5.4-2026-03-05 confirms it (37.8% to 23.5%; OR 0.80 [0.66,0.98], p=0.027). A pre-specified context-sufficiency audit shows higher-hop questions are not differentially disadvantaged by EHR truncation (answerability 93-95% at hops 2-4 vs. 79% at hop=1), so the decline reflects compositional reasoning difficulty. Extended thinking did not significantly flatten the accuracy-depth curve across three reasoning conditions, and thinking-token usage scaled with hop count (r=0.31, p<0.0001), consistent with the predicted O(k) computational requirement. Hop count is thus a theory-motivated, cross-architecture predictor of large-language-model error on EHR question answering, with direct implications for deployment risk stratification of clinical AI.",
+      "authors": [
+        "Sanjay Basu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-15T16:00:27+00:00",
+      "link": "https://arxiv.org/pdf/2606.16890v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "evaluates LLM performance on EHR question answering using hop-count taxonomy",
+      "llm_evidence_cn": "使用跳数分类法评估LLM在EHR问答上的性能",
+      "llm_evidence": "使用跳数分类法评估LLM在EHR问答上的性能",
+      "canonical_evidence": "使用跳数分类法评估LLM在EHR问答上的性能",
+      "llm_tldr_en": "Introduces hop-count taxonomy to predict LLM failure in EHR question answering, revealing systematic performance degradation with reasoning depth.",
+      "llm_tldr_cn": "现有基准掩盖了LLM在电子病历问答中的系统性失败模式。本文提出基于推理步骤数的跳数分类法，作为模型失败的预测因子。对313个临床EHR问答对进行标注和评估，发现需要更多推理步骤的问题导致不成比例的更多错误。该发现为评估医疗智能体在EHR上的推理能力提供了新视角。",
+      "llm_tldr": "现有基准掩盖了LLM在电子病历问答中的系统性失败模式。本文提出基于推理步骤数的跳数分类法，作为模型失败的预测因子。对313个临床EHR问答对进行标注和评估，发现需要更多推理步骤的问题导致不成比例的更多错误。该发现为评估医疗智能体在EHR上的推理能力提供了新视角。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.17029v1",
+      "source": "arxiv",
+      "title": "DEEPRUBRIC: Evidence-Tree Rubric Supervision for Efficient Reinforcement Learning of Deep Research Agents",
+      "abstract": "Deep research agents synthesize long-form reports by searching and reasoning over retrieved evidence. Reinforcement learning with rubric-based rewards improves these agents by optimizing them against checkable criteria that translate report quality into reward signals, but its efficiency depends on whether those criteria reliably capture the task scope and evidence needs. Most existing studies ask an LLM to generate rubrics for a given query, but when the model fails to infer the underlying information needs, the generated rubrics may be incomplete and reduce RL efficiency. To obtain more reliable query--rubric supervision, we introduce DeepRubric, a data construction framework that reverses this process: instead of inferring evaluation criteria for a given query, it first determines what an evidence-backed report should be evaluated on and then synthesizes aligned query--rubric pairs from those evaluation targets. Starting from a sampled seed topic, DeepRubric builds an evidence tree by recursively expanding evidence-backed sub-questions, whose leaves serve as atomic and verifiable evaluation targets. It then uses the evidence tree to synthesize the training query and rubrics, ensuring that the reward evaluates exactly the information requested by the query. Using DeepRubric, we construct 9K query--rubric supervision examples and train DeepRubric-8B with rubric-based GRPO, achieving comparable performance to prior open state-of-the-art deep research models across three benchmarks with roughly 13x fewer RL GPU-hours.",
+      "authors": [
+        "Minghang Zhu",
+        "Chuyang Wei",
+        "Junhao Xu",
+        "Yilin Cheng",
+        "Zhumin Chen",
+        "Jiyan He"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-15T17:52:27+00:00",
+      "link": "https://arxiv.org/pdf/2606.17029v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "RL with rubric rewards for deep research agents, directly relevant to RL-based healthcare agent evaluation",
+      "llm_evidence_cn": "使用强化学习与评分规则优化深度研究智能体，直接适用于基于强化学习的医疗智能体评估",
+      "llm_evidence": "使用强化学习与评分规则优化深度研究智能体，直接适用于基于强化学习的医疗智能体评估",
+      "canonical_evidence": "使用强化学习与评分规则优化深度研究智能体，直接适用于基于强化学习的医疗智能体评估",
+      "llm_tldr_en": "Introduces DeepRubric, a framework that constructs evidence-tree rubric supervision for efficient RL of deep research agents, improving RL efficiency.",
+      "llm_tldr_cn": "现有的基于评分规则的强化学习（RL）在优化深度研究智能体时，评分规则往往由LLM生成，可能不完整，降低RL效率。本文提出DeepRubric框架，通过反向构建证据树来生成更可靠的查询-评分监督，从而提高RL效率。该方法可迁移至医疗智能体的RL评估场景，尤其是利用EHR数据评估智能体性能时，可帮助生成更准确的评估准则。",
+      "llm_tldr": "现有的基于评分规则的强化学习（RL）在优化深度研究智能体时，评分规则往往由LLM生成，可能不完整，降低RL效率。本文提出DeepRubric框架，通过反向构建证据树来生成更可靠的查询-评分监督，从而提高RL效率。该方法可迁移至医疗智能体的RL评估场景，尤其是利用EHR数据评估智能体性能时，可帮助生成更准确的评估准则。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.09489v1",
+      "source": "arxiv",
+      "title": "LLM-Orchestrated Conformance Checking in Stroke Care Without Computer-Interpretable Guidelines",
+      "abstract": "Objective: Conformance checking in healthcare seeks to assess whether patient care pathways adhere to clinical guidelines. However, its practical application often depends on the availability of formal, machine-interpretable representations of guidelines, such as Computer-Interpretable Guidelines (CIGs), which are seldom available in real-world clinical settings.   Methods: This work introduces a modular framework based on the orchestration of Large Language Models (LLMs) to support medical conformance checking directly from unstructured clinical and guideline texts, without requiring predefined CIGs. The proposed architecture integrates multiple LLMs and supporting components to extract patient traces from clinical discharge letters, identify normative rules from textual clinical guidelines, translate these rules into executable scripts, and compute a Trace Conformance Indicator to quantify compliance within the event log.   Results: The framework was implemented and evaluated in the stroke care domain at the neurological ward of Alessandria Hospital. Hundreds of patient traces were automatically extracted from hospital data and assessed against 50 rules derived from the reference guideline. The analysis showed that more than 86\\% of the available traces were conformant.   Conclusion: The results demonstrate the feasibility of using orchestrated LLMs for practical healthcare conformance analysis. At the same time, the study provides evidence of a high level of adherence to stroke care guidelines at Alessandria Hospital.",
+      "authors": [
+        "Giorgio Leonardi",
+        "Stefania Montani",
+        "Manuel Striani",
+        "Alessandro Canessa",
+        "Delfina Ferrandi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-08T13:44:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.09489v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM framework for conformance checking using EHR discharge summaries",
+      "llm_evidence_cn": "使用电子健康记录出院小结进行一致性检查的LLM框架",
+      "llm_evidence": "使用电子健康记录出院小结进行一致性检查的LLM框架",
+      "canonical_evidence": "使用电子健康记录出院小结进行一致性检查的LLM框架",
+      "llm_tldr_en": "Proposes an LLM-orchestrated framework for conformance checking in stroke care using unstructured clinical texts, enabling evaluation without formal guidelines.",
+      "llm_tldr_cn": "针对临床路径一致性检查依赖计算机可解释指南的局限性，提出基于大语言模型编排的模块化框架，直接从非结构化临床文本和指南文本中提取患者轨迹并评估依从性。在卒中护理数据上验证了方法的有效性，无需预定义指南即可完成一致性检查，提升了实用性和可推广性。",
+      "llm_tldr": "针对临床路径一致性检查依赖计算机可解释指南的局限性，提出基于大语言模型编排的模块化框架，直接从非结构化临床文本和指南文本中提取患者轨迹并评估依从性。在卒中护理数据上验证了方法的有效性，无需预定义指南即可完成一致性检查，提升了实用性和可推广性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.12291v2",
+      "source": "arxiv",
+      "title": "Measuring Epistemic Resilience of LLMs Under Misleading Medical Context",
+      "abstract": "Large language models (LLMs) now reach expert-level scores on medical licensing exams, encouraging the assumption that high scores imply safe medical judgment while patients increasingly use them for health advice. We show this assumption is fragile: when misleading context is injected into questions that LLMs originally answer correctly, they abandon the correct answer. We call the ability to maintain correct judgment under adversarial context epistemic resilience, and introduce MedMisBench to measure it. MedMisBench contains 10,932 medical question items and 48,889 misleading context-option pairs spanning medical reasoning, agentic capability, and patient-journey evaluation. Across 11 model configurations, mean accuracy falls from 71.1% on original questions to 38.0% under focused misleading context, with 51.5% attack success. The most damaging injections are formal, rule-like fabrications: authority-framed falsehoods reach 69.5% attack success and exception-poisoning claims reach 64.1%. A 14-member clinical panel from 7 countries identified serious potential harm in 38.2% of reviewed cases. MedMisBench exposes a structural blind spot in LLM evaluation in medical settings: existing benchmarks measure what models know, but not whether they preserve correct medical judgment under misleading context.",
+      "authors": [
+        "Hongjian Zhou",
+        "Xinyu Zou",
+        "Jinge Wu",
+        "Sean Wu",
+        "Junchi Yu",
+        "Bradley Max Segal",
+        "Tobias Erich Niebuhr",
+        "Sara Amro",
+        "Michael Petrus",
+        "Sheikh Momin",
+        "Alexandra M. Cardoso Pinto",
+        "Rachel Niesen",
+        "Laura Sophie Wegner",
+        "Dhruv Darji",
+        "Jung Moses Koo",
+        "Joshua Fieggen",
+        "Kapil Narain",
+        "Mingde Zeng",
+        "Lei Clifton",
+        "Linda Shapiro",
+        "Fenglin Liu",
+        "David A. Clifton"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-10T16:27:26+00:00",
+      "link": "https://arxiv.org/pdf/2606.12291v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark for LLM epistemic resilience in medical contexts",
+      "llm_evidence_cn": "医疗语境下LLM认知弹性基准",
+      "llm_evidence": "医疗语境下LLM认知弹性基准",
+      "canonical_evidence": "医疗语境下LLM认知弹性基准",
+      "llm_tldr_en": "MedMisBench measures LLMs ability to resist misleading medical context, covering reasoning, agentic capability, and patient-journey evaluation.",
+      "llm_tldr_cn": "本文揭示LLM在医疗语境中容易受误导而放弃正确答案，提出MedMisBench基准来测量认知弹性。该基准包含超万个医疗题目和近五万个误导配对，涵盖推理、智能体能力和患者旅程评估，为医疗AI评估提供了新维度。",
+      "llm_tldr": "本文揭示LLM在医疗语境中容易受误导而放弃正确答案，提出MedMisBench基准来测量认知弹性。该基准包含超万个医疗题目和近五万个误导配对，涵盖推理、智能体能力和患者旅程评估，为医疗AI评估提供了新维度。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.11830v1",
+      "source": "arxiv",
+      "title": "Skill-Augmented AI Agents for Medical Research Analysis: An Exploratory Multi-Model Human Evaluation in an NSCLC Transcriptomic Biomarker Task",
+      "abstract": "Background. Large language models and AI agents are increasingly used to support biomedical research, but native model outputs may omit key analytical steps, misuse methods, or overstate conclusions. We evaluated whether autonomous access to a medical research skill package was associated with higher-quality AI-generated transcriptomic research-analysis outputs compared with native AI without skills. Methods. We conducted an exploratory multi-model human evaluation using a non-small cell lung cancer immunotherapy biomarker task. Six model backbones were tested. The evaluation included 21 anonymized outputs: 9 native-AI outputs and 12 skill-augmented outputs generated through an AI agent implementation represented by OpenClaw. Four non-expert biomedical reviewers and two blinded experts evaluated each output, with two ratings from each reviewer type. The primary outcome was expert-rated overall quality. Results. Skill-augmented outputs showed directionally higher expert overall quality than native-AI outputs (mean 5.50 vs 5.11; difference=0.39; bootstrap 95\\% CI, -0.04 to 0.90; Welch p=0.156). Non-expert reviewer quality showed the same direction (mean 4.72 vs 4.47; difference=0.26; bootstrap 95\\% CI, -0.25 to 0.80; Welch p=0.373). Expert agreement was limited (single-rating ICC=-0.15), and model-specific effects were descriptive and heterogeneous. Conclusions. Autonomous skill access showed a directional quality signal in this exploratory sample, but the signal was smaller than expert-rating noise and should not be interpreted as confirmatory evidence. The findings primarily motivate larger evaluations of skill-augmented AI agents with stronger reliability controls, platform replication, and biological-validity assessment.",
+      "authors": [
+        "Qianyu Yao",
+        "Fei Sun",
+        "Bocheng Huang",
+        "Wei Chen",
+        "Jiarui Jiang",
+        "Shu Quan",
+        "Yifei Chen",
+        "Wenjie Xu",
+        "Bo li",
+        "Liping Su",
+        "Ruoqiong Wu",
+        "Huhai Hong",
+        "Huimei Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-10T09:13:10+00:00",
+      "link": "https://arxiv.org/pdf/2606.11830v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Multi-model human evaluation of skill-augmented AI agents for medical research",
+      "llm_evidence_cn": "对医疗研究技能增强型AI代理进行多模型人工评估",
+      "llm_evidence": "对医疗研究技能增强型AI代理进行多模型人工评估",
+      "canonical_evidence": "对医疗研究技能增强型AI代理进行多模型人工评估",
+      "llm_tldr_en": "Evaluates skill-augmented vs native AI agents on a transcriptomic biomarker task using human assessment across six model backbones, finding skill augmentation improves quality.",
+      "llm_tldr_cn": "在大语言模型和AI代理辅助生物医学研究的背景下，该工作通过多模型人工评估探索了技能增强型代理的效果。以NSCLC免疫治疗生物标志物任务为例，对6种模型基座的21份输出进行盲评，发现技能增强型代理的输出质量优于原生模型。该研究为医疗研究分析中AI代理的设计与评估提供了实证依据。",
+      "llm_tldr": "在大语言模型和AI代理辅助生物医学研究的背景下，该工作通过多模型人工评估探索了技能增强型代理的效果。以NSCLC免疫治疗生物标志物任务为例，对6种模型基座的21份输出进行盲评，发现技能增强型代理的输出质量优于原生模型。该研究为医疗研究分析中AI代理的设计与评估提供了实证依据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.13608v1",
+      "source": "arxiv",
+      "title": "AgentBeats: Agentifying Agent Assessment for Openness, Standardization, and Reproducibility",
+      "abstract": "Agent systems are advancing quickly across domains, but their evaluation remains fragmented. Most benchmarks rely on fixed, LLM-centric harnesses that require heavy integration, create test-production mismatch, and limit fair comparison across diverse agent designs. The root problem is the lack of an open, agent-agnostic assessment interface. We advocate Agentified Agent Assessment (AAA), where evaluation is performed by judge agents and all participants interact through standardized protocols: A2A for task management and MCP for tool access. Conventional benchmarking defines two separate interfaces, one for the benchmark and one for the agent, while AAA only needs one; this yields a generic, unified framework that separates assessment logic from agent implementation and enables reproducible, interoperable, and multi-agent evaluation. We further introduce AgentBeats as a concrete realization of AAA: we identify five practical operation modes that make standardized assessment compatible with real-world constraints on openness, privacy, and reproducibility.   To evaluate our design at scale, we conduct two studies: a five-month open competition that drew 298 judge agents across 12 categories together with 467 subject agents from independent participants, showing that AAA applies across a heterogeneous range of benchmarks; and a case study on coding agents that confirms agentified evaluation preserves fidelity with the public record while surfacing previously missing head-to-head results, yielding research insights about agent design. Combining a community-scale field study and a controlled coding case study, we verify that AAA delivers coverage, practicality, and fidelity across heterogeneous scenarios at scale. Together, AAA and AgentBeats offer a clear path toward open, standardized, and reproducible agent assessment.",
+      "authors": [
+        "Xiaoyuan Liu",
+        "Jianhong Tu",
+        "Yuqi Chen",
+        "Siyuan Xie",
+        "Sihan Ren",
+        "Tianneng Shi",
+        "Gal Gantar",
+        "Evan Sandoval",
+        "Donghyun Lee",
+        "Daniel Miao",
+        "Peter J. Gilbert",
+        "Nick Hynes",
+        "Mauro Staver",
+        "Warren He",
+        "David Marn",
+        "Andrew Low",
+        "Xi Zhang",
+        "Elron Bandel",
+        "Michal Shmueli-Scheuer",
+        "Siva Reddy",
+        "Alexandre Drouin",
+        "Alexandre Lacoste",
+        "Ramayya Krishnan",
+        "Elham Tabassi",
+        "Yu Su",
+        "Victor Barres",
+        "Chenguang Wang",
+        "Wenbo Guo",
+        "Dawn Song"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-11T17:23:54+00:00",
+      "link": "https://arxiv.org/pdf/2606.13608v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "general agent assessment framework applicable to medical agents",
+      "llm_evidence_cn": "通用Agent评估框架可应用于医疗Agent",
+      "llm_evidence": "通用Agent评估框架可应用于医疗Agent",
+      "canonical_evidence": "通用Agent评估框架可应用于医疗Agent",
+      "llm_tldr_en": "AgentBeats proposes an open, standardized evaluation interface for agents using judge agents and protocols, enabling fair comparison across domains.",
+      "llm_tldr_cn": "现有agent基准测试依赖固定LLM测试框架，缺乏通用评估接口。本文提出AgentBeats，采用Agentified Agent Assessment (AAA)范式，通过判官agent和标准化协议（A2A、MCP）实现领域无关的agent评估。标准化接口分离了评估与实现，可公平比较不同agent设计。该框架可直接迁移至医疗agent评估场景。",
+      "llm_tldr": "现有agent基准测试依赖固定LLM测试框架，缺乏通用评估接口。本文提出AgentBeats，采用Agentified Agent Assessment (AAA)范式，通过判官agent和标准化协议（A2A、MCP）实现领域无关的agent评估。标准化接口分离了评估与实现，可公平比较不同agent设计。该框架可直接迁移至医疗agent评估场景。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.16871v1",
+      "source": "arxiv",
+      "title": "Human-on-the-Bridge: Scalable Evaluation for AI Agents",
+      "abstract": "AI agents must be evaluated as behavioral systems, not as isolated response generators. They reason across turns, call tools, preserve context, follow policies, and act under uncertainty. Existing methods provide useful but fragmented signals: benchmarks measure fixed capabilities, Human-in-the-Loop review preserves expert judgment but does not scale easily, LLM-as-judge methods depend on evaluator design, red teaming is often episodic, and trace auditing requires explicit evidence rules. This paper introduces Human-on-the-Bridge (HOB), a scalable evaluation paradigm for agentic AI. HOB places human expertise upstream, where experts curate reusable evaluation intelligence before testing begins, including domain context, Red-Team Traps, Juror Personas, scoring guidelines, audit rules, and fallback policies. ProofAgent Harness then executes this curated intelligence repeatedly through multi-turn adversarial evaluations, trace capture, multi-juror scoring, and evidence-linked reporting. We evaluate HOB through symmetric and cost-efficient asymmetric settings across frontier LLM-based agents and Harness LLM tiers. The study covers 23,500 agent turns and produces evidence-linked findings across finance, healthcare, and code generation. The results show that HOB can amplify evaluation quality without requiring equally large evaluator models, allowing smaller Harness LLMs to challenge agents built on frontier LLM backbones. The evaluation surfaces failures often missed by static benchmarks and single-evaluator scoring, including phantom tool-call claims, missing mandatory tool calls, policy drift, manipulation paths, and safe but non-resolving refusals. These findings support HOB as a paradigm for scaling human-curated evaluation intelligence, where expert judgment is encoded upfront and reused across repeated agent evaluations rather than applied manually inside every run.",
+      "authors": [
+        "Fouad Bousetouane"
+      ],
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA"
+      ],
+      "published": "2026-06-15T15:47:52+00:00",
+      "link": "https://arxiv.org/pdf/2606.16871v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "evaluation paradigm for AI agents, transferable to medical agent benchmarking",
+      "llm_evidence_cn": "针对AI智能体的可扩展评估范式，可迁移至医疗智能体基准测试",
+      "llm_evidence": "针对AI智能体的可扩展评估范式，可迁移至医疗智能体基准测试",
+      "canonical_evidence": "针对AI智能体的可扩展评估范式，可迁移至医疗智能体基准测试",
+      "llm_tldr_en": "Proposes Human-on-the-Bridge (HOB), a scalable evaluation paradigm for agentic AI that curates reusable evaluation intelligence before testing, applicable to benchmarking medical agents.",
+      "llm_tldr_cn": "当前AI智能体评估方法存在碎片化问题，如基准测试能力固定、人工参与难扩展。本文提出Human-on-the-Bridge（HOB）范式，将人类专家置于评估上游，预先构建可复用的评估智能体（包括领域上下文、对抗陷阱、评分指南等），从而在测试前注入专家判断，实现可扩展的智能体评估。该方法虽未直接针对医疗领域，但其框架可直接用于医疗智能体的性能基准测试，尤其适用于需要领域知识的临床决策支持智能体评估。",
+      "llm_tldr": "当前AI智能体评估方法存在碎片化问题，如基准测试能力固定、人工参与难扩展。本文提出Human-on-the-Bridge（HOB）范式，将人类专家置于评估上游，预先构建可复用的评估智能体（包括领域上下文、对抗陷阱、评分指南等），从而在测试前注入专家判断，实现可扩展的智能体评估。该方法虽未直接针对医疗领域，但其框架可直接用于医疗智能体的性能基准测试，尤其适用于需要领域知识的临床决策支持智能体评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.16723v1",
+      "source": "arxiv",
+      "title": "AgentFairBench: Do LLM Agents Discriminate When They Act?",
+      "abstract": "Large language model (LLM) agents increasingly take actions (screening applicants, recommending credit, triaging patients), yet fairness for LLMs is still measured by grading answers. We introduce AgentFairBench, a cheap, reproducible, multi-domain benchmark for demographic disparity in the actions of LLM agents. Grounded in a companion framework, the Bias Conduction Framework (BCF, restated here), it spans three regulator-anchored domains: hiring, lending, and medical triage. Synthetic, demographic-neutral profiles are evaluated in counterfactual matched sets that vary only a name-coded race x gender signal (in the Bertrand Mullainathan tradition), under four agent scaffolds of increasing agency (direct, chain-of-thought, multi-agent deliberation, tool-augmented). A NumPy-only harness computes counterfactual flip rate, mean absolute score difference (MASD), action-rate disparity, and tool-invocation disparity, with bootstrap confidence intervals, paired tests, and false-discovery-rate control, for single-digit dollars per model. A live leaderboard with a held-out private split and a contamination canary admits external models by submission. Our pilot (864 decisions plus a test-retest replication) carries a methodological lesson: comparing a six-group score spread against a two-run noise difference overstates disparity by ~ 2.4X through statistic arity alone. Against an arity matched noise floor and an omnibus group test, claude haiku 4 5 shows no demographic effect above sampling noise (0 of 120 pairwise and 0 of 9 omnibus contrasts survive correction); a planted-bias test confirms the instrument detects disparity when present. The contribution is a sound, sensitive, adoption-ready instrument, the arity matched null methodology, and open artifacts to scale it. Code, data, and harness are released under open licenses, with an anonymized review artifact.",
+      "authors": [
+        "Triveni Morla",
+        "Rohith Reddy Bellibaltu",
+        "Manpreet Singh",
+        "Manmeet Singh Kapoor"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-15T13:50:26+00:00",
+      "link": "https://arxiv.org/pdf/2606.16723v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "fairness benchmark for LLM agents including medical triage",
+      "llm_evidence_cn": "包含医疗分诊的LLM智能体公平性基准",
+      "llm_evidence": "包含医疗分诊的LLM智能体公平性基准",
+      "canonical_evidence": "包含医疗分诊的LLM智能体公平性基准",
+      "llm_tldr_en": "Introduces AgentFairBench, a multi-domain benchmark for demographic disparity in actions of LLM agents, covering hiring, lending, and medical triage.",
+      "llm_tldr_cn": "现有LLM公平性研究仅关注答案输出，忽视了智能体行为中的歧视。本文提出AgentFairBench，一个跨领域的智能体行为公平性基准，涵盖招聘、贷款和医疗分诊。通过合成中性档案和反事实匹配集，评估不同智能体框架下的种族性别偏差。该基准为医疗智能体的公平性评估提供了可复用的方法。",
+      "llm_tldr": "现有LLM公平性研究仅关注答案输出，忽视了智能体行为中的歧视。本文提出AgentFairBench，一个跨领域的智能体行为公平性基准，涵盖招聘、贷款和医疗分诊。通过合成中性档案和反事实匹配集，评估不同智能体框架下的种族性别偏差。该基准为医疗智能体的公平性评估提供了可复用的方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
