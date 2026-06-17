@@ -1,0 +1,288 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-17T21:52:06.326772+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2606.17474v1",
+      "source": "arxiv",
+      "title": "AIPatient Arena: EHR-grounded evaluation of large language models in end-to-end clinical consultation workflows",
+      "abstract": "Large language models (LLMs) are increasingly considered for use in clinical consultation tasks, yet most medical evaluations remain static, single-turn, or narrowly outcome-based, limiting their ability to reflect the sequential, uncertain, and interactive nature of real-world care. Here, we propose AIPatient Arena, an EHRs-grounded evaluation framework for assessing the clinical utility of LLMs across eight dimensions of clinical competence. The framework integrates EHR data into patient-specific knowledge graphs, enabling multi-turn physician-patient interactions. We applied AIPatient Arena on a primary cohort of 437 patients and two out-of-distribution validation cohorts of 119 and 67 patients. We observe that LLMs performed well in medical interview questioning skills (QS; mean scores, 4.43-4.99/5), ethical and professional conduct (ET; 4.38-4.93/5), and clarity and transparency of clinical explanations (EX; 3.80-4.72/5). Performance was moderate in information integration (II; 3.19-4.21/5) and medication safety and justification (MS; 3.13-3.78/5), but persistent weaknesses were observed in handling of ambiguous patient responses (HR; 2.57-3.32/5), information coverage (IC; 2.08-3.02/5), and diagnostic accuracy and reasoning (Dx; 2.63-3.55/5). Process-based evaluation revealed recurrent interaction failures, including repetitive questioning, omission of past medical history, and inadequate handling of uncertainty. Richer conversational context improved diagnostic reasoning but yielded limited gains in treatment planning. These findings indicate that final-answer accuracy alone is insufficient for evaluating clinical readiness and highlight the importance of assessing how models gather, interpret, and communicate information throughout a consultation. AIPatient Arena provides an EHR-grounded framework for workflow-oriented pre-deployment evaluation of medical LLMs.",
+      "authors": [
+        "Jiahui Niu",
+        "Huizi Yu",
+        "Wenkong Wang",
+        "Guangxin Dai",
+        "Jingxian He",
+        "Xiang Li",
+        "Zhiying Liang",
+        "Xinxin Lin",
+        "Kent CY So",
+        "Bryan YP Yan",
+        "Yun Kwok Wing",
+        "Yanqiu Xing",
+        "Xin Ma",
+        "Lizhou Fan"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-16T03:35:17+00:00",
+      "link": "https://arxiv.org/pdf/2606.17474v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "EHR-grounded evaluation framework for LLMs in clinical consultation workflows",
+      "llm_evidence_cn": "基于EHR的评估框架，用于端到端临床咨询工作流中的LLM评估",
+      "llm_evidence": "基于EHR的评估框架，用于端到端临床咨询工作流中的LLM评估",
+      "canonical_evidence": "基于EHR的评估框架，用于端到端临床咨询工作流中的LLM评估",
+      "llm_tldr_en": "AIPatient Arena uses EHR data to evaluate LLMs in multi-turn clinical consultations across eight competence dimensions.",
+      "llm_tldr_cn": "现有医疗评估多静态单轮，无法反映真实临床交互。本文提出AIPatient Arena，基于EHR构建患者知识图谱，支持多轮医患交互评估。在437名患者主队列和两个外部验证队列上应用，展示了评估框架的有效性。该工作为基于EHR的医疗代理评估提供了标准化框架。",
+      "llm_tldr": "现有医疗评估多静态单轮，无法反映真实临床交互。本文提出AIPatient Arena，基于EHR构建患者知识图谱，支持多轮医患交互评估。在437名患者主队列和两个外部验证队列上应用，展示了评估框架的有效性。该工作为基于EHR的医疗代理评估提供了标准化框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.17405v1",
+      "source": "arxiv",
+      "title": "Treatment Response Optimized Clinical Decision Support AI System via Digital Twin Simulation",
+      "abstract": "Clinical decision support AI systems (CDSASs) must adapt to evolving patient conditions in real-time while adhering to strict safety constraints. We present an online adaptive framework that integrates Treatment Effect (TE) estimation to quantify clinical benefits, a patient Digital Twin (DT) to simulate treatment trajectories, and Reinforcement Learning (RL) for sequential decision-making. The AI system is initially trained on historical medical records and operates in a continuous learning loop. To ensure safety, a rule-based module monitors vital signs and blocks contraindicated treatments. Cases with strong internal model disagreement are flagged for clinician review, simulated in our experiments via a pre-trained outcome model. We validate our framework using both a synthetic clinical simulator and a real-world ovarian cancer dataset from The Cancer Genome Atlas (TCGA). In both simulated and clinical settings, our method demonstrated superior effectiveness and stability in recommending treatments compared to standard computational baselines. Furthermore, the AI system maintains low latency and requires expert consultation for only a minority of cases in our experimental validation, demonstrating its potential as a safe, clinician-supervised tool for personalized medicine that continuously improves through practical use.",
+      "authors": [
+        "Xinyu Qin",
+        "Anil K. Sood",
+        "Ruiheng Yu",
+        "Sara Corvigno",
+        "Elaine Stur",
+        "Lu Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-16T01:39:55+00:00",
+      "link": "https://arxiv.org/pdf/2606.17405v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Online adaptive CDSS agent with reinforcement learning and digital twin simulation, trained on historical medical records",
+      "llm_evidence_cn": "在线自适应CDSS代理，结合强化学习和数字孪生模拟，基于历史医疗记录训练",
+      "llm_evidence": "在线自适应CDSS代理，结合强化学习和数字孪生模拟，基于历史医疗记录训练",
+      "canonical_evidence": "在线自适应CDSS代理，结合强化学习和数字孪生模拟，基于历史医疗记录训练",
+      "llm_tldr_en": "Presents an online adaptive CDSS agent integrating treatment effect estimation, digital twin simulation, and RL for sequential decision-making, trained on historical medical records with safety constraints.",
+      "llm_tldr_cn": "本文针对临床决策支持系统需实时适应患者状态并保证安全的问题，提出一个在线自适应框架，集成治疗效应估计、患者数字孪生模拟和强化学习进行序贯决策。系统在历史医疗记录上训练，通过规则模块监控生命体征确保安全，内部模型分歧大的案例触发临床医生审查。实验使用预训练结果模型模拟，展示了RL代理在CDSS中的应用和评估方式，对基于EHR的医疗代理强化学习评估具有直接参考价值。",
+      "llm_tldr": "本文针对临床决策支持系统需实时适应患者状态并保证安全的问题，提出一个在线自适应框架，集成治疗效应估计、患者数字孪生模拟和强化学习进行序贯决策。系统在历史医疗记录上训练，通过规则模块监控生命体征确保安全，内部模型分歧大的案例触发临床医生审查。实验使用预训练结果模型模拟，展示了RL代理在CDSS中的应用和评估方式，对基于EHR的医疗代理强化学习评估具有直接参考价值。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.16000v1",
+      "source": "arxiv",
+      "title": "GRACE-DS: a Guarded Reward-guided Agent Correction Environment in Data Science",
+      "abstract": "We introduce GRACE-DS, a Guarded Reward-guided Agent Correction Environment in Data Science for pre-deployment evaluation of LLM-powered AutoML agents. GRACE-DS is a set of evaluation metrics in an isolated environment that can be applied to tabular ML tasks specific to a particular organization. It exposes agents to realistic workflow stages, from planning and data inspection through feature engineering, model development, validation, and code repair to final submission, while hidden executable validators measure not only final predictive performance but also leakage avoidance, reproducibility, protocol validity, correction behavior, and reward alignment. The strongest structured regime, flexible iterative interaction (our approach), achieves higher end-to-end normalized hidden-test quality than single-shot generation, unstructured interaction, and restart-based baselines, while also improving protocol-valid completion. Validated across more than 7,000 episodes, these results establish GRACE-DS as a robust platform for assessing the capacity of LLM-based AutoML agents to execute machine learning workflows under production-like conditions and in accordance with organization-specific requirements.",
+      "authors": [
+        "Aleksandr Tsymbalov",
+        "Danis Zaripov",
+        "Artem Epifanov",
+        "Anastasya Palienko"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-14T19:58:06+00:00",
+      "link": "https://arxiv.org/pdf/2606.16000v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "evaluation framework for LLM agents with metrics transferable to medical agents",
+      "llm_evidence_cn": "评估LLM代理的框架与方法，可迁移至医疗代理评估",
+      "llm_evidence": "评估LLM代理的框架与方法，可迁移至医疗代理评估",
+      "canonical_evidence": "评估LLM代理的框架与方法，可迁移至医疗代理评估",
+      "llm_tldr_en": "GRACE-DS provides an evaluation environment with multiple metrics for AutoML agents, applicable to medical agent benchmarking.",
+      "llm_tldr_cn": "GRACE-DS是一个用于LLM驱动的AutoML代理的预部署评估环境，包含多种评估指标。它模拟从规划到提交的完整工作流，衡量最终性能及泄漏避免、可重复性等维度。虽然未直接涉及医疗EHR，但其评估方法论可迁移至医疗代理基准测试。",
+      "llm_tldr": "GRACE-DS是一个用于LLM驱动的AutoML代理的预部署评估环境，包含多种评估指标。它模拟从规划到提交的完整工作流，衡量最终性能及泄漏避免、可重复性等维度。虽然未直接涉及医疗EHR，但其评估方法论可迁移至医疗代理基准测试。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.15419v1",
+      "source": "arxiv",
+      "title": "Let LLMs Judge Each Other: Multi-Agent Peer-Reviewed Reasoning for Medical Question Answering",
+      "abstract": "Objective: To enhance the accuracy, interpretability, and robustness of large language models (LLMs) in medical question answering (MedQA).   Method: We designed a multi-agent peer-reviewed reasoning method in which multiple LLM agents independently generate chain-of-thought reasoning with candidate answers, then act as peer reviewers to evaluate each other's reasoning for factual correctness and logical soundness. The highest-rated reasoning chain is selected to produce the final answer. Experiments were conducted with five state-of-the-art LLMs (Llama-3.1-8B, Qwen2.5-7B, Phi-4, DeepSeek-LLM-7B, GPT-oss-20B) on three benchmark datasets: HeadQA, MedQA-USMLE, and PubMedQA. Performance was compared against single-model chain-of-thought reasoning and chain-of-thought-based majority voting.   Results: Peer-reviewed reasoning consistently outperformed both baselines. The best model combination achieved an average accuracy of 0.820 across datasets, exceeding the strongest single model (0.777) and majority voting ensembles (up to 0.789). The method also scaled effectively with more participating models, while peer assessments reliably distinguished high- from low-quality reasoning chains.   Conclusion: The proposed multi-agent peer-reviewed reasoning method enables LLMs to act as both solvers and evaluators, yielding superior performance in MedQA. By emphasizing reasoning quality rather than answer agreement alone, this approach improves accuracy, interpretability, and robustness, offering a promising direction for trustworthy biomedical AI systems.",
+      "authors": [
+        "Zaifu Zhan",
+        "Shuang Zhou",
+        "Rui Zhang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-13T18:09:44+00:00",
+      "link": "https://arxiv.org/pdf/2606.15419v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-agent peer review for medical QA evaluation",
+      "llm_evidence_cn": "多代理同行评审用于医疗问答评估",
+      "llm_evidence": "多代理同行评审用于医疗问答评估",
+      "canonical_evidence": "多代理同行评审用于医疗问答评估",
+      "llm_tldr_en": "Multi-agent peer-reviewed reasoning enhances MedQA accuracy by having LLMs generate and then evaluate each other's reasoning chains.",
+      "llm_tldr_cn": "大型语言模型在医疗问答中仍有准确性和鲁棒性挑战。该方法设计多代理同行评审：多个LLM独立生成链式推理和答案，随后互相评审事实正确性和逻辑合理性，选择最高分推理链输出。在HeadQA、MedQA-USMLE、PubMedQA上实验，性能优于单模型链式推理。",
+      "llm_tldr": "大型语言模型在医疗问答中仍有准确性和鲁棒性挑战。该方法设计多代理同行评审：多个LLM独立生成链式推理和答案，随后互相评审事实正确性和逻辑合理性，选择最高分推理链输出。在HeadQA、MedQA-USMLE、PubMedQA上实验，性能优于单模型链式推理。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.18203v1",
+      "source": "arxiv",
+      "title": "RubricsTree: Scalable and Evolving Open-Ended Evaluation of Personal Health Agents across Health Memory and Medical Skills",
+      "abstract": "The LLM-empowered personal health agents with user health (sensor) metrics have offered a promising pathway to alleviate global disparities in healthcare access. However, large-scale clinical deployment remains constrained by an open-ended evaluation bottleneck: physician annotation is reliable but costly and unscalable, while LLM-as-a-judge evaluators are scalable but subjective, inconsistent, and sometimes clinically misaligned. We introduce RubricsTree, a scalable evaluation framework with an expert-aligned hierarchical taxonomy of over 100 atomic, clinically-verifiable Boolean rubrics, evolving from the insights of 4,000 real user queries through an iterative human-in-the-loop curation protocol with an expertise panel led by an experienced physician. A context-aware adaptive router activates only the relevant auto-weighted rubric subset per query, providing the throughput needed for scalable evaluation with expert-aligned quality. Through a systematic meta-evaluation, we show that RubricsTree (i) substantially exceeds a strong large-scale evaluation baseline in expert alignment on challenging open-ended queries; (ii) reliably penalizes contextually degraded responses; and (iii) when used as structured instructions, text feedback, or training rewards for performance optimization, yields up to ~66% relative gains on HealthBench for Gemini, GPT, and Qwen model families. RubricsTree thus provides a scalable, auditable, and evolving evaluation infrastructure required for the continuous optimization of product-level personal healthcare AI.",
+      "authors": [
+        "Weizhi Zhang",
+        "Zechen Li",
+        "Hamid Palangi",
+        "Ben Graef",
+        "A. Ali Heydari",
+        "Simon A. Lee",
+        "Salman Rahman",
+        "Ray Luo",
+        "Zeinab Esmaeilpour",
+        "Erik Schenck",
+        "Chloe Zhang",
+        "Yamin Li",
+        "Menglian Zhou",
+        "Philip S. Yu",
+        "Daniel McDuff",
+        "Lindsey Sunden",
+        "Mark Malhotra",
+        "Shwetak Patel",
+        "Ahmed A. Metwally"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-16T17:34:53+00:00",
+      "link": "https://arxiv.org/pdf/2606.18203v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "evaluation framework for personal health agents",
+      "llm_evidence_cn": "个人健康智能体的评估框架",
+      "llm_evidence": "个人健康智能体的评估框架",
+      "canonical_evidence": "个人健康智能体的评估框架",
+      "llm_tldr_en": "Proposes RubricsTree, a scalable evaluation framework for personal health agents with over 100 clinically-verifiable Boolean rubrics, derived from 4,000 real user queries, enabling open-ended evaluation aligned with expert clinical judgment.",
+      "llm_tldr_cn": "该论文针对个人健康智能体开放式评估中医生标注昂贵且LLM评测不一致的问题，提出RubricsTree可扩展评估框架。其包含超过100个专家对齐的临床可验证布尔规则，从4000个真实用户查询中迭代生成。该框架平衡了可扩展性和临床对齐性，为医疗智能体性能评估提供了实用工具。",
+      "llm_tldr": "该论文针对个人健康智能体开放式评估中医生标注昂贵且LLM评测不一致的问题，提出RubricsTree可扩展评估框架。其包含超过100个专家对齐的临床可验证布尔规则，从4000个真实用户查询中迭代生成。该框架平衡了可扩展性和临床对齐性，为医疗智能体性能评估提供了实用工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.15735v2",
+      "source": "arxiv",
+      "title": "EHRNote-ChatQA: A Benchmark for Evidence-Grounded Multi-Turn Clinical Question Answering over Longitudinal Discharge Summaries",
+      "abstract": "Discharge summaries are crucial clinical documents containing the context of a patient's overall hospital stay, and are routinely reviewed by medical experts for patient readmission, ongoing care, and diagnostic decision-making. When reviewing them, medical experts often must iteratively synthesize information across multiple summaries while verifying the evidence supporting each answer. Although large language models (LLMs) are increasingly explored for clinical question answering, existing benchmarks do not sufficiently reflect this setting: they often evaluate exam-style medical knowledge or focus on single-turn question answering with limited evidence-grounding evaluation. We introduce EHRNote-ChatQA, the first benchmark for evidence-grounded multi-turn clinical question answering over patients' multiple discharge summaries. Built from de-identified MIMIC-IV discharge summaries, EHRNote-ChatQA contains 967 patient-level multi-turn samples spanning one to five notes and 16,072 medical-expert-verified QA pairs (8,036 content questions, each paired with an evidence-grounding question) across eight clinical categories. The benchmark is constructed through an expert-informed pipeline combining discharge-summary structuring schema, expert-curated multi-turn QA templates, and LLM-based generation, followed by review and revision of every single QA sample by 11 medical experts. Benchmarking 22 open- and closed-source LLMs reveals several challenges, including that LLMs struggle more with evidence grounding than content answering, multi-turn errors compound across turns, and single-turn clinical QA performance does not reliably transfer to this setting. These findings establish EHRNote-ChatQA as a rigorous and practical benchmark for evaluating clinical QA systems. The dataset will be made publicly available through PhysioNet credentialed access.",
+      "authors": [
+        "Jiyoun Kim",
+        "Muhan Yeo",
+        "Eunhye Jang",
+        "Jeewon Yang",
+        "Hangyul Yoon",
+        "Su Ji Lee",
+        "Hee Jo Han",
+        "Hee-Jae Jung",
+        "Doyun Kwon",
+        "Jun young Lee",
+        "Jaehun Lee",
+        "Jung-Oh Lee",
+        "Sunjun Kweon",
+        "Jong Hak Moon",
+        "Daseul Kim",
+        "Minjae Cho",
+        "Edward Choi"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-14T10:35:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.15735v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark for evidence-grounded clinical QA on EHR data",
+      "llm_evidence_cn": "基于EHR的临床问答基准",
+      "llm_evidence": "基于EHR的临床问答基准",
+      "canonical_evidence": "基于EHR的临床问答基准",
+      "llm_tldr_en": "Introduces EHRNote-ChatQA, a benchmark for multi-turn clinical QA over longitudinal discharge summaries designed to reflect real physician review processes. Evaluates LLMs on evidence-grounded tasks and shows significant room for improvement, providing a tool for medical AI assessment.",
+      "llm_tldr_cn": "现有临床问答基准多关注单轮或医学知识测试，未能充分反映医生需跨摘要整合证据的真实场景。本文提出EHRNote-ChatQA基准，基于纵向出院总结，支持多轮对话和证据归因评估。通过构建大规模数据集和评估协议，为LLM在EHR上的问答能力提供更全面的测试。该基准有助于推动临床决策支持系统的评估与发展。",
+      "llm_tldr": "现有临床问答基准多关注单轮或医学知识测试，未能充分反映医生需跨摘要整合证据的真实场景。本文提出EHRNote-ChatQA基准，基于纵向出院总结，支持多轮对话和证据归因评估。通过构建大规模数据集和评估协议，为LLM在EHR上的问答能力提供更全面的测试。该基准有助于推动临床决策支持系统的评估与发展。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

@@ -6,49 +6,40 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-16
-- 运行时间：2026-06-16 23:01:45 UTC
+- 最新运行日期：2026-06-17
+- 运行时间：2026-06-17 21:59:39 UTC
 - 运行状态：成功
-- 本次总论文数：9
-- 精读区：3
-- 速读区：6
+- 本次总论文数：6
+- 精读区：2
+- 速读区：4
 
 ### 今日简报（AI）
-今日阅读9篇临床AI相关文献，精读2篇高分研究聚焦电子病历问答与推理深度预测失败问题。  
-最值得关注：基于出院小结的多轮临床问答基准（EHRNote-ChatQA），以及Transformer组合性限制导致临床AI推理失败的新发现。  
-建议优先精读这两篇高分论文，速读中风护理合规检查与医疗研究智能体两篇，把握临床AI可靠性评估前沿。
-- 详情：[/202606/16/README](/202606/16/README)
+今日聚焦临床工作流AI评估与数字孪生决策支持，精读两篇高分论文。  
+最值得关注的是AIPatient Arena（10分）对端到端临床咨询的评估，以及数字孪生优化治疗响应（8分）的系统性方法。  
+建议普通读者优先了解医疗大模型评估框架与AI辅助临床决策的实际应用潜力。
+- 详情：[/202606/17/README](/202606/17/README)
 
 ### 精读区论文标签
-1. [EHRNote-ChatQA: A Benchmark for Evidence-Grounded Multi-Turn Clinical Question Answering over Longitudinal Discharge Summaries](/202606/16/2606.15735v1-ehrnote-chatqa-a-benchmark-for-evidence-grounded-multi-turn-clinical-question-answering-over-longitudinal-discharge-summaries)  
+1. [AIPatient Arena: EHR-grounded evaluation of large language models in end-to-end clinical consultation workflows](/202606/17/2606.17474v1-aipatient-arena-ehr-grounded-evaluation-of-large-language-models-in-end-to-end-clinical-consultation-workflows)  
+   标签：评分：10.0/10、query:ehr-agent
+   evidence：基于EHR的评估框架，用于端到端临床咨询工作流中的LLM评估
+2. [Treatment Response Optimized Clinical Decision Support AI System via Digital Twin Simulation](/202606/17/2606.17405v1-treatment-response-optimized-clinical-decision-support-ai-system-via-digital-twin-simulation)  
    标签：评分：8.0/10、query:ehr-agent
-   evidence：基于EHR纵向出院摘要的多轮临床问答基准
-2. [Compositional Reasoning Depth Predicts Clinical AI Failure: Empirical Evidence Consistent with Transformer Compositionality Limits in Electronic Health Record Question Answering](/202606/16/2606.16890v1-compositional-reasoning-depth-predicts-clinical-ai-failure-empirical-evidence-consistent-with-transformer-compositionality-limits-in-electronic-health-record-question-answering)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：使用跳数分类法评估LLM在EHR问答上的性能
-3. [DEEPRUBRIC: Evidence-Tree Rubric Supervision for Efficient Reinforcement Learning of Deep Research Agents](/202606/16/2606.17029v1-deeprubric-evidence-tree-rubric-supervision-for-efficient-reinforcement-learning-of-deep-research-agents)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：使用强化学习与评分规则优化深度研究智能体，直接适用于基于强化学习的医疗智能体评估
+   evidence：在线自适应CDSS代理，结合强化学习和数字孪生模拟，基于历史医疗记录训练
 
 ### 速读区论文标签
-1. [LLM-Orchestrated Conformance Checking in Stroke Care Without Computer-Interpretable Guidelines](/202606/16/2606.09489v1-llm-orchestrated-conformance-checking-in-stroke-care-without-computer-interpretable-guidelines)  
+1. [GRACE-DS: a Guarded Reward-guided Agent Correction Environment in Data Science](/202606/17/2606.16000v1-grace-ds-a-guarded-reward-guided-agent-correction-environment-in-data-science)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：使用电子健康记录出院小结进行一致性检查的LLM框架
-2. [Skill-Augmented AI Agents for Medical Research Analysis: An Exploratory Multi-Model Human Evaluation in an NSCLC Transcriptomic Biomarker Task](/202606/16/2606.11830v1-skill-augmented-ai-agents-for-medical-research-analysis-an-exploratory-multi-model-human-evaluation-in-an-nsclc-transcriptomic-biomarker-task)  
+   evidence：评估LLM代理的框架与方法，可迁移至医疗代理评估
+2. [RubricsTree: Scalable and Evolving Open-Ended Evaluation of Personal Health Agents across Health Memory and Medical Skills](/202606/17/2606.18203v1-rubricstree-scalable-and-evolving-open-ended-evaluation-of-personal-health-agents-across-health-memory-and-medical-skills)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：对医疗研究技能增强型AI代理进行多模型人工评估
-3. [Human-on-the-Bridge: Scalable Evaluation for AI Agents](/202606/16/2606.16871v1-human-on-the-bridge-scalable-evaluation-for-ai-agents)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：针对AI智能体的可扩展评估范式，可迁移至医疗智能体基准测试
-4. [Measuring Epistemic Resilience of LLMs Under Misleading Medical Context](/202606/16/2606.12291v2-measuring-epistemic-resilience-of-llms-under-misleading-medical-context)  
+   evidence：个人健康智能体的评估框架
+3. [Let LLMs Judge Each Other: Multi-Agent Peer-Reviewed Reasoning for Medical Question Answering](/202606/17/2606.15419v1-let-llms-judge-each-other-multi-agent-peer-reviewed-reasoning-for-medical-question-answering)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：医疗语境下LLM认知弹性基准
-5. [AgentBeats: Agentifying Agent Assessment for Openness, Standardization, and Reproducibility](/202606/16/2606.13608v1-agentbeats-agentifying-agent-assessment-for-openness-standardization-and-reproducibility)  
+   evidence：多代理同行评审用于医疗问答评估
+4. [EHRNote-ChatQA: A Benchmark for Evidence-Grounded Multi-Turn Clinical Question Answering over Longitudinal Discharge Summaries](/202606/17/2606.15735v2-ehrnote-chatqa-a-benchmark-for-evidence-grounded-multi-turn-clinical-question-answering-over-longitudinal-discharge-summaries)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：通用Agent评估框架可应用于医疗Agent
-6. [AgentFairBench: Do LLM Agents Discriminate When They Act?](/202606/16/2606.16723v1-agentfairbench-do-llm-agents-discriminate-when-they-act)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：包含医疗分诊的LLM智能体公平性基准
+   evidence：基于EHR的临床问答基准
 
 
 <div class="dpr-home-promo-card">
