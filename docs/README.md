@@ -6,40 +6,31 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-17
-- 运行时间：2026-06-17 21:59:39 UTC
+- 最新运行日期：2026-06-18
+- 运行时间：2026-06-18 22:11:50 UTC
 - 运行状态：成功
-- 本次总论文数：6
-- 精读区：2
-- 速读区：4
+- 本次总论文数：3
+- 精读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-今日聚焦临床工作流AI评估与数字孪生决策支持，精读两篇高分论文。  
-最值得关注的是AIPatient Arena（10分）对端到端临床咨询的评估，以及数字孪生优化治疗响应（8分）的系统性方法。  
-建议普通读者优先了解医疗大模型评估框架与AI辅助临床决策的实际应用潜力。
-- 详情：[/202606/17/README](/202606/17/README)
+1) 今日精读聚焦LLM辅助医生交互新基准，速读关注医学幻觉缓解与儿科阑尾炎混合模型。
+2) 最值得关注《Are LLMs Ready to Assist Physicians?》提出的PhysAssistBench，直接评估LLM在真实医患-EHR场景中的交互能力。
+3) 建议优先了解该基准的评估维度，后续可跟踪LLM在临床决策支持中的可靠性验证方案。
+- 详情：[/202606/18/README](/202606/18/README)
 
 ### 精读区论文标签
-1. [AIPatient Arena: EHR-grounded evaluation of large language models in end-to-end clinical consultation workflows](/202606/17/2606.17474v1-aipatient-arena-ehr-grounded-evaluation-of-large-language-models-in-end-to-end-clinical-consultation-workflows)  
+1. [Are LLMs Ready to Assist Physicians? PhysAssistBench for Interactive Doctor-Patient-EHR Assistance](/202606/18/2606.18613v1-are-llms-ready-to-assist-physicians-physassistbench-for-interactive-doctor-patient-ehr-assistance)  
    标签：评分：10.0/10、query:ehr-agent
-   evidence：基于EHR的评估框架，用于端到端临床咨询工作流中的LLM评估
-2. [Treatment Response Optimized Clinical Decision Support AI System via Digital Twin Simulation](/202606/17/2606.17405v1-treatment-response-optimized-clinical-decision-support-ai-system-via-digital-twin-simulation)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：在线自适应CDSS代理，结合强化学习和数字孪生模拟，基于历史医疗记录训练
+   evidence：PhysAssistBench基准，用于交互式医生-病人-EHR辅助评估，包含代理病人
 
 ### 速读区论文标签
-1. [GRACE-DS: a Guarded Reward-guided Agent Correction Environment in Data Science](/202606/17/2606.16000v1-grace-ds-a-guarded-reward-guided-agent-correction-environment-in-data-science)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：评估LLM代理的框架与方法，可迁移至医疗代理评估
-2. [RubricsTree: Scalable and Evolving Open-Ended Evaluation of Personal Health Agents across Health Memory and Medical Skills](/202606/17/2606.18203v1-rubricstree-scalable-and-evolving-open-ended-evaluation-of-personal-health-agents-across-health-memory-and-medical-skills)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：个人健康智能体的评估框架
-3. [Let LLMs Judge Each Other: Multi-Agent Peer-Reviewed Reasoning for Medical Question Answering](/202606/17/2606.15419v1-let-llms-judge-each-other-multi-agent-peer-reviewed-reasoning-for-medical-question-answering)  
+1. [Trust but Verify: Mitigating Medical Hallucinations via Post-Hoc Adversarial Auditing and Multi-Agent Feedback Loops](/202606/18/2606.14149v1-trust-but-verify-mitigating-medical-hallucinations-via-post-hoc-adversarial-auditing-and-multi-agent-feedback-loops)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：多代理同行评审用于医疗问答评估
-4. [EHRNote-ChatQA: A Benchmark for Evidence-Grounded Multi-Turn Clinical Question Answering over Longitudinal Discharge Summaries](/202606/17/2606.15735v2-ehrnote-chatqa-a-benchmark-for-evidence-grounded-multi-turn-clinical-question-answering-over-longitudinal-discharge-summaries)  
+   evidence：通过对抗审计评估医疗代理幻觉
+2. [Language Models as Interfaces, Not Oracles: A Hybrid LLM-ML System for Pediatric Appendicitis](/202606/18/2606.19183v1-language-models-as-interfaces-not-oracles-a-hybrid-llm-ml-system-for-pediatric-appendicitis)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：基于EHR的临床问答基准
+   evidence：混合LLM-ML临床决策支持系统
 
 
 <div class="dpr-home-promo-card">

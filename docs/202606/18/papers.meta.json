@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-18",
+  "date": "2026-06-18",
+  "generated_at": "2026-06-18T22:11:58",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/18/2606.18613v1-are-llms-ready-to-assist-physicians-physassistbench-for-interactive-doctor-patient-ehr-assistance",
+      "section": "deep",
+      "title_en": "Are LLMs Ready to Assist Physicians? PhysAssistBench for Interactive Doctor-Patient-EHR Assistance",
+      "authors": "Tianming Du, Peijie Yu, Sihan Shang, Danli Shi, My Linh Nguyen, Shengbo Gao, Guangyuan Li, Yinghong Yu, Yan Jiang, Qianlong Zhao, Behzad Bozorgtabar, Shaoxiong Ji, Jiazhen Pan, Daniel Rueckert, Jiancheng Yang",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.18613v1",
+      "score": "10.0",
+      "evidence": "PhysAssistBench基准，用于交互式医生-病人-EHR辅助评估，包含代理病人",
+      "tldr": "当前医疗LLM评估测试孤立能力，难以反映医生辅助场景。本文提出PhysAssistBench基准，基于MIMIC-IV构建交互式病人代理，经1296轮手工审核与医生验证。实验表明领先模型仍不可靠，揭示可靠辅助需协调知识、沟通与系统，而非单一能力提升。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "The most plausible near-term role of medical LLMs is to assist rather than replace physicians, yet current evaluations often test isolated capabilities: clinical knowledge, EHR system interaction, or patient communication. Physician assistance instead requires coordinating these capabilities within the same interaction, where physicians issue underspecified requests, patients describe symptoms ambiguously, and EHR systems demand precise tool use. We introduce PhysAssistBench, a benchmark for interactive doctor-patient-EHR assistance. Built from real MIMIC-IV cases, PhysAssistBench uses a scalable pipeline to construct agentic patients: interactive, record-grounded agents that turn static EHR records into multi-turn clinical scenarios while preserving clinical factuality. PhysAssistBench provides a curated bilingual evaluation set of 1,296 manually reviewed and physician-validated turns. Experiments with leading LLMs show that current models remain unreliable in this setting, which exposes a key bottleneck for clinical LLMs: reliable assistance requires coordination across knowledge, communication, and systems, not isolated gains in any of them.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/18/2606.14149v1-trust-but-verify-mitigating-medical-hallucinations-via-post-hoc-adversarial-auditing-and-multi-agent-feedback-loops",
+      "section": "quick",
+      "title_en": "Trust but Verify: Mitigating Medical Hallucinations via Post-Hoc Adversarial Auditing and Multi-Agent Feedback Loops",
+      "authors": "Muhammad Osama, Maheera Amjad, Zartasha Mustansar, Arslan Shaukat, Muhammad U. S. Khan",
+      "date": "2026-06-12",
+      "pdf": "https://arxiv.org/pdf/2606.14149v1",
+      "score": "6.0",
+      "evidence": "通过对抗审计评估医疗代理幻觉",
+      "tldr": "大语言模型在医疗场景中易推荐已禁用或撤回的药品，导致临床安全风险。本研究构建了一个基于单LLM骨干的五智能体“Trust but Verify”系统，配合包含103个临床问题的对抗数据集进行事后审计与多智能体反馈。在多个开源模型上，该方法将幻觉错误率降低约53%，点得分从不安全推荐转向适当拒绝。该框架为安全关键医疗场景下的自主AI部署提供了模型无关的实用方案。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Large Language Models (LLMs) are increasingly deployed in healthcare settings, yet their tendency to hallucinate poses risks when clinical decisions are involved. This study examine whether LLMs recommend recently banned or withdrawn pharmaceuticals when answering clinical questions and tests an agent-based method for reducing such errors. We developed a five-agent \"Trust but Verify\" system using a single LLM backbone. To measure regulatory knowledge obsolescence, we created an adversarial dataset of 103 clinical MCQs where historically correct answers now refer to banned substances. This scale ensures statistical significance across various therapeutic classes. We evaluated three open-access model families (GPT-OSS, Llama-3, Falcon-3) under vanilla and agentic conditions. Performance was measured via pointwise score, label accuracy, Hallucination Error Rate (HER), and Component Fidelity (CF) score. We also observed clinical safety regression in proprietary models. In default configurations, all models showed high hallucination rates, consistently selecting banned drugs that matched training data patterns. Our proposed agentic architecture reduced HER by approximately 53% across models. Pointwise scores shifted from -0.25 (unsafe recommendation) toward 0.0 (appropriate refusal). The safety audit intercepted dangerous outputs even when models' parametric knowledge favored the banned substance. The proposed multi-agent framework offers a model-agnostic method for enforcing regulatory compliance that prioritizes patient safety over fluent text generation. Our work demonstrates a practical approach for deploying autonomous AI systems in safety-critical healthcare settings. It shows how real-time regulatory data can be integrated into LLM pipelines to support clinical decision-making.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/18/2606.19183v1-language-models-as-interfaces-not-oracles-a-hybrid-llm-ml-system-for-pediatric-appendicitis",
+      "section": "quick",
+      "title_en": "Language Models as Interfaces, Not Oracles: A Hybrid LLM-ML System for Pediatric Appendicitis",
+      "authors": "Soheyl Bateni, Maryam Abdolali",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.19183v1",
+      "score": "6.0",
+      "evidence": "混合LLM-ML临床决策支持系统",
+      "tldr": "大语言模型直接用于临床诊断存在提示敏感、输出不稳定等问题。本文提出ClaMPAPP，一种LLM与机器学习混合系统：LLM从自由文本中提取结构化特征，经合理性校验后交由XGBoost进行最终预测。在两个独立儿科阑尾炎队列上，ClaMPAPP诊断性能最优，漏诊率最低，而端到端LLM在输入顺序变化时性能严重退化。该工作表明将LLM作为接口而非预测引擎，能分离自然语言处理与推理，提供更可靠的临床决策支持。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Large language models (LLMs) can make clinical decision support more accessible by interpreting free-text documentation, but their direct use as diagnostic engines is limited by sensitivity to prompts, information order, and plausible but incorrect outputs. Structured machine-learning models offer more stable risk prediction, yet they require tabular inputs that are difficult to integrate with narrative clinical workflows. We present ClaMPAPP (Clinical Language-assisted Machine-learning Pipeline for Appendicitis), a hybrid system that uses an LLM as an interface rather than as the final decision-maker. ClaMPAPP extracts schema-constrained clinical features from note-like narratives, applies deterministic plausibility checks, and passes validated features to an XGBoost classifier trained on clinical, laboratory, and ultrasound variables. We evaluated ClaMPAPP on two independent pediatric appendicitis cohorts from German hospitals and compared it with end-to-end LLM baselines, including open-source and proprietary models. To preserve ground truth while testing free-text input, narratives were generated from structured electronic health records through template rendering and constrained LLM rewriting, with additional sentence-order permutation to assess positional robustness. ClaMPAPP achieved the strongest overall diagnostic performance in both internal and external validation while minimizing missed appendicitis cases, the key safety concern in acute triage. End-to-end LLMs showed unstable sensitivity-specificity trade-offs and greater degradation under narrative reordering. These results support an LLM-as-interface, ML-as-predictor design that separates natural-language usability from predictive inference and provides a more auditable pathway for clinical decision support.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
