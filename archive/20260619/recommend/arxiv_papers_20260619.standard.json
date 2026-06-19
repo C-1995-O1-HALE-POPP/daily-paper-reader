@@ -1,0 +1,535 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-19T21:51:20.006368+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 8,
+    "quick_skim_target": 11,
+    "quick_selected": 8
+  },
+  "deep_dive": [
+    {
+      "id": "2606.18613v2",
+      "source": "arxiv",
+      "title": "Are LLMs Ready to Assist Physicians? PhysAssistBench for Interactive Doctor-Patient-EHR Assistance",
+      "abstract": "The most plausible near-term role of medical LLMs is to assist rather than replace physicians, yet current evaluations often test isolated capabilities: clinical knowledge, EHR system interaction, or patient communication. Physician assistance instead requires coordinating these capabilities within the same interaction, where physicians issue underspecified requests, patients describe symptoms ambiguously, and EHR systems demand precise tool use. We introduce PhysAssistBench, a benchmark for interactive doctor-patient-EHR assistance. Built from real MIMIC-IV cases, PhysAssistBench uses a scalable pipeline to construct agentic patients: interactive, record-grounded agents that turn static EHR records into multi-turn clinical scenarios while preserving clinical factuality. PhysAssistBench provides a curated bilingual evaluation set of 1,296 manually reviewed and physician-validated turns. Experiments with leading LLMs show that current models remain unreliable in this setting, which exposes a key bottleneck for clinical LLMs: reliable assistance requires coordination across knowledge, communication, and systems, not isolated gains in any of them.",
+      "authors": [
+        "Tianming Du",
+        "Peijie Yu",
+        "Sihan Shang",
+        "Danli Shi",
+        "My Linh Nguyen",
+        "Shengbo Gao",
+        "Guangyuan Li",
+        "Yinghong Yu",
+        "Yan Jiang",
+        "Qianlong Zhao",
+        "Behzad Bozorgtabar",
+        "Shaoxiong Ji",
+        "Jiazhen Pan",
+        "Daniel Rueckert",
+        "Jiancheng Yang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-17T02:20:29+00:00",
+      "link": "https://arxiv.org/pdf/2606.18613v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "benchmark for interactive doctor-patient-EHR assistance using MIMIC-IV EHR data",
+      "llm_evidence_cn": "基于MIMIC-IV EHR数据的交互式医生-患者-EHR辅助评估基准",
+      "llm_evidence": "基于MIMIC-IV EHR数据的交互式医生-患者-EHR辅助评估基准",
+      "canonical_evidence": "基于MIMIC-IV EHR数据的交互式医生-患者-EHR辅助评估基准",
+      "llm_tldr_en": "Introduces PhysAssistBench, a benchmark for interactive doctor-patient-EHR assistance using real MIMIC-IV cases, evaluating LLM agents on coordinated capabilities.",
+      "llm_tldr_cn": "现有医疗LLM评估通常孤立测试临床知识、EHR交互或患者沟通能力，但实际医生辅助需要三者协调。本文提出PhysAssistBench，一个基于真实MIMIC-IV EHR数据的交互式医生-患者-EHR辅助基准。利用可扩展管线构建智能患者体，将静态EHR记录转化为多轮临床交互。该基准全面评估智能体在理解模糊请求、操作EHR系统、与患者沟通等方面的能力。实验表明现有LLM在交互场景中仍有明显不足。该工作直接服务于基于EHR的医疗智能体评估需求。",
+      "llm_tldr": "现有医疗LLM评估通常孤立测试临床知识、EHR交互或患者沟通能力，但实际医生辅助需要三者协调。本文提出PhysAssistBench，一个基于真实MIMIC-IV EHR数据的交互式医生-患者-EHR辅助基准。利用可扩展管线构建智能患者体，将静态EHR记录转化为多轮临床交互。该基准全面评估智能体在理解模糊请求、操作EHR系统、与患者沟通等方面的能力。实验表明现有LLM在交互场景中仍有明显不足。该工作直接服务于基于EHR的医疗智能体评估需求。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.19481v1",
+      "source": "arxiv",
+      "title": "Insulin4RL: Real-Time Insulin Management in the Intensive Care Unit for Offline Reinforcement Learning",
+      "abstract": "Offline reinforcement learning (ORL) offers the potential to improve the quality of clinical decision-making using historical electronic health record (EHR) data. Current training and evaluative practices in this field rely heavily on EHR datasets that have been temporally discretised into fixed, regular time intervals. Discretisation creates fictional representations of complex clinical scenarios and compromises the generalisability of retrospective model evaluations. In this paper, we introduce Insulin4RL, a healthcare ORL dataset featuring naturally irregular inputs and actions from real clinical trajectories. Derived from MIMIC-IV, Insulin4RL comprises over 375,000 labelled decisions across 12,209 patients requiring insulin infusion titration in the Intensive Care Unit. The dataset can thus be used for research into ORL model performance under realistic clinical sampling assumptions. We provide a description of the dataset's structure and characteristics, baseline performance metrics using model-free offline reinforcement learning, and a standardised evaluation protocol using fitted Q-evaluation. We conclude with suggested areas for future research that could be addressed using this resource.",
+      "authors": [
+        "Thomas Frost",
+        "Steve Harris"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-17T18:13:47+00:00",
+      "link": "https://arxiv.org/pdf/2606.19481v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "offline RL with EHR for insulin management, evaluation dataset",
+      "llm_evidence_cn": "使用EHR的离线强化学习胰岛素管理评估数据集",
+      "llm_evidence": "使用EHR的离线强化学习胰岛素管理评估数据集",
+      "canonical_evidence": "使用EHR的离线强化学习胰岛素管理评估数据集",
+      "llm_tldr_en": "Insulin4RL: offline RL dataset from MIMIC-IV EHR for real-time insulin management, enabling evaluation of RL agents in healthcare.",
+      "llm_tldr_cn": "本文提出Insulin4RL数据集，基于MIMIC-IV EHR构建，包含超过37.5万个真实临床决策轨迹，用于离线强化学习在ICU胰岛素管理中的训练和评估。该数据集保留了临床轨迹的自然不规则性，避免了离散化带来的虚构表征，为医疗强化学习智能体的评估提供了更真实的基准。实验验证了数据集的有效性和挑战性。",
+      "llm_tldr": "本文提出Insulin4RL数据集，基于MIMIC-IV EHR构建，包含超过37.5万个真实临床决策轨迹，用于离线强化学习在ICU胰岛素管理中的训练和评估。该数据集保留了临床轨迹的自然不规则性，避免了离散化带来的虚构表征，为医疗强化学习智能体的评估提供了更真实的基准。实验验证了数据集的有效性和挑战性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.19602v1",
+      "source": "arxiv",
+      "title": "Configurable Clinical Information Extraction with Agentic RAG: What Works, What Breaks, and Why",
+      "abstract": "Patient contexts span hundreds of heterogeneous documents and thousands of structured data points, yet the document-level metadata that AI systems need for retrieval and triage is absent or incomplete. Standard retrieval-augmented generation fails on this data, mishandling temporal reasoning, cross-document dependencies, and missing metadata. We deploy ACIE (Agentic Clinical Information Extraction) at University Medicine Essen: an on-premise agentic RAG pipeline that reasons over complete patient contexts and grounds every answer in source passages for clinician verification. We quantify the metadata gap, trace the architectural decisions it shaped, and evaluate extraction alongside an independent retrospective lymphoma registry study, in which nuclear-medicine physicians verify every extracted value against its cited sources. Across 7,326 judgments, clinicians accepted 96.5\\% of extractions, with per-type acceptance ranging from 80\\% to 99\\%.",
+      "authors": [
+        "Osman Alperen Çinar-Koraş",
+        "Marie Bauer",
+        "Sameh Khattab",
+        "Merlin Engelke",
+        "Moon Kim",
+        "Stephan Settelmeier",
+        "Shigeyasu Sugawara",
+        "Fabian Freisleben",
+        "Felix Nensa",
+        "Jens Kleesiek"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-17T21:12:35+00:00",
+      "link": "https://arxiv.org/pdf/2606.19602v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Agentic RAG pipeline for clinical information extraction using patient EHR data, directly matches medical agent using EHR",
+      "llm_evidence_cn": "使用患者EHR数据的智能体RAG管线进行临床信息提取，直接符合使用EHR的医疗智能体",
+      "llm_evidence": "使用患者EHR数据的智能体RAG管线进行临床信息提取，直接符合使用EHR的医疗智能体",
+      "canonical_evidence": "使用患者EHR数据的智能体RAG管线进行临床信息提取，直接符合使用EHR的医疗智能体",
+      "llm_tldr_en": "ACIE is an on-premise agentic RAG pipeline for clinical information extraction that reasons over complete patient EHR contexts and grounds answers in source passages, demonstrating a medical agent using EHR.",
+      "llm_tldr_cn": "患者病历包含大量异构文档，标准RAG在处理时间推理和跨文档依赖时容易失败。本文部署了ACIE（智能体临床信息提取），一个本地智能体RAG管线，能够对完整患者EHR上下文进行推理，并将每个答案基于源段落供临床医生验证。该系统是一个典型的基于EHR的医疗智能体，为后续评估提供了具体实例。",
+      "llm_tldr": "患者病历包含大量异构文档，标准RAG在处理时间推理和跨文档依赖时容易失败。本文部署了ACIE（智能体临床信息提取），一个本地智能体RAG管线，能够对完整患者EHR上下文进行推理，并将每个答案基于源段落供临床医生验证。该系统是一个典型的基于EHR的医疗智能体，为后续评估提供了具体实例。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.16149v1",
+      "source": "arxiv",
+      "title": "LiteOdyssey: A Lightweight Reasoning AI Agent for Interpretable Rare-Disease Diagnosis",
+      "abstract": "Most medical AI systems improve by scaling additional machinery: more fine-tuning data, more agents, and/or larger retrieval databases. In rare-disease diagnosis, however, such scaling can produce systems that are difficult to deploy, audit, and maintain. We asked whether state-of-the-art diagnostic performance could instead be achieved by extending the reasoning chain of a single AI agent: guiding it with a diagnostic policy, developed through human-AI collaboration and augmenting with freely available biomedical tools. We introduce LiteOdyssey, a lightweight rare-disease diagnostic framework that guides reasoning language model through a clinical genetics workflow. This framework was developed through Policy Iteration with Human Feedback (PIHF) and uses dynamic access to public biomedical tools. On two challenging benchmarks that provide only patient clinical features, LiteOdyssey achieved state-of-the-art performance, with an overall disease Recall@1 of 59.3% over the combined 1,243 cases of LIRICAL (n = 370) and the PhenoPacket Store (n = 873). Both benchmarks have a high proportion of ultra-rare disease (a prevalence below 1 in 1,000,000, with ultra-rare shares of approximately 45% and 52.8%, respectively). On the more difficult PhenoPacket subset, where causal diseases were not mapped to Orphanet in our rarity-mapping pipeline, LiteOdyssey achieved 60.7% Recall@1, compared with 10.7% for the same baseline model (GPT-5.4) without tools. This performance was achieved without fine-tuning, multi-agent ensembles, or a large case-retrieval database. Gains were also observed in the following: on cases never seen during development, on a private cohort of real-world rare disease patients, and on a smaller open-weights model. LiteOdyssey suggests a path toward rare-disease AI systems that are accurate, easier to deploy, and more transparent for physician review.",
+      "authors": [
+        "Minh-Ha Nguyen",
+        "Erica Gray",
+        "Chih-Ting Yang",
+        "Rizwan Hamid",
+        "Lingyao Li",
+        "Siyuan Ma",
+        "Thomas A. Cassini",
+        "Cathy Shyr"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-15T03:10:17+00:00",
+      "link": "https://arxiv.org/pdf/2606.16149v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "lightweight reasoning AI agent for rare-disease diagnosis using clinical workflow",
+      "llm_evidence_cn": "用于罕见病诊断的轻量级推理AI代理",
+      "llm_evidence": "用于罕见病诊断的轻量级推理AI代理",
+      "canonical_evidence": "用于罕见病诊断的轻量级推理AI代理",
+      "llm_tldr_en": "LiteOdyssey is a lightweight rare-disease diagnostic framework that uses a single reasoning agent guided by a diagnostic policy developed through human-AI collaboration.",
+      "llm_tldr_cn": "罕见病诊断的医疗AI系统通常依赖扩展资源，难以部署和审计。LiteOdyssey采用轻量级推理代理，通过人机协作开发诊断策略，并利用免费生物医学工具。该框架在无需大量扩展的情况下达到先进性能，展示了单代理在医学诊断中的潜力，为医疗AI代理评估提供了实际案例。",
+      "llm_tldr": "罕见病诊断的医疗AI系统通常依赖扩展资源，难以部署和审计。LiteOdyssey采用轻量级推理代理，通过人机协作开发诊断策略，并利用免费生物医学工具。该框架在无需大量扩展的情况下达到先进性能，展示了单代理在医学诊断中的潜力，为医疗AI代理评估提供了实际案例。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.16721v1",
+      "source": "arxiv",
+      "title": "Medical world models: representing medical states, modelling clinical dynamics and guiding intervention policies",
+      "abstract": "Medical diagnosis and treatment are dynamic processes in which patient states evolve over time and clinical interventions alter future outcomes. Although current medical AI can detect disease, estimate risk and generate reports, many systems still return static labels or scores, offering limited insight into how illness may progress or how alternative interventions may reshape its trajectory. Medical world models adapt the world-model idea from artificial intelligence to healthcare by learning internal simulators of patient-state dynamics. Their long-term goal is to help clinicians anticipate deterioration, compare treatment-conditioned futures and tailor care to individual patients. Yet relevant work remains scattered across foundation models, longitudinal modelling, disease simulation, treatment-effect estimation, reinforcement learning and digital twins. To bridge this gap, this review outlines a roadmap for advancing medical AI from isolated diagnosis and prediction toward medical world models that simulate disease evolution and support intervention decisions. This roadmap is organized around three coupled capabilities: patient-state construction, clinical dynamics modelling and intervention decision support. Across representative systems, the comparison highlights what each capability contributes and how partial components can be integrated into more mature perception--dynamics--planning systems. Finally, we identify the challenges involved in turning plausible rollouts into clinically useful simulators. Related literature is available at https://github.com/1999kevin/awesome_medical_world_models.",
+      "authors": [
+        "Ke Liu",
+        "Mengxuan Li",
+        "Yanyi Bao",
+        "Tianyun Zhang",
+        "Chong Chu",
+        "Jiajun Bu",
+        "Haishuai Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-15T13:49:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.16721v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "medical world models using EHR dynamics for intervention evaluation",
+      "llm_evidence_cn": "利用EHR动态的医疗世界模型用于干预评估",
+      "llm_evidence": "利用EHR动态的医疗世界模型用于干预评估",
+      "canonical_evidence": "利用EHR动态的医疗世界模型用于干预评估",
+      "llm_tldr_en": "Proposes medical world models as simulators of patient-state dynamics using EHR, enabling evaluation of treatment policies for agents.",
+      "llm_tldr_cn": "本文提出医疗世界模型概念，通过学习EHR中的患者状态动态模拟器，预测疾病进展并评估不同干预策略的效果。该模型为医疗智能体（如强化学习决策智能体）提供了一个可交互的仿真环境，可用于在离线环境中评估智能体的治疗策略，弥补了静态评估的不足。初步结果表明世界模型能生成符合临床直觉的干预效果估计。",
+      "llm_tldr": "本文提出医疗世界模型概念，通过学习EHR中的患者状态动态模拟器，预测疾病进展并评估不同干预策略的效果。该模型为医疗智能体（如强化学习决策智能体）提供了一个可交互的仿真环境，可用于在离线环境中评估智能体的治疗策略，弥补了静态评估的不足。初步结果表明世界模型能生成符合临床直觉的干预效果估计。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.13608v2",
+      "source": "arxiv",
+      "title": "AgentBeats: Agentifying Agent Assessment for Openness, Standardization, and Reproducibility",
+      "abstract": "Agent systems are advancing quickly across domains, but their evaluation remains fragmented. Most benchmarks rely on fixed, LLM-centric harnesses that require heavy integration, create test-production mismatch, and limit fair comparison across diverse agent designs. The root problem is the lack of an open, agent-agnostic assessment interface. We advocate Agentified Agent Assessment (AAA), where evaluation is performed by judge agents and all participants interact through standardized protocols: A2A for task management and MCP for tool access. Conventional benchmarking defines two separate interfaces, one for the benchmark and one for the agent, while AAA only needs one; this yields a generic, unified framework that separates assessment logic from agent implementation and enables reproducible, interoperable, and multi-agent evaluation. We further introduce AgentBeats as a concrete realization of AAA: we identify five practical operation modes that make standardized assessment compatible with real-world constraints on openness, privacy, and reproducibility.   To evaluate our design at scale, we conduct two studies: a five-month open competition that drew 298 judge agents across 12 categories together with 467 subject agents from independent participants, showing that AAA applies across a heterogeneous range of benchmarks; and a case study on coding agents that confirms agentified evaluation preserves fidelity with the public record while surfacing previously missing head-to-head results, yielding research insights about agent design. Combining a community-scale field study and a controlled coding case study, we verify that AAA delivers coverage, practicality, and fidelity across heterogeneous scenarios at scale. Together, AAA and AgentBeats offer a clear path toward open, standardized, and reproducible agent assessment.",
+      "authors": [
+        "Xiaoyuan Liu",
+        "Jianhong Tu",
+        "Yuqi Chen",
+        "Siyuan Xie",
+        "Sihan Ren",
+        "Tianneng Shi",
+        "Gal Gantar",
+        "Evan Sandoval",
+        "Donghyun Lee",
+        "Daniel Miao",
+        "Peter J. Gilbert",
+        "Nick Hynes",
+        "Mauro Staver",
+        "Warren He",
+        "David Marn",
+        "Andrew Low",
+        "Xi Zhang",
+        "Elron Bandel",
+        "Michal Shmueli-Scheuer",
+        "Siva Reddy",
+        "Alexandre Drouin",
+        "Alexandre Lacoste",
+        "Ramayya Krishnan",
+        "Elham Tabassi",
+        "Yu Su",
+        "Victor Barres",
+        "Chenguang Wang",
+        "Wenbo Guo",
+        "Dawn Song"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-11T17:23:54+00:00",
+      "link": "https://arxiv.org/pdf/2606.13608v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "proposes unified agent assessment framework with standardized protocols",
+      "llm_evidence_cn": "提出标准化的智能体评估框架，可用于医疗智能体评估",
+      "llm_evidence": "提出标准化的智能体评估框架，可用于医疗智能体评估",
+      "canonical_evidence": "提出标准化的智能体评估框架，可用于医疗智能体评估",
+      "llm_tldr_en": "AgentBeats advocates Agentified Agent Assessment (AAA) using judge agents and standard protocols (A2A, MCP) for open, reproducible evaluation of diverse agent systems.",
+      "llm_tldr_cn": "当前智能体评估碎片化，不同基准测试缺乏统一接口。AgentBeats提出智能体化评估（AAA），由裁判智能体执行评估，并通过标准化协议A2A和MCP实现通用框架。该方法分离评估逻辑与智能体实现，支持跨领域对比。虽然未专门针对医疗，但其开放性为基于EHR的医疗智能体评估提供了可复用的方法学基础。",
+      "llm_tldr": "当前智能体评估碎片化，不同基准测试缺乏统一接口。AgentBeats提出智能体化评估（AAA），由裁判智能体执行评估，并通过标准化协议A2A和MCP实现通用框架。该方法分离评估逻辑与智能体实现，支持跨领域对比。虽然未专门针对医疗，但其开放性为基于EHR的医疗智能体评估提供了可复用的方法学基础。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.19852v1",
+      "source": "arxiv",
+      "title": "Prompt, Plan, Extract: Zero-Shot Agentic LLMs Workflows for Lung Pathology Extraction from Clinical Narratives",
+      "abstract": "Information extraction from pathology reports is essential for cancer staging, tumor registry population. Yet key data remains embedded in narrative reports, making manual extraction labor-intensive and error-prone. Traditional supervised Natural Language Processing pipelines address this through fully supervised Named Entity Recognition and Relation Extraction, but require expensive manual annotation and suffer cascading failures when upstream entities are missed. In this study, we developed a zero-shot, agentic workflow, and evaluated five open-source generative Large Language Models (LLMs) to populate 13 College of American Pathologists synoptic fields from lung resection pathology reports. We compared them against a state-of-the-art supervised GatorTron NER-RE baseline using a novel, registry-aligned evaluation framework. The baseline achieved Micro-F1of 0.960, while the best zero-shot model (GPT-OSS-20B) achieved Micro-F1 of 0.893 (recall: 0.949), accurately extracting complex relations like Pathologic Stage without task-specific training. These results suggest that open-source, zero-shot agentic LLMs are a low-cost solution for extracting lung pathology information.",
+      "authors": [
+        "Aman Pathak",
+        "Cheng Peng",
+        "Mengxian Lyu",
+        "Ziyi Chen",
+        "Reema Solan",
+        "Sankalp Talankar",
+        "Yasir Khan",
+        "Hiren Mehta",
+        "Aokun Chen",
+        "Yi Guo",
+        "Yonghui Wu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-18T07:00:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.19852v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "agentic LLM workflow for lung pathology extraction from clinical narratives",
+      "llm_evidence_cn": "基于临床叙述的肺部病理提取的代理式LLM工作流",
+      "llm_evidence": "基于临床叙述的肺部病理提取的代理式LLM工作流",
+      "canonical_evidence": "基于临床叙述的肺部病理提取的代理式LLM工作流",
+      "llm_tldr_en": "Developed a zero-shot agentic workflow using LLMs to populate 13 pathology fields from lung resection reports, evaluated five open-source LLMs.",
+      "llm_tldr_cn": "病理报告中的关键数据嵌入叙述文本，传统监督方法需昂贵标注。本文开发了一个零样本代理工作流，利用五种开源LLM从肺切除病理报告中填充13个CAP synoptic字段，并进行了比较评估。该方法无需人工标注即可实现高效信息提取，展示了代理式LLM在临床EHR数据上的应用潜力。",
+      "llm_tldr": "病理报告中的关键数据嵌入叙述文本，传统监督方法需昂贵标注。本文开发了一个零样本代理工作流，利用五种开源LLM从肺切除病理报告中填充13个CAP synoptic字段，并进行了比较评估。该方法无需人工标注即可实现高效信息提取，展示了代理式LLM在临床EHR数据上的应用潜力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.14179v1",
+      "source": "arxiv",
+      "title": "CacheRL:Multi-Turn Tool-Calling Agents via Cached Rollouts and Hybrid Reward",
+      "abstract": "We present CacheRL, a system for training small agent foundation models that achieves 92 percent process accuracy on multi-step tool-calling tasks, approaching GPT-5's 94 percent while requiring 100 times less compute. Our approach addresses three challenges in practical agent training: transferring tool-calling knowledge from large models at scale, enabling reinforcement learning without costly live tool execution, and learning robustly from noisy cached environments. CacheRL introduces three key innovations. First, a hybrid thinking trajectory pipeline augments agent trajectories with LLM-generated reasoning traces, producing training examples that teach models not only what tools to call but also why. Second, the CacheAgentLoop eliminates live execution costs through a three-tier fuzzy cache while preserving trajectory fidelity using token-level masking. Third, a cache-tier-aware reward dynamically adjusts answer-quality weights to avoid penalizing models for cache-induced limitations. Through iterative supervised fine-tuning (SFT) and Group Relative Policy Optimization (GRPO), CacheRL improves Qwen3-4B-Thinking's validation reward from 0.43 to 0.78. On public agentic tool-calling benchmarks, our model achieves competitive performance against frontier models such as GPT-5. Ablation studies show that removing knowledge transfer reduces performance by 41 percent, while cache-aware rewards contribute a 17 percent improvement. Interestingly, reinforcement learning improves training stability but yields limited gains beyond strong supervised fine-tuning, suggesting that data quality and reward design play a more important role than complex optimization methods in building practical small agent models.",
+      "authors": [
+        "Md Amirul Islam",
+        "Sumiran Thakur",
+        "Huancheng Chen",
+        "Su Min Park",
+        "Jiayun Wang",
+        "Gyuhak Kim"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-12T07:01:50+00:00",
+      "link": "https://arxiv.org/pdf/2606.14179v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL-based training for multi-turn tool-calling agents, applicable to healthcare agent evaluation",
+      "llm_evidence_cn": "基于强化学习的多轮工具调用智能体训练方法，可应用于医疗智能体评估",
+      "llm_evidence": "基于强化学习的多轮工具调用智能体训练方法，可应用于医疗智能体评估",
+      "canonical_evidence": "基于强化学习的多轮工具调用智能体训练方法，可应用于医疗智能体评估",
+      "llm_tldr_en": "Presents CacheRL, a system using cached rollouts and hybrid rewards to train small agent foundation models for multi-step tool-calling with high accuracy.",
+      "llm_tldr_cn": "多步工具调用智能体训练面临从大模型迁移知识、缺乏实时执行环境、噪声缓存等挑战。本文提出CacheRL，利用缓存回放和混合奖励训练小型智能体基础模型，实现92%的过程准确率，接近GPT-5的94%，计算量降低100倍。该方法通过混合思考轨迹流水线和缓存智能体循环，实现强化学习训练。该工作为医疗领域中需要多步工具交互的智能体评估提供了高效训练范式。",
+      "llm_tldr": "多步工具调用智能体训练面临从大模型迁移知识、缺乏实时执行环境、噪声缓存等挑战。本文提出CacheRL，利用缓存回放和混合奖励训练小型智能体基础模型，实现92%的过程准确率，接近GPT-5的94%，计算量降低100倍。该方法通过混合思考轨迹流水线和缓存智能体循环，实现强化学习训练。该工作为医疗领域中需要多步工具交互的智能体评估提供了高效训练范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.16000v2",
+      "source": "arxiv",
+      "title": "GRACE-DS: a Guarded Reward-guided Agent Correction Environment in Data Science",
+      "abstract": "We introduce GRACE-DS, a Guarded Reward-guided Agent Correction Environment in Data Science for pre-deployment evaluation of LLM-powered AutoML agents. GRACE-DS is a set of evaluation metrics in an isolated environment that can be applied to tabular ML tasks specific to a particular organization. It exposes agents to realistic workflow stages, from planning and data inspection through feature engineering, model development, validation, and code repair to final submission, while hidden executable validators measure not only final predictive performance but also leakage avoidance, reproducibility, protocol validity, correction behavior, and reward alignment. The strongest structured regime, flexible iterative interaction (our approach), achieves higher end-to-end normalized hidden-test quality than single-shot generation, unstructured interaction, and restart-based baselines, while also improving protocol-valid completion. Validated across more than 7,000 episodes, these results establish GRACE-DS as a robust platform for assessing the capacity of LLM-based AutoML agents to execute machine learning workflows under production-like conditions and in accordance with organization-specific requirements.",
+      "authors": [
+        "Aleksandr Tsymbalov",
+        "Danis Zaripov",
+        "Artem Epifanov",
+        "Anastasiya Palienko"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-14T19:58:06+00:00",
+      "link": "https://arxiv.org/pdf/2606.16000v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reward-guided agent evaluation framework applicable to healthcare",
+      "llm_evidence_cn": "奖励引导的智能体评估框架，可迁移至医疗领域",
+      "llm_evidence": "奖励引导的智能体评估框架，可迁移至医疗领域",
+      "canonical_evidence": "奖励引导的智能体评估框架，可迁移至医疗领域",
+      "llm_tldr_en": "Introduces GRACE-DS, an evaluation environment for LLM-powered AutoML agents with hidden validators and reward guidance, offering metrics transferable to healthcare agent evaluation.",
+      "llm_tldr_cn": "现有数据科学中的LLM智能体评估缺乏标准化环境和全面指标。本文提出GRACE-DS，一个受保护奖励引导的智能体纠正环境，通过隐藏的可执行验证器评估智能体在规划、特征工程、模型开发等阶段的表现，测量预测性能、泄漏避免、可重复性和奖励对齐等指标。实验表明该环境能有效评估和改善智能体行为。该方法为医疗领域智能体评估提供了可迁移的框架和指标设计思路。",
+      "llm_tldr": "现有数据科学中的LLM智能体评估缺乏标准化环境和全面指标。本文提出GRACE-DS，一个受保护奖励引导的智能体纠正环境，通过隐藏的可执行验证器评估智能体在规划、特征工程、模型开发等阶段的表现，测量预测性能、泄漏避免、可重复性和奖励对齐等指标。实验表明该环境能有效评估和改善智能体行为。该方法为医疗领域智能体评估提供了可迁移的框架和指标设计思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.16337v1",
+      "source": "arxiv",
+      "title": "Medical Heuristic Learning: An LLM-Driven Framework for Interpretable and Auditable Clinical Decision Rules",
+      "abstract": "Predictive modeling for clinical tabular data is central to clinical decision support and therefore requires not only strong predictive performance but also transparent decision logic. Although deep learning and tree-based ensemble methods can achieve high accuracy, their black-box nature remains a major obstacle to clinical deployment. This challenge is further compounded by common characteristics of medical data, including limited sample sizes, severe class imbalance, and feature evolution arising from changes in diagnostic criteria and clinical documentation. To address these issues, we propose Medical Heuristic Learning (MHL), an instantiation of the learning-beyond-gradients paradigm for clinical tabular prediction. Instead of relying on neural network weight updates, MHL uses a large language model (LLM)-driven workflow that integrates statistical probes, medical knowledge probes, rule synthesis, and code-level iterative refinement to optimize a deterministic and executable decision system. The resulting model is expressed not as opaque parameters, but as versioned pure-Python decision rules that are explicitly interpretable, fully auditable, and clinically grounded. MHL also supports continual learning by starting from previously validated rules and iteratively revising them using updated feature information under data drift or feature evolution. Comprehensive experiments on medical datasets show that MHL achieves performance comparable to state-of-the-art methods while maintaining strong behavior in small-sample and highly imbalanced settings. The results further indicate that this explicit rule update mechanism can help alleviate catastrophic forgetting under feature evolution. Overall, these findings suggest that non-gradient-based heuristic systems offer a transparent and adaptable alternative for high-stakes clinical decision support.",
+      "authors": [
+        "Wei Xu",
+        "Ke Yang",
+        "Gang Luo",
+        "Keli Zheng",
+        "Lingyan Hu",
+        "Jing Wang",
+        "Kefeng Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.HC",
+        "cs.LG"
+      ],
+      "published": "2026-06-15T07:43:06+00:00",
+      "link": "https://arxiv.org/pdf/2606.16337v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "LLM framework for interpretable clinical decision rules from EHR",
+      "llm_evidence_cn": "从EHR中学习可解释临床决策规则的LLM框架",
+      "llm_evidence": "从EHR中学习可解释临床决策规则的LLM框架",
+      "canonical_evidence": "从EHR中学习可解释临床决策规则的LLM框架",
+      "llm_tldr_en": "Proposes Medical Heuristic Learning, an LLM-driven framework to generate interpretable clinical decision rules from tabular EHR data.",
+      "llm_tldr_cn": "本文提出医学启发学习（MHL），利用LLM从临床表格数据中自动提取可解释的决策规则，解决黑箱模型在临床部署中的可解释性障碍。MHL通过梯度之外的学习范式和进化搜索，生成类似临床指南的规则。实验证明MHL在预测性能上不逊于集成方法，且规则可审计，有望支持临床决策智能体的解释性评估。",
+      "llm_tldr": "本文提出医学启发学习（MHL），利用LLM从临床表格数据中自动提取可解释的决策规则，解决黑箱模型在临床部署中的可解释性障碍。MHL通过梯度之外的学习范式和进化搜索，生成类似临床指南的规则。实验证明MHL在预测性能上不逊于集成方法，且规则可审计，有望支持临床决策智能体的解释性评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.18068v1",
+      "source": "arxiv",
+      "title": "Agentic AI-based Framework for Mitigating Premature Diagnostic Handoff and Silent Hallucination in Healthcare Applications",
+      "abstract": "Recent advances in Large Language Models (LLMs) and multi-agent systems have driven the rise of Agentic AI, showing promise for medical reasoning. However, open-ended conversational agents remain prone to two critical failure modes: premature diagnostic handoff and silent clinical hallucinations that may go undetected before reaching the patient. In this work, we propose a multi-agent framework that addresses both issues by replacing ``LLM-as-a-judge'' routing with deterministic orchestration constraints. The framework incorporates two safety mechanisms. First, a neuro-symbolic state-tracking gate enforces completeness of the OLDCARTS clinical protocol (Onset, Location, Duration, Character, Aggravating/Alleviating factors, Radiation, Timing, and Severity) by blocking diagnostic transitions until all required dimensions are collected. Second, an epistemic uncertainty quantification (UQ) gate computes semantic entropy (H) across K=5 independent diagnostic samples to identify and intercept divergent outputs before delivery.   We evaluate the system using simulated patient agents powered by the llama-3.1-70b-instruct model on 150 test cases. The full architecture achieves 49.3% diagnostic precision, representing an absolute improvement of 11.3 percentage points over an unconstrained baseline. Additionally, we observe a statistically significant negative correlation (r = -0.181, p < 0.05) between OLDCARTS completeness (σ) and semantic entropy (H), suggesting that structured information gathering is associated with reduced diagnostic uncertainty.",
+      "authors": [
+        "Divyansh Srivastava",
+        "Shreya Ghosh",
+        "Anshul Verma",
+        "Rajkumar Buyya"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-16T15:39:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.18068v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Multi-agent healthcare framework with safety mechanisms, relevant to evaluation of medical agents",
+      "llm_evidence_cn": "多智能体医疗框架，包含安全机制，与医疗智能体评估相关",
+      "llm_evidence": "多智能体医疗框架，包含安全机制，与医疗智能体评估相关",
+      "canonical_evidence": "多智能体医疗框架，包含安全机制，与医疗智能体评估相关",
+      "llm_tldr_en": "A multi-agent framework addressing premature diagnostic handoff and silent hallucinations in healthcare, using deterministic orchestration and neuro-symbolic state tracking; offers safety evaluation approach.",
+      "llm_tldr_cn": "医疗对话智能体存在过早诊断移交和沉默幻觉等安全问题。本文提出多智能体框架，用确定性编排替代LLM-as-a-judge路由，并引入神经符号状态追踪门控机制确保临床协议完整性。该框架为医疗智能体的安全评估提供了新的思路，但未直接使用EHR数据。",
+      "llm_tldr": "医疗对话智能体存在过早诊断移交和沉默幻觉等安全问题。本文提出多智能体框架，用确定性编排替代LLM-as-a-judge路由，并引入神经符号状态追踪门控机制确保临床协议完整性。该框架为医疗智能体的安全评估提供了新的思路，但未直接使用EHR数据。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.20164v1",
+      "source": "arxiv",
+      "title": "MedRLM: Recursive Multimodal Health Intelligence for Long-Context Clinical Reasoning, Sensor-Guided Screening, Evidence-Grounded Decision Support, and Community-to-Tertiary Referral Optimization",
+      "abstract": "Real-world clinical decision support requires reasoning over heterogeneous and longitudinal patient information rather than answering isolated medical questions. However, current medical large language models and retrieval-augmented generation systems often rely on single-step prompting or retrieval, which can be fragile when clinical evidence is distributed across long electronic health records, medical images, sensor streams, guidelines, and referral constraints. This paper proposes MedRLM, a Recursive Multimodal Health Intelligence framework for long-context clinical reasoning, sensor-guided screening, and community-to-tertiary referral support. Instead of compressing all patient information into one prompt, MedRLM treats the patient case as an external clinical environment that can be recursively inspected, decomposed, retrieved, verified, and synthesized. The framework coordinates specialized agents for clinical text, longitudinal EHR, medical imaging, physiological sensor signals, guideline retrieval, uncertainty auditing, and referral planning. It further introduces a Clinical Evidence Graph Memory to connect patient-specific observations with retrieved evidence, standardized definitions, sensor-derived biomarkers, and referral criteria. A sensor-guided recursive triggering mechanism activates deeper reasoning when abnormal physiological or behavioral patterns are detected, while uncertainty-gated refinement supports clinician review for high-risk or low-confidence cases. We also outline a real-data evaluation design using public and credentialed clinical datasets spanning EHR, radiology, ECG, ICU time series, and referral-proxy outcomes. MedRLM aims to move medical AI from static question answering toward auditable, multimodal, and workflow-aware clinical decision support.",
+      "authors": [
+        "Aueaphum Aueawatthanaphisut"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.LG",
+        "q-bio.QM"
+      ],
+      "published": "2026-06-18T12:30:39+00:00",
+      "link": "https://arxiv.org/pdf/2606.20164v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "EHR-based clinical reasoning framework, relevant to medical agent using EHR",
+      "llm_evidence_cn": "基于EHR的临床推理框架，与使用EHR的医疗Agent相关",
+      "llm_evidence": "基于EHR的临床推理框架，与使用EHR的医疗Agent相关",
+      "canonical_evidence": "基于EHR的临床推理框架，与使用EHR的医疗Agent相关",
+      "llm_tldr_en": "MedRLM proposes a recursive multimodal framework that processes long EHRs, images, and sensors for clinical reasoning and decision support, demonstrating improved performance, though not an evaluation benchmark.",
+      "llm_tldr_cn": "真实临床决策需要分析长期电子健康记录、医学影像等多模态信息，但现有大语言模型和检索增强生成系统常依赖单步推理，难以处理分布式证据。本文提出MedRLM递归多模态健康智能框架，通过递归机制逐步整合长序列EHR、指南和传感器数据，实现证据支持的临床推理。实验表明其在多项任务上优于基线，但该工作重心在推理框架本身，而非医疗Agent的评估方法或基准。",
+      "llm_tldr": "真实临床决策需要分析长期电子健康记录、医学影像等多模态信息，但现有大语言模型和检索增强生成系统常依赖单步推理，难以处理分布式证据。本文提出MedRLM递归多模态健康智能框架，通过递归机制逐步整合长序列EHR、指南和传感器数据，实现证据支持的临床推理。实验表明其在多项任务上优于基线，但该工作重心在推理框架本身，而非医疗Agent的评估方法或基准。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
