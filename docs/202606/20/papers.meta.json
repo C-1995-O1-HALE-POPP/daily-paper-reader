@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-20",
+  "date": "2026-06-20",
+  "generated_at": "2026-06-20T21:20:59",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/20/2606.18613v2-are-llms-ready-to-assist-physicians-physassistbench-for-interactive-doctor-patient-ehr-assistance",
+      "section": "deep",
+      "title_en": "Are LLMs Ready to Assist Physicians? PhysAssistBench for Interactive Doctor-Patient-EHR Assistance",
+      "authors": "Tianming Du, Peijie Yu, Sihan Shang, Danli Shi, My Linh Nguyen, Shengbo Gao, Guangyuan Li, Yinghong Yu, Yan Jiang, Qianlong Zhao, Behzad Bozorgtabar, Shaoxiong Ji, Jiazhen Pan, Daniel Rueckert, Jiancheng Yang",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.18613v2",
+      "score": "9.0",
+      "evidence": "PhysAssistBench基准测试，基于MIMIC-IV构建交互式医生-患者-EHR场景，评估LLM Agent",
+      "tldr": "当前医疗大语言模型评估多测试孤立能力，无法反映医生辅助场景中协调知识、沟通和系统交互的需求。本文提出PhysAssistBench基准，基于MIMIC-IV真实病例通过可扩展流程构建交互式患者代理，生成1296个经医生验证的多轮临床场景。测试主流LLM发现其在交互式辅助中表现不可靠，揭示可靠辅助需跨能力协调而非孤立提升。该工作为临床LLM的实用化评估提供关键基准。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "The most plausible near-term role of medical LLMs is to assist rather than replace physicians, yet current evaluations often test isolated capabilities: clinical knowledge, EHR system interaction, or patient communication. Physician assistance instead requires coordinating these capabilities within the same interaction, where physicians issue underspecified requests, patients describe symptoms ambiguously, and EHR systems demand precise tool use. We introduce PhysAssistBench, a benchmark for interactive doctor-patient-EHR assistance. Built from real MIMIC-IV cases, PhysAssistBench uses a scalable pipeline to construct agentic patients: interactive, record-grounded agents that turn static EHR records into multi-turn clinical scenarios while preserving clinical factuality. PhysAssistBench provides a curated bilingual evaluation set of 1,296 manually reviewed and physician-validated turns. Experiments with leading LLMs show that current models remain unreliable in this setting, which exposes a key bottleneck for clinical LLMs: reliable assistance requires coordination across knowledge, communication, and systems, not isolated gains in any of them.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/20/2606.18037v1-provenanceguard-source-aware-factuality-verification-for-mcp-based-llm-agents",
+      "section": "quick",
+      "title_en": "ProvenanceGuard: Source-Aware Factuality Verification for MCP-Based LLM Agents",
+      "authors": "Ander Alvarez, Santhiya Rajan, Samuel Mugel, Román Orús",
+      "date": "2026-06-16",
+      "pdf": "https://arxiv.org/pdf/2606.18037v1",
+      "score": "7.0",
+      "evidence": "针对使用临床记录的MCP智能体的来源感知事实性验证",
+      "tldr": "工具型LLM智能体使用MCP协议从异构来源获取信息，现有事实性验证忽略源归属错误。本文提出ProvenanceGuard，通过捕获MCP轨迹、分解原子声明、路由至源特定证据并联合NLI与令牌对齐验证，实现源感知的事实性检查。在医疗领域281个轨迹上，该方法在阻塞F1达0.802，源准确率0.858，多源场景下阻塞F1提升至0.846但源归属准确率下降。修复机制可彻底纠正阻塞答案，证明源归属是MCP智能体事实性验证的独立关键维度。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Tool-using LLM agents increasingly use the Model Context Protocol (MCP) to answer from heterogeneous evidence sources, including search, APIs, databases, clinical records, and formulary tools. Standard factuality metrics usually test whether an answer is supported by pooled evidence, missing a provenance-sensitive failure mode: a claim may be supported somewhere while being attributed to the wrong source. We call this cross-source conflation.   We introduce ProvenanceGuard, a source-aware verifier for MCP-grounded answers. It consumes captured MCP traces with stable tool IDs, source IDs, and raw outputs; decomposes answers into atomic claims; routes claims to source-specific evidence; checks support with NLI and a token-alignment proxy; compares stated attribution with the routed source; and returns per-claim verdicts plus an answer-level allow/block decision. Blocked answers can be repaired with retrieval-augmented answer revision and re-verified.   We evaluate on 281 medical-domain MCP-agent traces. A 266-trace adjudicated subset yields 2,325 LLM-assisted claim labels split by trace; 361 held-out labels are human-verified. On the 40-trace held-out split, ProvenanceGuard achieves block F1 0.802 and source accuracy 0.858 over 260 source-eligible claims, outperforming source-blind baselines that do not emit claim-to-source IDs. On a harder multi-source benchmark it reaches block F1 0.846, while source-plus-relation accuracy drops to 0.229, showing that exact source ownership remains difficult with semantically close sources. Repair-and-reverify resolves all blocked answers in the full trace set, often via conservative fallback. In 50 controlled clinical conflation probes, ProvenanceGuard detects all injected attribution swaps with no retained wrong attribution. These results show that source attribution is an independent axis for factuality verification in MCP-based agents.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/20/2606.19092v1-context-aware-optimization-of-follow-up-intervals-for-type-2-diabetes-care-using-markov-decision-processes",
+      "section": "quick",
+      "title_en": "Context-Aware Optimization of Follow-Up Intervals for Type 2 Diabetes Care Using Markov Decision Processes",
+      "authors": "Parisa Lotfibagha, Kristen Miller, William J. Gallagher, Elizabeth B. Selden, Muge Capan",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.19092v1",
+      "score": "7.0",
+      "evidence": "使用EHR数据和马尔可夫决策过程优化糖尿病随访间隔，属于医疗智能体强化学习评估",
+      "tldr": "当前2型糖尿病护理指南采用固定随访间隔，忽视患者异质性。本研究利用EHR数据构建情境马尔可夫决策过程模型，通过PCA和聚类识别高/低风险子群体，优化个体化随访间隔。最优策略建议根据实验室指标和风险状态动态调整随访周期，相比固定策略显著降低累计成本。该方法融合机器学习与概率决策模型，为慢性病管理提供了可适应异质性患者的循证框架。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Chronic disease management relies on regular patient-provider interactions to follow-up on disease progression and control. For Type 2 Diabetes (T2D), current guidelines prescribe fixed time intervals between subsequent primary care visits for all patients, overlooking heterogeneity in clinical trajectories and patient characteristics. This study introduces a Contextual Markov Decision Process (CMDP) model to optimize subpopulation-specific follow-up interval decisions using Electronic Health Record (EHR) data from 22,154 T2D patients across 10 primary care clinics. Contexts are identified by: i) dimensionality reduction of variables representing the individual health trajectories utilizing Principal Component Analysis, and ii) assigning patients to contexts via principal components and additional patient-level features using clustering. Two distinct contexts emerged, representing a lower- and a higher-risk subpopulation. CMDP-derived policies recommend: (i) follow-up within 1 month if lab value at current visit is unmeasured; (ii) up to 3 months for elevated lab values or recent hospitalizations; and (iii) 6 to 12 months for sustained glycemic control, with shorter follow-up intervals for patients in high-risk context. The optimal policies achieved lower expected cumulative cost than benchmarks (e.g., in the higher-comorbidity context, the CMDP policy reduced cost by about 34.8%, and in the lower-comorbidity context by about 6.4%, relative to an American Diabetes Association-like fixed interval follow-up policy. These findings demonstrate how context-aware approaches can inform adaptive follow-up strategies, and have the potential to advance chronic care management in primary care by synthesizing machine learning and probabilistic decision models.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/20/2606.16721v1-medical-world-models-representing-medical-states-modelling-clinical-dynamics-and-guiding-intervention-policies",
+      "section": "quick",
+      "title_en": "Medical world models: representing medical states, modelling clinical dynamics and guiding intervention policies",
+      "authors": "Ke Liu, Mengxuan Li, Yanyi Bao, Tianyun Zhang, Chong Chu, Jiajun Bu, Haishuai Wang",
+      "date": "2026-06-15",
+      "pdf": "https://arxiv.org/pdf/2606.16721v1",
+      "score": "6.0",
+      "evidence": "医疗世界模型用于临床动态建模和策略指导，与基于EHR的医疗智能体评估主题相关",
+      "tldr": "当前医疗AI系统多输出静态诊断或风险评分，难以预测疾病进展或对比不同治疗方案的长期效果。医疗世界模型引入AI世界模型理念，通过学习患者状态动态的内部模拟器，模拟疾病演化并支持干预决策。本文综述围绕患者状态构建、临床动态建模和干预决策支持三大能力的研究，比较各组件贡献及集成方法。该路线图旨在推动医疗AI从孤立预测向可反事实推理的临床模拟器发展，并指出了实现这一目标的关键挑战。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Medical diagnosis and treatment are dynamic processes in which patient states evolve over time and clinical interventions alter future outcomes. Although current medical AI can detect disease, estimate risk and generate reports, many systems still return static labels or scores, offering limited insight into how illness may progress or how alternative interventions may reshape its trajectory. Medical world models adapt the world-model idea from artificial intelligence to healthcare by learning internal simulators of patient-state dynamics. Their long-term goal is to help clinicians anticipate deterioration, compare treatment-conditioned futures and tailor care to individual patients. Yet relevant work remains scattered across foundation models, longitudinal modelling, disease simulation, treatment-effect estimation, reinforcement learning and digital twins. To bridge this gap, this review outlines a roadmap for advancing medical AI from isolated diagnosis and prediction toward medical world models that simulate disease evolution and support intervention decisions. This roadmap is organized around three coupled capabilities: patient-state construction, clinical dynamics modelling and intervention decision support. Across representative systems, the comparison highlights what each capability contributes and how partial components can be integrated into more mature perception--dynamics--planning systems. Finally, we identify the challenges involved in turning plausible rollouts into clinically useful simulators. Related literature is available at https://github.com/1999kevin/awesome_medical_world_models.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
