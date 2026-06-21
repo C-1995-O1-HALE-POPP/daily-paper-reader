@@ -1,0 +1,39 @@
+{
+  "label": "2026-06-21",
+  "date": "2026-06-21",
+  "generated_at": "2026-06-21T20:47:08",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202606/21/2606.17819v1-a-framework-for-evaluating-agentic-skills-at-scale",
+      "section": "quick",
+      "title_en": "A Framework for Evaluating Agentic Skills at Scale",
+      "authors": "Maksim Shaposhnikov, Nicolas Fortuin, Simon Stipcich, Maria I. Gorinova, Amy Heineike, Rob Willoughby",
+      "date": "2026-06-16",
+      "pdf": "https://arxiv.org/pdf/2606.17819v1",
+      "score": "7.0",
+      "evidence": "大规模评估智能体技能的框架",
+      "tldr": "当前缺乏评估智能体技能(agent skill)的标准化方法，尽管技能被广泛用于增强LLM。本文提出一个评估框架，允许技能作者构建自定义任务并量化技能效用。在500个真实技能上自动生成1000个任务和评分标准，评估了19种模型配置。结果表明模型对技能指令的遵循程度差异显著，且技能会根本性地改变模型行为。该工作为技能评估提供了可复用的方法论和数据集。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Agent skills -- structured, reusable knowledge artifacts that augment LLM agent capabilities -- have been rapidly adopted in industry, yet their cross-domain impact and use across commercial and open-source models remain under-studied, and no reusable methodology exists for evaluating an individual skill. In this work, we present an evaluation framework that lets a skill author construct realistic tasks to rigorously assess the aspects of a skill that matter most to them, and that estimates skill utility by solving those tasks. Further, we apply our evaluation approach at scale to 500 real-world skills, generating 1,000 tasks derived from the skills' content, along with instruction-following and goal-completion scoring rubrics. Using these metrics, we evaluate how 19 agent-model configurations, both proprietary and open-source, perform on the tasks. Our results show that models vary widely in how closely they adhere to the instructions encoded in skills, leading to substantial differences in their performance gains. Furthermore, we show that access to a skill significantly changes model behavior compared to the no-skill setup, providing an essential mechanism for encoding opinionated workflows into LLM agents. We release our evaluation dataset to support future work on agent skills.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/21/2606.17546v1-seagym-an-evaluation-environment-for-self-evolving-llm-agents",
+      "section": "quick",
+      "title_en": "SEAGym: An Evaluation Environment for Self-Evolving LLM Agents",
+      "authors": "Congjie Zheng, Chuanyi Xue, Bin Liang, Jun Yang, Changshui Zhang",
+      "date": "2026-06-16",
+      "pdf": "https://arxiv.org/pdf/2606.17546v1",
+      "score": "6.0",
+      "evidence": "适用于医疗代理基准测试的自我进化代理评估环境",
+      "tldr": "现有自演化LLM智能体评估常简化为孤立任务分数或单一曲线，难以揭示更新是否带来可复用改进、过拟合或成本增加。SEAGym提出一个评估环境，将Harbor兼容基准转化为动态任务源，支持训练、验证、测试、回放和成本记录的多视图评估。在Terminal-Bench 2.0和HLE上比较ACE、TF-GRPO和AHE，发现频繁更新可能不提升保留性能，中间快照可能后期崩溃，源多样性和模型后端影响框架可靠性。该工作为自演化智能体提供了更全面的评测框架，有助于理解演化过程的动态特性。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Self-evolving LLM-based agents improve mainly by changing their agent harness: the structured execution layer around a base model, including prompts, memory, tools, middleware, runtime state, and the model-tool interaction loop. Existing evaluations often reduce this process to isolated task scores or a single sequential curve, obscuring whether an update produces reusable improvement, overfits recent tasks, increases cost, or harms older behavior. We introduce SEAGym, an evaluation environment for measuring agent harness updates across training, validation, test, replay, and cost records. SEAGym turns Harbor-compatible benchmarks into dynamic self-evolution task sources with train batches, frozen update-validation, held-out ID and OOD transfer views, replay diagnostics, and saved snapshot and metric records. Instantiating SEAGym on Terminal-Bench 2.0 and HLE, we compare ACE, TF-GRPO, and AHE under a shared epoch/batch protocol. The results show that these evaluation views provide complementary signals about the evolution process: frequent updates may fail to improve held-out performance, useful intermediate snapshots may collapse later, and source diversity and model backend can affect harness reliability.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
