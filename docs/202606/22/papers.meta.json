@@ -1,0 +1,24 @@
+{
+  "label": "2026-06-22",
+  "date": "2026-06-22",
+  "generated_at": "2026-06-22T22:12:05",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202606/22/2606.16307v1-state-grounded-multi-agent-synthetic-data-generation-for-tool-augmented-llms",
+      "section": "quick",
+      "title_en": "State-Grounded Multi-Agent Synthetic Data Generation for Tool-Augmented LLMs",
+      "authors": "Rahul Khedar, Eshita, Sneha Teja Sree Reddy Thondapu, Mayank Malhotra, Arup Das, Jitesh Chandra, Yun-Shiuan Chuang, Chaitanya Kulkarni, Arun Menon, Linsey Pang, Avinash Karn, Mouli V, Prakhar Mehrotra",
+      "date": "2026-06-15",
+      "pdf": "https://arxiv.org/pdf/2606.16307v1",
+      "score": "7.0",
+      "evidence": "为工具增强型LLM Agent生成训练和评估数据",
+      "tldr": "训练工具增强型LLM代理需要大量多轮对话数据，但人工标注成本高且存在隐私问题。提出StateGen，一种基于四角色LLM循环和权威状态管理器的合成数据生成平台，通过维护结构化世界状态消除工具调用幻觉。在64,698条评估对话中，工具幻觉评分达9.66/10，并支持23维人物特征驱动变化。该平台是首个同时具备多轮生成、状态模拟、层次多智能体和内置评判功能的公开系统。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Training tool-augmented LLM agents requires large corpora of multi-turn, tool-grounded conversational data that is expensive to annotate, privacy-constrained in production settings, and largely absent from public datasets. We present StateGen, a synthetic data generation platform that produces scored, reasoning-trace-rich training conversations by orchestrating a four-role LLM loop: a persona-conditioned user simulator, an agent under test, a state-grounded tool simulator, and a multi-axis LLM judge. The key architectural contribution is an authoritative state manager that maintains a structured world-state object across turns, enforcing a backend-is-truth invariant that eliminates the dominant class of tool-call hallucinations by construction. StateGen extends naturally to hierarchical multi-agent settings by declaring sub-agents as tools, all sharing a single state object. We report results on 64,698 evaluated conversations across three production corpora: tool-call hallucination scores reach 9.66/10, the system supports persona-driven variation via a 23-dimensional trait vector, and a cleanly separated train and golden evaluation set split confirms the data is not memorization bait (per-criterion gap analysis). Comparison with eight external systems shows that no single publicly available platform combines multi-turn generation, state-grounded tool simulation, hierarchical multi-agent support, and built-in judge scoring.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

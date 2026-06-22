@@ -1,0 +1,65 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-22T22:11:22.547158+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.16307v1",
+      "source": "arxiv",
+      "title": "State-Grounded Multi-Agent Synthetic Data Generation for Tool-Augmented LLMs",
+      "abstract": "Training tool-augmented LLM agents requires large corpora of multi-turn, tool-grounded conversational data that is expensive to annotate, privacy-constrained in production settings, and largely absent from public datasets. We present StateGen, a synthetic data generation platform that produces scored, reasoning-trace-rich training conversations by orchestrating a four-role LLM loop: a persona-conditioned user simulator, an agent under test, a state-grounded tool simulator, and a multi-axis LLM judge. The key architectural contribution is an authoritative state manager that maintains a structured world-state object across turns, enforcing a backend-is-truth invariant that eliminates the dominant class of tool-call hallucinations by construction. StateGen extends naturally to hierarchical multi-agent settings by declaring sub-agents as tools, all sharing a single state object. We report results on 64,698 evaluated conversations across three production corpora: tool-call hallucination scores reach 9.66/10, the system supports persona-driven variation via a 23-dimensional trait vector, and a cleanly separated train and golden evaluation set split confirms the data is not memorization bait (per-criterion gap analysis). Comparison with eight external systems shows that no single publicly available platform combines multi-turn generation, state-grounded tool simulation, hierarchical multi-agent support, and built-in judge scoring.",
+      "authors": [
+        "Rahul Khedar",
+        "Eshita",
+        "Sneha Teja Sree Reddy Thondapu",
+        "Mayank Malhotra",
+        "Arup Das",
+        "Jitesh Chandra",
+        "Yun-Shiuan Chuang",
+        "Chaitanya Kulkarni",
+        "Arun Menon",
+        "Linsey Pang",
+        "Avinash Karn",
+        "Mouli V",
+        "Prakhar Mehrotra"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-15T07:13:02+00:00",
+      "link": "https://arxiv.org/pdf/2606.16307v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "synthetic data generation for tool-augmented LLM agents evaluation",
+      "llm_evidence_cn": "为工具增强型LLM Agent生成训练和评估数据",
+      "llm_evidence": "为工具增强型LLM Agent生成训练和评估数据",
+      "canonical_evidence": "为工具增强型LLM Agent生成训练和评估数据",
+      "llm_tldr_en": "StateGen generates synthetic multi-turn tool-grounded conversations with an LLM judge, providing a method for benchmarking LLM agents.",
+      "llm_tldr_cn": "StateGen提出一种四角色LLM循环的合成数据生成平台，为工具增强型LLM Agent产生带推理轨迹的训练对话，并通过状态管理器消除工具幻觉。该方法可用于生成医疗Agent的评估数据，支持性能基准测试。",
+      "llm_tldr": "StateGen提出一种四角色LLM循环的合成数据生成平台，为工具增强型LLM Agent产生带推理轨迹的训练对话，并通过状态管理器消除工具幻觉。该方法可用于生成医疗Agent的评估数据，支持性能基准测试。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
