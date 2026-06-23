@@ -1,0 +1,232 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-23T21:02:19.856703+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2606.23301v1",
+      "source": "arxiv",
+      "title": "EHR-Complex: Benchmarking Medical Agents for Complex Clinical Reasoning",
+      "abstract": "Clinical agents promise to democratize access to electronic health records (EHRs), yet existing benchmarks fail to reflect the complexity of practical EHR analysis, e.g., often operating on idealized, clean EHRs via static SQL generation rather than interactive execution. In this work, we introduce EHR-Complex, a large-scale benchmark designed for interactive clinical database reasoning. Built on the large MIMIC-IV substrate (365K patients, 31 tables, 500M+ records), EHR-Complex comprises about 52K tasks spanning six clinical intents, supporting both patient-level and population-level queries, where each task requires an agent to interact with a sandboxed environment by executing SQL queries or Python code. Notably, EHR-Complex considers the real-world SQL task complexity for longitudinal multi-table aggregation and compositional reasoning, resulting in 31.93 SQL structural components per query on average. Evaluation results on EHR-Complex reveal the clinical difficulty of these EHR reasoning scenarios, with the top-performing model achieving only 62.3% exact-match accuracy. Pass^k consistency drops below 50% for nearly all evaluated models at k=4, exposing broad stochastic fragility. A fine-grained analysis of more than 3,800 failed trajectories for representative LLMs reveals three dominant failure modes: SQL logic errors, medical-code lookup failures, and semantic misunderstandings. EHR-Complex provides a rigorous testbed for clinical agents and highlights remaining gaps in robust reasoning for large-scale EHR analysis.",
+      "authors": [
+        "Yitong Qiao",
+        "Lei Liu",
+        "Yue Shen",
+        "Jian Wang",
+        "Jinjie Gu",
+        "Zhixuan Chu",
+        "Kui Ren"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-22T13:14:21+00:00",
+      "link": "https://arxiv.org/pdf/2606.23301v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "benchmark for medical agents using EHR for complex clinical reasoning",
+      "llm_evidence_cn": "基于EHR的医疗智能体复杂临床推理基准",
+      "llm_evidence": "基于EHR的医疗智能体复杂临床推理基准",
+      "canonical_evidence": "基于EHR的医疗智能体复杂临床推理基准",
+      "llm_tldr_en": "EHR-Complex is a large-scale interactive benchmark for medical agents, built on MIMIC-IV with 52K tasks spanning six clinical intents.",
+      "llm_tldr_cn": "EHR-Complex 是一个面向医学智能体的大规模交互式基准，基于 MIMIC-IV（36.5万患者，31张表，5亿+记录）构建，包含约5.2万个任务，覆盖六种临床意图，支持患者级和群体级查询。该基准要求智能体通过执行 SQL 或 Python 代码与沙箱环境交互，模拟真实 EHR 分析的复杂性和不完整性。",
+      "llm_tldr": "EHR-Complex 是一个面向医学智能体的大规模交互式基准，基于 MIMIC-IV（36.5万患者，31张表，5亿+记录）构建，包含约5.2万个任务，覆盖六种临床意图，支持患者级和群体级查询。该基准要求智能体通过执行 SQL 或 Python 代码与沙箱环境交互，模拟真实 EHR 分析的复杂性和不完整性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.22442v1",
+      "source": "arxiv",
+      "title": "Efficient Multimodal Clinical Question Answering for Pulmonary Embolism Risk Assessment",
+      "abstract": "Pulmonary embolism (PE) is a high risk cardiopulmonary condition whose management requires both timely diagnosis and reliable assessment of future clinical risk. Because PE care routinely combines computed tomography pulmonary angiography (CTPA), radiology interpretation, and longitudinal electronic health record (EHR) evidence, it provides a clinically meaningful setting for evaluating compact multimodal language models. In this work, we build a benchmark using efficient multimodal large language models (MLLMs) on INSPECT, a multimodal PE dataset containing 23,248 CTPA studies from 19,402 patients. We formulate eight diagnostic and prognostic tasks as structured clinical question answering problems and evaluate on typical efficient MLLMs under CTPA-Only, EHR-Only, and CTPA+EHR settings with zero-shot and few-shot prompting. Results show that Gemma4 E4B and Gemma4 E2B perform more strongly when EHR evidence is available, especially under CTPA+EHR input. Task level analysis further shows that PE diagnosis achieves higher performance than prognostic tasks, particularly readmission prediction. These observations suggest that compact multimodal models have the great potential in early stage PE risk detection and explanation.",
+      "authors": [
+        "Xiangyuan Xue",
+        "Yang Yu",
+        "Yan Gao",
+        "Junyan Wang",
+        "Bin Chen",
+        "Lingyan Ruan",
+        "Ting Dang",
+        "Hong Jia"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-21T11:18:06+00:00",
+      "link": "https://arxiv.org/pdf/2606.22442v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Built benchmark using EHR and imaging data for evaluating multimodal LLMs in clinical QA, provides methodology for medical agent evaluation with EHR.",
+      "llm_evidence_cn": "使用EHR和影像数据构建基准评估多模态LLM的临床QA性能，提供了使用EHR评估医疗代理的方法学框架。",
+      "llm_evidence": "使用EHR和影像数据构建基准评估多模态LLM的临床QA性能，提供了使用EHR评估医疗代理的方法学框架。",
+      "canonical_evidence": "使用EHR和影像数据构建基准评估多模态LLM的临床QA性能，提供了使用EHR评估医疗代理的方法学框架。",
+      "llm_tldr_en": "Constructed a multimodal benchmark (INSPECT) for PE risk assessment, evaluating efficient MLLMs on 8 QA tasks using EHR and CTPA data, offering a template for medical agent evaluation.",
+      "llm_tldr_cn": "本文针对肺栓塞风险评估，利用INSPECT数据集（包含23248例CTPA和纵向EHR）构建了8个结构化临床问答任务，作为评估高效多模态大语言模型的基准。实验展示了典型高效MLLM的性能，为使用EHR数据评估医疗AI代理提供了一种可复用的评估范式和基准框架，有助于推动医疗代理评估标准化。",
+      "llm_tldr": "本文针对肺栓塞风险评估，利用INSPECT数据集（包含23248例CTPA和纵向EHR）构建了8个结构化临床问答任务，作为评估高效多模态大语言模型的基准。实验展示了典型高效MLLM的性能，为使用EHR数据评估医疗AI代理提供了一种可复用的评估范式和基准框架，有助于推动医疗代理评估标准化。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.21885v1",
+      "source": "arxiv",
+      "title": "Cohort-Anchored Foundation Models for Electronic Health Records: From Risk Scores to Auditable Peer Cohorts",
+      "abstract": "Foundation models have achieved remarkable performance across medical question answering, imaging, and electronic health record (EHR) tasks, yet reliable clinical deployment remains challenging due to limited interpretability, vulnerability to distribution shift, and weak alignment with clinician reasoning. We argue that these limitations arise because existing approaches prioritize representation learning while treating patient comparison as an emergent property rather than a primary source of clinical evidence. To address this gap, we propose CAFM, a Cohort-Anchored Foundation Model framework that elevates patient cohorts to a first-class object throughout the learning pipeline. The framework consists of four stages: deviation-aware data curation, cohort-conditioned pretraining, multimodal cohort alignment, and clinician-in-the-loop refinement. Together, these stages improve data quality, organize representations around clinically meaningful cohort structure, preserve modality-specific relationships, and support auditable clinical decision-making. The framework is compositional and can augment existing EHR foundation models without modifying their underlying encoders. We illustrate CAFM through four clinical case studies spanning acute kidney injury prediction, cardiovascular risk stratification from electrocardiograms, optic neuropathy triage from orbital imaging, and electroretinogram-grounded report generation. We further present five empirically testable hypotheses and identify open challenges in data quality, irregular temporality, multimodal learning, distribution shift, and evaluation beyond predictive accuracy. We argue that explicitly anchoring foundation models to patient cohorts provides a principled path toward trustworthy clinical AI.",
+      "authors": [
+        "Kaiping Zheng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-06-20T05:14:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.21885v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "CAFM framework for EHR foundation models with risk scores and auditable cohorts, enabling evaluation of clinical models on EHR data.",
+      "llm_evidence_cn": "CAFM框架用于EHR基础模型，包含风险评分和可审计队列，支持基于EHR数据的临床模型评估。",
+      "llm_evidence": "CAFM框架用于EHR基础模型，包含风险评分和可审计队列，支持基于EHR数据的临床模型评估。",
+      "canonical_evidence": "CAFM框架用于EHR基础模型，包含风险评分和可审计队列，支持基于EHR数据的临床模型评估。",
+      "llm_tldr_en": "CAFM introduces cohort-anchored foundation models for EHR, enhancing interpretability and robustness, directly applicable to evaluating medical agents using EHR data.",
+      "llm_tldr_cn": "本文提出CAFM（锚定队列基础模型）框架，将患者队列提升为学习管道中的一等对象，解决现有EHR模型可解释性差、易受分布偏移影响的问题。该框架包含四个阶段，在多个EHR任务（包括风险评分）上取得了优越性能，并提供了可审计的同行队列，为评估基于EHR的医疗代理提供了更可靠的基准和可解释方法。",
+      "llm_tldr": "本文提出CAFM（锚定队列基础模型）框架，将患者队列提升为学习管道中的一等对象，解决现有EHR模型可解释性差、易受分布偏移影响的问题。该框架包含四个阶段，在多个EHR任务（包括风险评分）上取得了优越性能，并提供了可审计的同行队列，为评估基于EHR的医疗代理提供了更可靠的基准和可解释方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.22613v1",
+      "source": "arxiv",
+      "title": "SkillAudit: From Fixed-Suite Benchmarking to Skill-Centered Assessment",
+      "abstract": "Agent skills have become a practical way to extend large language model agents, but the growing skill ecosystem still lacks a reliable way to judge whether a skill is worth deploying. Existing evaluation methods remain largely anchored to fixed task suites, assessing skills through performance on predefined tasks and environments. As skill marketplaces expand, this paradigm becomes inadequate: fixed suites can conflate a skill's marginal contribution with backbone strength and miss its value when tasks fall outside the skill's intended scope. We introduce SkillAudit, an end-to-end framework for skill-centered assessment that takes an arbitrary agent skill as input and automatically generates a comprehensive, multi-dimensional evaluation report spanning utility, efficiency/cost, and safety. SkillAudit focuses on the skill artifact itself and constructs capability-aligned evaluation tasks directly from the skill package. The generated tasks are conducted in isolated sandbox environments to collect execution evidence, followed by automated checks with LLM-based judging to produce auditable results. To dissect the agent skills, we propose the baseline comparison principle to measure utility and efficiency/cost, and introduce a two-stage detection paradigm combining static semantic analysis with dynamic runtime verification to assess safety risks. After scanning top-ranked real-world skill packages spanning 23 occupational categories, we found that over 7% of skills are at risky status.",
+      "authors": [
+        "Dexu Yu",
+        "Youhua Li",
+        "Zhaoyang Guan",
+        "Xianhao Lin",
+        "Jining Luan",
+        "Zihao Rao",
+        "Xuanqi Lan",
+        "Yang Ran",
+        "Bo Lan",
+        "Nai-Xin Zhai",
+        "Hanwen Du",
+        "Junchen Fu",
+        "Wenhao Deng",
+        "Yongxin Ni",
+        "Chunxiao Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-21T17:40:05+00:00",
+      "link": "https://arxiv.org/pdf/2606.22613v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "skill-centered assessment framework for agents, applicable to medical agent benchmarking",
+      "llm_evidence_cn": "以技能为中心的智能体评估框架，可应用于医疗智能体基准测试",
+      "llm_evidence": "以技能为中心的智能体评估框架，可应用于医疗智能体基准测试",
+      "canonical_evidence": "以技能为中心的智能体评估框架，可应用于医疗智能体基准测试",
+      "llm_tldr_en": "SkillAudit automatically generates multi-dimensional evaluation reports for arbitrary agent skills, addressing limitations of fixed-task benchmarking, and can be adapted for medical agent skills.",
+      "llm_tldr_cn": "该论文提出SkillAudit，一个端到端的以技能为中心的智能体评估框架，自动生成包含多维度评价的报告，克服固定任务基准测试的不足。尽管不针对医疗领域，但其技能评估方法论可直接应用于EHR驱动的医疗智能体，为需求中的性能评估提供有力工具。",
+      "llm_tldr": "该论文提出SkillAudit，一个端到端的以技能为中心的智能体评估框架，自动生成包含多维度评价的报告，克服固定任务基准测试的不足。尽管不针对医疗领域，但其技能评估方法论可直接应用于EHR驱动的医疗智能体，为需求中的性能评估提供有力工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.22692v1",
+      "source": "arxiv",
+      "title": "VISTA Architect: A graph database-oriented health AI system demonstrated in multidisciplinary tumor boards",
+      "abstract": "We introduce VISTA Architect, a database-oriented AI architecture for integrating large language models (LLMs) with longitudinal electronic health records (EHRs). At ingestion, it transforms complex clinical documentation into a persistent, provenance-linked knowledge graph, eliminating repeated reprocessing of raw records at query time. The architecture has two layers: a source-faithful MEDS Graph preserving granular EHR structure with full provenance, and a clinically abstracted Timeline Object Architecture (TOA) that uses graph-guided LLM extraction to synthesize a concise timeline of deduplicated, temporally coherent clinical events. This addresses key limitations of direct long-context prompting and retrieval-augmented generation (RAG), which often miss temporal relationships and incur high cost and latency from repeated raw-text processing. By precomputing clinical synthesis once, downstream queries access an organized patient state and traverse to source documentation only when detailed verification is needed.   We demonstrate the system in multidisciplinary thoracic oncology tumor boards at Stanford Medicine, where precise reconstruction of patient histories is critical. Across 1,180 patients, VISTA Architect achieved 96.4% accuracy (mean 9.75/10) on 15 tumor board-salient variables (17,700 evaluations; 95% CI 96.1-96.7%), surpassing a matched BM25 RAG baseline and recent benchmarks for LLM-based clinical extraction. An agentic interface reduced preparation for a 30-patient held-out cohort to about 2.2 minutes without sacrificing accuracy. While configured here for thoracic oncology, the modular design adapts to other specialties through customizable event definitions, episode structures, and agentic tools; validation beyond thoracic oncology remains future work.",
+      "authors": [
+        "Tuomo Kiiskinen",
+        "Jason Fries",
+        "Philip Adamson",
+        "David Wu",
+        "Timothy John Ellis-Caleo",
+        "Aaron Fanous",
+        "Balasubramanian Narasimhan",
+        "Joel Neal",
+        "Sylvia Plevritis",
+        "Manuel A. Rivas"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.DB",
+        "cs.IR"
+      ],
+      "published": "2026-06-21T22:09:12+00:00",
+      "link": "https://arxiv.org/pdf/2606.22692v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "VISTA Architect integrates LLMs with longitudinal EHRs via graph database, providing infrastructure for medical agents using EHR.",
+      "llm_evidence_cn": "VISTA Architect通过图数据库将LLM与纵向EHR集成，为使用EHR的医疗代理提供基础设施。",
+      "llm_evidence": "VISTA Architect通过图数据库将LLM与纵向EHR集成，为使用EHR的医疗代理提供基础设施。",
+      "canonical_evidence": "VISTA Architect通过图数据库将LLM与纵向EHR集成，为使用EHR的医疗代理提供基础设施。",
+      "llm_tldr_en": "VISTA Architect uses a graph database to integrate LLMs with longitudinal EHRs, creating a persistent knowledge graph for clinical reasoning, enabling medical agent applications.",
+      "llm_tldr_cn": "本文提出VISTA Architect，一种面向图数据库的AI架构，将LLM与纵向EHR集成。通过两层级联结构（MEDS Graph保持原始EHR结构，TOA合成临床时间线），消除了重复处理原始记录的需求。该系统在多学科肿瘤委员会中展示，表明其可支持医疗代理对EHR的高效利用，为构建和评估EHR驱动的医疗代理提供了实用的数据基础设施。",
+      "llm_tldr": "本文提出VISTA Architect，一种面向图数据库的AI架构，将LLM与纵向EHR集成。通过两层级联结构（MEDS Graph保持原始EHR结构，TOA合成临床时间线），消除了重复处理原始记录的需求。该系统在多学科肿瘤委员会中展示，表明其可支持医疗代理对EHR的高效利用，为构建和评估EHR驱动的医疗代理提供了实用的数据基础设施。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
