@@ -6,35 +6,37 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-23
-- 运行时间：2026-06-23 21:06:51 UTC
+- 最新运行日期：2026-06-24
+- 运行时间：2026-06-24 20:56:33 UTC
 - 运行状态：成功
 - 本次总论文数：5
 - 精读区：1
 - 速读区：4
 
 ### 今日简报（AI）
-今天精读了医疗代理复杂临床推理基准EHR-Complex（10分），速读涵盖肺栓塞多模态问答与电子健康记录基础模型等四篇。最值得关注EHR-Complex中的推理评估框架及肺栓塞风险问答的高效方法。建议优先精读EHR-Complex掌握前沿基准，再穿插速读中的群体锚定模型辅助临床应用。
-- 详情：[/202606/23/README](/202606/23/README)
+1) 今日聚焦临床多模态基准与医疗AI安全，精读9分MedBench v5，速读3篇智能体框架相关论文。
+2) 核心方向：MedBench v5以动态、过程导向与幻觉感知评估临床多模态模型；多智能体审计与缓解框架可有效减少诊断转移和静默幻觉。
+3) 建议优先深入了解MedBench v5的评估维度，并在实际医疗AI系统设计中部署多智能体审计与幻觉检测机制。
+- 详情：[/202606/24/README](/202606/24/README)
 
 ### 精读区论文标签
-1. [EHR-Complex: Benchmarking Medical Agents for Complex Clinical Reasoning](/202606/23/2606.23301v1-ehr-complex-benchmarking-medical-agents-for-complex-clinical-reasoning)  
-   标签：评分：10.0/10、query:ehr-agent
-   evidence：基于EHR的医疗智能体复杂临床推理基准
+1. [MedBench v5: A Dynamic, Process-Oriented, and Hallucination-Aware Benchmark for Clinical Multimodal Models](/202606/24/2606.24155v1-medbench-v5-a-dynamic-process-oriented-and-hallucination-aware-benchmark-for-clinical-multimodal-models)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：面向临床多模态模型（包括智能体系统）的基准测试
 
 ### 速读区论文标签
-1. [Efficient Multimodal Clinical Question Answering for Pulmonary Embolism Risk Assessment](/202606/23/2606.22442v1-efficient-multimodal-clinical-question-answering-for-pulmonary-embolism-risk-assessment)  
+1. [Agentic AI-based Framework for Mitigating Premature Diagnostic Handoff and Silent Hallucination in Healthcare Applications](/202606/24/2606.18068v1-agentic-ai-based-framework-for-mitigating-premature-diagnostic-handoff-and-silent-hallucination-in-healthcare-applications)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：使用EHR和影像数据构建基准评估多模态LLM的临床QA性能，提供了使用EHR评估医疗代理的方法学框架。
-2. [Cohort-Anchored Foundation Models for Electronic Health Records: From Risk Scores to Auditable Peer Cohorts](/202606/23/2606.21885v1-cohort-anchored-foundation-models-for-electronic-health-records-from-risk-scores-to-auditable-peer-cohorts)  
+   evidence：用于缓解医疗AI代理关键失效模式的框架
+2. [A Multi-Agent Audit Framework for High-Stakes Reasoning: Evaluation and Interpretability in Clinical Mental Health Screening](/202606/24/2606.21123v1-a-multi-agent-audit-framework-for-high-stakes-reasoning-evaluation-and-interpretability-in-clinical-mental-health-screening)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：用于评估临床推理的多智能体审计框架
+3. [Dementia-Agents: A Multi-Modal Multi-Agent System for Dementia Staging and Phenotyping](/202606/24/2606.21168v1-dementia-agents-a-multi-modal-multi-agent-system-for-dementia-staging-and-phenotyping)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：使用结构化临床记录的痴呆分期多智能体系统
+4. [GateMem: Benchmarking Memory Governance in Multi-Principal Shared-Memory Agents](/202606/24/2606.18829v1-gatemem-benchmarking-memory-governance-in-multi-principal-shared-memory-agents)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：CAFM框架用于EHR基础模型，包含风险评分和可审计队列，支持基于EHR数据的临床模型评估。
-3. [SkillAudit: From Fixed-Suite Benchmarking to Skill-Centered Assessment](/202606/23/2606.22613v1-skillaudit-from-fixed-suite-benchmarking-to-skill-centered-assessment)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：以技能为中心的智能体评估框架，可应用于医疗智能体基准测试
-4. [VISTA Architect: A graph database-oriented health AI system demonstrated in multidisciplinary tumor boards](/202606/23/2606.22692v1-vista-architect-a-graph-database-oriented-health-ai-system-demonstrated-in-multidisciplinary-tumor-boards)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：VISTA Architect通过图数据库将LLM与纵向EHR集成，为使用EHR的医疗代理提供基础设施。
+   evidence：包含医疗领域的多主体共享记忆代理记忆治理基准
 
 
 <div class="dpr-home-promo-card">

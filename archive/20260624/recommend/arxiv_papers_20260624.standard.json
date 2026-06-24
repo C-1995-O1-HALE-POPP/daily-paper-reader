@@ -1,0 +1,226 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-24T20:52:51.750345+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2606.24155v1",
+      "source": "arxiv",
+      "title": "MedBench v5: A Dynamic, Process-Oriented, and Hallucination-Aware Benchmark for Clinical Multimodal Models",
+      "abstract": "Existing medical AI benchmarks lack process visibility, atomic skill evaluation, and integrated hallucination detection. We introduce MedBench v5, a redesigned benchmark for clinical multimodal models (language, vision-language, and agent systems) that moves from static QA to dynamic, process-oriented evaluation. MedBench v5 features: (1) a dual-dimensional framework combining Clinical Cognitive Responsiveness (14 sub-dimensions) and Medical Atomic Skills (4 agent environments), covering 63 tasks; (2) three switchable information-flow stressors (omission, contradiction, evidence delay) for factorized degradation analysis; (3) a dynamic process audit protocol with five reasoning nodes that produces model-specific failure fingerprints; (4) hallucination propagation monitoring across initiation, propagation, anchoring, and contradiction interaction-capturing silent hallucination. Experiments on frontier models show that strong overall task performance does not guarantee process stability: stressors mainly disrupt contradiction detection, diagnosis updating, hallucination propagation, and contradiction-based self-correction, while final evidence grounding can remain superficially stable. MedBench v5 provides a unified infrastructure for capability profiling, controllable stress testing, process auditing, and hallucination trajectory analysis in clinical AI evaluation.",
+      "authors": [
+        "Ding Jinru",
+        "Jiang Chuchu",
+        "Lu Lu",
+        "Pang Wenrao",
+        "Bian Mouxiao",
+        "Gao Zhuangzhi",
+        "Chen Jiangyuan",
+        "Peng xinwei",
+        "Chen Ruiyao",
+        "Ren Sijie",
+        "Lu Renjie",
+        "Han Bin",
+        "Liu Meiling",
+        "and Xu Jie"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-23T05:23:46+00:00",
+      "link": "https://arxiv.org/pdf/2606.24155v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "benchmark for clinical multimodal models including agent systems",
+      "llm_evidence_cn": "面向临床多模态模型（包括智能体系统）的基准测试",
+      "llm_evidence": "面向临床多模态模型（包括智能体系统）的基准测试",
+      "canonical_evidence": "面向临床多模态模型（包括智能体系统）的基准测试",
+      "llm_tldr_en": "MedBench v5 introduces a dynamic, process-oriented benchmark for clinical multimodal models, including agent systems, with hallucination detection and atomic skill evaluation, covering 63 tasks across 4 agent environments.",
+      "llm_tldr_cn": "MedBench v5是一个面向临床多模态模型（语言、视觉-语言及智能体系统）的动态、过程化基准测试，包含幻觉检测和原子技能评估。该基准涵盖四个智能体环境中的63项任务，通过信息流压力测试和动态过程审计协议，揭示了模型在特定维度上的失败模式，弥补了静态QA评估的不足。",
+      "llm_tldr": "MedBench v5是一个面向临床多模态模型（语言、视觉-语言及智能体系统）的动态、过程化基准测试，包含幻觉检测和原子技能评估。该基准涵盖四个智能体环境中的63项任务，通过信息流压力测试和动态过程审计协议，揭示了模型在特定维度上的失败模式，弥补了静态QA评估的不足。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.18068v1",
+      "source": "arxiv",
+      "title": "Agentic AI-based Framework for Mitigating Premature Diagnostic Handoff and Silent Hallucination in Healthcare Applications",
+      "abstract": "Recent advances in Large Language Models (LLMs) and multi-agent systems have driven the rise of Agentic AI, showing promise for medical reasoning. However, open-ended conversational agents remain prone to two critical failure modes: premature diagnostic handoff and silent clinical hallucinations that may go undetected before reaching the patient. In this work, we propose a multi-agent framework that addresses both issues by replacing ``LLM-as-a-judge'' routing with deterministic orchestration constraints. The framework incorporates two safety mechanisms. First, a neuro-symbolic state-tracking gate enforces completeness of the OLDCARTS clinical protocol (Onset, Location, Duration, Character, Aggravating/Alleviating factors, Radiation, Timing, and Severity) by blocking diagnostic transitions until all required dimensions are collected. Second, an epistemic uncertainty quantification (UQ) gate computes semantic entropy (H) across K=5 independent diagnostic samples to identify and intercept divergent outputs before delivery.   We evaluate the system using simulated patient agents powered by the llama-3.1-70b-instruct model on 150 test cases. The full architecture achieves 49.3% diagnostic precision, representing an absolute improvement of 11.3 percentage points over an unconstrained baseline. Additionally, we observe a statistically significant negative correlation (r = -0.181, p < 0.05) between OLDCARTS completeness (σ) and semantic entropy (H), suggesting that structured information gathering is associated with reduced diagnostic uncertainty.",
+      "authors": [
+        "Divyansh Srivastava",
+        "Shreya Ghosh",
+        "Anshul Verma",
+        "Rajkumar Buyya"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-16T15:39:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.18068v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Framework for mitigating critical failure modes in healthcare AI agents",
+      "llm_evidence_cn": "用于缓解医疗AI代理关键失效模式的框架",
+      "llm_evidence": "用于缓解医疗AI代理关键失效模式的框架",
+      "canonical_evidence": "用于缓解医疗AI代理关键失效模式的框架",
+      "llm_tldr_en": "A multi-agent framework with neuro-symbolic gates to prevent premature diagnostic handoff and silent hallucinations in medical conversational agents.",
+      "llm_tldr_cn": "该论文提出一个多代理框架，通过确定性编排约束和神经符号状态追踪门，替代LLM作为裁判的路由，有效防止医疗对话代理中过早诊断移交和静默幻觉两种关键失效模式。实验表明该框架提高了代理的安全性和可靠性。",
+      "llm_tldr": "该论文提出一个多代理框架，通过确定性编排约束和神经符号状态追踪门，替代LLM作为裁判的路由，有效防止医疗对话代理中过早诊断移交和静默幻觉两种关键失效模式。实验表明该框架提高了代理的安全性和可靠性。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.18829v1",
+      "source": "arxiv",
+      "title": "GateMem: Benchmarking Memory Governance in Multi-Principal Shared-Memory Agents",
+      "abstract": "Memory benchmarks for LLM agents largely assume single-user settings, leaving shared assistants for hospitals, workplaces, campuses, and households understudied. In these deployments, multiple principals write to a common memory pool and query it under different roles, scopes, and relationships, so memory quality requires governance as well as recall. We introduce GateMem, a benchmark for multi-principal shared-memory agents. GateMem jointly evaluates utility for legitimate long-horizon requests with state updates, access control across contextual authorization boundaries, and agent-facing active forgetting after explicit deletion requests. It spans medical, office, education, and household domains, with long-form multi-party episodes, incremental memory injection, hidden checkpoints, structured judging, and leak-target annotations. Across diverse baselines and backbone models, no method simultaneously achieves strong utility, robust access control, and reliable forgetting. Long-context prompting often yields the best governance score at high token cost, while retrieval-based and external-memory methods reduce cost yet still leak unauthorized or deleted information. These results show current memory agents remain far from reliable shared institutional deployment.",
+      "authors": [
+        "Zhe Ren",
+        "Yibo Yang",
+        "Yimeng Chen",
+        "Zijun Zhao",
+        "Benshuo Fu",
+        "Zhihao Shu",
+        "Bingjie Zhang",
+        "Yangyang Xu",
+        "Dandan Guo",
+        "Shuicheng Yan"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CL"
+      ],
+      "published": "2026-06-17T09:06:15+00:00",
+      "link": "https://arxiv.org/pdf/2606.18829v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark for memory governance in multi-principal shared-memory agents including medical domain",
+      "llm_evidence_cn": "包含医疗领域的多主体共享记忆代理记忆治理基准",
+      "llm_evidence": "包含医疗领域的多主体共享记忆代理记忆治理基准",
+      "canonical_evidence": "包含医疗领域的多主体共享记忆代理记忆治理基准",
+      "llm_tldr_en": "GateMem introduces a benchmark for evaluating memory governance in multi-principal shared-memory agents across medical, office, education, and household domains, jointly testing utility, access control, and forgetting.",
+      "llm_tldr_cn": "GateMem提出了一个多主体共享记忆代理的记忆治理基准，覆盖医疗、办公、教育和家庭领域，联合评估代理在长程请求中的效用、基于上下文的访问控制以及主动遗忘能力。该基准通过长篇多轮对话场景，为部署在医院等场景的共享助手提供了记忆质量评估新范式。",
+      "llm_tldr": "GateMem提出了一个多主体共享记忆代理的记忆治理基准，覆盖医疗、办公、教育和家庭领域，联合评估代理在长程请求中的效用、基于上下文的访问控制以及主动遗忘能力。该基准通过长篇多轮对话场景，为部署在医院等场景的共享助手提供了记忆质量评估新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.21123v1",
+      "source": "arxiv",
+      "title": "A Multi-Agent Audit Framework for High-Stakes Reasoning: Evaluation and Interpretability in Clinical Mental Health Screening",
+      "abstract": "High-stakes reasoning tasks necessitate transparent and verifiable workflows, yet conventional single-model large language models (LLMs) often struggle with hallucination and low interpretability under zero-shot paradigms. To address this general AI challenge, we propose a Multi-Agent Audit Framework that simulates a collaborative, multi-step verification process. We empirically validate this architecture in the sensitive domain of clinical mental health screening using a modular LangChain workflow. Our framework decomposes the reasoning process into a Perception Agent, Knowledge Retrieval-Augmented Generation (RAG), Chain-of-Thought (CoT) clinical inference, and a critical Audit verification stage. We evaluated this framework on the DAIC-WOZ dataset using locally deployed open-source models. Experimental results demonstrate that our multi-agent pipeline significantly outperforms single-agent baselines, reducing the Mean Absolute Error (MAE) for PHQ-8 depression severity prediction from 5.35 to 5.02. By exposing cross-agent validation traces, the framework mitigates reasoning drift and provides highly interpretable diagnostic rationales, offering a generalizable paradigm for reliable AI-assisted decision support beyond isolated model scaling. We make data and code open access on GitHub for replicability.",
+      "authors": [
+        "Jingchen Ye",
+        "Yanpei Yu",
+        "Luyao Zhang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-19T05:51:03+00:00",
+      "link": "https://arxiv.org/pdf/2606.21123v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multi-agent audit framework for evaluating clinical reasoning",
+      "llm_evidence_cn": "用于评估临床推理的多智能体审计框架",
+      "llm_evidence": "用于评估临床推理的多智能体审计框架",
+      "canonical_evidence": "用于评估临床推理的多智能体审计框架",
+      "llm_tldr_en": "Proposes a Multi-Agent Audit Framework for high-stakes clinical reasoning evaluation, using a modular LangChain workflow with perception, RAG, CoT inference, and audit verification stages, validated in mental health screening.",
+      "llm_tldr_cn": "本文提出一个多智能体审计框架，用于高利害临床推理任务的评估与可解释性。该框架将推理过程分解为感知智能体、知识检索增强生成、思维链推理和审计验证节点，并在心理健康筛查领域进行了实证验证。结果表明，该框架能有效减少幻觉并提高推理透明性，为医疗智能体评估提供了可借鉴的方法论。",
+      "llm_tldr": "本文提出一个多智能体审计框架，用于高利害临床推理任务的评估与可解释性。该框架将推理过程分解为感知智能体、知识检索增强生成、思维链推理和审计验证节点，并在心理健康筛查领域进行了实证验证。结果表明，该框架能有效减少幻觉并提高推理透明性，为医疗智能体评估提供了可借鉴的方法论。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.21168v1",
+      "source": "arxiv",
+      "title": "Dementia-Agents: A Multi-Modal Multi-Agent System for Dementia Staging and Phenotyping",
+      "abstract": "Dementia diagnosis requires integrating multi-modal clinical assessments from diverse informants and clinicians under incomplete and heterogeneous data conditions. Yet most AI-driven approaches remain Alzheimer's disease (AD)-centric, framing the problem as binary AD detection or three-stage AD progression modeling within well-curated research settings. This pathology-driven paradigm overlooks the broader, syndrome-level nature of dementia, which spans multiple stages, phenotypes, and etiologies. In this paper, we propose Dementia-Agents, a clinically aligned multi-agent framework for real-world dementia staging and phenotyping. The framework follows a three-step workflow: (1) a data agent translates structured clinical records into semantically faithful textual representations that preserve missing-data signals and routes them to domain-aligned experts; (2) five fine-tuned expert agents generate domain-level predictions; and (3) a coordinator agent performs probabilistic aggregation to produce final staging and phenotyping decisions. We develop and evaluate Dementia-Agents on a real-world clinical cohort of 1,066 patients from two cognitive neurology services. Compared with monolithic multi-modal large language models (MLLMs) and prior medical multi-agent systems, our approach achieves consistent improvements in diagnostic performance for real-world syndrome-level dementia staging and phenotyping, while preserving domain-level interpretability.",
+      "authors": [
+        "Yaling Shen",
+        "Maja Christensen",
+        "Yiwen Jiang",
+        "Jenna Dennison",
+        "David Darby",
+        "Amy Brodtmann",
+        "Zongyuan Ge"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-19T07:16:36+00:00",
+      "link": "https://arxiv.org/pdf/2606.21168v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multi-agent system for dementia using structured clinical records",
+      "llm_evidence_cn": "使用结构化临床记录的痴呆分期多智能体系统",
+      "llm_evidence": "使用结构化临床记录的痴呆分期多智能体系统",
+      "canonical_evidence": "使用结构化临床记录的痴呆分期多智能体系统",
+      "llm_tldr_en": "Dementia-Agents proposes a multi-modal multi-agent framework for dementia staging and phenotyping from clinical records, enabling syndrome-level diagnosis beyond Alzheimer's-centric models.",
+      "llm_tldr_cn": "当前痴呆AI诊断多聚焦阿尔茨海默病，忽略综合征多样性。该文提出Dementia-Agents，一个多模态多智能体框架，通过数据智能体将结构化临床记录转化为语义表示，再经推理智能体进行分期和表型分类。框架在真实临床数据上证明了有效性，为复杂疾病的智能体辅助诊断提供了新范式。",
+      "llm_tldr": "当前痴呆AI诊断多聚焦阿尔茨海默病，忽略综合征多样性。该文提出Dementia-Agents，一个多模态多智能体框架，通过数据智能体将结构化临床记录转化为语义表示，再经推理智能体进行分期和表型分类。框架在真实临床数据上证明了有效性，为复杂疾病的智能体辅助诊断提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
