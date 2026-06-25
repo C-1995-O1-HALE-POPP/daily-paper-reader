@@ -6,37 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-24
-- 运行时间：2026-06-24 20:56:33 UTC
+- 最新运行日期：2026-06-25
+- 运行时间：2026-06-25 20:47:46 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：1
+- 本次总论文数：4
+- 精读区：0
 - 速读区：4
 
 ### 今日简报（AI）
-1) 今日聚焦临床多模态基准与医疗AI安全，精读9分MedBench v5，速读3篇智能体框架相关论文。
-2) 核心方向：MedBench v5以动态、过程导向与幻觉感知评估临床多模态模型；多智能体审计与缓解框架可有效减少诊断转移和静默幻觉。
-3) 建议优先深入了解MedBench v5的评估维度，并在实际医疗AI系统设计中部署多智能体审计与幻觉检测机制。
-- 详情：[/202606/24/README](/202606/24/README)
+今日速读4篇论文，聚焦AI在出院后连续护理与小分子药理分析两大方向。  
+最值得关注的是《Bridging the Post-discharge Gap》中提出的可追溯多智能体框架，以及《TxBench-PP》对AI评估小分子临床前药理的性能分析。  
+建议优先阅读这两篇，关注AI如何补足医疗衔接与药物研发中的自动化能力。
+- 详情：[/202606/25/README](/202606/25/README)
 
 ### 精读区论文标签
-1. [MedBench v5: A Dynamic, Process-Oriented, and Hallucination-Aware Benchmark for Clinical Multimodal Models](/202606/24/2606.24155v1-medbench-v5-a-dynamic-process-oriented-and-hallucination-aware-benchmark-for-clinical-multimodal-models)  
-   标签：评分：9.0/10、query:ehr-agent
-   evidence：面向临床多模态模型（包括智能体系统）的基准测试
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Agentic AI-based Framework for Mitigating Premature Diagnostic Handoff and Silent Hallucination in Healthcare Applications](/202606/24/2606.18068v1-agentic-ai-based-framework-for-mitigating-premature-diagnostic-handoff-and-silent-hallucination-in-healthcare-applications)  
+1. [Bridging the Post-discharge Gap: A Traceable Multi-agent Framework for Safe and Continuous Care](/202606/25/2606.25334v1-bridging-the-post-discharge-gap-a-traceable-multi-agent-framework-for-safe-and-continuous-care)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：用于缓解医疗AI代理关键失效模式的框架
-2. [A Multi-Agent Audit Framework for High-Stakes Reasoning: Evaluation and Interpretability in Clinical Mental Health Screening](/202606/24/2606.21123v1-a-multi-agent-audit-framework-for-high-stakes-reasoning-evaluation-and-interpretability-in-clinical-mental-health-screening)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：用于评估临床推理的多智能体审计框架
-3. [Dementia-Agents: A Multi-Modal Multi-Agent System for Dementia Staging and Phenotyping](/202606/24/2606.21168v1-dementia-agents-a-multi-modal-multi-agent-system-for-dementia-staging-and-phenotyping)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：使用结构化临床记录的痴呆分期多智能体系统
-4. [GateMem: Benchmarking Memory Governance in Multi-Principal Shared-Memory Agents](/202606/24/2606.18829v1-gatemem-benchmarking-memory-governance-in-multi-principal-shared-memory-agents)  
+   evidence：使用患者历史（EHR数据）的出院后随访的多Agent框架，评估了完备性和感知安全性
+2. [TxBench-PP: Analyzing AI Agent Performance on Small-Molecule Preclinical Pharmacology](/202606/25/2606.19245v1-txbench-pp-analyzing-ai-agent-performance-on-small-molecule-preclinical-pharmacology)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：包含医疗领域的多主体共享记忆代理记忆治理基准
+   evidence：药理学AI智能体性能基准
+3. [TxBench-PP: Analyzing AI Agent Performance on Small-Molecule Preclinical Pharmacology](/202606/25/2606.19245v2-txbench-pp-analyzing-ai-agent-performance-on-small-molecule-preclinical-pharmacology)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：药理学AI智能体性能基准
+4. [MedBench v5: A Dynamic, Process-Oriented, and Hallucination-Aware Benchmark for Clinical Multimodal Models](/202606/25/2606.24155v2-medbench-v5-a-dynamic-process-oriented-and-hallucination-aware-benchmark-for-clinical-multimodal-models)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：面向临床多模态模型（含智能体系统）的动态基准
 
 
 <div class="dpr-home-promo-card">

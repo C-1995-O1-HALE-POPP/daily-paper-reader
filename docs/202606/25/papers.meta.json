@@ -1,0 +1,69 @@
+{
+  "label": "2026-06-25",
+  "date": "2026-06-25",
+  "generated_at": "2026-06-25T20:47:53",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202606/25/2606.25334v1-bridging-the-post-discharge-gap-a-traceable-multi-agent-framework-for-safe-and-continuous-care",
+      "section": "quick",
+      "title_en": "Bridging the Post-discharge Gap: A Traceable Multi-agent Framework for Safe and Continuous Care",
+      "authors": "Runwei Guan, Yi Zhou, Heyi Lin, Jinjing Zhu, Mingyuan Hou, Yang Yang, Fang Yuan, Xiaohong Lin, Shaofeng Liang, Xuming Hu, Tao Li, Tianbin Zhao, Yutao Yue, Zhiyuan Wang, Hui Xiong",
+      "date": "2026-06-24",
+      "pdf": "https://arxiv.org/pdf/2606.25334v1",
+      "score": "7.0",
+      "evidence": "使用患者历史（EHR数据）的出院后随访的多Agent框架，评估了完备性和感知安全性",
+      "tldr": "出院后随访面临医疗人力短缺、信息碎片化等问题，大语言模型虽有潜力但存在幻觉及无法处理长期患者约束。Healink框架通过分诊路由、记忆增强模块和约束检索增强生成实现处方基础的可追溯响应，利用历史记录向量化与加权相似度匹配防止跨科室药物冲突。在真实病例和基准测试中，专家盲评表明其在权威性和安全性上优于人类医生。该框架提供了可扩展且安全的智能患者管理方案。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Post-discharge clinical follow-up is critical for maintaining continuity of care and mitigating long-term health risks. However, traditional follow-up paradigms suffer from shortage of health workforce, fragmented patient histories, and information silos across clinical departments. While large language models have demonstrated potential in medical question-answering, their deployment in continuous care is hindered by hallucination risks and a fundamental inability to reason over longitudinal, patient-specific constraints. Here we present Healink, a memory-enhanced multi-agent framework to support AI-assisted post-discharge follow-up by generating prescription-grounded, traceable responses that improved completeness and perceived clinical utility in retrospective and physician-blinded evaluations. The architecture seamlessly integrates a triage routing mechanism, a unified memory enhancement module utilizing a robust relational database for optimal latency, and a strict constraint-based retrieval-augmented generation engine. By vectorizing historical clinical records and employing weighted similarity functions across diverse phenotypic and intervention dimensions, Healink ensures precise inter-patient and intra-patient case matching while actively preventing cross-departmental drug conflicts. We evaluated Healink on a dataset comprising 400 continuous and 85 highly complex real-world follow-up cases, alongside the webMedQA benchmark. In a rigorous single-blind evaluation conducted by clinical experts, the framework outperformed human physician baselines in both authoritativeness and clinical safety. By generating a traceable, white-box evidence chain, Healink provides a scalable, safe, and highly effective paradigm for intelligent patient management, ultimately enhancing societal healthcare outcomes.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/25/2606.19245v1-txbench-pp-analyzing-ai-agent-performance-on-small-molecule-preclinical-pharmacology",
+      "section": "quick",
+      "title_en": "TxBench-PP: Analyzing AI Agent Performance on Small-Molecule Preclinical Pharmacology",
+      "authors": "Hannah Le, Ramesh Ramasamy, Alex Urrutia, Mahsa Yazdani, Tim Proctor, Kenny Workman",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.19245v1",
+      "score": "6.0",
+      "evidence": "药理学AI智能体性能基准",
+      "tldr": "AI agent在药物发现中潜力巨大，但缺乏可信基准。本文提出TxBench-PP，一个可验证的小分子临床前药理学基准，包含100个评估任务，涵盖机制、药效、安全性和转化疗效。Agent需基于真实实验数据推导结论。16个模型配置测试显示，最佳系统Claude Opus 4.8/Pi仅通过59.3%的尝试，所有系统均无法可靠恢复临床前药理学决策，凸显当前AI在复杂科学推理中的不足。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Artificial intelligence (AI) agents promise to accelerate drug discovery by compressing interpretation and decision-making loops, but practical deployment requires trusted evaluation on realistic program decisions. We introduce TherapeuticsBench Preclinical Pharmacology (TxBench-PP), a verifiable benchmark for small-molecule preclinical pharmacology and the first focused slice of a broader TherapeuticsBench effort across drug-discovery stages and therapeutic modalities. TxBench-PP tests whether agents can recover accurate conclusions from real-world assay data rather than memorized facts from literature. The benchmark contains 100 evaluations indexed by program stage, assay type, and task structure, spanning mechanism-of-action (MoA) and pharmacodynamic (PD) reasoning, compound-target engagement, causal target validation, developability and safety, and translational efficacy. Agents receive realistic workflow snapshots, inspect files in a coding environment, and return structured answers graded deterministically. Across 16 model-harness configurations, comprising 11 models and 4,800 trajectories, no system reliably recovered preclinical pharmacology decisions. The strongest configuration, Claude Opus 4.8 / Pi, passed 59.3\\% of endpoint attempts (178/300; 95\\% CI, 51.1-67.6), followed by GPT-5.5 / Pi at 55.3\\% (166/300; 47.0-63.6).",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/25/2606.19245v2-txbench-pp-analyzing-ai-agent-performance-on-small-molecule-preclinical-pharmacology",
+      "section": "quick",
+      "title_en": "TxBench-PP: Analyzing AI Agent Performance on Small-Molecule Preclinical Pharmacology",
+      "authors": "Hannah Le, Ramesh Ramasamy, Alex Urrutia, Mahsa Yazdani, Tim Proctor, Kenny Workman",
+      "date": "2026-06-17",
+      "pdf": "https://arxiv.org/pdf/2606.19245v2",
+      "score": "6.0",
+      "evidence": "药理学AI智能体性能基准",
+      "tldr": "AI Agent在药物发现中潜力巨大，但缺乏可靠评估。TxBench-PP基准聚焦小分子临床前药理学，包含100个基于真实实验数据的推理任务，覆盖机制、药效、安全性和转化功效。16种模型配置中，最佳Claude Opus 4.8/Pi通过率仅59.3%，GPT-5.5/Pi为55.3%，无一系统可靠恢复决策。该基准揭示了当前Agent在复杂药理学推理上的显著不足，为未来改进提供标准化测试。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Artificial intelligence (AI) agents promise to accelerate drug discovery by compressing interpretation and decision-making loops, but practical deployment requires trusted evaluation on realistic program decisions. We introduce TherapeuticsBench Preclinical Pharmacology (TxBench-PP), a verifiable benchmark for small-molecule preclinical pharmacology and the first focused slice of a broader TherapeuticsBench effort across drug-discovery stages and therapeutic modalities. TxBench-PP tests whether agents can recover accurate conclusions from real-world assay data rather than memorized facts from literature. The benchmark contains 100 evaluations indexed by program stage, assay type, and task structure, spanning mechanism-of-action (MoA) and pharmacodynamic (PD) reasoning, compound-target engagement, causal target validation, developability and safety, and translational efficacy. Agents receive realistic workflow snapshots, inspect files in a coding environment, and return structured answers graded deterministically. Across 16 model-harness configurations, comprising 11 models and 4,800 trajectories, no system reliably recovered preclinical pharmacology decisions. The strongest configuration, Claude Opus 4.8 / Pi, passed 59.3\\% of endpoint attempts (178/300; 95\\% CI, 51.1-67.6), followed by GPT-5.5 / Pi at 55.3\\% (166/300; 47.0-63.6).",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/25/2606.24155v2-medbench-v5-a-dynamic-process-oriented-and-hallucination-aware-benchmark-for-clinical-multimodal-models",
+      "section": "quick",
+      "title_en": "MedBench v5: A Dynamic, Process-Oriented, and Hallucination-Aware Benchmark for Clinical Multimodal Models",
+      "authors": "Jinru Ding, Chuchu Jiang, Lu Lu, Wenrao Pang, Mouxiao Bian, Zhuangzhi Gao, Jiangyuan Chen, Xinwei Peng, Ruiyao Chen, Sijie Ren, Renjie Lu, Bin Han, Meiling Liu, Jie Xu",
+      "date": "2026-06-23",
+      "pdf": "https://arxiv.org/pdf/2606.24155v2",
+      "score": "6.0",
+      "evidence": "面向临床多模态模型（含智能体系统）的动态基准",
+      "tldr": "现有医疗AI基准缺乏过程评估和幻觉检测。MedBench v5设计动态过程导向基准，包含临床认知响应和医学原子技能双维度、63任务，引入三类信息流压力源和五节点过程审计协议，追踪幻觉传播。实验表明强整体性能不保证过程稳定性。为临床AI评估提供统一基础设施。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Existing medical AI benchmarks lack process visibility, atomic skill evaluation, and integrated hallucination detection. We introduce MedBench v5, a redesigned benchmark for clinical multimodal models (language, vision-language, and agent systems) that moves from static QA to dynamic, process-oriented evaluation. MedBench v5 features: (1) a dual-dimensional framework combining Clinical Cognitive Responsiveness (14 sub-dimensions) and Medical Atomic Skills (4 agent environments), covering 63 tasks; (2) three switchable information-flow stressors (omission, contradiction, evidence delay) for factorized degradation analysis; (3) a dynamic process audit protocol with five reasoning nodes that produces model-specific failure fingerprints; (4) hallucination propagation monitoring across initiation, propagation, anchoring, and contradiction interaction-capturing silent hallucination. Experiments on frontier models show that strong overall task performance does not guarantee process stability: stressors mainly disrupt contradiction detection, diagnosis updating, hallucination propagation, and contradiction-based self-correction, while final evidence grounding can remain superficially stable. MedBench v5 provides a unified infrastructure for capability profiling, controllable stress testing, process auditing, and hallucination trajectory analysis in clinical AI evaluation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
