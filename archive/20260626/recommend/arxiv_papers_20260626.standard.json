@@ -1,0 +1,332 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-26T21:53:23.933963+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2606.24155v3",
+      "source": "arxiv",
+      "title": "MedBench v5: A Dynamic, Process-Oriented, and Hallucination-Aware Benchmark for Clinical Multimodal Models",
+      "abstract": "Existing medical AI benchmarks lack process visibility, atomic skill evaluation, and integrated hallucination detection. We introduce MedBench v5, a redesigned benchmark for clinical multimodal models (language, vision-language, and agent systems) that moves from static QA to dynamic, process-oriented evaluation. MedBench v5 features: (1) a dual-dimensional framework combining Clinical Cognitive Responsiveness (14 sub-dimensions) and Medical Atomic Skills (4 agent environments), covering 63 tasks; (2) three switchable information-flow stressors (omission, contradiction, evidence delay) for factorized degradation analysis; (3) a dynamic process audit protocol with five reasoning nodes that produces model-specific failure fingerprints; (4) hallucination propagation monitoring across initiation, propagation, anchoring, and contradiction interaction-capturing silent hallucination. Experiments on frontier models show that strong overall task performance does not guarantee process stability: stressors mainly disrupt contradiction detection, diagnosis updating, hallucination propagation, and contradiction-based self-correction, while final evidence grounding can remain superficially stable. MedBench v5 provides a unified infrastructure for capability profiling, controllable stress testing, process auditing, and hallucination trajectory analysis in clinical AI evaluation.",
+      "authors": [
+        "Jinru Ding",
+        "Chuchu Jiang",
+        "Lu Lu",
+        "Wenrao Pang",
+        "Mouxiao Bian",
+        "Zhuangzhi Gao",
+        "Jiangyuan Chen",
+        "Xinwei Peng",
+        "Ruiyao Chen",
+        "Sijie Ren",
+        "Renjie Lu",
+        "Yun Zhong",
+        "Bin Han",
+        "Meiling Liu",
+        "Jie Xu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-23T05:23:46+00:00",
+      "link": "https://arxiv.org/pdf/2606.24155v3",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Benchmark for clinical multimodal models including agent systems with dynamic process evaluation",
+      "llm_evidence_cn": "包含智能体系统的临床多模态模型基准，采用动态过程评估",
+      "llm_evidence": "包含智能体系统的临床多模态模型基准，采用动态过程评估",
+      "canonical_evidence": "包含智能体系统的临床多模态模型基准，采用动态过程评估",
+      "llm_tldr_en": "MedBench v5 is a dynamic, process-oriented benchmark for clinical multimodal models including agent systems, featuring dual-dimensional framework, information-flow stressors, and process audit protocol for in-depth evaluation.",
+      "llm_tldr_cn": "现有医学AI基准缺乏过程透明度和原子技能评估。MedBench v5重新设计为动态、过程导向的基准，覆盖语言、视觉语言和智能体系统，采用临床认知响应（14子维度）和医学原子技能（4个智能体环境）双维框架，并引入信息流压力因素（遗漏、矛盾、证据延迟）和动态过程审计协议，实现模型推理节点的细粒度诊断。该基准为医疗AI，尤其是智能体系统，提供了更全面、可解释的评估工具。",
+      "llm_tldr": "现有医学AI基准缺乏过程透明度和原子技能评估。MedBench v5重新设计为动态、过程导向的基准，覆盖语言、视觉语言和智能体系统，采用临床认知响应（14子维度）和医学原子技能（4个智能体环境）双维框架，并引入信息流压力因素（遗漏、矛盾、证据延迟）和动态过程审计协议，实现模型推理节点的细粒度诊断。该基准为医疗AI，尤其是智能体系统，提供了更全面、可解释的评估工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.26649v1",
+      "source": "arxiv",
+      "title": "Autoformalization of Agent Instructions into Policy-as-Code",
+      "abstract": "Agent safety in high-stakes domains requires formal policy enforcement, but most existing approaches either rely on probabilistic guardrails (fine-tuned classifiers, prompt-based steering) that offer no formal guarantees, or on hand-coded symbolic enforcement that does not scale to the breadth of real policy specifications. We present an autoformalization pipeline that translates agent prompts, MCP tool descriptions, and natural language policy documents into formally verified policies using an LLM-based generator-critic loop. The resulting policies are written in the Cedar Policy Language. On the MedAgentBench benchmark, our autoformalized policies cover substantially more of the source natural-language specification than the hand-coded symbolic enforcement in prior work.",
+      "authors": [
+        "Adam Mondl",
+        "Matthew Maisel",
+        "John H. Brock"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CR"
+      ],
+      "published": "2026-06-25T06:23:15+00:00",
+      "link": "https://arxiv.org/pdf/2606.26649v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "uses MedAgentBench benchmark for medical agent policy enforcement, directly relevant to benchmarking medical agents",
+      "llm_evidence_cn": "使用MedAgentBench基准测试医疗Agent策略执行，直接相关于医疗Agent基准测试",
+      "llm_evidence": "使用MedAgentBench基准测试医疗Agent策略执行，直接相关于医疗Agent基准测试",
+      "canonical_evidence": "使用MedAgentBench基准测试医疗Agent策略执行，直接相关于医疗Agent基准测试",
+      "llm_tldr_en": "Autoformalization translates agent prompts and policy documents into formally verified policies, evaluated on MedAgentBench covering more specification than hand-coded enforcement.",
+      "llm_tldr_cn": "医疗Agent在安全关键场景中需要正式策略约束，但现有方法要么无形式保证，要么手工编码不可扩展。本文提出自动形式化流水线，将Agent提示、工具描述和自然语言策略文档通过LLM生成器-评判器循环转换为Cedar策略语言形式化验证的策略。在MedAgentBench基准上，自动形式化策略覆盖更多自然语言规范，且优于手工编码的符号强制方法。该工作为医疗Agent的安全执行提供了可扩展的形式化保障。",
+      "llm_tldr": "医疗Agent在安全关键场景中需要正式策略约束，但现有方法要么无形式保证，要么手工编码不可扩展。本文提出自动形式化流水线，将Agent提示、工具描述和自然语言策略文档通过LLM生成器-评判器循环转换为Cedar策略语言形式化验证的策略。在MedAgentBench基准上，自动形式化策略覆盖更多自然语言规范，且优于手工编码的符号强制方法。该工作为医疗Agent的安全执行提供了可扩展的形式化保障。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.24145v1",
+      "source": "arxiv",
+      "title": "T2D-Bench: Evidence-Gated Evaluation of LLM Outputs for Type 2 Diabetes Using a Multi-Layer Clinical-Lifestyle Knowledge Graph",
+      "abstract": "Large language models (LLMs) can produce clinically fluent recommendations for type 2 diabetes while failing to satisfy guideline constraints or explicitly justify lifestyle-related glycemic claims. We present T2D-Bench, a reproducible benchmark and evidence-gated evaluation framework for testing whether LLM outputs satisfy explicit, graph-checkable evidence requirements. T2D-Bench is built on a multi-layer clinical-lifestyle knowledge graph that combines a biomedical spine (UMLS, DrugBank, SIDER), computable ADA Standards of Care rules, and lifestyle knowledge connected through a mechanistic bridge to glycemic laboratory effects. Across 100 structured vignettes spanning diagnosis, medication safety, and adversarial lifestyle conflicts, baseline outputs failed benchmark-defined evidence-path checks in 35% of cases for GPT-4o-mini and 33% for GPT-4o. The evidence gate detects unsupported omissions and uses constrained revision to bring outputs into verifier-level compliance with benchmark-defined evidence requirements. These results show that computable evidence constraints can make unsupported clinical omissions explicit, measurable, and correctable in diabetes-focused LLM outputs.",
+      "authors": [
+        "Saba A. Farahani",
+        "Hung Cao",
+        "Ramesh Jain",
+        "Amir M. Rahmani"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-23T05:02:21+00:00",
+      "link": "https://arxiv.org/pdf/2606.24145v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "evidence-gated benchmark for clinical decision support agents",
+      "llm_evidence_cn": "临床决策支持智能体的证据门控基准",
+      "llm_evidence": "临床决策支持智能体的证据门控基准",
+      "canonical_evidence": "临床决策支持智能体的证据门控基准",
+      "llm_tldr_en": "T2D-Bench provides a reproducible benchmark and evidence-gated evaluation framework for LLM outputs in type 2 diabetes, using a multi-layer knowledge graph to check compliance with clinical guidelines.",
+      "llm_tldr_cn": "大语言模型生成的2型糖尿病建议可能不符合临床指南。本文提出T2D-Bench，一个可重复的基准和证据门控评估框架，基于融合UMLS、DrugBank和ADA指南的多层临床-生活方式知识图谱，在100个结构化场景上评估LLM输出的证据满足情况。该工作为临床决策支持系统的可信评估提供了标准化方法，可迁移至医疗智能体的性能评估。",
+      "llm_tldr": "大语言模型生成的2型糖尿病建议可能不符合临床指南。本文提出T2D-Bench，一个可重复的基准和证据门控评估框架，基于融合UMLS、DrugBank和ADA指南的多层临床-生活方式知识图谱，在100个结构化场景上评估LLM输出的证据满足情况。该工作为临床决策支持系统的可信评估提供了标准化方法，可迁移至医疗智能体的性能评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.24515v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning for Computer-Use Agents with Autonomous Evaluation",
+      "abstract": "Computer-Use Agents (CUAs) execute high-level user goals by perceiving and acting directly within graphical user interfaces. However, reinforcement learning for CUAs remains difficult because open-ended desktop environments rarely provide scalable, machine-readable reward signals: task success is often visually grounded and hard to specify with handcrafted reward functions or dense manual labels.   We propose an RL fine-tuning framework that uses autonomous vision-language evaluation as a scalable supervision signal for GUI agents. Given a final screenshot and the original instruction, a Vision-Language Model judges task completion and provides terminal feedback without task-specific heuristics or manual labels during policy optimization.   Because autonomous evaluators are imperfect, we model their feedback as a noisy binary reward channel and derive a noise-corrected reward estimator for Proximal Policy Optimization. Experiments across macOSWorld, Windows Agent Arena, and OSWorld show that corrected evaluator rewards outperform both zero-shot baselines and raw evaluator rewards, improving success rates by an average of 12.6 percentage points over zero-shot performance and 5.1 points over raw evaluator fine-tuning. These results suggest that autonomous evaluation can serve as a practical reward signal for RL in GUI environments when evaluator noise is explicitly modeled and corrected.",
+      "authors": [
+        "Marta Sumyk",
+        "Oleksandr Kosovan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.HC"
+      ],
+      "published": "2026-06-23T12:46:29+00:00",
+      "link": "https://arxiv.org/pdf/2606.24515v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "RL fine-tuning with autonomous VLM evaluation for agent tasks",
+      "llm_evidence_cn": "使用自主视觉语言模型评估的强化学习微调用于代理任务",
+      "llm_evidence": "使用自主视觉语言模型评估的强化学习微调用于代理任务",
+      "canonical_evidence": "使用自主视觉语言模型评估的强化学习微调用于代理任务",
+      "llm_tldr_en": "Proposes RL fine-tuning framework using VLM as autonomous evaluator for computer-use agents, eliminating need for manual reward design.",
+      "llm_tldr_cn": "针对计算机使用代理在开放环境中难以获得可扩展奖励信号的问题，提出利用视觉语言模型自主评估任务完成情况的强化学习微调框架。该框架无需手工设计奖励函数或密集人工标注，即可为策略优化提供终端反馈。实验表明该方法显著提升了代理在复杂GUI任务中的表现，为强化学习在代理评估中的应用提供了新范式。",
+      "llm_tldr": "针对计算机使用代理在开放环境中难以获得可扩展奖励信号的问题，提出利用视觉语言模型自主评估任务完成情况的强化学习微调框架。该框架无需手工设计奖励函数或密集人工标注，即可为策略优化提供终端反馈。实验表明该方法显著提升了代理在复杂GUI任务中的表现，为强化学习在代理评估中的应用提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.20895v1",
+      "source": "arxiv",
+      "title": "Neurosymbolic Clinical Trial Matching via LLM-Driven Abduction and Logical Verification",
+      "abstract": "Large Language Models (LLMs) offer a promising path to automate Clinical Trial Matching (CTM), but still struggle with the deterministic verification required for complex eligibility criteria. Conversely, purely symbolic methods provide formal rigour but break down when faced with incomplete patient records and noisy clinical evidence. To bridge this gap, we investigate a hybrid framework for CTM combining LLMs with logical verification. In particular, we introduce an abductive neurosymbolic CTM framework (αNeSy-CTM), which leverages the linguistic and world knowledge in LLMs to support reasoning over noisy and underspecified clinical text. Extensive evaluation demonstrates that αNeSy-CTM substantially outperforms standalone LLM baselines, achieving up to 30% relative improvement over zero-shot baselines. In addition, our analyses confirm the impact of abductive reasoning on CTM, with αNeSy-CTM exhibiting improved accuracy, specificity, and robustness over a non-abductive neurosymbolic setting. Furthermore, αNeSy-CTM and Chain-of-Thought (CoT) reasoning prove highly complementary, highlighting the potential for a hybrid routing policy. Ultimately, this paper demonstrates the impact of neurosymbolic methods for automating CTM, providing a path toward the next generation of auditable, LLM-driven clinical applications.",
+      "authors": [
+        "Baiyang Qu",
+        "Leonardo Ranaldi",
+        "Xi Wang",
+        "Marco Valentino"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-18T19:43:57+00:00",
+      "link": "https://arxiv.org/pdf/2606.20895v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "evaluates a medical AI agent (clinical trial matching) on clinical data, involving logical verification and outperforming baselines",
+      "llm_evidence_cn": "在临床数据上评估医疗AI Agent（临床试验匹配），涉及逻辑验证并优于基线",
+      "llm_evidence": "在临床数据上评估医疗AI Agent（临床试验匹配），涉及逻辑验证并优于基线",
+      "canonical_evidence": "在临床数据上评估医疗AI Agent（临床试验匹配），涉及逻辑验证并优于基线",
+      "llm_tldr_en": "αNeSy-CTM combines LLM abduction with logical verification for clinical trial matching, evaluated on clinical data and outperforming standalone LLMs.",
+      "llm_tldr_cn": "临床试验匹配需要处理不完整患者记录和噪声临床证据，现有LLM缺乏确定性验证。本文提出αNeSy-CTM框架，结合LLM的溯因推理与逻辑验证，在噪声和未指定的临床文本上进行推理。在临床数据上的评估表明，该混合方法显著优于纯LLM基线。该工作展示了结合神经符号方法评估医疗决策Agent的潜力，为基于EHR的Agent评估提供了方法论参考。",
+      "llm_tldr": "临床试验匹配需要处理不完整患者记录和噪声临床证据，现有LLM缺乏确定性验证。本文提出αNeSy-CTM框架，结合LLM的溯因推理与逻辑验证，在噪声和未指定的临床文本上进行推理。在临床数据上的评估表明，该混合方法显著优于纯LLM基线。该工作展示了结合神经符号方法评估医疗决策Agent的潜力，为基于EHR的Agent评估提供了方法论参考。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.19852v2",
+      "source": "arxiv",
+      "title": "Prompt, Plan, Extract: Zero-Shot Agentic LLMs Workflows for Lung Pathology Extraction from Clinical Narratives",
+      "abstract": "Information extraction from pathology reports is essential for cancer staging, tumor registry population. Yet key data remains embedded in narrative reports, making manual extraction labor-intensive and error-prone. Traditional supervised Natural Language Processing pipelines address this through fully supervised Named Entity Recognition and Relation Extraction, but require expensive manual annotation and suffer cascading failures when upstream entities are missed. In this study, we developed a zero-shot, agentic workflow, and evaluated five open-source generative Large Language Models (LLMs) to populate 13 College of American Pathologists synoptic fields from lung resection pathology reports. We compared them against a state-of-the-art supervised GatorTron NER-RE baseline using a novel, registry-aligned evaluation framework. The baseline achieved Micro-F1of 0.960, while the best zero-shot model (GPT-OSS-20B) achieved Micro-F1 of 0.893 (recall: 0.949), accurately extracting complex relations like Pathologic Stage without task-specific training. These results suggest that open-source, zero-shot agentic LLMs show great potential as a low-cost solution for extracting lung pathology information.",
+      "authors": [
+        "Aman Pathak",
+        "Cheng Peng",
+        "Mengxian Lyu",
+        "Ziyi Chen",
+        "Reema Solan",
+        "Sankalp Talankar",
+        "Yasir Khan",
+        "Hiren Mehta",
+        "Aokun Chen",
+        "Yi Guo",
+        "Yonghui Wu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-18T07:00:43+00:00",
+      "link": "https://arxiv.org/pdf/2606.19852v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "evaluates LLM agents on information extraction from clinical narratives",
+      "llm_evidence_cn": "在临床叙述上评估LLM代理的信息提取性能",
+      "llm_evidence": "在临床叙述上评估LLM代理的信息提取性能",
+      "canonical_evidence": "在临床叙述上评估LLM代理的信息提取性能",
+      "llm_tldr_en": "Zero-shot agentic workflow using LLMs to extract lung pathology fields from clinical narratives, benchmarking five open-source models against traditional methods.",
+      "llm_tldr_cn": "该研究针对临床病理报告中关键信息提取效率低下的问题，提出了零样本代理工作流，利用五种开源大语言模型自动填充肺癌病理报告中的13个关键字段。实验结果显示，该工作流在无需标注数据的情况下取得了有竞争力的性能，为医疗信息提取提供了一种可扩展的解决方案。",
+      "llm_tldr": "该研究针对临床病理报告中关键信息提取效率低下的问题，提出了零样本代理工作流，利用五种开源大语言模型自动填充肺癌病理报告中的13个关键字段。实验结果显示，该工作流在无需标注数据的情况下取得了有竞争力的性能，为医疗信息提取提供了一种可扩展的解决方案。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.24839v1",
+      "source": "arxiv",
+      "title": "Grading the Grader: Lessons from Evaluating an Agentic Data Analysis System",
+      "abstract": "Agentic data analysis systems produce rich outputs, including code, numerical results, and verbal diagnostics. This makes them more challenging to evaluate than single-turn LLM responses. It is therefore necessary to distinguish genuine disagreement between an agent's output and a ground-truth answer from grading artifacts. We investigate how reliably automated graders assess such a system and what strategies improve grading quality by applying LAMBDA, a multi-agent data-analysis system, on 153 numerical QRData tasks from DSGym. We develop and evaluate a three-layer human-AI grading cascade: strict regex matching, LLM-based lenient grading, and snippet-based human inspection, which combines non-GenAI and GenAI strategies with different failure profiles. Both automated graders achieve 100% observed precision (0/70 false positives). The lenient grader's recall is 97% against human labels. A keyword-anchored extraction pipeline raises the strict grader's recall by 60 percentage points over a last-number heuristic; the lenient grader is architecturally parser-independent. An iterative nudge mechanism raises grading run success from 36% to 97% and lenient-pass rates from 16% to 46%; comparing nudging with and without original-question re-injection shows that re-injection offers no benefit, confirming the nudge as an answer template cue. We further observe in this case study that variable type is the task metadata field most consistently associated with grading pipeline dynamics and observed outcome grades.",
+      "authors": [
+        "Tian Zheng",
+        "Kai-Tai Hsu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "stat.AP"
+      ],
+      "published": "2026-06-23T17:18:28+00:00",
+      "link": "https://arxiv.org/pdf/2606.24839v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "agentic system evaluation methodology",
+      "llm_evidence_cn": "代理系统评估方法论",
+      "llm_evidence": "代理系统评估方法论",
+      "canonical_evidence": "代理系统评估方法论",
+      "llm_tldr_en": "Develops a three-layer human-AI grading cascade for evaluating agentic data analysis systems, method applicable to medical agents.",
+      "llm_tldr_cn": "本文针对智能数据分析系统评估难的问题，提出三层人机分级评估级联：严格正则匹配、LLM宽松评分和人工片段审查。在LAMBDA多智能体系统上的实验表明，该方法能有效区分真实分歧与评分伪影，为医疗Agent等复杂系统的评估提供了可迁移的方法学框架。",
+      "llm_tldr": "本文针对智能数据分析系统评估难的问题，提出三层人机分级评估级联：严格正则匹配、LLM宽松评分和人工片段审查。在LAMBDA多智能体系统上的实验表明，该方法能有效区分真实分歧与评分伪影，为医疗Agent等复杂系统的评估提供了可迁移的方法学框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.26879v1",
+      "source": "arxiv",
+      "title": "A Pipeline for Generating Longitudinal Synthetic Clinical Notes Using Large Language Models",
+      "abstract": "Synthetic data is increasingly used to enable the development and evaluation of AI systems in domains where access to real-world data is restricted. In healthcare, clinical documentation presents particular challenges due to its sensitivity. This work introduces a synthetic clinical notes pipeline and dataset designed to support the development of clinical AI tools while avoiding the privacy risks associated with real patient data. The dataset is generated using a modular pipeline that combines structured patient generation, semi-structured patient journey simulation, and unstructured clinical note generation using large language models. The pipeline is designed to prioritise internal consistency across longitudinal patient records, while also capturing variation in writing style, note structure, and clinical detail. Additional mechanisms, including LLM-based validation and augmentation steps, are used to improve faithfulness, realism, and diversity of the generated notes. We release a dataset of 70 synthetic patients, each associated with 20-50 clinical notes spanning a full hospital journey. The dataset is provided at multiple levels of validation, enabling users to balance realism and scalability depending on their use case. This dataset supports the development, testing, and evaluation of clinical AI systems, including summarisation tools, coding models, and decision support systems, without reliance on real patient data.",
+      "authors": [
+        "William Poulett"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-25T11:08:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.26879v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "synthetic clinical notes for EHR data generation",
+      "llm_evidence_cn": "生成合成EHR数据",
+      "llm_evidence": "生成合成EHR数据",
+      "canonical_evidence": "生成合成EHR数据",
+      "llm_tldr_en": "This paper presents a pipeline for generating longitudinal synthetic clinical notes using LLMs, enabling development and evaluation of clinical AI tools without real patient data. The dataset ensures internal consistency across records.",
+      "llm_tldr_cn": "目前临床AI工具的开发受限于真实患者数据的隐私和安全问题。该研究提出了一种模块化流水线，通过结合结构化患者生成、半结构化患者旅程模拟和大语言模型生成非结构化临床笔记，生成了内部一致性的纵贯综合临床笔记数据集。该流水线可安全地支持临床AI工具的开发和评估，为基于电子健康记录的医疗智能体研究提供了数据基础。生成的合成数据可模拟真实EHR记录，有助于医疗代理的性能评估和训练。",
+      "llm_tldr": "目前临床AI工具的开发受限于真实患者数据的隐私和安全问题。该研究提出了一种模块化流水线，通过结合结构化患者生成、半结构化患者旅程模拟和大语言模型生成非结构化临床笔记，生成了内部一致性的纵贯综合临床笔记数据集。该流水线可安全地支持临床AI工具的开发和评估，为基于电子健康记录的医疗智能体研究提供了数据基础。生成的合成数据可模拟真实EHR记录，有助于医疗代理的性能评估和训练。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
