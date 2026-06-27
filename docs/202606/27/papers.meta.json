@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-27",
+  "date": "2026-06-27",
+  "generated_at": "2026-06-27T21:06:31",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/27/2606.21627v1-counsel-a-meta-evaluation-dataset-for-agentic-tasks",
+      "section": "quick",
+      "title_en": "Counsel: A Meta-Evaluation Dataset for Agentic Tasks",
+      "authors": "Sashank Pisupati, Henry Broomfield, Eujeong Choi, Antonia Calvi, Charlie Wang, Roman Engeler, Max Bartolo, Patrick Lewis",
+      "date": "2026-06-19",
+      "pdf": "https://arxiv.org/pdf/2606.21627v1",
+      "score": "7.0",
+      "evidence": "用于智能体任务的元评估数据集，与智能体性能基准测试相关",
+      "tldr": "代理系统评估依赖LLM评判者（LLMJ），但其批评质量缺乏衡量。本文构建Counsel，首个代理任务元评估数据集，包含对LLMJ批评的人类元评估，标注错误位置和推理质量，分为“准确、位置正确但推理差、不应标记”三类。最强开源评判模型在位置上与人类一致性约88%，推理上约65%。该数据集为校准、改进或训练LLMJ提供资源，推动代理系统评估研究。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "As agentic systems tackle increasingly complex multi-step tasks, evaluating their trajectories presents a major bottleneck - human annotation of a single trajectory on popular agentic benchmarks can take hours, making it difficult to scale evaluations for measuring performance or curating training data. This has driven widespread reliance on automated approaches such as LLM-as-a-judge (LLMJ) to critique agents at the process and outcome-levels at scale, however, the soundness of LLMJ critiques often goes unmeasured. Here, we introduce Counsel, the first public dataset of meta-evaluations for agentic tasks. Counsel consists of process-level critiques from open-weight LLMJs on two agent benchmarks: tau-bench (customer support agents) and DA-Code (coding agents), and human meta-evaluations of these critiques. Human annotators label critiques on each flagged error as \"spot on\", \"correct location but poor reasoning\", or \"should not have flagged\", achieving reliable inter-annotator agreement (Krippendorff's alpha of 0.78). The resulting dataset stratifies LLMJ critiques by human alignment across both error location within a trajectory and reasoning quality, serving as valuable data to calibrate, improve, or train LLMJs for agents. Comparing open-weight judges, we find that more capable judge models and more reasoning effort both enabled improved human agreement, with the strongest judge reaching ~88% agreement on location and ~65% on reasoning. Counsel is generated using open-weight models and is permissively licensed for broad community use, which we hope will enable rigorous study and improved alignment of LLM-based evaluators for agentic systems.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/27/2606.22737v1-groundeval-a-deterministic-replacement-for-llm-as-judge-in-stateful-agent-evaluation",
+      "section": "quick",
+      "title_en": "GroundEval: A Deterministic Replacement for LLM-as-Judge in Stateful Agent Evaluation",
+      "authors": "Jeffrey Flynt",
+      "date": "2026-06-22",
+      "pdf": "https://arxiv.org/pdf/2606.22737v1",
+      "score": "7.0",
+      "evidence": "可应用于医疗智能体的确定性评估框架",
+      "tldr": "大型语言模型作为评判者评估智能体时，常忽略证据使用是否正确。GroundEval提出确定性替代方案，通过域配置生成问题并记录智能体的搜索、获取和引用轨迹，针对沉默、视角和反事实三类失败模式评分。案例表明，即使LLM评判者给出高分，GroundEval也能发现智能体从未检索所需证据导致得分为0。该框架使每次得分都可检查，暴露了最终答案和评判者评分的内在盲点。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Before letting an agent operate over real context, can you prove it used the right evidence? GroundEval turns that question into a deterministic test of what the agent searched, fetched, cited, and was permitted to access. In one case study, two frontier LLM judges scored a plausible agent response above 0.85. But the trace told a different story: the agent had never retrieved the artifact its answer depended on, yielding a GroundEval score of 0.000.   We introduce GroundEval, a judge-free framework for evaluating agents against grounded, time-bounded, and access-controlled evidence. GroundEval uses a domain configuration to generate questions, lets the agent choose how to answer, and then scores both the final answer and the recorded trajectory that produced it. The benchmark targets three failures that LLM-as-judge evaluation struggles to detect: whether an agent checked before claiming absence, reasoned only from evidence available to the actor at the relevant time, and used the correct causal mechanism rather than a plausible one. These correspond to three tracks: Silence, Perspective, and Counterfactual. GroundEval exposes when plausible answers rest on invalid evidence paths, and produces structured per-question diagnostics that pair tool activity with the agent's turn-level narration, making each score inspectable rather than merely reported. What our case studies turned up is that this gap isn't some rare corner case. It's exactly the blind spot that final-answer and judge-based scoring were never built to catch.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/27/2606.24102v1-porter-language-grounded-event-representations-for-portable-structured-ehr-foundation-models",
+      "section": "quick",
+      "title_en": "PORTER: Language-Grounded Event Representations for Portable Structured EHR Foundation Models",
+      "authors": "Lin Lawrence Guo, Adam Paul Yan, Emily Vettese, Lillian Sung",
+      "date": "2026-06-23",
+      "pdf": "https://arxiv.org/pdf/2606.24102v1",
+      "score": "6.0",
+      "evidence": "EHR基础模型，支持医疗智能体的可移植事件表示",
+      "tldr": "现有EHR基础模型依赖固定词汇编码事件，难以泛化到新概念或跨机构词汇差异。PORTER通过冻结文本编码器将事件描述化为向量，并设计数值专用路径，结合自回归时间骨干预训练。在74个儿科任务中匹配固定词汇模型AUROC；跨词汇转移时无需重训练恢复97.1% AUROC；在MIMIC上优于固定词汇模型（后者丢失69%事件）。该方法迈向词汇无关的EHR基础模型，减少词汇协调，保留域内性能并支持高效跨任务复用。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Most electronic health record (EHR) foundation models encode clinical events as discrete event tokens from a fixed vocabulary and therefore cannot directly represent events containing unseen concepts or new combinations of concepts and attributes such as numeric values. This limits transfer across institutions and even across deployment pipelines within the same institution. We introduce PORTER, a language-grounded structured EHR foundation model that decouples event representation from this fixed vocabulary. PORTER represents events through their descriptions using a frozen text encoder, integrates numeric values through a dedicated pathway, and learns clinical dynamics over patient timelines with an autoregressively pretrained temporal backbone. Across 74 clinical prediction tasks at a pediatric hospital, PORTER matched the mean AUROC of a fixed-vocabulary model with the same temporal backbone and pretraining objective. When the same patient timelines were rendered using event descriptions not seen during pretraining, PORTER transferred without retraining or vocabulary mapping, recovering 97.1% of the mean AUROC of a model trained directly on the target vocabulary. When transferred to MIMIC, PORTER outperformed the fixed-vocabulary model, which dropped 69% of events because their tokens were unseen. Mechanistic analyses showed cross-vocabulary transfer tracked preservation of patient-level representation geometry rather than the scale of the text encoder, and the numeric pathway improved sensitivity to magnitude without disrupting clinical concept identity. PORTER also achieved higher AUROC than a task-specific text serialization comparator, at 329-fold lower amortized compute. PORTER is a step toward vocabulary-independent EHR foundation models that reduce the need for vocabulary harmonization while preserving in-domain performance and enabling efficient cross-task reuse.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,136 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-27T21:03:23.225745+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.21627v1",
+      "source": "arxiv",
+      "title": "Counsel: A Meta-Evaluation Dataset for Agentic Tasks",
+      "abstract": "As agentic systems tackle increasingly complex multi-step tasks, evaluating their trajectories presents a major bottleneck - human annotation of a single trajectory on popular agentic benchmarks can take hours, making it difficult to scale evaluations for measuring performance or curating training data. This has driven widespread reliance on automated approaches such as LLM-as-a-judge (LLMJ) to critique agents at the process and outcome-levels at scale, however, the soundness of LLMJ critiques often goes unmeasured. Here, we introduce Counsel, the first public dataset of meta-evaluations for agentic tasks. Counsel consists of process-level critiques from open-weight LLMJs on two agent benchmarks: tau-bench (customer support agents) and DA-Code (coding agents), and human meta-evaluations of these critiques. Human annotators label critiques on each flagged error as \"spot on\", \"correct location but poor reasoning\", or \"should not have flagged\", achieving reliable inter-annotator agreement (Krippendorff's alpha of 0.78). The resulting dataset stratifies LLMJ critiques by human alignment across both error location within a trajectory and reasoning quality, serving as valuable data to calibrate, improve, or train LLMJs for agents. Comparing open-weight judges, we find that more capable judge models and more reasoning effort both enabled improved human agreement, with the strongest judge reaching ~88% agreement on location and ~65% on reasoning. Counsel is generated using open-weight models and is permissively licensed for broad community use, which we hope will enable rigorous study and improved alignment of LLM-based evaluators for agentic systems.",
+      "authors": [
+        "Sashank Pisupati",
+        "Henry Broomfield",
+        "Eujeong Choi",
+        "Antonia Calvi",
+        "Charlie Wang",
+        "Roman Engeler",
+        "Max Bartolo",
+        "Patrick Lewis"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-06-19T17:30:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.21627v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "meta-evaluation dataset for agentic tasks aligning with benchmarking agent performance",
+      "llm_evidence_cn": "用于智能体任务的元评估数据集，与智能体性能基准测试相关",
+      "llm_evidence": "用于智能体任务的元评估数据集，与智能体性能基准测试相关",
+      "canonical_evidence": "用于智能体任务的元评估数据集，与智能体性能基准测试相关",
+      "llm_tldr_en": "Counsel introduces the first public meta-evaluation dataset for agentic tasks, providing human and LLM-as-judge critiques for two agent benchmarks, enabling scalable evaluation of agent performance.",
+      "llm_tldr_cn": "针对智能体任务评估中人工标注耗时的问题，本文提出了Counsel——首个公开的智能体任务元评估数据集。该数据集包含客服和编码智能体两个基准上的人类及LLM评判者的过程级批评，为自动化评估智能体性能提供了可扩展的校验基础。它使得对LLM评判者可靠性的系统研究成为可能，并可迁移至医疗智能体评估领域。",
+      "llm_tldr": "针对智能体任务评估中人工标注耗时的问题，本文提出了Counsel——首个公开的智能体任务元评估数据集。该数据集包含客服和编码智能体两个基准上的人类及LLM评判者的过程级批评，为自动化评估智能体性能提供了可扩展的校验基础。它使得对LLM评判者可靠性的系统研究成为可能，并可迁移至医疗智能体评估领域。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.24102v1",
+      "source": "arxiv",
+      "title": "PORTER: Language-Grounded Event Representations for Portable Structured EHR Foundation Models",
+      "abstract": "Most electronic health record (EHR) foundation models encode clinical events as discrete event tokens from a fixed vocabulary and therefore cannot directly represent events containing unseen concepts or new combinations of concepts and attributes such as numeric values. This limits transfer across institutions and even across deployment pipelines within the same institution. We introduce PORTER, a language-grounded structured EHR foundation model that decouples event representation from this fixed vocabulary. PORTER represents events through their descriptions using a frozen text encoder, integrates numeric values through a dedicated pathway, and learns clinical dynamics over patient timelines with an autoregressively pretrained temporal backbone. Across 74 clinical prediction tasks at a pediatric hospital, PORTER matched the mean AUROC of a fixed-vocabulary model with the same temporal backbone and pretraining objective. When the same patient timelines were rendered using event descriptions not seen during pretraining, PORTER transferred without retraining or vocabulary mapping, recovering 97.1% of the mean AUROC of a model trained directly on the target vocabulary. When transferred to MIMIC, PORTER outperformed the fixed-vocabulary model, which dropped 69% of events because their tokens were unseen. Mechanistic analyses showed cross-vocabulary transfer tracked preservation of patient-level representation geometry rather than the scale of the text encoder, and the numeric pathway improved sensitivity to magnitude without disrupting clinical concept identity. PORTER also achieved higher AUROC than a task-specific text serialization comparator, at 329-fold lower amortized compute. PORTER is a step toward vocabulary-independent EHR foundation models that reduce the need for vocabulary harmonization while preserving in-domain performance and enabling efficient cross-task reuse.",
+      "authors": [
+        "Lin Lawrence Guo",
+        "Adam Paul Yan",
+        "Emily Vettese",
+        "Lillian Sung"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-06-23T03:33:25+00:00",
+      "link": "https://arxiv.org/pdf/2606.24102v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "EHR foundation model enabling portable event representations for medical agents",
+      "llm_evidence_cn": "EHR基础模型，支持医疗智能体的可移植事件表示",
+      "llm_evidence": "EHR基础模型，支持医疗智能体的可移植事件表示",
+      "canonical_evidence": "EHR基础模型，支持医疗智能体的可移植事件表示",
+      "llm_tldr_en": "PORTER proposes a language-grounded EHR foundation model that decouples event representation from fixed vocabulary, enabling transfer across institutions.",
+      "llm_tldr_cn": "现有EHR基础模型使用固定词汇编码临床事件，无法表示未见概念或新组合。PORTER通过冻结文本编码器将事件表示为语言描述，并设计数值专用路径，在患者时间线上自回归预训练。该模型解除了事件表示与固定词汇的绑定，提升了跨机构和管线的迁移能力，直接支持医疗智能体对EHR数据的灵活使用。",
+      "llm_tldr": "现有EHR基础模型使用固定词汇编码临床事件，无法表示未见概念或新组合。PORTER通过冻结文本编码器将事件表示为语言描述，并设计数值专用路径，在患者时间线上自回归预训练。该模型解除了事件表示与固定词汇的绑定，提升了跨机构和管线的迁移能力，直接支持医疗智能体对EHR数据的灵活使用。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.22737v1",
+      "source": "arxiv",
+      "title": "GroundEval: A Deterministic Replacement for LLM-as-Judge in Stateful Agent Evaluation",
+      "abstract": "Before letting an agent operate over real context, can you prove it used the right evidence? GroundEval turns that question into a deterministic test of what the agent searched, fetched, cited, and was permitted to access. In one case study, two frontier LLM judges scored a plausible agent response above 0.85. But the trace told a different story: the agent had never retrieved the artifact its answer depended on, yielding a GroundEval score of 0.000.   We introduce GroundEval, a judge-free framework for evaluating agents against grounded, time-bounded, and access-controlled evidence. GroundEval uses a domain configuration to generate questions, lets the agent choose how to answer, and then scores both the final answer and the recorded trajectory that produced it. The benchmark targets three failures that LLM-as-judge evaluation struggles to detect: whether an agent checked before claiming absence, reasoned only from evidence available to the actor at the relevant time, and used the correct causal mechanism rather than a plausible one. These correspond to three tracks: Silence, Perspective, and Counterfactual. GroundEval exposes when plausible answers rest on invalid evidence paths, and produces structured per-question diagnostics that pair tool activity with the agent's turn-level narration, making each score inspectable rather than merely reported. What our case studies turned up is that this gap isn't some rare corner case. It's exactly the blind spot that final-answer and judge-based scoring were never built to catch.",
+      "authors": [
+        "Jeffrey Flynt"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.SE"
+      ],
+      "published": "2026-06-22T00:41:16+00:00",
+      "link": "https://arxiv.org/pdf/2606.22737v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "deterministic agent evaluation framework applicable to medical agents",
+      "llm_evidence_cn": "可应用于医疗智能体的确定性评估框架",
+      "llm_evidence": "可应用于医疗智能体的确定性评估框架",
+      "canonical_evidence": "可应用于医疗智能体的确定性评估框架",
+      "llm_tldr_en": "GroundEval provides a judge-free deterministic framework for evaluating stateful agents, which can be adapted to assess medical agents' evidence usage and decision-making.",
+      "llm_tldr_cn": "针对LLM作为评判者的不可靠性问题，本文提出GroundEval，一个无需评判者的确定性智能体评估框架。它通过领域配置生成问题，记录智能体的搜索、获取和引用轨迹，并基于证据关联性打分。在案例研究中，GroundEval能检测到LLM评判者忽略的严重错误。该方法可迁移至医疗智能体评估，确保决策基于正确的临床证据。",
+      "llm_tldr": "针对LLM作为评判者的不可靠性问题，本文提出GroundEval，一个无需评判者的确定性智能体评估框架。它通过领域配置生成问题，记录智能体的搜索、获取和引用轨迹，并基于证据关联性打分。在案例研究中，GroundEval能检测到LLM评判者忽略的严重错误。该方法可迁移至医疗智能体评估，确保决策基于正确的临床证据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

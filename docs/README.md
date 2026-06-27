@@ -6,46 +6,30 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-26
-- 运行时间：2026-06-26 21:58:24 UTC
+- 最新运行日期：2026-06-27
+- 运行时间：2026-06-27 21:06:26 UTC
 - 运行状态：成功
-- 本次总论文数：8
-- 精读区：4
-- 速读区：4
+- 本次总论文数：3
+- 精读区：0
+- 速读区：3
 
 ### 今日简报（AI）
-1) 今日推荐8篇论文，精读聚焦临床多模态基准与智能体指令形式化，速读覆盖临床试验匹配、评分系统及合成数据生成。  
-2) 最值得关注：MedBench v5（9.0分，动态过程化幻觉感知评估）和Autoformalization（9.0分，将智能体指令转化为可验证策略代码）。  
-3) 建议优先精读这两篇高分论文，理解多模态模型在临床中的评估新范式及智能体行为的可验证形式化方法。
-- 详情：[/202606/26/README](/202606/26/README)
+今日速读3篇论文，聚焦智能体评估与医疗表示两大方向。最值得关注的是《Counsel》和《GroundEval》，分别提出了智能体任务的元评估数据集和有状态评估的确定性替代方案。建议普通读者优先了解智能体评估方法的新进展，这是AI应用落地的关键瓶颈。
+- 详情：[/202606/27/README](/202606/27/README)
 
 ### 精读区论文标签
-1. [MedBench v5: A Dynamic, Process-Oriented, and Hallucination-Aware Benchmark for Clinical Multimodal Models](/202606/26/2606.24155v3-medbench-v5-a-dynamic-process-oriented-and-hallucination-aware-benchmark-for-clinical-multimodal-models)  
-   标签：评分：9.0/10、query:ehr-agent
-   evidence：包含智能体系统的临床多模态模型基准，采用动态过程评估
-2. [Autoformalization of Agent Instructions into Policy-as-Code](/202606/26/2606.26649v1-autoformalization-of-agent-instructions-into-policy-as-code)  
-   标签：评分：9.0/10、query:ehr-agent
-   evidence：使用MedAgentBench基准测试医疗Agent策略执行，直接相关于医疗Agent基准测试
-3. [T2D-Bench: Evidence-Gated Evaluation of LLM Outputs for Type 2 Diabetes Using a Multi-Layer Clinical-Lifestyle Knowledge Graph](/202606/26/2606.24145v1-t2d-bench-evidence-gated-evaluation-of-llm-outputs-for-type-2-diabetes-using-a-multi-layer-clinical-lifestyle-knowledge-graph)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：临床决策支持智能体的证据门控基准
-4. [Reinforcement Learning for Computer-Use Agents with Autonomous Evaluation](/202606/26/2606.24515v1-reinforcement-learning-for-computer-use-agents-with-autonomous-evaluation)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：使用自主视觉语言模型评估的强化学习微调用于代理任务
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Neurosymbolic Clinical Trial Matching via LLM-Driven Abduction and Logical Verification](/202606/26/2606.20895v1-neurosymbolic-clinical-trial-matching-via-llm-driven-abduction-and-logical-verification)  
+1. [Counsel: A Meta-Evaluation Dataset for Agentic Tasks](/202606/27/2606.21627v1-counsel-a-meta-evaluation-dataset-for-agentic-tasks)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：在临床数据上评估医疗AI Agent（临床试验匹配），涉及逻辑验证并优于基线
-2. [Grading the Grader: Lessons from Evaluating an Agentic Data Analysis System](/202606/26/2606.24839v1-grading-the-grader-lessons-from-evaluating-an-agentic-data-analysis-system)  
+   evidence：用于智能体任务的元评估数据集，与智能体性能基准测试相关
+2. [GroundEval: A Deterministic Replacement for LLM-as-Judge in Stateful Agent Evaluation](/202606/27/2606.22737v1-groundeval-a-deterministic-replacement-for-llm-as-judge-in-stateful-agent-evaluation)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：代理系统评估方法论
-3. [A Pipeline for Generating Longitudinal Synthetic Clinical Notes Using Large Language Models](/202606/26/2606.26879v1-a-pipeline-for-generating-longitudinal-synthetic-clinical-notes-using-large-language-models)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：生成合成EHR数据
-4. [Prompt, Plan, Extract: Zero-Shot Agentic LLMs Workflows for Lung Pathology Extraction from Clinical Narratives](/202606/26/2606.19852v2-prompt-plan-extract-zero-shot-agentic-llms-workflows-for-lung-pathology-extraction-from-clinical-narratives)  
+   evidence：可应用于医疗智能体的确定性评估框架
+3. [PORTER: Language-Grounded Event Representations for Portable Structured EHR Foundation Models](/202606/27/2606.24102v1-porter-language-grounded-event-representations-for-portable-structured-ehr-foundation-models)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：在临床叙述上评估LLM代理的信息提取性能
+   evidence：EHR基础模型，支持医疗智能体的可移植事件表示
 
 
 <div class="dpr-home-promo-card">
