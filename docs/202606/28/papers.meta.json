@@ -1,0 +1,24 @@
+{
+  "label": "2026-06-28",
+  "date": "2026-06-28",
+  "generated_at": "2026-06-28T21:18:20",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202606/28/2606.25651v1-medguards-multi-agent-system-for-reliable-medical-error-detection-and-correction",
+      "section": "quick",
+      "title_en": "MedGuards: Multi-Agent System for Reliable Medical Error Detection and Correction",
+      "authors": "Congbo Ma, Hu Wang, Yichun Zhang, Farah E. Shamout",
+      "date": "2026-06-24",
+      "pdf": "https://arxiv.org/pdf/2606.25651v1",
+      "score": "6.0",
+      "evidence": "多智能体系统用于医疗错误检测与纠正，与临床决策支持智能体评估相关",
+      "tldr": "LLM在医疗场景中的错误可能危及患者安全，现有方法难以泛化。本文提出MedGuards框架，将错误检测与纠正转化为多智能体上下文学习任务：分别由智能体负责检测、定位和纠正，并通过置信度引导的仲裁机制解决分歧。在四个多语言临床数据集上，该方法显著提升准确率，并引入关注关键字的KPCS指标。无需微调即可增强模型可靠性与可解释性。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "As Large Language Models (LLMs) are increasingly deployed in healthcare settings, accurate error detection and correction in generated or existing text becomes critical, as even minor mistakes can pose risks to patient safety. Existing methods for error detection and correction, including automated checks and heuristic-based approaches, do not generalize well across unseen datasets. In this paper, we propose MedGuards as a medical safety guardrail, which is a new framework that treats medical error detection and correction as a multi-agent in-context learning task. Specialized agents separately detect, localize, and correct errors, while a confidence-guided arbitration mechanism resolves disagreements using reasoning traces and confidence scores. This design enhances interpretability, robustness, and adaptability, without requiring additional training of the base LLMs. Additionally, we introduce the Keyword-Prioritized Correction Score (KPCS), a new evaluation metric that considers whether critical keywords within the reference text are generated correctly, providing a more comprehensive assessment than conventional metrics. Experiments across four multilingual medical datasets consisting of clinical notes demonstrate significant improvements by the proposed framework across several metrics and models. Our aim is to enable safer deployment of LLMs in real-world healthcare applications. For reproducibility, we make our code publicly available at https://github.com/congboma/MedErrBench.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

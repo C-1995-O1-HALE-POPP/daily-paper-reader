@@ -1,0 +1,55 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-28T21:17:14.759975+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.25651v1",
+      "source": "arxiv",
+      "title": "MedGuards: Multi-Agent System for Reliable Medical Error Detection and Correction",
+      "abstract": "As Large Language Models (LLMs) are increasingly deployed in healthcare settings, accurate error detection and correction in generated or existing text becomes critical, as even minor mistakes can pose risks to patient safety. Existing methods for error detection and correction, including automated checks and heuristic-based approaches, do not generalize well across unseen datasets. In this paper, we propose MedGuards as a medical safety guardrail, which is a new framework that treats medical error detection and correction as a multi-agent in-context learning task. Specialized agents separately detect, localize, and correct errors, while a confidence-guided arbitration mechanism resolves disagreements using reasoning traces and confidence scores. This design enhances interpretability, robustness, and adaptability, without requiring additional training of the base LLMs. Additionally, we introduce the Keyword-Prioritized Correction Score (KPCS), a new evaluation metric that considers whether critical keywords within the reference text are generated correctly, providing a more comprehensive assessment than conventional metrics. Experiments across four multilingual medical datasets consisting of clinical notes demonstrate significant improvements by the proposed framework across several metrics and models. Our aim is to enable safer deployment of LLMs in real-world healthcare applications. For reproducibility, we make our code publicly available at https://github.com/congboma/MedErrBench.",
+      "authors": [
+        "Congbo Ma",
+        "Hu Wang",
+        "Yichun Zhang",
+        "Farah E. Shamout"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-24T10:07:59+00:00",
+      "link": "https://arxiv.org/pdf/2606.25651v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Multi-agent system for medical error detection and correction, relevant to clinical decision support agent evaluation",
+      "llm_evidence_cn": "多智能体系统用于医疗错误检测与纠正，与临床决策支持智能体评估相关",
+      "llm_evidence": "多智能体系统用于医疗错误检测与纠正，与临床决策支持智能体评估相关",
+      "canonical_evidence": "多智能体系统用于医疗错误检测与纠正，与临床决策支持智能体评估相关",
+      "llm_tldr_en": "MedGuards uses specialized agents to detect, localize, and correct medical errors via in-context learning with confidence-guided arbitration.",
+      "llm_tldr_cn": "在医疗LLM部署中，微小错误可能危及患者安全。现有自动化检测方法泛化性差。本文提出MedGuards，将医疗错误检测与纠正转化为多智能体上下文学习任务：专用智能体分别检测、定位和纠正错误，并通过置信度引导的仲裁机制解决分歧。该方法在多个数据集上表现优越，为医疗智能体输出可靠性评估提供了有效框架。",
+      "llm_tldr": "在医疗LLM部署中，微小错误可能危及患者安全。现有自动化检测方法泛化性差。本文提出MedGuards，将医疗错误检测与纠正转化为多智能体上下文学习任务：专用智能体分别检测、定位和纠正错误，并通过置信度引导的仲裁机制解决分歧。该方法在多个数据集上表现优越，为医疗智能体输出可靠性评估提供了有效框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
