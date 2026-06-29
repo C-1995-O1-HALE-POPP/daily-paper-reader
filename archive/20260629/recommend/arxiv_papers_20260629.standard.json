@@ -1,0 +1,385 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-29T21:20:56.175629+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 9,
+    "quick_skim_target": 11,
+    "quick_selected": 9
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2606.23403v1",
+      "source": "arxiv",
+      "title": "Litmus: Zero-Label, Code-Driven Metric Specification for Evaluating AI Systems",
+      "abstract": "As agentic LLM systems move from prototypes to deployment across increasingly diverse domains, evaluating them has become both more important and more difficult. The challenge is not only that individual metrics may be unreliable, but that evaluation goals are often left implicit. Without a clear account of what a system is expected to do, how it can fail, and which failures matter, metric choices become difficult to justify, interpret, or validate. We present Litmus, a zero-label system that designs evaluation and monitoring metrics for AI pipelines by eliciting evaluation intent from source code and targeted interrogation. Instead of assuming that the evaluation target is already known, Litmus first identifies what must be measured and why, then converts those answers into constraints for constructing a justified, per-stage metric portfolio. We evaluate Litmus on three real, code-defined AI pipelines - financial account grouping, scientific QA, and inherent risk assessment - against AutoMetrics and three DynamicRubric baselines. Litmus achieves the broadest or tied-broadest concern coverage, spans more pipeline stages, produces a near-zero-redundancy portfolio, and ranks first in validity against per-row quality labels on all three pipelines - decisively on scientific QA (Spearman $ρ=0.72$ vs. less than $0.47$ for every baseline), and within overlapping confidence intervals in relation to two components of the audit framework despite using no labels during metric design. Our results support a shift from automatic metric implementation to automatic metric specification: before asking which metric to compute, evaluation systems should ask what must be measured and why.",
+      "authors": [
+        "Prajjwal Gupta",
+        "Prasang Gupta",
+        "Vishal Bhutani",
+        "Apoorva Sharma",
+        "Sumanth Chundru",
+        "Waqar Sarguroh",
+        "Kevin Paul"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-22T14:26:48+00:00",
+      "link": "https://arxiv.org/pdf/2606.23403v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "zero-label metric specification system for AI evaluation",
+      "llm_evidence_cn": "零标签度量规范系统，可用于医疗智能体评估指标设计",
+      "llm_evidence": "零标签度量规范系统，可用于医疗智能体评估指标设计",
+      "canonical_evidence": "零标签度量规范系统，可用于医疗智能体评估指标设计",
+      "llm_tldr_en": "Litmus is a zero-label system that elicits evaluation intent from source code to design metrics for AI pipelines, addressing the challenge of implicit evaluation goals.",
+      "llm_tldr_cn": "在AI系统中，评估目标往往隐含，导致度量选择难以论证。Litmus提出了一种零标签系统，通过从源代码中诱导评估意图来设计度量和监控指标。它不需要预先定义评估目标，而是识别需要测量什么以及原因。该方法可为医疗智能体评估提供系统的度量定义框架，提升评估的可解释性。",
+      "llm_tldr": "在AI系统中，评估目标往往隐含，导致度量选择难以论证。Litmus提出了一种零标签系统，通过从源代码中诱导评估意图来设计度量和监控指标。它不需要预先定义评估目标，而是识别需要测量什么以及原因。该方法可为医疗智能体评估提供系统的度量定义框架，提升评估的可解释性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "What are the metrics for healthcare agent evaluation using EHR data?",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.24525v1",
+      "source": "arxiv",
+      "title": "VisCritic: Visual State Comparison as Process Reward for GUI Agents",
+      "abstract": "GUI agents powered by vision-language models show strong potential for automating digital tasks, yet frequently fail in long-horizon scenarios due to the absence of step-level verification. Existing process reward models verify actions through textual reasoning alone, missing the visual nature of GUI state changes. We introduce VisCritic, a visual process reward framework that verifies agent actions by directly comparing pre-action and post-action screenshots in visual feature space. VisCritic employs a Siamese vision transformer to extract change-aware representations, coupled with an Action-Aware Critic Head that jointly evaluates action success, task progress, and error type. A critic-training data construction pipeline generates weakly supervised samples from existing trajectories without additional human labels for critic training. Experiments and offline analyses across five benchmarks demonstrate that VisCritic serves as a plug-and-play enhancement for diverse GUI agents, generally improving benchmark metrics while providing visual diagnostic cues.",
+      "authors": [
+        "Jiachen Qian"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-06-23T12:57:02+00:00",
+      "link": "https://arxiv.org/pdf/2606.24525v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "visual process reward for agent evaluation",
+      "llm_evidence_cn": "基于视觉过程奖励的智能体评估",
+      "llm_evidence": "基于视觉过程奖励的智能体评估",
+      "canonical_evidence": "基于视觉过程奖励的智能体评估",
+      "llm_tldr_en": "Introduces VisCritic, a visual process reward framework for GUI agents that compares pre- and post-action screenshots; a general agent evaluation method transferable to medical AI agents.",
+      "llm_tldr_cn": "本文提出VisCritic，一种面向GUI智能体的视觉过程奖励框架，通过对比动作前后截图在视觉特征空间评估动作。该方法为智能体步骤级验证提供了新思路，可迁移至医疗AI智能体评估中。",
+      "llm_tldr": "本文提出VisCritic，一种面向GUI智能体的视觉过程奖励框架，通过对比动作前后截图在视觉特征空间评估动作。该方法为智能体步骤级验证提供了新思路，可迁移至医疗AI智能体评估中。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.23664v1",
+      "source": "arxiv",
+      "title": "MAS-PromptBench: When Does Prompt Optimization Improve Multi-Agent LLM Systems?",
+      "abstract": "Multi-agent systems (MAS) offer a scalable path forward for agentic AI, comprising multiple LLM-based agents, each assigned a system prompt and a position within a workflow that governs inter-agent coordination and output aggregation. System prompts thus form a critical and accessible optimization surface: they specify agents' roles and behaviors, enabling system-level improvements without model finetuning. Although prompt optimization has shown substantial potential for single LLMs, extending it to MAS poses distinct challenges, notably an exponentially growing search space. It remains unclear whether, when, and by how much prompt optimization improves MAS performance, and how sensitive such gains are to system configuration. In this work, we systematically study system-prompt optimization across a broad range of MAS setups varying in task, workflow, communication protocol, and team size, benchmarking two prompt optimizers that naturally extend state-of-the-art single-agent methods. The results reveal its potential to unlock significant gains while exposing open challenges, characterizing when and how much prompt optimization helps across diverse MAS settings.",
+      "authors": [
+        "Juyang Bai",
+        "Laixi Shi"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.MA"
+      ],
+      "published": "2026-06-22T17:48:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.23664v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Benchmark for multi-agent LLM systems with prompt optimization, transferable to medical agent evaluation",
+      "llm_evidence_cn": "多智能体LLM系统提示优化基准，可迁移至医疗代理评估",
+      "llm_evidence": "多智能体LLM系统提示优化基准，可迁移至医疗代理评估",
+      "canonical_evidence": "多智能体LLM系统提示优化基准，可迁移至医疗代理评估",
+      "llm_tldr_en": "Investigates when prompt optimization improves multi-agent LLM systems, proposing a benchmark (MAS-PromptBench) and showing sensitivity to configuration",
+      "llm_tldr_cn": "该论文研究提示优化何时能提升多智能体LLM系统的性能，提出了MAS-PromptBench基准框架。通过系统实验，揭示了提示优化效果与系统配置（如智能体角色和工作流）高度敏感。这项工作的基准方法和工具可直接应用于医疗多代理系统的评估和优化，为构建更好的医疗代理提供方法论支持。",
+      "llm_tldr": "该论文研究提示优化何时能提升多智能体LLM系统的性能，提出了MAS-PromptBench基准框架。通过系统实验，揭示了提示优化效果与系统配置（如智能体角色和工作流）高度敏感。这项工作的基准方法和工具可直接应用于医疗多代理系统的评估和优化，为构建更好的医疗代理提供方法论支持。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.26879v2",
+      "source": "arxiv",
+      "title": "A Pipeline for Generating Longitudinal Synthetic Clinical Notes Using Large Language Models",
+      "abstract": "Synthetic data is increasingly used to enable the development and evaluation of AI systems in domains where access to real-world data is restricted. In healthcare, clinical documentation presents particular challenges due to its sensitivity. This work introduces a synthetic clinical notes pipeline and dataset designed to support the development of clinical AI tools while avoiding the privacy risks associated with real patient data. The dataset is generated using a modular pipeline that combines structured patient generation, semi-structured patient journey simulation, and unstructured clinical note generation using large language models. The pipeline is designed to prioritise internal consistency across longitudinal patient records, while also capturing variation in writing style, note structure, and clinical detail. Additional mechanisms, including LLM-based validation and augmentation steps, are used to improve faithfulness, realism, and diversity of the generated notes. We release a dataset of 70 synthetic patients, each associated with 20-50 clinical notes spanning a full hospital journey. The dataset is provided at multiple levels of validation, enabling users to balance realism and scalability depending on their use case. This dataset supports the development, testing, and evaluation of clinical AI systems, including summarisation tools, coding models, and decision support systems, without reliance on real patient data.",
+      "authors": [
+        "William Poulett",
+        "Alice Waterhouse",
+        "Ben Wallace",
+        "Scarlett Kynoch",
+        "Amaia Imaz Blanco",
+        "Michael Spence",
+        "Jonathan Pearson"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-25T11:08:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.26879v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "synthetic clinical notes pipeline for medical AI development",
+      "llm_evidence_cn": "为医疗AI开发提供合成临床笔记流水线",
+      "llm_evidence": "为医疗AI开发提供合成临床笔记流水线",
+      "canonical_evidence": "为医疗AI开发提供合成临床笔记流水线",
+      "llm_tldr_en": "This paper proposes a modular pipeline for generating longitudinal synthetic clinical notes using LLMs, ensuring internal consistency across patient records while avoiding privacy risks, enabling development and evaluation of clinical AI tools.",
+      "llm_tldr_cn": "针对真实医疗数据隐私限制导致临床AI工具开发困难的问题，本文提出一种使用大型语言模型生成纵向合成临床笔记的模块化流水线。该流水线依次生成结构化患者数据、半结构化病程模拟和自然语言临床笔记，确保内部一致性和隐私保护。实验表明生成的合成数据集可用于支持临床AI系统的开发与评估，为基于电子健康记录的医疗智能体评估提供了安全可用的数据基础。",
+      "llm_tldr": "针对真实医疗数据隐私限制导致临床AI工具开发困难的问题，本文提出一种使用大型语言模型生成纵向合成临床笔记的模块化流水线。该流水线依次生成结构化患者数据、半结构化病程模拟和自然语言临床笔记，确保内部一致性和隐私保护。实验表明生成的合成数据集可用于支持临床AI系统的开发与评估，为基于电子健康记录的医疗智能体评估提供了安全可用的数据基础。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.24392v1",
+      "source": "arxiv",
+      "title": "ATRIA: Adaptive Traceable ECG Reporting with Iterative Agents",
+      "abstract": "Existing ECG report generation is tightly coupled -- interpretation and reporting fused end-to-end, so errors propagate without stage-level recourse -- while agent-based systems decouple tasks but remain single-pass, never revisiting earlier outputs. Clinical ECG reporting instead unfolds iteratively, requiring progressive context integration and bidirectional editing. We present \\textsc{ATRIA}, a multi-agent ECG reporting system that mirrors the clinician's iterative workflow: it binds every report claim to its supporting evidence, flags statements unsupported by that evidence, incorporates additional context mid-session, and lets clinicians verify and revise individual findings rather than accept one opaque output. Because its agents use ECG analysis models already in clinical use, the underlying findings are clinically trustworthy; and as a cloud-based web service, \\textsc{ATRIA} is ready for immediate deployment. We demonstrate \\textsc{ATRIA} through four interaction cases, with a live demo and video available.",
+      "authors": [
+        "Donggyun Hong",
+        "Kyuhwan Lee",
+        "Junmyung Kwon",
+        "Yong-Yeon Jo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-23T10:25:55+00:00",
+      "link": "https://arxiv.org/pdf/2606.24392v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "multi-agent ECG reporting system using clinical data",
+      "llm_evidence_cn": "使用临床数据的多智能体心电图报告系统",
+      "llm_evidence": "使用临床数据的多智能体心电图报告系统",
+      "canonical_evidence": "使用临床数据的多智能体心电图报告系统",
+      "llm_tldr_en": "ATRIA proposes a multi-agent iterative ECG reporting system that mirrors clinician workflow, binding each claim to evidence, enabling verification and revision, improving accuracy and traceability.",
+      "llm_tldr_cn": "现有心电图报告生成通常端到端耦合，错误无法追溯，缺乏迭代修正机制。本文提出ATRIA，一个多智能体心电图报告系统，模拟临床医生的迭代工作流程：它将每个报告声明与支撑证据绑定，标记无证据支持的陈述，并允许临床医生在会话中验证和修改单个发现。该系统使用心电图分析模型作为智能体，实验表明其能提高报告准确性和可追溯性，为基于电子健康记录的临床决策支持智能体提供了可借鉴的架构范例。",
+      "llm_tldr": "现有心电图报告生成通常端到端耦合，错误无法追溯，缺乏迭代修正机制。本文提出ATRIA，一个多智能体心电图报告系统，模拟临床医生的迭代工作流程：它将每个报告声明与支撑证据绑定，标记无证据支持的陈述，并允许临床医生在会话中验证和修改单个发现。该系统使用心电图分析模型作为智能体，实验表明其能提高报告准确性和可追溯性，为基于电子健康记录的临床决策支持智能体提供了可借鉴的架构范例。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.24626v1",
+      "source": "arxiv",
+      "title": "SAFARI: Scaling Long Horizon Agentic Fault Attribution via Active Investigation",
+      "abstract": "As autonomous agents tackle increasingly complex multi-step, multi-agent tasks, their execution trajectories have scaled beyond the constraints of even the largest context windows. Current methods for effectively diagnosing agent failures load the full trajectory into an LLM's context window, which suffers from attention dilution and fails when agentic traces inevitably exceed context limits. To address this, we introduce SAFARI (Scaling long-horizon Agentic Fault AttRibution via active Investigation), a framework that replaces linear context loading with a tool-augmented diagnostic loop. By equipping LLMs with a specialized toolbox to read and search trajectory segments alongside a persistent Short-Term Memory (STM) for cross-turn reasoning, SAFARI effectively decouples diagnostic accuracy from architectural context limits. Our experiments demonstrate that SAFARI outperforms state-of-the-art results by 20% on the Who&When dataset within a 1M token budget, and by 19% on TRAIL GAIA subset on a 25K token budget. Most significantly, SAFARI maintains a 0.58 precision even when the target fault resides 5x beyond the model's native context window, a scenario where traditional evaluators fail entirely.",
+      "authors": [
+        "Chenyang Zhu",
+        "Jiayu Yao",
+        "Kushal Chawla",
+        "Youbing Yin",
+        "Nathan Wolfe",
+        "Pengshan Cai",
+        "Jingyu Wu",
+        "Spencer Hong",
+        "Sangwoo Cho",
+        "Shi-Xiong Zhang",
+        "Daben Liu",
+        "Sambit Sahu",
+        "Erin Babinsky"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-23T14:23:40+00:00",
+      "link": "https://arxiv.org/pdf/2606.24626v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "General agent fault attribution framework applicable to medical agents",
+      "llm_evidence_cn": "通用智能体故障归因框架，可应用于医疗智能体",
+      "llm_evidence": "通用智能体故障归因框架，可应用于医疗智能体",
+      "canonical_evidence": "通用智能体故障归因框架，可应用于医疗智能体",
+      "llm_tldr_en": "SAFARI replaces linear context loading with tool-augmented diagnostic loop for long-horizon agent fault attribution.",
+      "llm_tldr_cn": "该论文提出SAFARI，一种通过工具增强诊断循环实现长时域智能体故障归因的框架。针对现有方法无法处理超出上下文窗口的智能体轨迹，SAFARI使用专用工具箱搜索和读取片段，并结合短期记忆进行跨步骤推理。该方法在多个智能体基准上显著提高了故障定位准确性，可直接服务于医疗智能体的评估与调试。",
+      "llm_tldr": "该论文提出SAFARI，一种通过工具增强诊断循环实现长时域智能体故障归因的框架。针对现有方法无法处理超出上下文窗口的智能体轨迹，SAFARI使用专用工具箱搜索和读取片段，并结合短期记忆进行跨步骤推理。该方法在多个智能体基准上显著提高了故障定位准确性，可直接服务于医疗智能体的评估与调试。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.25651v2",
+      "source": "arxiv",
+      "title": "MedGuards: Multi-Agent System for Reliable Medical Error Detection and Correction",
+      "abstract": "As Large Language Models (LLMs) are increasingly deployed in healthcare settings, accurate error detection and correction in generated or existing text becomes critical, as even minor mistakes can pose risks to patient safety. Existing methods for error detection and correction, including automated checks and heuristic-based approaches, do not generalize well across unseen datasets. In this paper, we propose MedGuards as a medical safety guardrail, which is a new framework that treats medical error detection and correction as a multi-agent in-context learning task. Specialized agents separately detect, localize, and correct errors, while a confidence-guided arbitration mechanism resolves disagreements using reasoning traces and confidence scores. This design enhances interpretability, robustness, and adaptability, without requiring additional training of the base LLMs. Additionally, we introduce the Keyword-Prioritized Correction Score (KPCS), a new evaluation metric that considers whether critical keywords within the reference text are generated correctly, providing a more comprehensive assessment than conventional metrics. Experiments across four multilingual medical datasets consisting of clinical notes demonstrate significant improvements by the proposed framework across several metrics and models. Our aim is to enable safer deployment of LLMs in real-world healthcare applications. For reproducibility, we make our code publicly available at https://github.com/congboma/MedGuards.",
+      "authors": [
+        "Congbo Ma",
+        "Hu Wang",
+        "Yichun Zhang",
+        "Farah E. Shamout"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-24T10:07:59+00:00",
+      "link": "https://arxiv.org/pdf/2606.25651v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Multi-agent medical error detection and correction system",
+      "llm_evidence_cn": "多智能体医疗错误检测与纠正系统",
+      "llm_evidence": "多智能体医疗错误检测与纠正系统",
+      "canonical_evidence": "多智能体医疗错误检测与纠正系统",
+      "llm_tldr_en": "MedGuards uses specialized agents to detect, localize, and correct medical errors with confidence-guided arbitration.",
+      "llm_tldr_cn": "该论文提出MedGuards，一个多智能体框架将医疗错误检测与纠正视为上下文学习任务。专用智能体分别负责检测、定位和纠正错误，并通过置信度仲裁机制消除分歧。在多个医疗文本数据集上，该方法优于现有基准，为部署安全的医疗AI智能体提供了可扩展的评估与安全机制。",
+      "llm_tldr": "该论文提出MedGuards，一个多智能体框架将医疗错误检测与纠正视为上下文学习任务。专用智能体分别负责检测、定位和纠正错误，并通过置信度仲裁机制消除分歧。在多个医疗文本数据集上，该方法优于现有基准，为部署安全的医疗AI智能体提供了可扩展的评估与安全机制。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.26080v1",
+      "source": "arxiv",
+      "title": "Neglected Free Lunch from Post-training: Progress Advantage for LLM Agents",
+      "abstract": "Process reward models enable fine-grained, step-level evaluation of LLMs, yet building them for agentic settings remains prohibitively difficult: long-horizon interactions, irreversible actions, and stochastic environment feedback make both human annotation and Monte Carlo estimation infeasible at scale. In this work, we show that reinforcement learning (RL) post-training already provides the ingredients for effective step-level scoring, eliminating the need for dedicated reward model training altogether. Concretely, we derive an implicit advantage under a general stochastic Markov decision process, which we term progress advantage -- log-probability ratio between the RL-trained policy and its reference policy exactly recovers the optimal advantage function. This formulation makes the resulting signal annotation-free, domain-agnostic, and available as a byproduct of the standard RL post-training pipeline. We validate the effectiveness of the progress advantage across three different applications: test-time scaling, uncertainty quantification, and failure attribution on five benchmarks and four model families. Across all settings, it consistently outperforms confidence-based baselines and, despite requiring no task-specific training, surpasses dedicated trained reward models. We complement these results with deeper analyses on characteristics of progress advantage, offering practical guidance for adoption in real-world agentic systems.",
+      "authors": [
+        "Changdae Oh",
+        "Wendi Li",
+        "Seongheon Park",
+        "Samuel Yeh",
+        "Tanwi Mallick",
+        "Sharon Li"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-06-24T17:54:08+00:00",
+      "link": "https://arxiv.org/pdf/2606.26080v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "RL post-training for agent evaluation methodology",
+      "llm_evidence_cn": "强化学习后训练用于智能体评估的方法",
+      "llm_evidence": "强化学习后训练用于智能体评估的方法",
+      "canonical_evidence": "强化学习后训练用于智能体评估的方法",
+      "llm_tldr_en": "Shows that RL post-training implicitly provides step-level scoring for LLM agents, eliminating dedicated reward model training.",
+      "llm_tldr_cn": "该论文发现强化学习后训练能隐式地为LLM智能体提供步骤级评分，无需专门训练奖励模型。针对智能体在长时域交互中难以获得细粒度奖励的问题，作者推导了基于RL策略与参考策略对数概率比的进步优势，可直接用于智能体行为评估。该方法在多个智能体任务上验证了有效性，为医疗智能体等复杂环境下的评估提供了轻量级替代方案。",
+      "llm_tldr": "该论文发现强化学习后训练能隐式地为LLM智能体提供步骤级评分，无需专门训练奖励模型。针对智能体在长时域交互中难以获得细粒度奖励的问题，作者推导了基于RL策略与参考策略对数概率比的进步优势，可直接用于智能体行为评估。该方法在多个智能体任务上验证了有效性，为医疗智能体等复杂环境下的评估提供了轻量级替代方案。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.26294v1",
+      "source": "arxiv",
+      "title": "The Red Queen Gödel Machine: Co-Evolving Agents and Their Evaluators",
+      "abstract": "Self-improving agents are state-of-the-art (SOTA) on agentic coding benchmarks and have recently been extended to general domains. However, their search methods generally assume a stationary evaluation criterion: a fixed verifier, benchmark, or labeled dataset that remains valid as the agent improves. This ignores a central feature of evolution: species adapt as their environments change with them. We aim to bring the same principle to recursive self-improvement, making evaluation part of the improvement loop and opening search to evolving evaluators, adversarial objectives, and dynamic utilities that may surpass static benchmarks. We introduce the Red Queen Godel Machine (RQGM), an evolutionary framework for recursive self-improvement under non-stationary utilities. The RQGM makes this possible through controlled utility evolution: search is organized into epochs with a fixed within-epoch evaluation criterion, while the utility can be updated at epoch boundaries, so self-improvement guarantees hold per epoch as the objective evolves across them. We begin by showing that even on verifiable coding tasks, the RQGM improves test pass rate over the prior SOTA by adding a complementary agent-as-a-judge code-review signal. This signal is cheaper and the RQGM uses 1.35x-1.72x fewer tokens. We then turn to scientific paper writing and reviewing, and Olympiad-level proof writing and grading, where the RQGM improves performance over prior self-improving agents: co-evolved writers reach 1.78x-1.86x higher acceptance rates under a diverse agent-as-a-judge panel, while co-evolved graders reach 9% higher ground-truth accuracy. In paper reviewing, the strongest baseline reviewer over-accepts AI-generated papers at up to 1.91x the human rate. The RQGM corrects this by introducing an adversarial objective that discovers reviewers equally stringent on AI and human work.",
+      "authors": [
+        "Alex Iacob",
+        "Andrej Jovanović",
+        "William F. Shen",
+        "Daniel Burkhardt",
+        "Meghdad Kurmanji",
+        "Nurbek Tastan",
+        "Lorenzo Sani",
+        "Niccolò Alberto Elia Venanzi",
+        "Ambroise Odonnat",
+        "Zeyu Cao",
+        "Bill Marino",
+        "Xinchi Qiu",
+        "Nicholas D. Lane"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.MA",
+        "cs.NE"
+      ],
+      "published": "2026-06-24T18:38:26+00:00",
+      "link": "https://arxiv.org/pdf/2606.26294v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Framework for co-evolving agents and evaluators, applicable to RL-based medical agent evaluation",
+      "llm_evidence_cn": "代理与评估者共同进化框架，可应用于基于强化学习的医疗代理评估",
+      "llm_evidence": "代理与评估者共同进化框架，可应用于基于强化学习的医疗代理评估",
+      "canonical_evidence": "代理与评估者共同进化框架，可应用于基于强化学习的医疗代理评估",
+      "llm_tldr_en": "Introduces Red Queen Godel Machine, an evolutionary framework for recursive self-improvement with non-stationary evaluators, relevant to RL-based agent evaluation",
+      "llm_tldr_cn": "该论文提出红皇后哥德尔机（RQGM），一种进化框架，让代理和评估者共同进化，以解决静态基准下代理过拟合的问题。方法包括在非平稳评估标准下进行递归自改进。该框架对医疗代理评估中的强化学习场景具有启发意义，可用于设计动态评估指标，避免代理局限在固定基准上。",
+      "llm_tldr": "该论文提出红皇后哥德尔机（RQGM），一种进化框架，让代理和评估者共同进化，以解决静态基准下代理过拟合的问题。方法包括在非平稳评估标准下进行递归自改进。该框架对医疗代理评估中的强化学习场景具有启发意义，可用于设计动态评估指标，避免代理局限在固定基准上。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Reinforcement learning and LLM in medical agent evaluation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
