@@ -1,0 +1,142 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-06-30T21:56:47.392297+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2606.28900v1",
+      "source": "arxiv",
+      "title": "MedEvoEval: Evaluating Continual Evolution of Doctor Agents through Simulated Clinical Episodes",
+      "abstract": "Doctor agents are moving beyond single-turn answer generation toward evolving clinical decision systems. Within an outpatient episode, they acquire evidence, use examination and consultation resources, and decide when to finalize a diagnosis and management plan. Across episodes, their behavior may change through memory, retrieval, reflection, or other update mechanisms. Current evaluations only partially cover this setting. Fixed-input medical QA benchmarks score final answers from complete inputs, whereas many interactive benchmarks still focus on individual encounters or fixed runs, providing limited support for evaluating how episode-level decisions interact with cross-episode experience. We introduce MedEvoEval, an executable longitudinal evaluation framework based on action-gated simulated outpatient episodes. Each source case is converted into role-specific patient, examination, and manager views; evidence is revealed only through valid actions; and each episode records a structured trace that links observations, actions, final outputs, manager scores, and optional experience write-back. We release a runnable E&D artifact with 700 processed episodes, provenance notes, schemas, an episode runner, scoring scripts, configurations, example logs, analysis code, and trajectory- and step-level derivatives. Experiments show that episode traces expose process costs hidden by final-answer scoring, show how MDT-style consultation reallocates resources, and support longitudinal analyses of memory maturation, held-out transfer, update-stage response, and backward retention. Together, these results show that MedEvoEval provides a concrete basis for evaluating whether doctor agents improve through experience, transfer useful behavior, and retain earlier capabilities over time.",
+      "authors": [
+        "Hui Zhang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-06-27T13:14:16+00:00",
+      "link": "https://arxiv.org/pdf/2606.28900v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Evaluates doctor agents in simulated clinical episodes with cross-episode evolution",
+      "llm_evidence_cn": "在模拟临床场景中评估医生智能体的持续演化",
+      "llm_evidence": "在模拟临床场景中评估医生智能体的持续演化",
+      "canonical_evidence": "在模拟临床场景中评估医生智能体的持续演化",
+      "llm_tldr_en": "MedEvoEval is a benchmark for evaluating doctor agents across simulated clinical episodes, capturing both intra-episode decision-making and cross-episode behavioral changes through memory and reflection.",
+      "llm_tldr_cn": "现有医疗QA评测仅对完整输入评分，无法评估医生智能体在多诊次中的演化能力。本文提出MedEvoEval，通过模拟门诊病例构建可执行评测框架，支持在诊次内使用检查与资源，并在诊次间通过记忆与反思更新行为。实验表明该框架能有效捕捉智能体的持续学习与决策演化过程，为医疗智能体演化评估提供了新基准。",
+      "llm_tldr": "现有医疗QA评测仅对完整输入评分，无法评估医生智能体在多诊次中的演化能力。本文提出MedEvoEval，通过模拟门诊病例构建可执行评测框架，支持在诊次内使用检查与资源，并在诊次间通过记忆与反思更新行为。实验表明该框架能有效捕捉智能体的持续学习与决策演化过程，为医疗智能体演化评估提供了新基准。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2606.28692v1",
+      "source": "arxiv",
+      "title": "An AI agent for treatment reasoning over a biomedical tool universe",
+      "abstract": "Treatment reasoning underpins every therapeutic decision, integrating disease context, comorbidities, medications, contraindications, and evolving biomedical knowledge to select an appropriate therapy. It is inherently iterative: candidates are weighed against many constraints, revised as evidence emerges, and grounded in verifiable sources. Here we introduce ATHENA-R1, an AI agent for treatment reasoning across all FDA approved drugs since 1939, trained by reinforcement learning over a universe of 212 biomedical tools. At each step it identifies missing information, selects and runs relevant tools, and incorporates the evidence. To train it without human-annotated traces, we build a two-level self-learning framework: multi-agent systems construct the tools, tasks, and reasoning trajectories for supervised fine-tuning, then reinforcement learning with scientific feedback rewards reasoning quality (evidence gathering, grounded tool use, logical non-redundancy). Across five benchmarks of 3,168 drug reasoning tasks and 456 patient treatment cases, ATHENA-R1 outperforms language models and tool-use systems, reaching 94.7% accuracy on open-ended drug reasoning and 82.9% on treatment reasoning, 17.8 and 10.7 points above GPT-5. In blinded evaluations by experts from 28 rare disease organizations, it is preferred over reference models on all criteria, and physicians rated it favorably on complex hospitalized cardiovascular and infectious-disease cases. Adverse-event hypotheses it generated, tested in electronic health records from 5.4 million patients, reached adjusted odds ratios of 1.48-1.84, with no elevation among negative controls. Because it requires knowing what evidence to seek before concluding, treatment reasoning has long been hard for AI; we show it can be reframed as a learnable process of iterative evidence gathering that reinforcement learning can train AI to perform.",
+      "authors": [
+        "Shanghua Gao",
+        "Ayush Noori",
+        "Richard Zhu",
+        "Curtis Ginder",
+        "Zhenglun Kong",
+        "Xiaorui Su",
+        "Justin Kauffman",
+        "Benjamin S. Glicksberg",
+        "Joshua Lampert",
+        "Ankit Sakhuja",
+        "Ashwin Sawant",
+        "ATHENA-R1 Evaluation Consortium",
+        "David A. Clifton",
+        "Noa Dagan",
+        "Ran Balicer",
+        "Marinka Zitnik"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-27T02:24:56+00:00",
+      "link": "https://arxiv.org/pdf/2606.28692v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Medical agent trained with reinforcement learning for treatment reasoning",
+      "llm_evidence_cn": "使用强化学习训练的医疗Agent进行治疗推理",
+      "llm_evidence": "使用强化学习训练的医疗Agent进行治疗推理",
+      "canonical_evidence": "使用强化学习训练的医疗Agent进行治疗推理",
+      "llm_tldr_en": "Introduces ATHENA-R1, a medical AI agent trained with reinforcement learning over 212 biomedical tools for treatment reasoning, enabling iterative evidence gathering and self-improvement without human annotation.",
+      "llm_tldr_cn": "治疗推理是复杂的临床决策过程。现有方法难以在缺乏人工标注轨迹的情况下训练医疗Agent。本文提出ATHENA-R1，通过强化学习在212个生物医学工具上进行训练，实现迭代式治疗推理。系统采用两级自学习框架，由多Agent构建工具链并生成训练轨迹。该Agent能覆盖所有FDA批准药物，为医疗Agent的评估提供了新的强化学习训练范式。",
+      "llm_tldr": "治疗推理是复杂的临床决策过程。现有方法难以在缺乏人工标注轨迹的情况下训练医疗Agent。本文提出ATHENA-R1，通过强化学习在212个生物医学工具上进行训练，实现迭代式治疗推理。系统采用两级自学习框架，由多Agent构建工具链并生成训练轨迹。该Agent能覆盖所有FDA批准药物，为医疗Agent的评估提供了新的强化学习训练范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Reinforcement learning and LLM in medical agent evaluation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.29503v1",
+      "source": "arxiv",
+      "title": "The Verbose Context Problem in Medical Records",
+      "abstract": "The verbose context problem occurs when structured concepts have token-inefficient textual representations. This bottleneck is acute in population health: cohort-level analysis of longitudinal patient records requires reasoning over thousands of medically-coded events, often exceeding 400K tokens in total. We present PopMedQA, a benchmark isolating this problem through computational tasks on groups of longitudinal patient records. We construct the benchmark using neopatient, a new library for language-controlled generation of artificial patient records. Through extensive ablations -- including prompting strategies, prompt compression, and agentic decomposition -- we find that domain-independent methods fail to alleviate the verbose context problem. There remains significant opportunity to exploit domain-specific structure in language model inputs for population-scale reasoning.",
+      "authors": [
+        "Shiva Kaul",
+        "Min-Gyu Kim",
+        "Anjum Khurshid",
+        "Sriram Vishwanath"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-06-28T17:03:01+00:00",
+      "link": "https://arxiv.org/pdf/2606.29503v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark for medical records with agentic decomposition",
+      "llm_evidence_cn": "基于医疗记录的基准测试，包含agentic分解方法",
+      "llm_evidence": "基于医疗记录的基准测试，包含agentic分解方法",
+      "canonical_evidence": "基于医疗记录的基准测试，包含agentic分解方法",
+      "llm_tldr_en": "PopMedQA benchmark addresses the verbose context problem in longitudinal patient records, testing agentic decomposition and other methods, though not directly evaluating medical agents.",
+      "llm_tldr_cn": "PopMedQA基准测试专门针对纵向患者记录中的冗长上下文问题，通过构建人口健康级别的分析任务，测试了提示策略、提示压缩和agentic分解等方法的有效性。实验发现领域无关方法无法解决该问题，暗示需要专门针对医疗记录的特征设计方法。该基准为评估处理EHR的agent提供了重要的测试环境，但本身不直接评估agent性能。",
+      "llm_tldr": "PopMedQA基准测试专门针对纵向患者记录中的冗长上下文问题，通过构建人口健康级别的分析任务，测试了提示策略、提示压缩和agentic分解等方法的有效性。实验发现领域无关方法无法解决该问题，暗示需要专门针对医疗记录的特征设计方法。该基准为评估处理EHR的agent提供了重要的测试环境，但本身不直接评估agent性能。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

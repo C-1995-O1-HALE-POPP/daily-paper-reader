@@ -6,48 +6,31 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-29
-- 运行时间：2026-06-29 21:26:57 UTC
+- 最新运行日期：2026-06-30
+- 运行时间：2026-06-30 22:00:22 UTC
 - 运行状态：成功
-- 本次总论文数：9
-- 精读区：0
-- 速读区：9
+- 本次总论文数：3
+- 精读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-今日速读9篇论文，重点探索AI系统评估与多智能体优化。最值得关注《Litmus》提出零标注代码驱动评估指标，以及《MAS-PromptBench》揭示提示优化对多智能体系统的条件性增益。建议普通读者优先了解《ATRIA》中自适应迭代代理在心电图报告中的应用思路。
-- 详情：[/202606/29/README](/202606/29/README)
+今日精读一篇8分论文，探究医生智能体在模拟临床场景中的持续演化能力，另速读两篇关于治疗推理与病历冗长问题的研究。  
+最值得关注方向：通过模拟临床试炼评估AI医生长期进化表现（MedEvoEval），以及利用生物医学工具进行治疗推理的智能体设计。  
+建议普通读者：若对AI在医疗中的长期应用好奇，可重点关注模拟环境下的模型适应性测试结果。
+- 详情：[/202606/30/README](/202606/30/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [MedEvoEval: Evaluating Continual Evolution of Doctor Agents through Simulated Clinical Episodes](/202606/30/2606.28900v1-medevoeval-evaluating-continual-evolution-of-doctor-agents-through-simulated-clinical-episodes)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：在模拟临床场景中评估医生智能体的持续演化
 
 ### 速读区论文标签
-1. [Litmus: Zero-Label, Code-Driven Metric Specification for Evaluating AI Systems](/202606/29/2606.23403v1-litmus-zero-label-code-driven-metric-specification-for-evaluating-ai-systems)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：零标签度量规范系统，可用于医疗智能体评估指标设计
-2. [MAS-PromptBench: When Does Prompt Optimization Improve Multi-Agent LLM Systems?](/202606/29/2606.23664v1-mas-promptbench-when-does-prompt-optimization-improve-multi-agent-llm-systems)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：多智能体LLM系统提示优化基准，可迁移至医疗代理评估
-3. [ATRIA: Adaptive Traceable ECG Reporting with Iterative Agents](/202606/29/2606.24392v1-atria-adaptive-traceable-ecg-reporting-with-iterative-agents)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：使用临床数据的多智能体心电图报告系统
-4. [SAFARI: Scaling Long Horizon Agentic Fault Attribution via Active Investigation](/202606/29/2606.24626v1-safari-scaling-long-horizon-agentic-fault-attribution-via-active-investigation)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：通用智能体故障归因框架，可应用于医疗智能体
-5. [MedGuards: Multi-Agent System for Reliable Medical Error Detection and Correction](/202606/29/2606.25651v2-medguards-multi-agent-system-for-reliable-medical-error-detection-and-correction)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：多智能体医疗错误检测与纠正系统
-6. [Neglected Free Lunch from Post-training: Progress Advantage for LLM Agents](/202606/29/2606.26080v1-neglected-free-lunch-from-post-training-progress-advantage-for-llm-agents)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：强化学习后训练用于智能体评估的方法
-7. [The Red Queen Gödel Machine: Co-Evolving Agents and Their Evaluators](/202606/29/2606.26294v1-the-red-queen-gdel-machine-co-evolving-agents-and-their-evaluators)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：代理与评估者共同进化框架，可应用于基于强化学习的医疗代理评估
-8. [VisCritic: Visual State Comparison as Process Reward for GUI Agents](/202606/29/2606.24525v1-viscritic-visual-state-comparison-as-process-reward-for-gui-agents)  
+1. [An AI agent for treatment reasoning over a biomedical tool universe](/202606/30/2606.28692v1-an-ai-agent-for-treatment-reasoning-over-a-biomedical-tool-universe)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：基于视觉过程奖励的智能体评估
-9. [A Pipeline for Generating Longitudinal Synthetic Clinical Notes Using Large Language Models](/202606/29/2606.26879v2-a-pipeline-for-generating-longitudinal-synthetic-clinical-notes-using-large-language-models)  
+   evidence：使用强化学习训练的医疗Agent进行治疗推理
+2. [The Verbose Context Problem in Medical Records](/202606/30/2606.29503v1-the-verbose-context-problem-in-medical-records)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：为医疗AI开发提供合成临床笔记流水线
+   evidence：基于医疗记录的基准测试，包含agentic分解方法
 
 
 <div class="dpr-home-promo-card">

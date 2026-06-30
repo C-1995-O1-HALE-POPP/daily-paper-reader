@@ -1,0 +1,54 @@
+{
+  "label": "2026-06-30",
+  "date": "2026-06-30",
+  "generated_at": "2026-06-30T22:00:29",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202606/30/2606.28900v1-medevoeval-evaluating-continual-evolution-of-doctor-agents-through-simulated-clinical-episodes",
+      "section": "deep",
+      "title_en": "MedEvoEval: Evaluating Continual Evolution of Doctor Agents through Simulated Clinical Episodes",
+      "authors": "Hui Zhang",
+      "date": "2026-06-27",
+      "pdf": "https://arxiv.org/pdf/2606.28900v1",
+      "score": "8.0",
+      "evidence": "在模拟临床场景中评估医生智能体的持续演化",
+      "tldr": "医生智能体需要在连续门诊情节中持续演化，但现有评估方法不全面。MedEvoEval提出基于动作门控的模拟门诊框架，将病例转为患者、检查、管理者等角色视图，通过有效动作逐步揭示证据，记录完整轨迹并支持经验回写。实验表明，该框架能暴露终评隐藏的过程成本，展示MDT会诊的资源再分配，并支持记忆成熟、迁移、更新和逆向保持的纵向分析。该工作为评估医生智能体是否通过经验提升、迁移有用行为、保留早期能力提供了具体基础。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Doctor agents are moving beyond single-turn answer generation toward evolving clinical decision systems. Within an outpatient episode, they acquire evidence, use examination and consultation resources, and decide when to finalize a diagnosis and management plan. Across episodes, their behavior may change through memory, retrieval, reflection, or other update mechanisms. Current evaluations only partially cover this setting. Fixed-input medical QA benchmarks score final answers from complete inputs, whereas many interactive benchmarks still focus on individual encounters or fixed runs, providing limited support for evaluating how episode-level decisions interact with cross-episode experience. We introduce MedEvoEval, an executable longitudinal evaluation framework based on action-gated simulated outpatient episodes. Each source case is converted into role-specific patient, examination, and manager views; evidence is revealed only through valid actions; and each episode records a structured trace that links observations, actions, final outputs, manager scores, and optional experience write-back. We release a runnable E&D artifact with 700 processed episodes, provenance notes, schemas, an episode runner, scoring scripts, configurations, example logs, analysis code, and trajectory- and step-level derivatives. Experiments show that episode traces expose process costs hidden by final-answer scoring, show how MDT-style consultation reallocates resources, and support longitudinal analyses of memory maturation, held-out transfer, update-stage response, and backward retention. Together, these results show that MedEvoEval provides a concrete basis for evaluating whether doctor agents improve through experience, transfer useful behavior, and retain earlier capabilities over time.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/30/2606.28692v1-an-ai-agent-for-treatment-reasoning-over-a-biomedical-tool-universe",
+      "section": "quick",
+      "title_en": "An AI agent for treatment reasoning over a biomedical tool universe",
+      "authors": "Shanghua Gao, Ayush Noori, Richard Zhu, Curtis Ginder, Zhenglun Kong, Xiaorui Su, Justin Kauffman, Benjamin S. Glicksberg, Joshua Lampert, Ankit Sakhuja, Ashwin Sawant, ATHENA-R1 Evaluation Consortium, David A. Clifton, Noa Dagan, Ran Balicer, Marinka Zitnik",
+      "date": "2026-06-27",
+      "pdf": "https://arxiv.org/pdf/2606.28692v1",
+      "score": "6.0",
+      "evidence": "使用强化学习训练的医疗Agent进行治疗推理",
+      "tldr": "治疗推理需迭代整合疾病、合并症与药物约束。本文提出ATHENA-R1，基于强化学习在212个生物医学工具宇宙中训练。通过多智能体系统自动构建推理轨迹，结合科学反馈强化学习，在治疗推理基准上达94.7%准确率，优于GPT-5。专家与医生评估中表现更优，生成的不良事件假设在540万患者电子病历中得到验证。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Treatment reasoning underpins every therapeutic decision, integrating disease context, comorbidities, medications, contraindications, and evolving biomedical knowledge to select an appropriate therapy. It is inherently iterative: candidates are weighed against many constraints, revised as evidence emerges, and grounded in verifiable sources. Here we introduce ATHENA-R1, an AI agent for treatment reasoning across all FDA approved drugs since 1939, trained by reinforcement learning over a universe of 212 biomedical tools. At each step it identifies missing information, selects and runs relevant tools, and incorporates the evidence. To train it without human-annotated traces, we build a two-level self-learning framework: multi-agent systems construct the tools, tasks, and reasoning trajectories for supervised fine-tuning, then reinforcement learning with scientific feedback rewards reasoning quality (evidence gathering, grounded tool use, logical non-redundancy). Across five benchmarks of 3,168 drug reasoning tasks and 456 patient treatment cases, ATHENA-R1 outperforms language models and tool-use systems, reaching 94.7% accuracy on open-ended drug reasoning and 82.9% on treatment reasoning, 17.8 and 10.7 points above GPT-5. In blinded evaluations by experts from 28 rare disease organizations, it is preferred over reference models on all criteria, and physicians rated it favorably on complex hospitalized cardiovascular and infectious-disease cases. Adverse-event hypotheses it generated, tested in electronic health records from 5.4 million patients, reached adjusted odds ratios of 1.48-1.84, with no elevation among negative controls. Because it requires knowing what evidence to seek before concluding, treatment reasoning has long been hard for AI; we show it can be reframed as a learnable process of iterative evidence gathering that reinforcement learning can train AI to perform.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202606/30/2606.29503v1-the-verbose-context-problem-in-medical-records",
+      "section": "quick",
+      "title_en": "The Verbose Context Problem in Medical Records",
+      "authors": "Shiva Kaul, Min-Gyu Kim, Anjum Khurshid, Sriram Vishwanath",
+      "date": "2026-06-28",
+      "pdf": "https://arxiv.org/pdf/2606.29503v1",
+      "score": "6.0",
+      "evidence": "基于医疗记录的基准测试，包含agentic分解方法",
+      "tldr": "医学记录中结构化概念常伴有冗长的文本描述，导致在处理群体纵向患者记录时令牌效率低下，单次分析可达40万令牌。为此提出PopMedQA基准，基于neopatient库生成人工记录，系统评估了提示压缩、智能分解等域无关策略。实验表明这些方法均无法有效缓解冗长上下文问题。结论指出现有方法存在明显局限，未来需充分利用医学领域结构性知识来优化模型输入。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "The verbose context problem occurs when structured concepts have token-inefficient textual representations. This bottleneck is acute in population health: cohort-level analysis of longitudinal patient records requires reasoning over thousands of medically-coded events, often exceeding 400K tokens in total. We present PopMedQA, a benchmark isolating this problem through computational tasks on groups of longitudinal patient records. We construct the benchmark using neopatient, a new library for language-controlled generation of artificial patient records. Through extensive ablations -- including prompting strategies, prompt compression, and agentic decomposition -- we find that domain-independent methods fail to alleviate the verbose context problem. There remains significant opportunity to exploit domain-specific structure in language model inputs for population-scale reasoning.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
