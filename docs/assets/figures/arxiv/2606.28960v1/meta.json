@@ -1,0 +1,105 @@
+{
+  "version": 2,
+  "extractor": "papercropper",
+  "figures": [
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-001.webp",
+      "caption": "",
+      "page": 0,
+      "index": 1,
+      "width": 853,
+      "height": 500,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-002.webp",
+      "caption": "",
+      "page": 0,
+      "index": 2,
+      "width": 1327,
+      "height": 1395,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-003.webp",
+      "caption": "",
+      "page": 0,
+      "index": 3,
+      "width": 1472,
+      "height": 1008,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-004.webp",
+      "caption": "",
+      "page": 0,
+      "index": 4,
+      "width": 564,
+      "height": 956,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-005.webp",
+      "caption": "",
+      "page": 0,
+      "index": 5,
+      "width": 798,
+      "height": 546,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-006.webp",
+      "caption": "",
+      "page": 0,
+      "index": 6,
+      "width": 1152,
+      "height": 833,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-007.webp",
+      "caption": "",
+      "page": 0,
+      "index": 7,
+      "width": 1638,
+      "height": 769,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-008.webp",
+      "caption": "",
+      "page": 0,
+      "index": 8,
+      "width": 2530,
+      "height": 1064,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-009.webp",
+      "caption": "",
+      "page": 0,
+      "index": 9,
+      "width": 1436,
+      "height": 1080,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-010.webp",
+      "caption": "",
+      "page": 0,
+      "index": 10,
+      "width": 1484,
+      "height": 1758,
+      "label": "Figure"
+    },
+    {
+      "url": "assets/figures/arxiv/2606.28960v1/fig-011.webp",
+      "caption": "",
+      "page": 0,
+      "index": 11,
+      "width": 1492,
+      "height": 860,
+      "label": "Figure"
+    }
+  ]
+}

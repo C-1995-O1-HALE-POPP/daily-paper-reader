@@ -1,0 +1,69 @@
+{
+  "label": "2026-07-01",
+  "date": "2026-07-01",
+  "generated_at": "2026-07-01T22:09:18",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202607/01/2606.31179v1-healthagentbench-a-unified-benchmark-suite-of-realistic-agentic-healthcare-environments-for-challenging-frontier-ai-agents",
+      "section": "deep",
+      "title_en": "HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents",
+      "authors": "Qianchu Liu, Sheng Zhang, Guanghui Qin, Jeya Maria Jose Valanarasu, Maximilian Rokuss, Mingyu Lu, Timothy Ossowski, Juan Manuel Zambrano Chaves, Cliff Wong, Peniel Argaw, Yashna Hasija, Mu Wei, Wen-wai Yim, Qin Liu, Zilin Jing, Jason Entenmann, Naoto Usuyama, Tristan Naumann, Hoifung Poon",
+      "date": "2026-06-30",
+      "pdf": "https://arxiv.org/pdf/2606.31179v1",
+      "score": "9.0",
+      "evidence": "统一的医疗代理基准测试套件，包含覆盖患者旅程的逼真环境",
+      "tldr": "HealthAgentBench提出包含54个任务、7类场景的医疗代理基准套件，覆盖患者全流程和多模态数据。每任务要求代理从原始数据探索并执行多步解决方案，评估发现前沿模型整体成功率低，最强Codex GPT-5.5仅42%。基准揭示不同任务强弱项：EHR建模有潜力，医学影像仍困难，组合搜索和推理任务尤为挑战。该基准为评估真实医疗AI代理提供了严格且可扩展的测试平台。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "As AI agents become increasingly capable of complex, long-horizon reasoning, rigorous and holistic evaluation is essential for measuring progress toward real-world healthcare applications. We introduce HealthAgentBench, a suite of 54 agentic healthcare tasks across 7 categories each with its unique environment. The benchmark suite spans diverse workflows throughout the patient journey and a broad range of modalities. Each task is designed to replicate an end-to-end clinical workflow: given minimal instructions, an agent must explore raw healthcare data, operate within a complex environment, and execute multi-step solutions that go beyond naive prompting. A final task success rate is reported to provide a single, interpretable metric for HealthAgentBench overall performance for each agent. Evaluating frontier agents on HealthAgentBench, we find that overall task success rate remains low, underscoring the difficulty of the suite. The strongest and the most cost effective agent, Codex GPT-5.5, achieves only approximately 42% success rate. Beyond aggregate performance, HealthAgentBench reveals nuanced strengths and weaknesses across task categories. Frontier agents show promise in automatically developing research modeling pipelines over EHR data, but medical imaging remains especially challenging, particularly for Claude Code models, while Codex GPT-5.5 shows emerging capability. Tasks that combine large search spaces with compositional reasoning requirements remain difficult for all current agents. Together, these results suggest that HealthAgentBench provides a challenging and realistic benchmark with substantial room for future progress. We release our benchmark at https://github.com/microsoft/HealthAgentBench.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/01/2606.28960v1-expert-evaluation-of-clinical-ai-tools-on-real-point-of-care-clinical-queries",
+      "section": "quick",
+      "title_en": "Expert Evaluation of Clinical AI Tools on Real Point-of-Care Clinical Queries",
+      "authors": "Jean Feng, Vishal Patel, Patrick Heagerty, Yifan Mai, Venkatesh Sivaraman, Patrick Vossler, Jialin Ouyang, Anupam B. Jena",
+      "date": "2026-06-27",
+      "pdf": "https://arxiv.org/pdf/2606.28960v1",
+      "score": "7.0",
+      "evidence": "临床AI工具的专家评估与真实查询",
+      "tldr": "当前临床AI工具测评多采用假设性问题，与真实临床实践脱钩。本研究基于匿名真实验证集(Real-POCQi)的620条医生真实查询，由149名执业医师盲评Claude Opus 4.8、Gemini 3.1 Pro、GPT-5.5和专用工具OpenEvidence。结果发现专用工具在准确性、临床实用性、来源质量、可验证性及完整性五维度的胜率差达25-39个百分点（p<0.001）。研究发布真实查询基准，强调评估需匹配专家专业性，并证实领域定制化能显著提升临床AI性能。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Physicians now pose millions of clinical questions to AI tools each week, yet these tools are evaluated largely on hypothetical or exam-style questions, not those actually asked in practice. We report a blinded evaluation built on 620 Real-world Point-Of-Care Queries (Real-POCQi) submitted to the OpenEvidence (OE) platform by physicians spanning 30 specialties, as well as 187 questions from HealthBench. 149 practicing physicians across 36 states made head-to-head comparisons between answers from three frontier general-purpose models (Claude Opus 4.8, Gemini 3.1 Pro, and GPT-5.5) and a specialized clinical tool (OE), with graders matched to each question's specialty. When comparing answers along five dimensions relevant to clinical decision support -- accuracy, clinical utility, source quality, verifiability, & completeness -- physicians scored the specialized tool highest on all axes; in the primary analysis on Real-POCQi, win differences (margins between win and loss rates) ranged from 25 to 39 percentage points (p<0.001). Results remained consistent in sensitivity analyses stratifying by citation display, answer length, OE-user status, and Real-POCQi versus HealthBench. In parallel, LLM judges were found to systematically differ from expert judges, though both generally agreed on the best model. These findings underscore two conclusions: (i) AI tool evaluations should reflect real-world query distributions and use expert judges that mirror the specialization defining modern medicine and (ii) the consistent advantage of the specialized tool over general-purpose models does not necessarily mean that the latter cannot serve similar purposes, but that targeted engineering and customization can yield meaningful gains in performance for its users. We release Real-POCQi as a public benchmark, as well as the prespecified statistical analysis for reproducing results of this study.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/01/2606.29467v1-mamabench-and-mamaretrieval-benchmarks-for-evaluating-medical-retrieval-augmented-generation-in-maternal-neonatal-and-reproductive-health",
+      "section": "quick",
+      "title_en": "mamabench and mamaretrieval: Benchmarks for Evaluating Medical Retrieval-Augmented Generation in Maternal, Neonatal, and Reproductive Health",
+      "authors": "Yi Ren",
+      "date": "2026-06-28",
+      "pdf": "https://arxiv.org/pdf/2606.29467v1",
+      "score": "7.0",
+      "evidence": "医学问答与检索基准，适用于医疗智能体评估",
+      "tldr": "现有医疗问答基准很少覆盖孕产妇、新生儿和生殖健康领域，且缺乏用于检索的段落级相关性标注。本文发布两个开放基准：mamabench包含25949个专家来源的问答对，mamaretrieval包含3185个临床查询与63650个指南片段的分级相关性标注。通过范围过滤、分级标注和质量审计确保可靠性。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Medical question-answering benchmarks rarely cover the maternal, neonatal, child, and reproductive-health questions a nurse-midwife asks, and, to our knowledge, no public chunk-level relevance benchmark exists for maternal-health guideline retrieval. We release two benchmarks that fill these gaps. mamabench is a scope-filtered QA set of 25,949 items assembled from seven existing expert-authored sources across multiple-choice, short-answer, and rubric-graded tracks; to help users calibrate the LLM judge that scores the rubric track, we re-scope HealthBench's physician-labelled meta-evaluation to the domain. mamaretrieval pairs 3,185 clinical queries with graded (0-6) relevance labels over a 63,650-chunk maternal-health guideline corpus, using a decomposed rubric that distinguishes a chunk that answers a query from one merely on its topic. Three decisions shape both: assemble and filter expert sources rather than author questions, grade relevance rather than binarise it, and measure and disclose the limits of the labels -- scope-classifier agreement, a frontier-judge check, and a pooling-completeness audit -- rather than treat them as an oracle. A companion paper uses the benchmarks to evaluate a deployed on-device assistant; both are released openly for research.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/01/2606.30887v1-training-therapeutic-judges-and-multi-agent-systems-for-human-aligned-mental-health-support",
+      "section": "quick",
+      "title_en": "Training Therapeutic Judges and Multi-Agent Systems for Human-Aligned Mental Health Support",
+      "authors": "Mizanur Rahman, Abeer Badawi, Elahe Rahimi, Laleh Seyyed-Kalantari, Frank Rudzicz, Enamul Hoque, Elham Dolatabadi",
+      "date": "2026-06-29",
+      "pdf": "https://arxiv.org/pdf/2606.30887v1",
+      "score": "6.0",
+      "evidence": "医疗智能体评估框架，含多维评审与优化",
+      "tldr": "大语言模型在心理健康支持中有潜力，但治疗质量依赖评估作为可操作信号而非被动指标。本文提出TheraAlign框架：先训练开源评估器TheraJudge，通过偏好优化在7个心理维度上实现高精度判断；再构建多智能体系统TheraAgent，利用Critic、Coach、Therapist角色将评估转化为响应修订。实验显示TheraJudge与临床医生评级高度一致（ICC=0.87-0.95），TheraAgent在盲评中提升治疗质量0.43分，低质量响应恢复率94%。结果表明，对齐关键在于主动作用于评估信号，而非单纯增强生成能力。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Large language models show promise for mental health support, yet therapeutic quality improves only when evaluation functions as an actionable control signal rather than a passive metric. We introduce a framework that formulates therapeutic response generation as a decision-refinement problem driven by multi-dimensional, human-aligned evaluation. In Stage I, we introduce TheraJudge, an open-source therapeutic evaluator trained via preference-based optimization on human-annotated data to produce reliable judgments across 7 psychological dimensions. In Stage II, we introduce TheraAgent, which operationalizes TheraJudge's evaluations through a coordinated refinement process with specialized Critic, Coach, and Therapist roles that translate evaluative signals into targeted response revisions. Empirically, TheraJudge achieves strong agreement with clinician ratings, with intraclass correlation coefficients (ICC = 0.87-0.95), surpassing supervised baselines and strong closed-source judges, particularly on critical dimensions such as Safety, Relevance, and Empathy. Acting on these evaluations, TheraAgent yields a +0.43 improvement in human-rated therapeutic quality (on a 5-point scale) under blind evaluation, with 96\\% clinician inter-rater reliability. Low-quality responses ($\\leq 3$) improve by +2.45 points with a 94\\% recovery rate, demonstrating targeted correction of unsafe outputs. Overall, our results indicate that effective alignment of mental-health LLMs stems from acting on human-aligned evaluation, rather than relying solely on stronger generation. We release code at https://github.com/vis-nlp/TheraAlign.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

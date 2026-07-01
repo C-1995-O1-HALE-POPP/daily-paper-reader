@@ -6,31 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-06-30
-- 运行时间：2026-06-30 22:00:22 UTC
+- 最新运行日期：2026-07-01
+- 运行时间：2026-07-01 22:09:10 UTC
 - 运行状态：成功
-- 本次总论文数：3
+- 本次总论文数：4
 - 精读区：1
-- 速读区：2
+- 速读区：3
 
 ### 今日简报（AI）
-今日精读一篇8分论文，探究医生智能体在模拟临床场景中的持续演化能力，另速读两篇关于治疗推理与病历冗长问题的研究。  
-最值得关注方向：通过模拟临床试炼评估AI医生长期进化表现（MedEvoEval），以及利用生物医学工具进行治疗推理的智能体设计。  
-建议普通读者：若对AI在医疗中的长期应用好奇，可重点关注模拟环境下的模型适应性测试结果。
-- 详情：[/202606/30/README](/202606/30/README)
+今天精读了《HealthAgentBench》医疗智能体基准测试（9.0分），速读临床AI工具评价、母婴健康检索增强生成及心理健康多智能体系统。  
+最值得关注的是HealthAgentBench构建了逼真医疗环境用于挑战前沿AI智能体，以及专家对临床AI工具在真实护理点查询上的评估。  
+建议读者将HealthAgentBench作为评估医疗AI智能体的标准参考，同时关注临床AI工具与现实场景的表现差距。
+- 详情：[/202607/01/README](/202607/01/README)
 
 ### 精读区论文标签
-1. [MedEvoEval: Evaluating Continual Evolution of Doctor Agents through Simulated Clinical Episodes](/202606/30/2606.28900v1-medevoeval-evaluating-continual-evolution-of-doctor-agents-through-simulated-clinical-episodes)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：在模拟临床场景中评估医生智能体的持续演化
+1. [HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents](/202607/01/2606.31179v1-healthagentbench-a-unified-benchmark-suite-of-realistic-agentic-healthcare-environments-for-challenging-frontier-ai-agents)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：统一的医疗代理基准测试套件，包含覆盖患者旅程的逼真环境
 
 ### 速读区论文标签
-1. [An AI agent for treatment reasoning over a biomedical tool universe](/202606/30/2606.28692v1-an-ai-agent-for-treatment-reasoning-over-a-biomedical-tool-universe)  
+1. [Expert Evaluation of Clinical AI Tools on Real Point-of-Care Clinical Queries](/202607/01/2606.28960v1-expert-evaluation-of-clinical-ai-tools-on-real-point-of-care-clinical-queries)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：临床AI工具的专家评估与真实查询
+2. [mamabench and mamaretrieval: Benchmarks for Evaluating Medical Retrieval-Augmented Generation in Maternal, Neonatal, and Reproductive Health](/202607/01/2606.29467v1-mamabench-and-mamaretrieval-benchmarks-for-evaluating-medical-retrieval-augmented-generation-in-maternal-neonatal-and-reproductive-health)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：医学问答与检索基准，适用于医疗智能体评估
+3. [Training Therapeutic Judges and Multi-Agent Systems for Human-Aligned Mental Health Support](/202607/01/2606.30887v1-training-therapeutic-judges-and-multi-agent-systems-for-human-aligned-mental-health-support)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：使用强化学习训练的医疗Agent进行治疗推理
-2. [The Verbose Context Problem in Medical Records](/202606/30/2606.29503v1-the-verbose-context-problem-in-medical-records)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：基于医疗记录的基准测试，包含agentic分解方法
+   evidence：医疗智能体评估框架，含多维评审与优化
 
 
 <div class="dpr-home-promo-card">
