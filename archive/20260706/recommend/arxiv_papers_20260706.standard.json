@@ -1,0 +1,391 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-06T21:37:31.987402+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 4,
+    "deep_cap": 6,
+    "deep_selected": 4,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2606.31179v1",
+      "source": "arxiv",
+      "title": "HealthAgentBench: A Unified Benchmark Suite of Realistic Agentic Healthcare Environments for Challenging Frontier AI Agents",
+      "abstract": "As AI agents become increasingly capable of complex, long-horizon reasoning, rigorous and holistic evaluation is essential for measuring progress toward real-world healthcare applications. We introduce HealthAgentBench, a suite of 54 agentic healthcare tasks across 7 categories each with its unique environment. The benchmark suite spans diverse workflows throughout the patient journey and a broad range of modalities. Each task is designed to replicate an end-to-end clinical workflow: given minimal instructions, an agent must explore raw healthcare data, operate within a complex environment, and execute multi-step solutions that go beyond naive prompting. A final task success rate is reported to provide a single, interpretable metric for HealthAgentBench overall performance for each agent. Evaluating frontier agents on HealthAgentBench, we find that overall task success rate remains low, underscoring the difficulty of the suite. The strongest and the most cost effective agent, Codex GPT-5.5, achieves only approximately 42% success rate. Beyond aggregate performance, HealthAgentBench reveals nuanced strengths and weaknesses across task categories. Frontier agents show promise in automatically developing research modeling pipelines over EHR data, but medical imaging remains especially challenging, particularly for Claude Code models, while Codex GPT-5.5 shows emerging capability. Tasks that combine large search spaces with compositional reasoning requirements remain difficult for all current agents. Together, these results suggest that HealthAgentBench provides a challenging and realistic benchmark with substantial room for future progress. We release our benchmark at https://github.com/microsoft/HealthAgentBench.",
+      "authors": [
+        "Qianchu Liu",
+        "Sheng Zhang",
+        "Guanghui Qin",
+        "Jeya Maria Jose Valanarasu",
+        "Maximilian Rokuss",
+        "Mingyu Lu",
+        "Timothy Ossowski",
+        "Juan Manuel Zambrano Chaves",
+        "Cliff Wong",
+        "Peniel Argaw",
+        "Yashna Hasija",
+        "Mu Wei",
+        "Wen-wai Yim",
+        "Qin Liu",
+        "Zilin Jing",
+        "Jason Entenmann",
+        "Naoto Usuyama",
+        "Tristan Naumann",
+        "Hoifung Poon"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CV"
+      ],
+      "published": "2026-06-30T06:09:01+00:00",
+      "link": "https://arxiv.org/pdf/2606.31179v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "benchmark for medical agent evaluation using real healthcare data",
+      "llm_evidence_cn": "使用真实医疗数据评估医疗智能体的基准测试",
+      "llm_evidence": "使用真实医疗数据评估医疗智能体的基准测试",
+      "canonical_evidence": "使用真实医疗数据评估医疗智能体的基准测试",
+      "llm_tldr_en": "Introduces HealthAgentBench, a suite of 54 healthcare agent tasks across 7 categories, requiring agents to explore raw data and execute multi-step solutions.",
+      "llm_tldr_cn": "该论文提出了HealthAgentBench，一个包含54个医疗智能体任务（覆盖7个类别）的统一基准测试集。每个任务模拟端到端临床工作流，智能体需在最小指令下探索原始医疗数据并执行多步解决方案。报告最终任务成功率，为评测医疗AI智能体提供了标准化平台。",
+      "llm_tldr": "该论文提出了HealthAgentBench，一个包含54个医疗智能体任务（覆盖7个类别）的统一基准测试集。每个任务模拟端到端临床工作流，智能体需在最小指令下探索原始医疗数据并执行多步解决方案。报告最终任务成功率，为评测医疗AI智能体提供了标准化平台。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.00147v1",
+      "source": "arxiv",
+      "title": "RareDxR1: Autonomous Medical Reasoning for Rare Disease Diagnosis Beyond Human Annotation",
+      "abstract": "Rare disease differential diagnosis is a critical yet arduous clinical task, requiring physicians to identify precise phenotypes from complex, unstructured patient symptoms and execute intricate reasoning within a vast search space. However, existing AI approaches typically rely on pipeline-based phenotype extraction or retrieval-augmented generation, which suffer from critical information loss due to predefined ontologies, retrieval bottlenecks, and a lack of diagnostic logic. To address these challenges, we introduce RareDxR1, an end-to-end reasoning-centric large language model designed for open-domain rare disease diagnosis directly from unstructured clinical notes. We design a progressive end-to-end training framework by synergizing knowledge internalization with autonomous evolutionary learning, thereby bypassing reliance on structured phenotypes and closed-set decision-making. To overcome the limitations of RAG and phenotype restriction, we enabled the deep internalization of fragmented rare-disease knowledge directly into the model's parameters. Moreover, to bridge the gap between model generation and expert reasoning, we propose Reflection-Enhanced Reasoning Sampling (RERS), a strategy that synthesizes expert-level diagnostic trajectories by learning from failures without human annotation. Additionally, we propose a dual-level curriculum reinforcement learning approach for gradually mastering rare disease diagnosis. Experimental results demonstrate that RareDxR1 achieves state-of-the-art accuracy across different benchmarks, marking a significant breakthrough in open-domain rare disease diagnosis. Our code and dataset will be publicly available.",
+      "authors": [
+        "Deyang Jiang",
+        "Haoran Wu",
+        "Ziyi Wang",
+        "Yiming Rong",
+        "Yunlong Zhao",
+        "Ye Jin",
+        "Bo Xu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-30T20:25:53+00:00",
+      "link": "https://arxiv.org/pdf/2607.00147v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "rare disease diagnosis from clinical notes using LLM agent",
+      "llm_evidence_cn": "使用临床笔记进行罕见病诊断的LLM医疗agent",
+      "llm_evidence": "使用临床笔记进行罕见病诊断的LLM医疗agent",
+      "canonical_evidence": "使用临床笔记进行罕见病诊断的LLM医疗agent",
+      "llm_tldr_en": "RareDxR1 is an end-to-end reasoning-centric LLM for rare disease diagnosis from unstructured clinical notes, overcoming pipeline information loss via progressive training.",
+      "llm_tldr_cn": "针对传统流水线方法在罕见病诊断中因预定义本体和检索瓶颈导致信息损失的问题，本文提出RareDxR1，一种端到端推理为中心的LLM，直接从非结构化临床笔记进行开放式罕见病诊断。通过渐进式训练框架，模型实现自主医疗推理，无需人工标注。实验表明，该方法在诊断准确性和推理可解释性上显著优于现有方法，为临床决策支持提供了新范式。",
+      "llm_tldr": "针对传统流水线方法在罕见病诊断中因预定义本体和检索瓶颈导致信息损失的问题，本文提出RareDxR1，一种端到端推理为中心的LLM，直接从非结构化临床笔记进行开放式罕见病诊断。通过渐进式训练框架，模型实现自主医疗推理，无需人工标注。实验表明，该方法在诊断准确性和推理可解释性上显著优于现有方法，为临床决策支持提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.01470v1",
+      "source": "arxiv",
+      "title": "World Feedback for Clinical Agents: Diagnosing RL in FHIR Environments",
+      "abstract": "Clinical protocol-execution tasks -- checking a lab value, applying a threshold, placing a correctly structured FHIR order -- are natural candidates for RL from world feedback: once clinical SMEs encode decision logic into a verifier, that verifier grades unlimited rollouts without per-episode annotation. But applying RL requires a sound feedback channel and sufficient base capability. We audit MedAgentBench v1/v2, find a 41.7\\% silent-finish ceiling that makes inaction the RL dominant strategy, and construct \\textbf{MedAgentBench-v3 (MAB-v3)} (508 tasks, 8.9\\% ceiling). Training Qwen3-8B exposes two structural barriers: a \\emph{capability ceiling} (10/20 task types have 0\\% base performance, zero gradient) and a \\emph{format-knowledge barrier} (3/20 types require exact clinical codes undiscoverable by exploration). Pure RL reaches 18.2\\% pass@1 vs.\\ 34.1\\% for rule-based SFT; the 15.9~pp gap is attributable entirely to these barriers. A decision/format-knowledge/lookup taxonomy predicts RL learnability and prescribes the fix: SFT to inject codes, RL to learn conditionals.",
+      "authors": [
+        "Ananya Mantravadi",
+        "Harshit Rajgarhia",
+        "Prasanna Desikan",
+        "Abhishek Mukherji"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-01T21:02:54+00:00",
+      "link": "https://arxiv.org/pdf/2607.01470v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Directly addresses RL for clinical agents in FHIR (EHR) environments, including evaluation via MedAgentBench-v3",
+      "llm_evidence_cn": "直接针对FHIR（EHR）环境中临床代理的强化学习评估，包括MedAgentBench-v3基准",
+      "llm_evidence": "直接针对FHIR（EHR）环境中临床代理的强化学习评估，包括MedAgentBench-v3基准",
+      "canonical_evidence": "直接针对FHIR（EHR）环境中临床代理的强化学习评估，包括MedAgentBench-v3基准",
+      "llm_tldr_en": "Audits MedAgentBench showing silent-finish ceiling, constructs MAB-v3 with lower ceiling, trains Qwen3-8B revealing capability and format-knowledge barriers for RL from world feedback in clinical EHR tasks.",
+      "llm_tldr_cn": "针对临床协议执行任务，本文发现现有MedAgentBench存在41.7%静默完成上限，导致RL策略偏向不作为。构建了改进版MedAgentBench-v3（508任务，上限8.9%），并用Qwen3-8B训练揭示了两类结构性障碍：能力上限和格式知识屏障。工作直接聚焦于基于FHIR（EHR）的医疗代理强化学习评估，为医疗代理性能基准提供了关键方法和数据集。",
+      "llm_tldr": "针对临床协议执行任务，本文发现现有MedAgentBench存在41.7%静默完成上限，导致RL策略偏向不作为。构建了改进版MedAgentBench-v3（508任务，上限8.9%），并用Qwen3-8B训练揭示了两类结构性障碍：能力上限和格式知识屏障。工作直接聚焦于基于FHIR（EHR）的医疗代理强化学习评估，为医疗代理性能基准提供了关键方法和数据集。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2606.31036v1",
+      "source": "arxiv",
+      "title": "Teaching LLMs to Recommend and Defer in Underrepresented Epilepsy Care",
+      "abstract": "Specialist epilepsy expertise is scarce in resource-constrained settings, making LLM-based decision support attractive for frontline clinicians managing longitudinal treatment. Such systems must adapt to local prescribing practice and know when to defer. We study this problem in Ugandan pediatric epilepsy care, predicting anti-seizure medication regimens from longitudinal unstructured clinic notes. Standard prompting achieves non-trivial agreement with physician prescriptions, but neurologist review shows that many errors reflect distribution-miscalibrated prescribing defaults rather than failures to parse the local record. We introduce MANANA, a non-parametric prompt-learning framework that learns local prescribing guidance from a small patient-level training set. MANANA converts observed prescription errors into auditable prompt memories, instantiated in single-agent and multi-agent variants, and improves over classical ML models, direct LLM prompting, and prompt-optimization baselines across two independently collected Ugandan cohorts. We further propose Bayesian prompt averaging, which converts the learned prompt trajectory into prescription likelihoods and an uncertainty-based deferral signal. On the independently collected held-out cohort, this improves visit-level top-3 prescription accuracy by 4-8 percentage points over prompt-optimization baselines and enables selective prediction: the system can auto-handle the most confident half of cases at 95% precision, or the most confident quarter at 99% precision, while deferring lower-confidence cases for specialist review.",
+      "authors": [
+        "Shreyas Rajesh",
+        "Kartik Sharma",
+        "Tonmoy Monsoor",
+        "Mehmet Yigit Turali",
+        "Richard Idro",
+        "Juliana Kayaga",
+        "Robert Sebunya",
+        "Tracy Tushabe Namata",
+        "Jessica Nichole Pasqua",
+        "Vwani Roychowdhury",
+        "Rajarshi Mazumder"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-06-30T02:09:37+00:00",
+      "link": "https://arxiv.org/pdf/2606.31036v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "LLM clinical decision support; evaluated on epilepsy clinic notes (EHR-like)",
+      "llm_evidence_cn": "LLM临床决策支持；在癫痫临床笔记（类EHR数据）上评估",
+      "llm_evidence": "LLM临床决策支持；在癫痫临床笔记（类EHR数据）上评估",
+      "canonical_evidence": "LLM临床决策支持；在癫痫临床笔记（类EHR数据）上评估",
+      "llm_tldr_en": "Teaches LLMs to recommend anti-seizure medications from longitudinal clinic notes and defer when uncertain; evaluated against physician prescriptions with neurologist review.",
+      "llm_tldr_cn": "针对资源匮乏环境下癫痫药物治疗推荐问题，提出MANANA框架，通过非参数提示学习从小样本病历中习得本地处方规范。在乌干达儿科癫痫门诊数据上评估，与医生处方比较并由神经科医生审校。结果表明错误主要源于分布校准而非解析失败。该工作展示了如何利用EHR数据评估和校准临床决策支持代理。",
+      "llm_tldr": "针对资源匮乏环境下癫痫药物治疗推荐问题，提出MANANA框架，通过非参数提示学习从小样本病历中习得本地处方规范。在乌干达儿科癫痫门诊数据上评估，与医生处方比较并由神经科医生审校。结果表明错误主要源于分布校准而非解析失败。该工作展示了如何利用EHR数据评估和校准临床决策支持代理。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.01391v1",
+      "source": "arxiv",
+      "title": "How Should Transformers Encode Numeric Values in Electronic Health Records?",
+      "abstract": "How do we encode numeric values in transformer-based sequence processing, particularly in electronic health record (EHR) data? We systematically compare discrete, continuous, and hybrid value encoding strategies using synthetic arithmetic tasks embedded within real-world EHR data, as well as real-world clinical prediction tasks. Our study reveals trade-offs between numeric precision, optimisation stability, and architectural flexibility. We find that approaches that explicitly model value-concept interactions perform best on precision-sensitive arithmetic tasks when architectural constraints permit. Hybrid token-based approaches that retain numeric values but apply binning prior to projection provide a more robust and broadly applicable alternative, with the optimal number of bins following a simple empirically derived power-law in dataset size. Across tasks, models consistently exhibit reliable \"good enough\" numeric computation rather than exact arithmetic, while clinical gains from incorporating laboratory values are task-dependent. This suggests that robustness and deployability often outweigh maximal numeric precision in practice, motivating hybrid token-based approaches as a practical default.",
+      "authors": [
+        "Maria Elkjær Montgomery",
+        "Christian Igel",
+        "Mikkel Odgaard",
+        "Martin Sillesen",
+        "Mads Nielsen"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-07-01T18:49:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.01391v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "EHR data encoding for transformers",
+      "llm_evidence_cn": "EHR数据的Transformer编码方法",
+      "llm_evidence": "EHR数据的Transformer编码方法",
+      "canonical_evidence": "EHR数据的Transformer编码方法",
+      "llm_tldr_en": "Compares numeric encoding strategies for EHR in transformers, informing EHR representation for medical agents.",
+      "llm_tldr_cn": "该论文系统比较了离散、连续和混合数值编码策略在EHR数据上的效果，发现显式建模值-概念交互的方法在精度敏感任务上表现最佳，混合标记方法则更稳健。这为构建基于EHR的医疗agent提供了关键的数据表示指导。",
+      "llm_tldr": "该论文系统比较了离散、连续和混合数值编码策略在EHR数据上的效果，发现显式建模值-概念交互的方法在精度敏感任务上表现最佳，混合标记方法则更稳健。这为构建基于EHR的医疗agent提供了关键的数据表示指导。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.29876v1",
+      "source": "arxiv",
+      "title": "Clinical Reasoning Graphs: Structured Evaluation of LLM Diagnostic Reasoning Reveals Competence Without Consistency",
+      "abstract": "Modern large language models (LLMs) reach 60-70% diagnostic accuracy on complex clinical case benchmarks, but accuracy alone cannot distinguish stable clinically-grounded reasoning from pattern matching. We introduce clinical reasoning graphs, structured graph representations extracted from free-text LLM diagnostic traces using a domain-grounded ontology with 5 node types and 7 edge types. We apply this pipeline to 750 traces from five LLMs across 50 New England Journal of Medicine Clinicopathological Conference cases and three prompt conditions, and test whether diagnostic traces show stable structured reasoning patterns, or diagnostic schemas, for clinically similar cases. We operationalize this as higher graph similarity among clinically similar cases than among clinically dissimilar ones. Across 15 model-condition comparisons, within-cluster and between-cluster composite similarity are nearly equal, and no comparison survives multiple-testing correction; a component-level analysis finds any residual content signal far below schema scale. Graph similarity is also nearly identical for pairs of models that are both correct (0.488) and both incorrect (0.484), suggesting that graph structure captures a dimension not reflected in diagnostic accuracy. Structured reflection prompting increases explicit discriminating-feature analysis within traces (+33%) but does not increase cross-case consistency. These results show diagnostic competence without schema-scale reasoning consistency, and indicate that final-answer accuracy should be complemented by process-level evaluation. We release the ontology, extraction pipeline, validation protocol, and the extracted reasoning graphs and similarity artifacts as resources for structured evaluation of LLM clinical reasoning.",
+      "authors": [
+        "Nisarg A. Patel"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "q-bio.QM"
+      ],
+      "published": "2026-06-29T07:16:59+00:00",
+      "link": "https://arxiv.org/pdf/2606.29876v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "structured evaluation of LLM diagnostic reasoning using clinical cases",
+      "llm_evidence_cn": "使用临床病例对LLM诊断推理进行结构化评估",
+      "llm_evidence": "使用临床病例对LLM诊断推理进行结构化评估",
+      "canonical_evidence": "使用临床病例对LLM诊断推理进行结构化评估",
+      "llm_tldr_en": "Introduces clinical reasoning graphs to evaluate LLM diagnostic reasoning in 750 traces from 50 NEJM cases, revealing competence without consistency.",
+      "llm_tldr_cn": "针对LLM诊断准确性无法区分稳定推理与模式匹配的问题，提出临床推理图结构，从自由文本诊断轨迹中提取图表示，并在NEJM病例上进行评估。实验发现LLM表现出诊断能力但缺乏一致性。该方法为医疗代理评估提供了可迁移的结构化评测框架，但未使用EHR数据。",
+      "llm_tldr": "针对LLM诊断准确性无法区分稳定推理与模式匹配的问题，提出临床推理图结构，从自由文本诊断轨迹中提取图表示，并在NEJM病例上进行评估。实验发现LLM表现出诊断能力但缺乏一致性。该方法为医疗代理评估提供了可迁移的结构化评测框架，但未使用EHR数据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.31800v1",
+      "source": "arxiv",
+      "title": "Evo-PI: Aligning Medical Reasoning via Evolving Principle-Guided Supervision",
+      "abstract": "Despite recent progress, the reasoning capabilities of large multimodal language models (MLLMs) remain fundamentally constrained by static supervision, where fixed prompts, rules, or reward models provide non-adaptive guidance throughout training. Such static signals are often sufficient to enforce output formats, but fail to shape the underlying reasoning process, leading to brittle generalization and performance saturation in complex decision-making tasks. We propose Evo-PI, a principle-centric learning framework that treats reasoning principles as explicit, language-based supervision signals that can be generated, evaluated, and iteratively evolved. Instead of relying on fixed rewards, Evo-PI enables a co-evolutionary loop in which principles guide model reasoning, while model behaviors in turn refine the principles that supervise them. This dynamic alignment mechanism allows supervision to progressively adapt to the model's reasoning deficiencies. We instantiate Evo-PI in medical visual question answering as a high-stakes testbed requiring structured visual-textual reasoning. Across eight benchmarks and multiple model backbones, Evo-PI consistently improves reasoning accuracy, achieving gains of up to 24.6%. Our results suggest that evolving principle-guided supervision offers a scalable and general paradigm for training expert-aligned reasoning in MLLMs. Code is available at https://github.com/zhengxianda/Evo_PI.",
+      "authors": [
+        "Xianda Zheng",
+        "Huan Gao",
+        "Meng-Fen Chiang",
+        "Michael Witbrock",
+        "Kaiqi Zhao",
+        "Shangyang Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-06-30T15:19:26+00:00",
+      "link": "https://arxiv.org/pdf/2606.31800v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL with evolving principles for medical reasoning",
+      "llm_evidence_cn": "使用进化原则和强化学习优化医学推理",
+      "llm_evidence": "使用进化原则和强化学习优化医学推理",
+      "canonical_evidence": "使用进化原则和强化学习优化医学推理",
+      "llm_tldr_en": "Evo-PI uses a co-evolutionary loop of principle generation and RL to align medical reasoning, addressing static supervision limitations in complex decision-making.",
+      "llm_tldr_cn": "大型多模态语言模型在多步推理中受限于静态监督信号，导致泛化能力差。本文提出Evo-PI框架，将推理原则作为显式语言监督信号，通过原则生成、评估和迭代进化与强化学习共同进化。该方法替代固定奖励模型，使模型在复杂决策任务中动态调整推理过程，为医疗智能体的过程评估提供了新思路。",
+      "llm_tldr": "大型多模态语言模型在多步推理中受限于静态监督信号，导致泛化能力差。本文提出Evo-PI框架，将推理原则作为显式语言监督信号，通过原则生成、评估和迭代进化与强化学习共同进化。该方法替代固定奖励模型，使模型在复杂决策任务中动态调整推理过程，为医疗智能体的过程评估提供了新思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2606.31825v1",
+      "source": "arxiv",
+      "title": "Breaking Failure Cascades: Step-Aware Reinforcement Learning for Medical Multimodal Reasoning",
+      "abstract": "Recent multimodal large language models have shown great promise in clinical image reasoning, but existing post-training pipelines remain predominantly outcome-centric, relying on final answer correctness or sequence-level preferences. This suffers from sparse credit assignment, making it difficult to optimize the reasoning process essential for clinical applications. Our analysis reveals that cascading errors from early-stage reasoning failures are a leading cause of incorrect predictions in medical visual question answering (VQA) benchmarks. Motivated by this, we propose Medical Reasoning-aware Policy Optimization (MRPO), an RL algorithm that incorporates step-wise process rewards. When the final answer is incorrect, MRPO assigns exponentially larger penalties to tokens in earlier invalid reasoning steps, breaking failure cascades without compromising successful paths. Across three multimodal LLM backbones, MRPO consistently outperforms standard GRPO and a recent RL baseline, and on Qwen3-VL-8B-Instruct even surpasses substantially larger medical MLLMs such as HuatuoGPT-Vision-34B by 2.79 points. Moreover, MRPO reduces early-stage reasoning failures from 64.0% to 13.0%, showing that targeted mitigation of cascading failures improves both reasoning quality and final answer accuracy. Our code is available at https://github.com/dmis-lab/MRPO",
+      "authors": [
+        "Junha Jung",
+        "Minbyul Jeong",
+        "Suhyeon Lim",
+        "Sungwook Jung",
+        "Jaehoon Yun",
+        "Taeyun Roh",
+        "Mujeen Sung",
+        "Jaewoo Kang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-06-30T15:35:19+00:00",
+      "link": "https://arxiv.org/pdf/2606.31825v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "step-aware RL for medical multimodal reasoning evaluation",
+      "llm_evidence_cn": "步骤感知强化学习用于医学多模态推理评估",
+      "llm_evidence": "步骤感知强化学习用于医学多模态推理评估",
+      "canonical_evidence": "步骤感知强化学习用于医学多模态推理评估",
+      "llm_tldr_en": "MRPO uses step-wise process rewards in RL to address cascading errors in medical VQA, outperforming outcome-only methods by improving reasoning process.",
+      "llm_tldr_cn": "现有医学多模态模型后训练仅关注最终答案，忽略了推理过程中的级联错误。本文提出医学推理感知策略优化（MRPO），一种结合步骤级过程奖励的强化学习算法。当最终答案错误时，MRPO为失败步骤分配负奖励并回滚。在医学视觉问答基准上，MRPO显著减少早期推理失败导致的不正确预测，为评估和优化医疗智能体的推理链提供了有效方法。",
+      "llm_tldr": "现有医学多模态模型后训练仅关注最终答案，忽略了推理过程中的级联错误。本文提出医学推理感知策略优化（MRPO），一种结合步骤级过程奖励的强化学习算法。当最终答案错误时，MRPO为失败步骤分配负奖励并回滚。在医学视觉问答基准上，MRPO显著减少早期推理失败导致的不正确预测，为评估和优化医疗智能体的推理链提供了有效方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.01440v1",
+      "source": "arxiv",
+      "title": "FaithMed: Training LLMs For Faithful Evidence-Based Medical Reasoning",
+      "abstract": "Faithful reasoning is essential in medicine, where clinical decisions require transparent justification grounded in reliable evidence. Current medical LLMs either lack active access to evidence or use retrieved evidence without supervising how it should be appraised and applied during reasoning. To address this, we formalize evidence-based medicine principles as process-level criteria and introduce FaithMed, a framework that combines clinician-designed, automatically refined rubrics with reinforcement learning using step-level process reward assignment and advantage grouping. Across seven medical benchmarks, FaithMed improves over agentic-search baselines (+9% on average) and outcome-only RL (+5.8%), while raising average evidence-based medicine rubric scores over agentic-search Qwen3 baselines (+15.5%). This work demonstrates that explicit step-level supervision can improve both task success and the faithfulness of the reasoning process. Code is available at https://github.com/cxcscmu/FaithMed.",
+      "authors": [
+        "Zhiyun Zhang",
+        "Liwen Sun",
+        "Xiang Qian",
+        "Chenyan Xiong"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-07-01T20:02:55+00:00",
+      "link": "https://arxiv.org/pdf/2607.01440v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reinforcement learning for medical reasoning evaluation",
+      "llm_evidence_cn": "使用强化学习评估医学推理过程",
+      "llm_evidence": "使用强化学习评估医学推理过程",
+      "canonical_evidence": "使用强化学习评估医学推理过程",
+      "llm_tldr_en": "FaithMed combines clinician-designed rubrics with step-level RL to train LLMs for faithful evidence-based medical reasoning, improving over baselines by 5-9% on medical benchmarks.",
+      "llm_tldr_cn": "当前医学大语言模型在推理过程中缺乏对证据的监督利用。为此，本文提出FaithMed框架，将临床专家设计的评分标准与基于步骤的过程奖励强化学习相结合，训练模型进行忠实于证据的医学推理。在七个医学基准上，FaithMed比基于智能体搜索的基线平均提升9%，比仅结果优化的RL提升5.8%。该工作为评估和优化医学推理过程提供了新范式。",
+      "llm_tldr": "当前医学大语言模型在推理过程中缺乏对证据的监督利用。为此，本文提出FaithMed框架，将临床专家设计的评分标准与基于步骤的过程奖励强化学习相结合，训练模型进行忠实于证据的医学推理。在七个医学基准上，FaithMed比基于智能体搜索的基线平均提升9%，比仅结果优化的RL提升5.8%。该工作为评估和优化医学推理过程提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
