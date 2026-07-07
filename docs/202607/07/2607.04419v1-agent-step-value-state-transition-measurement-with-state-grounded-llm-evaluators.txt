@@ -1,0 +1,327 @@
+Title: Agent Step Value: State-Transition Measurement with State-Grounded LLM Evaluators
+
+URL Source: https://arxiv.org/pdf/2607.04419v1
+
+Published Time: Tue, 07 Jul 2026 02:19:02 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# Agent Step Value: State-Transition Measurement with State-Grounded LLM Evaluators 
+
+Andrew Zhang 
+
+KTH Royal Institute of Technology 
+
+yibingz@kth.se 
+
+Chengzhan Li 
+
+University of Electronic Science and Technology of China 
+
+2023310104008@std.uestc.edu.cn 
+
+## Abstract 
+
+Most agent evaluations collapse a multi-step trace into a final answer, a success flag, or a trajectory-level score. These aggregates obscure the diagnostic question developers need most: which action changed the state in a useful direction? We introduce Agent Step Value (ASV), a state-transition measurement framework that scores each observed action by the change it induces in a state-grounded evaluator’s distribution over fixed candidate outcomes. ASV renders redacted before/after state projections, uses a stateless LLM evaluator to assign candidate log scores, and reports both gold-free belief diagnostics and offline oracle validation metrics. A label-free rationale pass separates evaluator deliberation from one-token option scoring, preserving candidate likelihoods while exposing leakage and floor-score events. On 100 reviewed open-QA evidence-seeking tasks with live PubMed retrieval, a partially live DeepSeek actor, and DeepSeek log-probability scoring, ASV evaluates 1,100 steps and 2,200 states. Under the fixed-layout rationale-conditioned protocol, mean gold-margin gain is -2.335 (trajectory-bootstrap 95% CI [-3.395, -1.272]), entropy movement is 0.000, and mean Bayesian surprise is 2.693. ASV therefore localizes constructive and destructive belief pivots that final-answer scores and entropy-only step metrics miss. We release the standalone ASV Eval toolkit. 
+
+## 1 Introduction 
+
+Language-model agents increasingly act through long traces: they classify requests, plan, retrieve evidence, call tools, draft answers, audit intermediate products, and revise. A final score is useful for ranking systems, but it is a weak debugging signal. If a run fails, the final answer rarely tells us whether retrieval helped, whether synthesis erased useful evidence, or whether a late audit corrected or amplified an error. Evaluation therefore needs a transition-level object. We study this object through Agent Step Value (ASV). Given an observed transition (xi−1, a i, x i),ASV asks how a specified evaluator’s belief over candidate task outcomes changes from the before-state xi−1 to the after-state xi. The actor can be a ReAct-style loop [ 1 ], a DSPy-like stateless module graph [ 2], or a domain workflow with structured traces. ASV only requires that the workflow export bounded state projections and a fixed candidate set for the task. The measurement interface is narrow by design. A state-grounded LLM evaluator scores every candidate in every state and stores raw log scores. This gives more structure than a judge label and more measurability than a free-form critique. ASV then reports gold-free diagnostics, such as entropy movement and Bayesian surprise, and offline oracle validation metrics, such as gold-margin 
+
+> Preprint.
+> arXiv:2607.04419v1 [cs.AI] 5 Jul 2026
+
+Figure 1: ASV measurement pipeline. An observed before/action/after transition and fixed candidate set are rendered into redacted state projections. A shared stateless evaluator scores both states through a label-free rationale and one-token log-probability protocol. The resulting belief update yields entropy movement, Bayesian surprise, gold-margin direction, and evaluator quality flags. gain, when a reviewed target candidate is available. The distinction matters because a confident wrong-to-right pivot and a confident right-to-wrong pivot can both have near-zero entropy movement. Evaluator deliberation creates the main measurement issue. If a judge is asked to reason and then answer, the first-token log probabilities measure the beginning of the reasoning string instead of the candidate choice. ASV separates deliberation from scoring. The evaluator first writes a compact label-free rationale over stable candidate identifiers. The scored call then appends the physical option mapping only at the prompt tail and asks for exactly one option token. This preserves candidate likelihoods while making the rationale buffer auditable for label and gold leakage. This paper makes four contributions. First, it formalizes step value as evaluator-defined belief movement over observed state transitions. Second, it gives a deliberative LLM-evaluator protocol that preserves candidate log scores by separating label-free rationale generation from one-token option scoring. Third, it shows how entropy movement, Bayesian surprise, and gold-margin gain play distinct diagnostic roles. Fourth, it releases a standalone ASV Eval toolkit and reports a 100-question study in which entropy-only step value is vacuous in near-one-hot regimes while Bayesian surprise and gold-margin gain recover pivot magnitude and direction. We evaluate ASV on a 100-question open-QA experiment. Each task has three concrete candi-date answers and one none-of-the-above candidate, collected before scoring and used with live PubMed retrieval [ 3 ]. The actor used DeepSeek where configured, and the evaluator used DeepSeek log probabilities [ 4]. The experiment studies measurement quality, not domain QA performance. Under the tested rationale-conditioned protocol, the average gold-margin movement is negative even though some individual pivots are strongly constructive. Entropy movement is zero for every step, so an entropy-only ASV would miss the transitions that drive the result. Figure 1 summarizes the measurement flow. 
+
+## 2 Related work 
+
+ASV sits between agent benchmarking, process supervision, and LLM-as-judge evaluation. Agent systems such as ReAct, MRKL, Toolformer, ToolLLM, and DSPy show that language-model applica-tions can be built as tool-using or modular programs [ 1, 5– 7, 2]. Benchmarks such as AgentBench, WebArena, Mind2Web, and SWE-bench evaluate increasingly realistic agent behavior at the system level [ 8– 11 ]. ASV is complementary to these benchmarks: when a workflow or benchmark can export before/after states, ASV turns the trace into a sequence of measurable belief updates. Process supervision and step-level agent evaluation provide the closest methodological motivation. PRM800K demonstrates the value of labels on intermediate reasoning steps [ 12 ], while Agent-as-a-Judge and AgentEval use agentic evaluators and structured step feedback for richer diagnosis [ 13 , 14 ]. ASV uses a smaller and more portable contract: a transition, a candidate set, and candidate log scores. This makes it usable when human process labels, trained reward models, or explicit dependency graphs are unavailable. 2LLM-as-judge work shows that language models can approximate human preferences, while remain-ing sensitive to prompt format and option order [ 15 –17 ]. ASV treats the evaluator as a measurement instrument whose protocol must be specified and audited. It records raw scores, floor-score events, rationale leakage flags, and label mappings. The evidence-seeking setting also connects to retrieval-grounded evaluation in FEVER, KILT, PubMedQA, and BioASQ [ 18 – 21 ], although ASV is not tied to biomedical tasks. Finally, we use entropy and Bayesian surprise as replay diagnostics; this complements calibration and adaptive fine-tuning views of entropy [ 22 ] and classical accounts of surprise as belief change [23]. 
+
+## 3 Agent step value 
+
+ASV is a replay measurement procedure. It takes an observed trace, a fixed candidate set, and an evaluator protocol, then computes how evaluator belief changes at each transition. The method separates three quantities that are often conflated: gold-free belief movement, offline target-directed movement, and evaluator quality flags. This separation is what lets ASV diagnose a trace without treating the evaluator as ground truth. 
+
+3.1 Problem setup 
+
+Let a task be defined by an input q and a finite candidate set C = {c1, . . . , c K }. Each candidate has a stable identifier u(c) ∈ U that is independent of any visible option label. A trajectory is an ordered sequence 
+
+T = (( x0, a 1, x 1), . . . , (xn−1, a n, x n)) , (1) where ai is the observed action and xi−1, x i are serialized states before and after the action. ASV is agnostic to how the actor produced the transition. It only assumes that a state projection 
+
+zx = Φ( x, q, C ) (2) can be rendered for the evaluator. The projection removes physical option labels, gold labels, success flags, answer keys, final scores, raw provider responses, request identifiers, timestamps, trace identifiers, and secrets. Candidate texts may be included for open-QA tasks because identifiers such as answer-a have no semantics. The gold candidate g is retained only for offline analysis. ASV measures the change in a specified evaluator’s state-conditioned belief over C. It does not estimate intrinsic causal utility; that would require interventions on the actor or environment. The replay quantity is narrower: under a fixed projection Φ and evaluator protocol Eθ , did the observed action move evaluator belief toward, away from, or across candidate outcomes? 
+
+3.2 State scoring protocol 
+
+ASV defines a state scorer Eθ that maps a projected state to candidate log scores. The scorer has two passes. First, a rationale encoder produces a compact buffer 
+
+rx = Rθ (zx, C ; IR). (3) The instruction IR forbids physical option labels, positions, gold labels, answer keys, scores, and success metadata. It permits stable candidate identifiers and candidate texts. This can be viewed as a constrained rendering step: the rationale should preserve evidence relevant to the candidate set while suppressing nuisance channels that would reveal the measurement layout. ASV checks the following protocol invariants: 
+
+LabelLeak( rx) = 0 , GoldLeak( rx) = 0 , Coverage( rx, C ) is recorded . (4) These are operational invariants; ASV does not learn them. The implementation enforces them with prompt rules, token limits, redaction, candidate-coverage checks, and leakage flags. If a rationale mentions physical labels or gold-related fields, ASV records the event or rejects the state depending on the configured policy. Second, ASV appends a physical label mapping at the prompt tail. Let L = {A, B, C, D, . . . } be the visible label set and let πb : C → L be the bth candidate-to-label mapping. The scored prompt is 
+
+Ψx,b = zx ⊕ rx ⊕ Γπb , (5) 3where Γπb contains only the current option mapping and the instruction to output one uppercase option label. For candidate c, let V(πb(c)) denote token variants that normalize to the same label, such as A, leading-space A, newline-prefixed A, or A. . The raw candidate score is 
+
+ℓ(b) 
+
+> x
+
+(c) = log X
+
+> t∈V (πb(c))
+
+Pθ (t | Ψx,b ). (6) If a label is absent from the returned top-log-probability list, ASV assigns a configured floor score and records a quality flag. The induced evaluator belief is 
+
+p(b) 
+
+> x
+
+(c) = exp( ℓ(b) 
+
+> x
+
+(c)) 
+
+P 
+
+> c′∈C
+
+exp( ℓ(b) 
+
+> x
+
+(c′)) . (7) For B > 1 label mappings, ASV uses the permutation-averaged belief 
+
+¯px(c) = 1
+
+B
+
+> B
+
+X
+
+> b=1
+
+p(b) 
+
+> x
+
+(c). (8) The main experiment reports B = 1 fixed-layout scores; the same definitions support balanced label-permutation audits when positional robustness is the target. 
+
+3.3 Step metrics 
+
+For transition i, ASV reports a vector of step diagnostics instead of a single universal reward. The gold-free entropy movement is 
+
+∆Hi = 1
+
+B
+
+> B
+
+X
+
+> b=1
+
+h
+
+H(p(b) 
+
+> xi−1
+
+) − H(p(b) 
+
+> xi
+
+)
+
+i
+
+, H(p) = − X
+
+> c∈C
+
+p(c) log p(c). (9) If costs are available, a cost-adjusted diagnostic can be written as ∆Hi − λcost i. The experiments set λ = 0 . Entropy movement measures uncertainty change, not correctness. When a reviewed target candidate g is available offline, the primary oracle validation metric is gold-margin gain. The state margin is 
+
+M (b) 
+
+> x
+
+(g) = ℓ(b) 
+
+> x
+
+(g) − max  
+
+> c∈C,c ̸=g
+
+ℓ(b) 
+
+> x
+
+(c), (10) and the transition-level gain is 
+
+Gmargin  
+
+> i
+
+= 1
+
+B
+
+> B
+
+X
+
+> b=1
+
+h
+
+M (b) 
+
+> xi
+
+(g) − M (b) 
+
+> xi−1
+
+(g)
+
+i
+
+. (11) Positive Gmargin  
+
+> i
+
+means the step made the evaluator prefer the target more strongly relative to its nearest competitor. Negative values indicate movement away from the target. ASV also records gold log-likelihood gain, 
+
+Glog pi = 1
+
+B
+
+> B
+
+X
+
+> b=1
+
+h
+
+log p(b) 
+
+> xi
+
+(g) − log p(b) 
+
+> xi−1
+
+(g)
+
+i
+
+, (12) but margin gain is the headline oracle validation metric because it directly compares the target with the strongest alternative. To detect belief pivots that entropy misses, ASV reports Bayesian surprise. With ϵ = 10 −6 and 
+
+¯pϵx(c) = (1 − ϵ)¯ px(c) + ϵ/ |C|, define 
+
+Si = DKL 
+
+
+
+¯pϵxi ∥ ¯pϵxi−1
+
+
+
+. (13) Surprise alone gives no direction. A high-surprise step can be constructive or destructive, so it must be interpreted jointly with Gmargin  
+
+> i
+
+. ASV also reports the bounded Jensen-Shannon pivot score 
+
+Ji = 12 DKL (¯ pϵxi ∥mi) + 12 DKL (¯ pϵxi−1 ∥mi), mi = 12 (¯ pϵxi + ¯ pϵxi−1 ). (14) 4Table 1: 100-question open-QA ASV result. Gold margin is an offline oracle validation metric; entropy and surprise are gold-free belief diagnostics.                   
+
+> Quantity Value Questions / trajectories 100 Agent steps / evaluated states 1,100 / 2,200 Candidate answers per task 4
+> none-of-the-above present 100 / 100 Fallback / floor-score steps 15 / 15 Rationale label-leakage flags 0Rationale gold-leakage flags 11 Mean after-state rationale tokens 65.270 Mean gold-margin gain -2.335 Trajectory-bootstrap 95% CI [-3.395, -1.272] Leave-one-trajectory-out range [-2.467, -2.180] Positive / zero / negative margin steps 77 / 844 / 179 Positive / zero / negative trajectories 14 / 39 / 47 Mean / max Bayesian surprise 2.693 / 15.194 Mean Jensen-Shannon pivot score 0.123 Mean entropy movement 0.000
+
+3.4 Candidate sets and label permutations 
+
+Open-QA tasks are converted to ASV by freezing a candidate-answer specification before scor-ing. Each task contains a question, three concrete candidate answers, one none-of-the-above 
+
+candidate for insufficient evidence, and one reviewed target identifier used only offline. The 
+
+none-of-the-above candidate is part of the measurement design: without it, an evidence-insufficient state would be forced into an artificial ranking among concrete answers. Candidate generation traces are not shown to the evaluator. Because option order can affect LLM judgments [ 16 , 17 ], ASV treats physical labels as nuisance variables. For a permutation set {πb}Bb=1 , layout sensitivity can be measured by 
+
+Achannel  
+
+> x
+
+= 1
+
+B
+
+> B
+
+X
+
+> b=1
+
+DKL 
+
+
+
+(p(b) 
+
+> x
+
+)ϵ ∥ ¯pϵx
+
+
+
+. (15) Provider-side prompt caching is only a cost optimization. Since changing πb changes the measured prompt tail, cross-permutation cache hits are not assumed and are not part of the estimator. 
+
+## 4 Experiment 
+
+We ran a 100-question open-QA experiment to test whether ASV produces interpretable step-level measurements on realistic evidence-seeking traces. The tasks span intervention, risk, mechanism, diagnostic, and insufficient-evidence questions. Each task has four reviewed candidates: three concrete answers and one none-of-the-above . The reviewed target distribution is intentionally not balanced across physical candidate identifiers because candidate identifiers are stable semantic handles, not labels shown to the evaluator. Trajectories were collected from an evidence-retrieval workflow using PubMed through NCBI Entrez. The actor used DeepSeek where configured: classification used LLM mode for 97 of 100 trajectories, planning for 67, synthesis for 52, verification for 95, and revision for 50; the remaining substeps used deterministic or fallback paths recorded in the trace metadata. We then reran the ASV evaluator with DeepSeek deepseek-chat , temperature zero, one generated token for the scored pass, log probabilities enabled, top-log-probabilities requested for option labels, a 128-token label-free rationale budget, warning-mode leakage policy, and fixed physical option layout. The run completed all 100 trajectories, yielding 1,100 agent steps and 2,200 evaluated before/after states. Table 1 reports the main result. Mean gold-margin gain is -2.335, with a trajectory-bootstrap 95% confidence interval of [-3.395, -1.272]. Leave-one-trajectory-out means range from -2.467 to -2.180, so no single trajectory explains the sign. Under this candidate set, state projection, actor stack, 5Table 2: Selected step-type statistics for fixed-layout rationale-conditioned gold-margin gain. The repeated extrema come from saturated near-one-hot scorer flips; Table 3 reports floor-score sensitivity. The +/0/− column counts positive, zero, and negative gains.                                                 
+
+> Step type nMean SD Median Range +/0/−
+> extract 100 -7.790 19.124 0.000 [-38.901, 38.901] 7/65/28 audit 100 -7.392 18.010 0.000 [-38.901, 38.901] 7/62/31 validate-plan 100 -4.664 15.895 0.000 [-38.901, 38.901] 3/81/16 retrieve 100 -3.096 17.099 0.000 [-38.901, 38.901] 7/71/22 classify 100 -1.555 12.234 0.000 [-38.901, 38.901] 5/87/8 post-audit 100 0.758 15.523 0.000 [-38.901, 38.901] 12/76/12 finalize 100 0.394 15.055 0.000 [-38.901, 38.901] 11/76/13
+
+Table 3: Robustness checks for the 100-question rationale-conditioned run. Confidence intervals use the same trajectory bootstrap as Table 1. 
+
+Condition Steps / traj. Mean margin gain 95% CI All steps 1,100 / 100 -2.335 [-3.395, -1.272] No floor-score steps 1,085 / 100 -2.152 [-3.173, -1.206] No gold-leakage trajectory 1,089 / 99 -2.358 [-3.428, -1.328] 
+
+and rationale-conditioned evaluator, many observed transitions move evaluator belief away from the reviewed target. The quality flags are part of the measurement. Label leakage is absent; 11 gold-leakage flags occur under warning policy, all within one trajectory. Removing that trajectory leaves the estimate negative (Table 3). Entropy movement is zero for every step. An entropy-only transition value would conclude that no step changed evaluator uncertainty. The raw belief vectors tell a different story: mean Bayesian surprise is 2.693 and the largest step reaches 15.194, indicating large near-one-hot belief pivots. Gold-margin gain then determines whether those pivots were constructive or destructive. In this run, 77 steps have positive margin gain, 179 have negative margin gain, and 844 are unchanged. ASV separates pivot magnitude from pivot direction. Table 2 breaks the negative mean down by step type. Extract, audit, validate-plan, and retrieval steps are the most negative on average, while post-audit and finalize are mildly positive. The medians are zero and ranges are wide, so these rows should be read as localization hypotheses instead of step-type laws. The shared extrema also occur when the scored labels are present and the evaluator flips between two near-one-hot candidates. The likely contributors are state projection, evidence extraction, candidate overlap, rationale anchoring, and residual actor fallbacks. ASV keeps these explanations separate and points to the trace regions that need inspection. The sensitivity checks isolate two protocol artifacts. After removing all 15 floor-score steps, the sign and interval remain negative. After removing the single trajectory containing all 11 gold-leakage flags, the sign and interval also remain negative. That trajectory has zero mean margin gain because one large negative pivot is offset by one large positive pivot. We also keep an earlier direct-scorer replay as a protocol ablation. On a 10-question open-QA run with the same one-token DeepSeek log-probability scorer and no rationale buffer, fixed-layout mean gold-margin gain was +3.857 over 110 steps, with trajectory-bootstrap 95% CI [0.136, 7.376]; the B=4 label-permutation replay averaged +0.955 over 440 steps. The rationale-conditioned scorer on the same task family moved negative in the corresponding 10-question run (-2.826 fixed layout). The rationale buffer therefore changes the measurement protocol in a visible way. The 100-question estimate is a property of the specified rationale-conditioned protocol. The abstention candidate still matters. All 100 tasks include none-of-the-above , including 10 insufficient-evidence questions whose reviewed target is abstention. This prevents evidence-insufficient tasks from being forced into a concrete answer. The negative mean remains informative because the evaluated stack struggles even when non-answerability is available as a candidate outcome. 65 Discussion 
+
+The experiment supports the main measurement claim. If an agent trace can be represented as before/after states and a candidate set can be frozen, a stateless evaluator can turn each action into a measurable belief update. ASV does not estimate causal utility. It gives a local replay diagnostic: which observed transitions moved the evaluator toward the reviewed target, which moved it away, and which changed belief mass without improving the oracle margin. The negative mean gold-margin gain is evidence about this measured stack, not a verdict on agents as a class. The tested rationale-conditioned protocol exposes destructive pivots in the open-QA traces. The actor was partly live and partly fallback, the state projection compressed evidence, and the evaluator relied on a compact rationale buffer. ASV makes these surfaces visible: fallback/floor counts, leakage flags, candidate coverage, raw score vectors, entropy, surprise, and margin movement are all retained for audit. The entropy result gives the sharpest methodological lesson. Entropy movement is zero across 1,100 steps because the evaluator often behaves like a near-one-hot classifier before and after a transition. Yet Bayesian surprise and gold-margin gain reveal large belief flips. In this regime, an information-theoretic diagnostic must measure distributional movement alongside uncertainty reduction. Bayesian surprise catches the pivot; gold-margin gain gives the pivot a direction relative to the reviewed target. The label-free rationale buffer should also be interpreted carefully. It makes evaluator deliberation explicit while preserving a one-token likelihood measurement, but it is not guaranteed to improve scores. A rationale can compress useful evidence, omit decisive evidence, or anchor the scorer on a misleading comparison. The claim is narrower: ASV makes deliberation measurable and auditable. It does not assert that deliberative judging is always superior to direct one-token scoring. 
+
+## 6 Limitations and broader impact 
+
+This paper reports one 100-question open-QA experiment with limited scope. The tasks use reviewed candidate sets, live PubMed retrieval, a partially live DeepSeek actor, and one DeepSeek evaluator protocol. The results should not be generalized to other domains, candidate-construction procedures, evaluators, or fully live actors without rerunning the measurement. The bootstrap interval and leave-one-trajectory-out range quantify sensitivity within this dataset; they do not replace external replication. The evaluator is an LLM and inherits model-specific biases, including option-order sensitivity. ASV exposes these risks by storing raw scores, separating rationale generation from one-token scoring, logging leakage and floor-score events, and supporting permutation audits, but these logs do not make the evaluator objective. Candidate construction is also part of the measurement: overlapping candidates, missing targets, or artifacts correlated with the target can distort margin scores. The broader impact is mainly methodological. ASV can help researchers and developers identify which parts of a long agent trace improve evidence-grounded correctness and which parts degrade it. The corresponding risk is overtrust: a numeric step value can look more objective than the evaluator protocol that produced it. In high-stakes settings, ASV should remain a debugging and evaluation tool, reported with source evidence, evaluator details, candidate specifications, and robustness diagnostics. 
+
+## 7 Conclusion 
+
+ASV reframes agent evaluation as state-transition measurement. A stateless, state-grounded LLM evaluator scores before and after states over a fixed candidate set; raw candidate log scores then yield entropy movement, Bayesian surprise, and offline oracle margin gains. In a 100-question open-QA experiment with 1,100 steps, ASV exposes a stable negative mean gold-margin movement under the tested rationale-conditioned protocol and shows that entropy alone is blind to large one-hot belief pivots. The released toolkit gives a compact way to localize where an agent trace changes evaluator belief and whether that change aligns with a reviewed target. 7Code and data availability 
+
+The standalone ASV Eval toolkit is publicly available at https://github.com/andyzpb/ asv-eval . The repository contains the standard ASV JSONL schema, metric implementation, evaluator protocol, command-line interface, documentation, tests, and runnable offline examples. The raw 100-question trajectory artifacts and provider log-probability responses are not included in the public release because they require credential scrubbing, license review, and artifact redaction. Exact reproduction of the reported numbers therefore requires access to the retained JSONL traces and provider responses, while the released toolkit supports independent reimplementation and new ASV evaluations. 
+
+## References 
+
+[1] S. Yao, J. Zhao, D. Yu, N. Du, I. Shafran, K. Narasimhan, and Y. Cao, “ReAct: Synergizing reasoning and acting in language models,” arXiv preprint arXiv:2210.03629 , 2022. [Online]. Available: https://arxiv.org/abs/2210.03629 [2] O. Khattab, A. Singhvi, P. Maheshwari, Z. Zhang, K. Santhanam, S. Haq, A. Sharma, T. T. Joshi, H. Moazam, H. Miller, M. Zaharia, and C. Potts, “DSPy: Compiling declarative language model calls into self-improving pipelines,” arXiv preprint arXiv:2310.03714 , 2023. [Online]. Available: https://arxiv.org/abs/2310.03714 [3] National Center for Biotechnology Information, “Entrez programming utilities help,” https: //www.ncbi.nlm.nih.gov/books/NBK25501/, 2026, accessed 2026-07-03. [4] DeepSeek, “Create chat completion,” https://api-docs.deepseek.com/api/create-chat-completion, 2026, accessed 2026-07-03. [5] E. Karpas, O. Abend, Y. Belinkov, B. Lenz, O. Lieber, N. Ratner, Y. Shoham, H. Bata, Y. Levine, K. Leyton-Brown et al. , “MRKL systems: A modular, neuro-symbolic architecture that combines large language models, external knowledge sources and discrete reasoning,” 
+
+arXiv preprint arXiv:2205.00445 , 2022. [Online]. Available: https://arxiv.org/abs/2205.00445 [6] T. Schick, J. Dwivedi-Yu, R. Dessi, R. Raileanu, M. Lomeli, L. Zettlemoyer, N. Cancedda, and T. Scialom, “Toolformer: Language models can teach themselves to use tools,” arXiv preprint arXiv:2302.04761 , 2023. [Online]. Available: https://arxiv.org/abs/2302.04761 [7] Y. Qin, S. Liang, Y. Ye, K. Zhu, L. Yan, Y. Lu, Y. Lin, X. Cong, X. Tang, B. Qian et al. ,“ToolLLM: Facilitating large language models to master 16000+ real-world apis,” arXiv preprint arXiv:2307.16789 , 2023. [Online]. Available: https://arxiv.org/abs/2307.16789 [8] X. Liu, H. Yu, H. Zhang, Y. Xu, X. Lei, H. Lai, Y. Gu, H. Ding, K. Men, K. Yang et al. ,“AgentBench: Evaluating LLMs as agents,” arXiv preprint arXiv:2308.03688 , 2023. [Online]. Available: https://arxiv.org/abs/2308.03688 [9] S. Zhou, F. F. Xu, H. Zhu, X. Zhou, R. Lo, A. Sridhar, X. Cheng, T. Ou, Y. Bisk, D. Fried et al. ,“WebArena: A realistic web environment for building autonomous agents,” arXiv preprint arXiv:2307.13854 , 2023. [Online]. Available: https://arxiv.org/abs/2307.13854 [10] X. Deng, Y. Gu, B. Zheng, S. Chen, S. Stevens, B. Wang, H. Sun, and Y. Su, “Mind2Web: Towards a generalist agent for the web,” arXiv preprint arXiv:2306.06070 , 2023. [Online]. Available: https://arxiv.org/abs/2306.06070 [11] C. E. Jimenez, J. Yang, A. Wettig, S. Yao, K. Pei, O. Press, and K. Narasimhan, “SWE-bench: Can language models resolve real-world GitHub issues?” arXiv preprint arXiv:2310.06770 ,2023. [Online]. Available: https://arxiv.org/abs/2310.06770 [12] H. Lightman, V. Kosaraju, Y. Burda, H. Edwards, B. Baker, T. Lee, J. Leike, J. Schulman, I. Sutskever, and K. Cobbe, “Let’s verify step by step,” arXiv preprint arXiv:2305.20050 , 2023. [Online]. Available: https://arxiv.org/abs/2305.20050 8[13] M. Zhuge, C. Zhao, D. Ashley, W. Wang, D. Khizbullin, Y. Xiong, Z. Liu, E. Chang, R. Krishnamoorthi, Y. Tian et al. , “Agent-as-a-judge: Evaluate agents with agents,” arXiv preprint arXiv:2410.10934 , 2024. [Online]. Available: https://arxiv.org/abs/2410.10934 [14] D. Guo, J. Wu, and S. M. Yiu, “AgentEval: DAG-structured step-level evaluation for agentic workflows with error propagation tracking,” arXiv preprint arXiv:2604.23581 , 2026. [Online]. Available: https://arxiv.org/abs/2604.23581 [15] Y. Liu, D. Iter, Y. Xu, S. Wang, R. Xu, and C. Zhu, “G-Eval: NLG evaluation using GPT-4 with better human alignment,” in Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing , 2023. [Online]. Available: https://aclanthology.org/2023.emnlp-main.153/ [16] L. Zheng, W.-L. Chiang, Y. Sheng, S. Zhuang, Z. Wu, Y. Zhuang, Z. Lin, Z. Li, D. Li, E. P. Xing, H. Zhang, J. E. Gonzalez, and I. Stoica, “Judging LLM-as-a-judge with MT-bench and chatbot arena,” arXiv preprint arXiv:2306.05685 , 2023. [Online]. Available: https://arxiv.org/abs/2306.05685 [17] P. Wang, L. Li, L. Chen, Z. Cai, D. Zhu, B. Lin, Y. Cao, Q. Liu, T. Liu, and Z. Sui, “Large language models are not fair evaluators,” arXiv preprint arXiv:2305.17926 , 2023. [Online]. Available: https://arxiv.org/abs/2305.17926 [18] J. Thorne, A. Vlachos, C. Christodoulopoulos, and A. Mittal, “FEVER: A large-scale dataset for fact extraction and VERification,” in Proceedings of the 2018 Conference of the North American Chapter of the Association for Computational Linguistics , 2018, pp. 809–819. [Online]. Available: https://aclanthology.org/N18-1074/ [19] F. Petroni, A. Piktus, A. Fan, P. Lewis, M. Yazdani, N. De Cao, J. Thorne, Y. Jernite, V. Karpukhin, J. Maillard et al. , “KILT: A benchmark for knowledge intensive language tasks,” 
+
+arXiv preprint arXiv:2009.02252 , 2020. [Online]. Available: https://arxiv.org/abs/2009.02252 [20] Q. Jin, B. Dhingra, Z. Liu, W. W. Cohen, and X. Lu, “PubMedQA: A dataset for biomedical research question answering,” in Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing , 2019, pp. 2567–2577. [Online]. Available: https://aclanthology.org/D19-1259/ [21] G. Tsatsaronis, G. Balikas, P. Malakasiotis, I. Partalas, M. Zschunke, M. R. Alvers, D. Weissenborn, A. Krithara, S. Petridis, D. Polychronopoulos et al. , “An overview of the BIOASQ large-scale biomedical semantic indexing and question answering competition,” BMC Bioinformatics , vol. 16, p. 138, 2015. [Online]. Available: https://link.springer.com/article/10.1186/s12859-015-0564-6 [22] W. Yu, S. Wei, J. Liu, Y. Li, M. Hu, A. Liu, H. Zhang, and I. King, “Probability-entropy calibration: An elastic indicator for adaptive fine-tuning,” arXiv preprint arXiv:2602.01745 ,2026. [23] L. Itti and P. Baldi, “Bayesian surprise attracts human attention,” Vision Research , vol. 49, no. 10, pp. 1295–1306, 2009, visual Attention: Psychophysics, electrophysiology and neuroimaging. [Online]. Available: https://www.sciencedirect.com/science/article/pii/S0042698908004380 
+
+## A Reproducibility details 
+
+The implementation stores trajectories as JSONL records containing task metadata, candidate spec-ifications, and ordered state transitions. Each transition contains an action name, a before-state projection, an after-state projection, and optional cost and trace metadata. Evaluator outputs are stored separately as candidate log scores, normalized beliefs, rationale quality flags, permutation identifiers, and metric records. Gold candidate identifiers, success labels, final scores, and physical option labels are never rendered into the label-free state projection. This separation makes it possible to rerun evaluator protocols from preserved trajectories without rerunning the actor. 9The 100-question open-QA experiment used four candidates per task, including exactly one 
+
+none-of-the-above . ASV restricts scoring to a small option set because first-token top-log-probability APIs expose only a bounded set of candidate tokens. The source trajectories were collected with PubMed retrieval through NCBI Entrez. No model training was performed. The evaluator used deepseek-chat , a 128-token label-free rationale pass, temperature zero, one gener-ated token for the scored pass, log probabilities enabled, and top-log-probabilities requested for the option labels. The main reported estimate uses a fixed option layout; label-permutation scoring is implemented as a robustness audit but is not used in the main estimate reported here. 
+
+## B Evaluator prompt skeleton 
+
+ASV uses two evaluator prompts. The first prompt generates a compact rationale buffer without physical labels. The implementation renders the task question, the redacted state projection, and a candidate manifest using stable candidate identifiers and candidate texts. 
+
+> You are evaluating an agent state. Generate a compact label-free rationale buffer. Use stable candidate identifiers only. Never mention physical option labels such as A/B/C/D, gold labels, answer keys, success flags, or scores. Compare the evidence against each candidate identifier and separate supporting evidence, contradicting evidence, missing evidence, and unresolved ambiguity. Do not output a final option label.
+
+The second prompt appends the physical label mapping only at the tail and scores one token.  
+
+> [Redacted state projection.] [Candidate manifest with candidate identifiers and texts.] [Label-free rationale buffer.] Current physical option mapping: A = candidate_id: [id]. B = candidate_id: [id]. C = candidate_id: [id]. D = candidate_id: [id]. Output exactly one uppercase option label.
+
+The scored call is read from the log probabilities of the first generated option token. Label tokens are normalized by stripping whitespace and simple punctuation, so variants such as A, leading-space A,newline-prefixed A, and A. map to the same option; when multiple returned token variants map to the same option, their scores are combined with log-sum-exp. The scored prompt is not allowed to emit free-form reasoning before the option label because that would make first-token log probabilities measure reasoning preambles. 10

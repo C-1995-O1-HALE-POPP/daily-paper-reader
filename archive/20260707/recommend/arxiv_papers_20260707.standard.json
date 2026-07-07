@@ -1,0 +1,389 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-07T21:38:24.491154+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2607.04907v1",
+      "source": "arxiv",
+      "title": "Medi-Gemma: A Hybrid Clinical Decision Support System Integrating Deterministic EMR Analytics and Retrieval-Augmented Generation",
+      "abstract": "Deploying Large Language Models (LLMs) in high-stakes clinical settings remains limited by structural hallucinations, weak deterministic reasoning over tabular patient data, and omissions in vector retrieval. This paper presents the architecture and validation of Medi-Gemma, a Clinical Decision Support System (CDSS) for wound pathology triage and workflow automation. The platform introduces a decoupled framework that separates clinical perception from data orchestration while preserving traceable reasoning. Medi-Gemma uses a multi-stage pipeline coordinated by a centralized ClinicalOrchestrator. Data requests are handled without generative inference by a DataManager that cleans unstructured Electronic Medical Record (EMR) files through type coercion. Natural language queries are processed by a hierarchical IntentRouter, which routes requests to deterministic analytics paths executed by a PandasQueryEngine or to patient-specific reasoning managed by a ClinicalRAGEngine using a CPU-optimized vector store. A key contribution is the Ground Truth Injection Module, which intercepts patient-specific queries, extracts numeric identification tokens, queries the structured dataframe via Pandas, retrieves the latest validated clinical state, and embeds this snapshot as an overriding context block in the LLM prompt before generation. Safety compliance is enforced by a deterministic ProtocolManager that maps clinical terminology to fixed evidence-based risk pathways, while a SafetyVerifier phrase filter prevents output rule violations. Validation shows that this architecture eliminates semantic context drift, prevents database compilation crashes, and improves factual adherence to backend clinical repositories. These results support Medi-Gemma as a safer pattern for LLM-based clinical decision support where structured data fidelity, retrieval grounding, and deterministic safeguards are essential.",
+      "authors": [
+        "Mohammed Saim Ahmed Quadri",
+        "Yunzhe Xue",
+        "Justin W. Ady",
+        "Usman Roshan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-06T10:36:04+00:00",
+      "link": "https://arxiv.org/pdf/2607.04907v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Clinical decision support system evaluation using EMR data",
+      "llm_evidence_cn": "使用EMR数据的临床决策支持系统评估",
+      "llm_evidence": "使用EMR数据的临床决策支持系统评估",
+      "canonical_evidence": "使用EMR数据的临床决策支持系统评估",
+      "llm_tldr_en": "Medi-Gemma presents a hybrid CDSS for wound pathology triage, integrating deterministic EMR analytics and RAG, with a validation study demonstrating its effectiveness in clinical workflow automation.",
+      "llm_tldr_cn": "针对大型语言模型在临床部署中的结构幻觉和表格数据推理弱等问题，本文提出Medi-Gemma，一种将确定性电子病历分析与检索增强生成相结合的混合临床决策支持系统。该系统通过集中式编排器协调多阶段流水线，分离临床感知与数据编排。在伤口病理分诊和工作流自动化验证中，Medi-Gemma展现了高准确率和可追溯性，为基于EHR的临床决策代理评估提供了有效框架。",
+      "llm_tldr": "针对大型语言模型在临床部署中的结构幻觉和表格数据推理弱等问题，本文提出Medi-Gemma，一种将确定性电子病历分析与检索增强生成相结合的混合临床决策支持系统。该系统通过集中式编排器协调多阶段流水线，分离临床感知与数据编排。在伤口病理分诊和工作流自动化验证中，Medi-Gemma展现了高准确率和可追溯性，为基于EHR的临床决策代理评估提供了有效框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.05032v1",
+      "source": "arxiv",
+      "title": "Multi-Large Language Model Orchestrated Severity Assessment of Clinical Records (MOSAIC)",
+      "abstract": "Background: Disease severity is a multidimensional construct difficult to capture with rule-based approaches in Electronic Healthcare Records (EHR). Agentic large language model (LLM) systems could synthesise clinical evidence and reason over EHRs, but remain unevaluated for this task. Methods: MOSAIC is a two-phase agentic LLM framework for severity phenotyping, using type 2 diabetes (T2D) as a proof-of-concept. MOSAIC was evaluated on a synthetic cohort (SyntheticMass; open-weight N = 4,886; closed-weight N = 200) against three algorithmic ground truths (DCSI, DiSSCo, Cooper) and against all-cause mortality and incident complications. Open-weight (locally deployable) and proprietary pipelines were also compared. Results: The generated framework spanned domains absent from the comparators, including biomarker-based glycaemic staging, beta-cell function, and social determinants of health. Open-weight MOSAIC matched the proprietary pipeline (closed- vs open-weight weighted kappa = 0.773) and reached moderate agreement with Cooper (kappa = 0.597) and DCSI (kappa = 0.534) and fair agreement with DiSSCo (kappa = 0.320). Agent-based (Type 1) tiers showed significant separation of all-cause mortality (log-rank p < 0.001; crude hazard ratios 1.6-2.4 for non-Baseline tiers), with non-monotonic separation at the upper tiers, and an inverse gradient for incident complications (log-rank p < 0.001) consistent with depletion of susceptibles. Agentic classification also diverged from deterministic execution of the same rubric (MOSAIC Frozen; kappa = 0.428), indicating reasoning beyond fixed rules. Conclusion: MOSAIC shows agentic LLM systems can generate and apply clinically meaningful severity phenotypes from structured EHR data in T2D. Extending it to other diseases with similarly multidimensional severity warrants further research.",
+      "authors": [
+        "Manuela Del Castillo Suero",
+        "Arnault-Quentin Vermillet",
+        "Nicole Sonne Heckmann",
+        "Darmendra Ramcharran",
+        "Maurizio Sessa"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-07-06T13:15:21+00:00",
+      "link": "https://arxiv.org/pdf/2607.05032v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Uses EHR for severity assessment with agentic LLM, evaluated against ground truths",
+      "llm_evidence_cn": "使用EHR进行严重程度评估的代理LLM系统，并与金标准对比评估",
+      "llm_evidence": "使用EHR进行严重程度评估的代理LLM系统，并与金标准对比评估",
+      "canonical_evidence": "使用EHR进行严重程度评估的代理LLM系统，并与金标准对比评估",
+      "llm_tldr_en": "MOSAIC is a two-phase agentic LLM system for severity phenotyping from EHR, evaluated on synthetic cohort against multiple ground truths.",
+      "llm_tldr_cn": "针对EHR中疾病严重程度评估的挑战，本文提出了MOSAIC，一个两阶段代理LLM框架，用于从电子健康记录中进行严重程度表型分析。在合成队列上，MOSAIC与三种算法金标准及临床结局进行了对比评估，展示了代理LLM在EHR分析中的潜力。",
+      "llm_tldr": "针对EHR中疾病严重程度评估的挑战，本文提出了MOSAIC，一个两阶段代理LLM框架，用于从电子健康记录中进行严重程度表型分析。在合成队列上，MOSAIC与三种算法金标准及临床结局进行了对比评估，展示了代理LLM在EHR分析中的潜力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.02598v1",
+      "source": "arxiv",
+      "title": "Evaluating Agentic Harness Systems for Autonomous Computational Pathology",
+      "abstract": "Autonomous computational pathology (ACP) converts high-level pathology analysis goals into executable, traceable and clinically bounded workflows. Realizing this capability requires adapting general agentic harness systems to pathology-specific tasks, tools, evidence standards and clinical claim boundaries. We contribute ACP-Bench, a framework that adapts existing harness systems from computational pathology support toward ACP workflow capability. ACP-Bench evaluates 41 pathology workflow tasks, including 24 biomarker, 7 morphology and 10 prognosis tasks spanning 6 body-system groups and 9 endpoint families. The benchmark evaluates 9 models and 3 harness groups (Claude Code, Codex and Open Code), yielding 369 complete trajectories. ACP-Bench evaluates each trajectory across workflow execution, diagnostic performance and clinical-boundary alignment, combining expert-adjudicated process audits, diagnostic assessment and pathologist-validated safety review. Across evaluated systems, workflow initiation, task interpretation and diagnostic reporting were more mature than tool-bound execution, result binding and reflective workflow revision, and formal end-to-end completion remained rare. ACP-Bench provides a reusable standard for auditing whether agentic systems can operationalize pathology workflows before claims of reliable clinical autonomy.",
+      "authors": [
+        "Jie Lin",
+        "Zongyi Chen",
+        "Qiaoling Zheng",
+        "Liuyi Wang",
+        "Hengyi Jiang",
+        "Jiabao Chen",
+        "Xiang Liu",
+        "Yinghong Yang",
+        "Liansheng Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-01T10:13:13+00:00",
+      "link": "https://arxiv.org/pdf/2607.02598v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Benchmark for agentic systems in computational pathology, relevant to medical agent benchmarking",
+      "llm_evidence_cn": "计算病理学中的Agent系统基准，与医疗Agent基准测试相关",
+      "llm_evidence": "计算病理学中的Agent系统基准，与医疗Agent基准测试相关",
+      "canonical_evidence": "计算病理学中的Agent系统基准，与医疗Agent基准测试相关",
+      "llm_tldr_en": "ACP-Bench evaluates agentic harness systems on 41 pathology tasks, providing a benchmark for autonomous computational pathology agents, applicable to medical agent evaluation.",
+      "llm_tldr_cn": "本文提出ACP-Bench，一个评估自主计算病理学工作站中Agent系统的基准框架，包含41个病理学任务（生物标志物、形态学、预后等），覆盖9种模型和3类Agent框架。该工作直接面向医疗Agent的评估，虽未使用EHR数据，但方法论高度相关，可作为医疗Agent基准测试的参考。",
+      "llm_tldr": "本文提出ACP-Bench，一个评估自主计算病理学工作站中Agent系统的基准框架，包含41个病理学任务（生物标志物、形态学、预后等），覆盖9种模型和3类Agent框架。该工作直接面向医疗Agent的评估，虽未使用EHR数据，但方法论高度相关，可作为医疗Agent基准测试的参考。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.02879v1",
+      "source": "arxiv",
+      "title": "MedCalc-Pro: Solving Complex Medical Calculations with LLM Agents",
+      "abstract": "Current benchmarks for evaluating large language models (LLMs) in medical calculation are largely based on simplified settings, where each patient case corresponds to a single calculator and the required tool is explicitly specified in the query. However, real clinical scenarios often require multiple calculators for joint evaluation, nested-scale calculation, and fuzzy queries that do not directly specify the target calculator. To this end, we propose a new medical calculation benchmark, MedCalc-Pro, which covers three progressively challenging task settings: single-calculator, multi-calculator, and nested-calculator calculation settings. MedCalc-Pro contains 2,268 real-world clinical cases, covering 77 medical calculators across 14 clinical departments. Meanwhile, to address the limited performance of existing frameworks and methods in complex clinical scenarios, we further propose a more generalizable agent framework that supports multi-tool selection and nested-tool calling, while suppressing parameter error propagation through structured validation and evidence review. We conduct systematic comparisons across open-source, closed-source, and medical-specialized LLMs, and the results show that our framework achieves the best performance across all three task settings. This work provides a new benchmark and method for evaluating and applying LLMs in challenging medical calculation scenarios.",
+      "authors": [
+        "Siran Zhao",
+        "Ruihui Hou",
+        "Ziyue Huai",
+        "Chennuo Zhang",
+        "Tong Ruan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-03T02:24:26+00:00",
+      "link": "https://arxiv.org/pdf/2607.02879v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "proposes MedCalc-Pro benchmark with real clinical cases to evaluate LLM agents on complex medical calculations",
+      "llm_evidence_cn": "提出MedCalc-Pro基准，使用真实临床案例评估LLM代理在复杂医疗计算上的表现",
+      "llm_evidence": "提出MedCalc-Pro基准，使用真实临床案例评估LLM代理在复杂医疗计算上的表现",
+      "canonical_evidence": "提出MedCalc-Pro基准，使用真实临床案例评估LLM代理在复杂医疗计算上的表现",
+      "llm_tldr_en": "MedCalc-Pro introduces a benchmark with 2,268 real clinical cases across 77 calculators in three difficulty settings, enabling evaluation of LLM agents on complex medical calculations.",
+      "llm_tldr_cn": "当前医疗计算基准过于简化，无法反映真实临床场景需要多计算器嵌套计算的复杂性。MedCalc-Pro提出一个包含2268个真实临床案例的基准，覆盖77个医疗计算器和14个科室，设定单计算器、多计算器和嵌套计算器三种难度。该基准可用于评估基于LLM的医疗代理在复杂计算任务上的性能，为基于EHR的代理评估提供了可借鉴的框架和案例数据。",
+      "llm_tldr": "当前医疗计算基准过于简化，无法反映真实临床场景需要多计算器嵌套计算的复杂性。MedCalc-Pro提出一个包含2268个真实临床案例的基准，覆盖77个医疗计算器和14个科室，设定单计算器、多计算器和嵌套计算器三种难度。该基准可用于评估基于LLM的医疗代理在复杂计算任务上的性能，为基于EHR的代理评估提供了可借鉴的框架和案例数据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.29746v1",
+      "source": "arxiv",
+      "title": "DEEPMED Search: An Open-Source Agentic Platform for Medical Deep Research with Introspective Verification",
+      "abstract": "Navigating the deluge of heterogeneous medical data, from academic literature (PubMed) to clinical guidelines (Web) and private knowledge bases, remains a critical bottleneck for evidence-based medicine. While commercial black-box tools lack transparency, standard open-source RAG implementations frequently suffer from reasoning drift when handling complex, long-tail queries. We present DEEPMED Search, a fully open-source, agentic platform designed for transparent medical deep research. Built on a high-performance Next.js architecture, DEEPMED Search features a source-adaptive router that autonomously dispatches sub-queries to PubMed, web search, or local graph-based knowledge bases based on information density. Crucially, the platform integrates an introspective verification module, powered by a causal-consistent multi-agent debate framework, to validate retrieved evidence against diagnostic logic before synthesis. To demonstrate its robustness, we showcase DEEPMED Search's ability to autonomously decompose high-difficulty rare disease queries, filter out confounding noise, and generate structured, citation-backed research reports in minutes. By open-sourcing this software, we provide the community with a robust infrastructure to democratize access to trustworthy, glass-box medical reasoning in research and prototyping settings.",
+      "authors": [
+        "Maolin Liu",
+        "Fanyu Xu",
+        "Ruoqing Xu",
+        "Jiahang Zhang",
+        "Hao Wang",
+        "Rui Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.HC"
+      ],
+      "published": "2026-06-29T03:42:48+00:00",
+      "link": "https://arxiv.org/pdf/2606.29746v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "open-source agentic platform for medical deep research using heterogeneous medical data",
+      "llm_evidence_cn": "开源医疗深度研究Agent平台，整合多种医疗数据源",
+      "llm_evidence": "开源医疗深度研究Agent平台，整合多种医疗数据源",
+      "canonical_evidence": "开源医疗深度研究Agent平台，整合多种医疗数据源",
+      "llm_tldr_en": "Presents DEEPMED Search, an open-source agentic platform for medical deep research that autonomously queries PubMed, web, and knowledge bases, with introspective verification.",
+      "llm_tldr_cn": "针对医疗深度研究中数据异构、RAG推理漂移等问题，该论文提出DEEPMED Search，一个开源Agent平台。它采用源自适应路由器，自动分发子查询到PubMed、网络搜索或本地图数据库，并引入内省验证机制。在复杂长尾查询上展示了稳定性。该平台可作为构建使用EHR的医疗Agent的基础设施。",
+      "llm_tldr": "针对医疗深度研究中数据异构、RAG推理漂移等问题，该论文提出DEEPMED Search，一个开源Agent平台。它采用源自适应路由器，自动分发子查询到PubMed、网络搜索或本地图数据库，并引入内省验证机制。在复杂长尾查询上展示了稳定性。该平台可作为构建使用EHR的医疗Agent的基础设施。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.02983v1",
+      "source": "arxiv",
+      "title": "Reinforcement Learning for Evidence-Seeking Diagnostic Reasoning with Large Language Models",
+      "abstract": "Recent reasoning-centric Large Language Models (LLMs) have made significant strides, yet they predominantly operate on a passive-inference pattern that assumes complete information. In contrast, real-world clinical intelligence is inherently an iterative investigative process requiring strategic evidence acquisition. To bridge this gap, we formalize medical diagnosis as an Iterative Evidence-Seeking Task. We leverage Reinforcement Learning with Verifiable Rewards (RLVR) to elicit intrinsic reasoning within a closed-loop environment, guided by a novel suite of rewards that enforce diagnostic precision and examination consistency. To facilitate this, we introduce the Retrieval-Augmented Generation-based Examination Simulator (RAGES), a high-fidelity clinical oracle that provides realistic, knowledge-grounded follow-up evidence. Empirical results across diverse datasets demonstrate that our framework enables LLMs to transition from passive responders to autonomous assistants. Notably, our model demonstrates comparable performance to larger and reasoning-enhanced baselines, while RAGES proves superior to vanilla LLMs in generating biologically plausible clinical feedback.",
+      "authors": [
+        "Shengyi Hua",
+        "Kangzhe Hu",
+        "Conghui He",
+        "Xiaofan Zhang",
+        "Shaoting Zhang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-03T05:43:00+00:00",
+      "link": "https://arxiv.org/pdf/2607.02983v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Uses reinforcement learning and LLM for diagnostic reasoning agent",
+      "llm_evidence_cn": "使用强化学习和LLM构建诊断推理代理",
+      "llm_evidence": "使用强化学习和LLM构建诊断推理代理",
+      "canonical_evidence": "使用强化学习和LLM构建诊断推理代理",
+      "llm_tldr_en": "Tackles passive inference in LLMs by formalizing diagnosis as iterative evidence-seeking, using RL with verifiable rewards and an examination simulator (RAGES) to train the medical reasoning agent.",
+      "llm_tldr_cn": "现有LLM采用被动推理模式，假定信息完整，不适用于需要逐步证据获取的临床诊断。为此该研究将医学诊断形式化为迭代证据寻求任务，利用基于可验证奖励的强化学习（RLVR）在闭环环境中激发内在推理，并提出检索增强的检查模拟器RAGES。实验表明该方法能显著提升诊断推理的准确性，为构建具有主动推理能力的医疗智能体提供了新范式。",
+      "llm_tldr": "现有LLM采用被动推理模式，假定信息完整，不适用于需要逐步证据获取的临床诊断。为此该研究将医学诊断形式化为迭代证据寻求任务，利用基于可验证奖励的强化学习（RLVR）在闭环环境中激发内在推理，并提出检索增强的检查模拟器RAGES。实验表明该方法能显著提升诊断推理的准确性，为构建具有主动推理能力的医疗智能体提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Reinforcement learning and LLM in medical agent evaluation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.03702v1",
+      "source": "arxiv",
+      "title": "Agent Reinforcement Learning via Pivotal-Aware Self-Feedback Retry",
+      "abstract": "Large language model (LLM) agents have shown strong decision-making capabilities in long-horizon interactive tasks, yet they still struggle to effectively leverage failed trajectories: full retries incur high interaction costs, while experience retrieval tends to dilute critical experience signals. To address this, we propose PivoARL, a self-feedback retry framework for experience exploitation in LLM agents. PivoARL identifies the pivotal erroneous turn through structured reflection and performs local retry only from the corresponding pivotal state, thereby reusing the correct prefix and reducing redundant interactions. From an information-gain perspective, we further show that pivotal retry concentrates useful experience signals near the error boundary, mitigating the signal dilution caused by state-agnostic experience utilization. Based on this insight, we design a pivotal-aware credit assignment mechanism that rewards correct prefixes while isolating erroneous suffixes, and optimize reflection quality through implicit reflection returns. We conduct a systematic evaluation on 4 agent tasks and 7 search-based QA benchmarks. Results show that PivoARL achieves significant improvements on Pass@2/3 across all tasks, with an average gain of about 11.5\\% over MetaRL. Moreover, benefiting from contrastive preference signals induced by pivotal turns, PivoARL also consistently improves Pass@1 on over 80\\% of the tasks. On Minesweeper environment, PivoARL improves over GiGPO by more than 45\\% and reduces interaction turns by about 42\\% on average compared with full-retry methods. Code is available at https://github.com/yuki-younai/PivoARL.",
+      "authors": [
+        "Weiyang Guo",
+        "Zesheng Shi",
+        "Longhui Zhang",
+        "Zeen Zhu",
+        "Min Zhang",
+        "Jing Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-04T04:45:05+00:00",
+      "link": "https://arxiv.org/pdf/2607.03702v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Proposes PivoARL, a self-feedback retry framework for RL in LLM agents, applicable to healthcare agent evaluation",
+      "llm_evidence_cn": "提出PivoARL，一种用于LLM代理的自反馈重试框架，可应用于医疗代理评估",
+      "llm_evidence": "提出PivoARL，一种用于LLM代理的自反馈重试框架，可应用于医疗代理评估",
+      "canonical_evidence": "提出PivoARL，一种用于LLM代理的自反馈重试框架，可应用于医疗代理评估",
+      "llm_tldr_en": "PivoARL improves LLM agent learning from failures by retrying only from pivotal erroneous turns, reducing interaction costs.",
+      "llm_tldr_cn": "本文针对LLM代理在长程交互任务中难以有效利用失败轨迹的问题，提出了PivoARL框架。该方法通过结构化反思识别关键错误回合，并仅从该状态进行局部重试，从而重用正确前缀并减少冗余交互。实验表明，该方法能有效集中经验信号，提升学习效率。",
+      "llm_tldr": "本文针对LLM代理在长程交互任务中难以有效利用失败轨迹的问题，提出了PivoARL框架。该方法通过结构化反思识别关键错误回合，并仅从该状态进行局部重试，从而重用正确前缀并减少冗余交互。实验表明，该方法能有效集中经验信号，提升学习效率。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.04419v1",
+      "source": "arxiv",
+      "title": "Agent Step Value: State-Transition Measurement with State-Grounded LLM Evaluators",
+      "abstract": "Most agent evaluations collapse a multi-step trace into a final answer, a success flag, or a trajectory-level score. These aggregates obscure the diagnostic question developers need most: which action changed the state in a useful direction? We introduce Agent Step Value (ASV), a state-transition measurement framework that scores each observed action by the change it induces in a state-grounded evaluator's distribution over fixed candidate outcomes. ASV renders redacted before/after state projections, uses a stateless LLM evaluator to assign candidate log scores, and reports both gold-free belief diagnostics and offline oracle validation metrics. A label-free rationale pass separates evaluator deliberation from one-token option scoring, preserving candidate likelihoods while exposing leakage and floor-score events. On 100 reviewed open-QA evidence-seeking tasks with live PubMed retrieval, a partially live DeepSeek actor, and DeepSeek log-probability scoring, ASV evaluates 1,100 steps and 2,200 states. Under the fixed-layout rationale-conditioned protocol, mean gold-margin gain is -2.335 (trajectory-bootstrap 95\\% CI [-3.395, -1.272]), entropy movement is 0.000, and mean Bayesian surprise is 2.693. ASV therefore localizes constructive and destructive belief pivots that final-answer scores and entropy-only step metrics miss. We release the standalone ASV Eval toolkit.",
+      "authors": [
+        "Andrew Zhang",
+        "Chengzhan Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-05T17:27:56+00:00",
+      "link": "https://arxiv.org/pdf/2607.04419v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "General agent step-wise evaluation method",
+      "llm_evidence_cn": "通用的智能体逐步骤评估方法",
+      "llm_evidence": "通用的智能体逐步骤评估方法",
+      "canonical_evidence": "通用的智能体逐步骤评估方法",
+      "llm_tldr_en": "Agent Step Value (ASV) framework scores each action by state-transition change, enabling diagnostic evaluation beyond final answer flags.",
+      "llm_tldr_cn": "现有智能体评估仅关注最终结果，难以诊断中间动作的好坏。本文提出ASV框架，基于状态转换的分布变化对每个动作评分，使用无状态LLM评估器。实验表明ASV能区分动作质量，提供免费的信念诊断和离线验证指标。该方法可迁移至医疗智能体评估，用于细粒度分析智能体在EHR环境中的行为。",
+      "llm_tldr": "现有智能体评估仅关注最终结果，难以诊断中间动作的好坏。本文提出ASV框架，基于状态转换的分布变化对每个动作评分，使用无状态LLM评估器。实验表明ASV能区分动作质量，提供免费的信念诊断和离线验证指标。该方法可迁移至医疗智能体评估，用于细粒度分析智能体在EHR环境中的行为。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.05174v1",
+      "source": "arxiv",
+      "title": "AgentGym2: Benchmarking Large Language Model Agents in De-Idealized Real-World Environments",
+      "abstract": "Language agents, i.e., LLM agents, progress rapidly and are increasingly deployed in production environments. This trend underscores the urgent need for rigorous and realistic evaluations. However, most existing benchmarks evaluate agents in simplified, idealized settings. They typically rely on pre-packaged tool interfaces, overlook critical steps, and assume inputs are clean and fully specified. Consequently, they understate the difficulty of real deployments, where uncertainty and noise are ubiquitous and agents must proactively explore the environment to uncover new tools. To bridge this gap, we present AgentGym2, a new evaluation framework with task instances grounded in real-world end-to-end working demands. Beyond reasoning and planning, it measures agents' ability to execute end-to-end procedures, discover tools via exploration, compose tools for unseen tasks, and remain robust to noisy and underspecified information. Experiments on 15 proprietary and open-source models show that even SOTA systems like Gemini and GPT-5 struggle on AgentGym2, revealing a substantial gap between the capability of current agents and the demands of real-world applications.",
+      "authors": [
+        "Zhiheng Xi",
+        "Dingwen Yang",
+        "Jiaqi Liu",
+        "Jixuan Huang",
+        "Honglin Guo",
+        "Baodai Huang",
+        "Tinggang Chen",
+        "Qi Zhang",
+        "Zhonghang Lu",
+        "Chenyu Liu",
+        "Jiajun Sun",
+        "Jiazheng Zhang",
+        "Dingwei Zhu",
+        "Xin Guo",
+        "Junzhe Wang",
+        "Zhihao Zhang",
+        "Yuming Yang",
+        "Junjie Ye",
+        "Minghe Gao",
+        "Dongrui Liu",
+        "Jiaming Ji",
+        "Guohao Li",
+        "Tao Gui",
+        "Qi Zhang",
+        "Xuanjing Huang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-06T14:56:51+00:00",
+      "link": "https://arxiv.org/pdf/2607.05174v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "benchmarking large language model agents in real-world environments, directly relevant to benchmarking medical agents",
+      "llm_evidence_cn": "在真实世界环境中对大型语言模型代理进行基准测试，直接与医疗代理基准测试相关",
+      "llm_evidence": "在真实世界环境中对大型语言模型代理进行基准测试，直接与医疗代理基准测试相关",
+      "canonical_evidence": "在真实世界环境中对大型语言模型代理进行基准测试，直接与医疗代理基准测试相关",
+      "llm_tldr_en": "AgentGym2 presents a new evaluation framework for LLM agents with real-world task instances, addressing limitations of idealized benchmarks.",
+      "llm_tldr_cn": "现有代理基准测试大多在简化理想环境进行评估，忽略真实部署的不确定性和噪音。本文提出AgentGym2，基于真实端到端工作需求构建任务实例，要求代理主动探索环境。该方法为医疗代理在真实EHR环境中的评估提供了可迁移的基准框架。实验证明AgentGym2能更准确反映代理的实际能力。",
+      "llm_tldr": "现有代理基准测试大多在简化理想环境进行评估，忽略真实部署的不确定性和噪音。本文提出AgentGym2，基于真实端到端工作需求构建任务实例，要求代理主动探索环境。该方法为医疗代理在真实EHR环境中的评估提供了可迁移的基准框架。实验证明AgentGym2能更准确反映代理的实际能力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
