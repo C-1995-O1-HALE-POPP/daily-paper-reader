@@ -1,0 +1,520 @@
+Title: CLExEval: A Human-in-the-Loop Framework for Qualitative Evaluation of LLM Clinical Reasoning
+
+URL Source: https://arxiv.org/pdf/2606.31608v1
+
+Published Time: Wed, 01 Jul 2026 01:36:15 GMT
+
+Number of Pages: 21
+
+Markdown Content:
+# CLExEval : A Human-in-the-Loop Framework for Qualitative Evaluation of LLM Clinical Reasoning 
+
+Ajmal M. 1,2 Abin Roy 3,∗ Afthab Salam Kanniyan 3,∗ Jawadh Abdul Kabeer 3,∗ Jerin James 3,∗
+
+Preslav Nakov 1 Zhuohan Xie 11MBZUAI 2IIT Madras 3Calicut Medical College 
+
+ajmal.m@mbzuai.ac.ae zhuohan.xie@mbzuai.ac.ae 
+
+> ∗Equal contribution.
+
+ Project õ RARECASE-2000 § Code 
+
+Abstract 
+
+Large Language Models (LLMs) achieve strong results on many medical benchmarks, but their clinical reasoning remains difficult to evaluate reliably. A central risk is an evaluation illusion :fluent and well-structured explanations can ap-pear clinically convincing even when the final diagnosis is incorrect. We introduce CLExEval, a human-in-the-loop framework for evaluating LLM clinical reasoning under progressive in-formation masking. CLExEval combines 5,600 expert-physician annotations with 200 clinical reasoning traces derived from 40 rare diagnos-tic cases. Our analysis identifies three recur-ring failure patterns: (i) verbosity bias , where GPT-4o-mini’s diagnostic accuracy drops from 95.0% to 32.5% under information scarcity; (ii) a hidden knowledge paradox , where a spe-cialist model reaches 92.5% maximum diag-nostic potential but fails to retrieve that knowl-edge reliably in verbose contexts; and (iii) a 68.6% reasoning-to-output mismatch, where correct diagnoses appear in reasoning traces but are not reflected in final answers. We fur-ther evaluate the LLM-as-a-Judge paradigm on a human-verified failure set ( n = 142 ). GPT-4o-mini approved 47.9% of clinically incor-rect outputs, while HuatuoGPT-o1 approved all validly scored failures and showed a positive self-preference bias. These results suggest that standalone automated clinical evaluations can substantially overestimate clinical reliability without expert-grounded validation. 
+
+1 Introduction 
+
+Large Language Models (LLMs) have demonstrated broad capabilities across multiple tasks, including reasoning, generation, and domain-specific appli-cations (Zhao et al., 2023; Xie et al., 2023). These capabilities have accelerated interest in applying LLMs to clinical workflows, prompting a surge of benchmarks for evaluating medical reasoning, including interactive testing (Chiu et al., 2025), 
+
+Figure 1: Reasoning-to-output mismatch in a clinical case. A HuatuoGPT-o1-8B example where the reasoning trace contains pyloric-atresia cues, but the final answer commits to duodenal atresia. Automated judges assign full credit ( 1.00 ), whereas human experts score the diagnosis as incorrect ( 0.00 ). 
+
+structured reasoning tasks (Wang et al., 2024), and dynamic information seeking (Li et al., 2024). To scale evaluation, recent work increasingly adopts the LLM-as-a-Judge paradigm, relying on frontier models to automatically score clinical outputs (Qiu et al., 2025; Zhang et al., 2025). Despite this progress, current evaluation pipelines have an im-portant blind spot: the Evaluation Illusion (Agrawal et al., 2025), where automated judges can reward fluent and well-structured reasoning despite weak clinical validity. As illustrated in Figure 1, to simu-late the LLM-as-a-Judge paradigm, automated eval-uators were provided with the explicit ground-truth diagnosis alongside the model’s complete reason-ing trace. Because the reasoning appears confident and coherent, the automated judge assigns a perfect score to a clinically incorrect diagnosis, whereas 1
+
+> arXiv:2606.31608v1 [cs.CL] 30 Jun 2026
+
+the human expert identifies the diagnostic failure despite the fluent presentation. Beyond this issue, existing benchmarks primarily focus on final di-agnostic accuracy, but often do not explain why 
+
+reasoning fails, whether due to missing knowledge, unstable retrieval, or misaligned decision-making under information scarcity, which is inherent to real-world clinical practice. To address these limitations, we introduce CLEx-Eval , a human-in-the-loop evaluation framework for clinical reasoning under uncertainty. Built on the clinician-curated RARECASE-200 benchmark, CLExEval applies progressive information mask-ing (Levels 0–3) to simulate realistic diagnostic scenarios where clinicians must reason with incom-plete and evolving evidence. This design prevents models from relying on surface-level cues and en-ables controlled stress-testing of reasoning behavior. Combined with 5,600 expert annotations, CLExE-val provides a fine-grained lens to evaluate not only whether models fail, but how and why those failures occur. Using this framework, we show that com-mon evaluation practices can overestimate model capability. Automated judges frequently approve incorrect clinical reasoning in our consensus failure set, and many model failures arise not only from lack of knowledge, but also from misalignment between internal reasoning and final outputs, as well as sensitivity to context. Our contributions are as follows: (i) CLExE-val , a human-in-the-loop framework combining progressive information masking with expert an-notation to evaluate clinical reasoning under un-certainty; (ii) a formalization of the Evaluation Illusion , ∆ = Communication − Precision , and a Hallucination Approval Rate (HAR) evaluation of standalone LLM judges; and (iii) a mechanistic analysis using ROM, ISS, and MVR to separate knowledge deficits, reasoning-output misalignment, and context sensitivity, showing that models may contain relevant latent knowledge but fail to express it reliably under information scarcity. 
+
+2 Related Work 
+
+2.1 Evolution of Clinical Task Design 
+
+Static medical QA benchmarks such as MedQA (Jin et al., 2021), MedMCQA (Pal et al., 2022), MMLU clinical subsets (Hendrycks et al., 2021), Medica-tionQA (Abacha et al., 2019), and recent licensing-exam evaluations such as the Chinese NMLE study (Wang et al., 2026) test medical knowledge using information-complete inputs and fixed an-swer keys. These benchmarks are useful for stan-dardized comparison, but they primarily evalu-ate final-answer selection or retrieval rather than open-ended reasoning traces, evidence-grounded verification (Xie et al., 2025b), verifiable interme-diate steps (Xie et al., 2025a), diagnostic uncer-tainty, or failure modes under missing information. Chen et al. (2025) extend this paradigm through JAMA Clinical Challenge and Medbullets, adding expert-written explanations for challenging medical QA, but these tasks remain static evaluations of information-complete cases. Subsequent work moves toward clinical reason-ing and physician-grounded evaluation. Clinical studies have assessed LLMs on complex diag-nostic cases using physician judgment, including NEJM clinicopathological conference cases (Kan-jee et al., 2023) and R-IDEA comparisons with attending physicians and residents (Cabral et al., 2024). Other benchmarks probe uncertainty or inter-action through Script Concordance Testing (McCoy et al., 2025), causal laboratory-test scenarios (Bha-suran et al., 2026), dynamic viva voce examina-tions (Chiu et al., 2025), proactive information seeking (Li et al., 2024), diagnostic reasoning over clinical notes (Wang et al., 2024), EHR-derived questions (Zhang et al., 2025), clinician-generated EHR instructions (Fleming et al., 2024), virtual EHR agent tasks (Jiang et al., 2025), and sequen-tial clinical workflow evaluation (Rao et al., 2026). These works move beyond simple final-answer accu-racy, but they generally evaluate static cases, infor-mation accumulation, tool-use success, or overall reasoning quality rather than systematically mea-suring how the same case degrades as diagnostic evidence is progressively removed. Unlike prior frameworks, CLExEval pairs four-level progressive information masking with a 5,600-point expert audit, enabling within-case analysis of whether failures arise from missing knowledge, instability under information scarcity, or reasoning-to-output mismatch. 
+
+2.2 Evaluation and the Judge’s Illusion 
+
+Scalable evaluation through automated metrics or judge models carries its own risk: fluent, well-structured responses can be over-rewarded de-spite weak clinical validity, a pattern that Agrawal et al. (2025) term the evaluation illusion. Arora et al. (2025) demonstrate the value of physician-authored rubrics for open-ended healthcare evalua-2Work / Benchmark Task Type Information Setting Evaluation Signal Mechanistic Insight Evaluator                                                           
+
+> Static medical QA and exam-style benchmarks
+> MedQA (Jin et al., 2021) Medical exam MCQA Static / complete Final-answer accuracy None; answer-key scoring Automatic
+> MedMCQA (Pal et al., 2022) Multi-subject medical MCQA Static / complete Final-answer accuracy None; answer-key scoring Automatic
+> MMLU Clinical (Hendrycks et al., 2021) Broad medical knowledge QA Static / complete Final-answer accuracy None; answer-key scoring Automatic
+> Chen et al. (Chen et al., 2025) Challenging medical QA + explanations Static / complete MCQA accuracy + explanation metrics Explanation quality, limited degradation insight Automatic + limited human
+> Clinical reasoning, uncertainty, and physician-grounded evaluation
+> Kanjee et al. (Kanjee et al., 2023) NEJM diagnostic challenges Static / complete Differential diagnosis quality Final differential only Physicians
+> Cabral et al. (Cabral et al., 2024) Sequential clinical reasoning Information accumulation R-IDEA reasoning score Reasoning documentation quality Physicians
+> McCoy et al. (McCoy et al., 2025) Script Concordance Testing New information added Clinician-concordant Likert updates Probabilistic updating under uncertainty Expert panel
+> Bhasuran et al. (Bhasuran et al., 2026) Clinical causal reasoning Static / complete Final answer + reasoning quality Causal reasoning level Medical experts
+> EHR, agentic, and automated evaluation frameworks
+> MEDALIGN (Fleming et al., 2024) EHR instruction following Static EHR context Clinical correctness / preference Output quality, not reasoning collapse Clinicians
+> MedAgentBench (Jiang et al., 2025) EHR agent tasks Interactive tool use Final API/action success Tool-use success, not reasoning trace Rule-based
+> MedR-Bench (Qiu et al., 2025) Clinical workflow reasoning Stage-wise interactive Efficiency, factuality, completeness Reasoning-step quality Agentic evaluator
+> HealthBench (Arora et al., 2025) Open-ended health conversations Static / multi-turn Physician-authored rubrics Clinically meaningful response quality Rubric-based
+> CARDBiomedBench
+> (Bianchi et al., 2026) Biomedical research QA Static / complete RQR + abstention safety Safety–accuracy trade-off Automated judge
+> CLExEval (Ours) Rare diagnostic reasoning traces Progressive information masking 7D expert rubric + judge audit ROM, ISS, MVR, HAR, degradation ∆
+> Human panel, 5,600 annotations
+
+Table 1: Positioning of CLExEval. Unlike prior clinical LLM benchmarks, CLExEval combines progressive information masking with expert annotation to localize reasoning degradation, reasoning-to-output mismatch, and judge approval of clinically incorrect outputs. 
+
+tion, while related work has documented knowledge– reasoning dissociation in clinical NLI (Jullien et al., 2025), substantial variability in LLM-judge agree-ment across NLP tasks (Bavaresco et al., 2025), and misalignment between medical safety judges and human annotations on complex safety dimen-sions (Diekmann et al., 2025). Many recent frameworks still rely on automated metrics or judge models to scale evaluation, includ-ing MedR-Bench (Qiu et al., 2025), LLMEval-Med (Zhang et al., 2025), and CARDBiomed-Bench (Bianchi et al., 2026). Such judgments can correlate poorly with clinical validity and mask flawed reasoning behaviors (Sim and Chen, 2025; Bedi et al., 2025); MedR-Bench, for instance, shows that performance collapses when critical reasoning steps are omitted (Qiu et al., 2025). Studies on pat-tern disruption (Bedi et al., 2025) and knowledge conflict (Wu et al., 2025) further demonstrate that models degrade when they cannot rely on surface-level cues. Together, these limitations motivate CLExEval: an expert-grounded framework that stress-tests progressive masking, expert scoring, and judge-failure analysis on the same matched diagnostic cases. 
+
+3 Methodology 
+
+We introduce CLExEval, a human-in-the-loop eval-uation framework designed to assess clinical rea-soning under information scarcity. Our approach combines progressive information masking with expert annotation to evaluate not only final diagnos-tic accuracy, but also the mechanisms underlying reasoning failures. An overview of the pipeline is shown in Figure 2. 
+
+3.1 Dataset 
+
+We initially curate 500 diagnostically rare clinical narratives from the MultiCaRe dataset (Nievas Offi-dani and Delrieux, 2023) to construct RARECASE-2000, a resource of 2,000 progressively masked cases. For the present deep mechanistic audit, we use 40 cases selected by four clinicians for complex-ity and suitability for reasoning evaluation. Each case is standardized into a structured format con-taining key findings, diagnostic progression, and outcomes. Rather than serving as a broad model leaderboard, CLExEval is designed as a depth-oriented mechanistic audit: the 40 source cases are expanded through progressive masking into 200 matched evaluation instances and 5,600 expert scores, enabling within-case analysis of reasoning 3Figure 2: Overview of the CLExEval pipeline, including case curation, progressive information masking, model evaluation, and expert assessment. 
+
+degradation. Further details on data curation and demographics are provided in Appendix A. 
+
+3.2 Progressive Information Masking 
+
+We apply progressive information masking to simu-late diagnostic uncertainty through clinician-guided abstraction rather than random deletion. For each case, clinicians identified the gold diagnosis and ranked the clinical cues most important for support-ing that diagnosis or excluding major differentials. Each case was then converted into five matched ver-sions: ❶ Full Case, the complete original narrative; 
+
+❷ Level 0, with only the explicit diagnosis name removed; ❸ Level 1, with the strongest diagnosis-supporting clue removed; ❹ Level 2, with the two strongest cues removed or abstracted; and ❺ Level 3, the most abstract version, where major diagnostic cues such as demographics, temporal details, or disease-specific findings were removed or gener-alized when clinically relevant. Across all levels, clinicians preserved grammatical coherence and the broad clinical scenario, yielding 200 matched eval-uation instances (40 cases × 5 levels) for controlled analysis of reasoning under varying information availability. 
+
+3.3 Model Evaluation 
+
+We evaluate all models using a unified prompting setup that requires structured reasoning outputs consisting of a Thinking section followed by a Fi-nal Response . This design ensures comparability across models in terms of reasoning steps and final predictions. We generate all outputs determinis-tically and anonymize them prior to evaluation. Prompting details are provided in Appendix B. 
+
+3.4 Human Evaluation and CLExEval Rubric 
+
+We introduce and develop the seven-dimensional CLExEval rubric as part of this work. We devel-oped the rubric through iterative review of clinical literature, pilot annotation, and feedback from se-nior clinicians to separate surface fluency from clinical validity. The final rubric assesses Diag-nostic Precision, Differential Reasoning Quality, Evidence Integration/Grounding, Diagnostic Justifi-cation Depth, Completeness vs. Overload, Clinical Plausibility/Soundness, and Communication/Inter-pretability. Annotators score each dimension on a five-point ordinal scale (0.00, 0.25, 0.50, 0.75, 1.00), allowing them to distinguish clinically incor-rect outputs, partially grounded reasoning, and fully clinically valid responses. Full scoring definitions and calibration details are provided in Appendix C. 
+
+3.5 Reasoning Metrics 
+
+To analyze reasoning behavior, we use three core metrics: Information Scarcity Sensitivity (ISS), Monotonicity Violation Rate (MVR), and Reasoning-to-Output Mismatch (ROM). ISS mea-sures how much diagnostic accuracy drops as clin-ical information is progressively removed; higher ISS indicates greater sensitivity to information scarcity. MVR captures non-monotonic instabil-ity, i.e., cases where performance improves after information is removed; higher MVR indicates less stable reasoning. ROM identifies failures where the correct diagnosis appears in the model’s reasoning trace but is omitted or changed in the final answer; higher ROM indicates greater reasoning-to-output misalignment. We also report Max Diagnostic Ac-curacy (MDA), the best accuracy achieved across masking levels, as an estimate of latent diagnostic 40.0 0.2 0.4 0.6 0.8 1.0 
+
+> Diagnostic Precision (Expert Score)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Communication Quality (Expert Score)
+> Evaluation Illusion Zone
+> High Fluency / Low Precision
+> Evaluation Illusion: Fluency vs Correctness
+> HuatuoGPT
+> GPT-4o-mini
+> Perfect Alignment
+> GPT-4o-mini
+> (DP=0.71, Comm=0.94)
+> HuatuoGPT
+> (DP=0.65, Comm=0.78)
+
+Figure 3: The evaluation illusion. Comparison of communication quality vs. diagnostic precision. The clustering in the top-left quadrant (the “Illusion Zone”) highlights cases where models are highly fluent ( > 0.8)but diagnostically wrong ( < 0.5). 
+
+potential. We use several qualitative terms to interpret these metrics. The Hidden Knowledge Paradox 
+
+refers to cases where a model appears to possess the correct diagnosis but fails to use it reliably in the final answer. Attention Dispersion describes cases where additional context distracts the model across competing cues, reducing diagnostic focus. A Crossover Event occurs when the relative per-formance of two models reverses at a particular masking level. Formal definitions are provided in Appendix D. 
+
+4 Results and Analysis 
+
+4.1 The Evaluation Illusion 
+
+As visualized in Figure 3, Diagnostic Precision 
+
+drops sharply at Level 3 (0.453), whereas GPT-4o-mini’s Communication score remains high (0.881). We formalize this disconnect as the Illusion Gap (∆ = Communication − Diagnostic Precision ), which identifies cases where fluent presentation coexists with weak diagnostic validity. The cor-relation between Communication and Diagnostic Precision is modest ( ρ = 0 .482 ), suggesting that linguistic quality is an unreliable proxy for medical correctness. This pattern is consistent with a fluency bias in general-purpose instruction-following models. When clinical information is sparse, GPT-4o-mini often continues to produce confident, well-structured rationales even when the underlying di-                    
+
+> Judge Model Failures Approvals HAR (%) Verdict HuatuoGPT-o1-8B 138 138 100.0% Approves all
+> Llama-3.1-8B-Instruct 142 126 88.7% Very high HAR
+> DeepSeek-R1-Distill-8B 141 80 56.7% High HAR
+> GPT-4o-mini 142 68 47.9% Moderate HAR
+
+Table 2: Hallucination approval rate. Higher HAR indicates that an automated judge more often assigns passing scores to human-verified clinical failures. 
+
+agnostic inference is incorrect. Such outputs can be difficult for automated judges to penalize, because the same surface features that improve readability can also obscure clinical errors. This motivates expert-grounded evaluation rather than relying on surface fluency or standalone automated judges. 
+
+4.2 Limitations of Automated Judges 
+
+The evaluation illusion also affects automated eval-uation. To test this, we constructed a consensus failure set from human expert annotations and mea-sured whether LLM judges would incorrectly ap-prove known clinical failures. 
+
+4.2.1 The Consensus Failure Set 
+
+We constructed the consensus failure set from ex-pert annotations to serve as a ground-truth negative set. Specifically, we isolated and aggregated evalu-ation instances across all dimensions and masking levels where human experts assigned a low score (Human Score ≤ 0.25 ), resulting in n = 142 
+
+unique consensus failures. We then evaluated these outputs with four LLM judges (GPT-4o-mini, HuatuoGPT-o1-8B, DeepSeek-R1-Distill-Llama-8B, and Llama-3.1-8B-Instruct). Due to formatting failures and invalid judge responses, HuatuoGPT-o1 and DeepSeek-R1 produced valid scores for 138 and 141 cases, respectively. Each judge was prompted with the full clinical case, the exact CLExEval rubric, the complete model output, and the gold-standard diagnosis. We define the Hallucination Approval Rate (HAR) as the percentage of these known failures that receive a passing judge score (Judge Score ≥ 0.75 ) despite the judge having access to the gold-standard diagnosis. 
+
+4.2.2 Hallucination Approval Rate 
+
+Our analysis shows that automated judges frequently assign passing scores to human-verified failures. Contrary to the hypothesis that domain-specific models would act as stricter evaluators, the special-ized medical model had the highest HAR in this setting (Table 2). 5These results indicate that automated judges are not reliable enough to serve as standalone arbiters in clinical evaluation settings. Even the judge with the lowest HAR in our experiment (GPT-4o-mini) approves nearly half of the consensus failures, suggesting that LLM-based evaluation should be paired with expert human validation. Detailed analysis is provided in Appendix E. 
+
+4.3 Supporting Human Evaluation 
+
+To validate clinical correctness beyond automated metrics, we conducted expert evaluation of 5,600 scores across 40 cases and 5 masking levels. An-notations show high inter-rater reliability (ICC = 0.802), indicating consistent expert judgment. 
+
+4.3.1 Performance Disparity 
+
+The generalist GPT-4o-mini significantly outper-formed the biomedically fine-tuned HuatuoGPT across all dimensions (Table 3). GPT-4o-mini achieved a mean overall score of 0.867 ( ±0.20) vs. HuatuoGPT’s 0.699 ( ±0.25) ( U =5,472,088, 
+
+p < 0.001 , d = 0 .98 ). The largest disparity oc-curred in Differential Reasoning (d = 1 .53 ), where HuatuoGPT (0.552) often fixated on single incor-rect diagnoses early in reasoning chains. This disparity reflects a Hidden Knowledge Para-dox coupled with Attention Dispersion : when con-fronted with verbose, full-context clinical narra-tives, the specialist model appears to be distracted by competing cues and fails to retrieve alternative diagnoses, despite reaching high maximum diagnos-tic potential elsewhere. Conversely, GPT-4o-mini’s advantage in dimensions such as Justification Depth 
+
+and Communication is partly attributable to instruc-tion tuning for fluent and structured explanations. The generalist model maintains a high baseline of structural coherence, generating comprehensive dif-ferential lists and plausible rationales even when the underlying clinical deduction is flawed. This cre-ates a Generalist’s Illusion , where strong formatting and articulation can inflate perceived clinical capa-bility. Detailed dimensional profiles are provided in Appendix F. 
+
+4.3.2 The Reasoning Gap 
+
+We identified a strong positive correlation between 
+
+Justification Depth and Diagnostic Precision (Spear-man ρ = 0 .692 ), confirming that diagnostic suc-cess is tightly coupled with causal explanation depth. Notably, as visualized in Figure 4, GPT-4o-mini’s Justification Depth never dropped below 0.0 0.2 0.4 0.6 0.8 1.0         
+
+> Justification Depth (Expert Score)
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Diagnostic Precision (Expert Score)  Spearman Correlations:
+> GPT-4o-mini: r=0.793
+> HuatuoGPT :r=0.675
+> The Reasoning Gap by Model:
+> Justification Depth vs Diagnostic Precision
+> GPT-4o-mini Data
+> HuatuoGPT-o1 Data
+
+Figure 4: The reasoning gap. Scatter plot of Justifica-tion Depth vs. Diagnostic Precision. Note the “Floor Effect” (blue points) where GPT-4o-mini maintains high justification scores ( > 0.5) even when the diagnosis is incorrect, whereas HuatuoGPT (red points) correctly reflects its ignorance with low scores. 
+
+0.50, whereas HuatuoGPT frequently scored 0.25 (Irrelevant). This divergence highlights a difference in how generalist and specialist models handle uncertainty. GPT-4o-mini’s conversational instruction tuning encourages structurally complete and articulate rationales, even when the diagnostic conclusion is incorrect. This creates a “Floor Effect,” where plausible explanations can mask clinical failures. In contrast, HuatuoGPT is less likely to inflate its reasoning traces with generic clinical language; when it fails to retrieve the correct diagnosis, its reasoning structure more visibly degrades. The generalist model’s tendency to synthesize coherent but shallow justifications therefore contributes to the Evaluation Illusion , making some errors harder to detect from surface presentation alone. 
+
+4.4 Degradation & Paradoxes 
+
+To quantify the mechanisms behind the expert find-ings, we tracked performance stability across all 200 evaluation instances. Table 4 summarizes the stability profiles for both models. We identified a strong dependency on explicit clinical descrip-tors. GPT-4o-mini demonstrated a verbosity bias, with accuracy decreasing from 95.0% in the Nar-rative setting to 32.5% at Level 3, corresponding to a 62.5 percentage-point Information Scarcity Sensitivity (ISS). A two-way ANOVA interaction analysis showed that GPT-4o-mini is more sensi-tive to information loss (partial η2 = 0 .35 ) than HuatuoGPT (partial η2 = 0 .24 ). This suggests that some diagnostic success depends on explicit 6Dimension GPT-mini Huatuo Effect ( d)Overall Score 0.867 0.699 0.98                                      
+
+> Diag. Precision 0.713 0.654 0.18 Diff. Reasoning 0.876 0.552 1.53
+> Evidence Integ. 0.888 0.725 0.87 Justific. Depth 0.874 0.719 0.81 Communication 0.938 0.777 0.90
+> Table 3: Expert evaluation results. Higher scores are better for all dimensions; shaded cells highlight the best-performing model and strongest observed scores.
+> Metric GPT-mini Huatuo
+> Narrative Acc. 95.0% 77.5% Level 3 Acc. 32.5% 22.5%
+> Critical Instability Metrics
+> ISS 62.5 pp ↓55.0 pp ↓
+> Stability (MSS) 2.55/5 2.15/5
+> Random (MVR) 27.5% 25.0%
+> Hallucination 24.2% 24.2%
+> Max Pot. (MDA) 95.0% 92.5%
+> Table 4: Stability and reasoning gap analysis. Higher is better for accuracy, MSS, and MDA; lower is better for ISS, MVR, and hallucination. Shading highlights metric direction: better values in blue/teal and worse instability values in red/orange.
+
+descriptive cues rather than robust causal reasoning. Conversely, HuatuoGPT exhibited a retrieval fail-ure pattern. While its Narrative accuracy was lower (77.5%), its Max Diagnostic Potential (MDA) was 92.5%. This reveals a Hidden Knowledge Para-dox: the open-source model can reach the correct diagnosis for most cases, but does not retrieve or express it reliably in full, noisy narratives. At Level 2 (Partial Information), a crossover event occurred where GPT-4o-mini’s performance fell below the open-source baseline. This suggests that under higher uncertainty, the specialist model’s domain prior can provide relative stabilization. We quanti-fied stability using the Monotonicity Violation Rate (MVR). We found that 27.5% of GPT-4o-mini’s correct answers at Level 3 were non-monotonic recoveries, where the model failed with more in-formation but succeeded with less . This indicates Attention Dispersion, where verbose context may distract the model from retrieving knowledge it can otherwise express (reasoning fingerprints are visualized in Appendix G). Despite architectural differences, both models ex-hibited identical hallucination rates (24.2%) when stability failed, fabricating specific disease entities to fit the reduced context. The accuracy degrada-tion patterns and paradoxes observed above raise a critical question: Do models fail because they lack knowledge, or because they possess knowledge but fail to commit to it? To distinguish between these failure modes, we conducted a systematic Reasoning-to-Output Mismatch (ROM) analysis, examining whether the correct diagnosis appeared in the model’s internal reasoning trace despite being absent from the final output. 
+
+4.5 Reasoning-to-Output Mismatch Analysis 
+
+To investigate the divergence between internal la-tent knowledge and external diagnostic output, we implemented the Reasoning-to-Output Mismatch (ROM) protocol defined. For every diagnostic fail-ure across all 200 evaluation instances (40 cases ×
+
+5 masking levels), we programmatically analyzed the model’s Thinking trace to determine whether the correct gold standard diagnosis was considered and subsequently discarded. 
+
+Overall ROM Findings Table 5 summarizes the ROM analysis results for both models across all failure instances. GPT-4o-mini exhibited a ROM of 68.6% across 86 diagnostic failures, indicating that over two-thirds of its errors involved decision-making uncertainty rather than a complete absence of the correct diagnosis from the reasoning trace. In contrast, HuatuoGPT’s ROM of 44.0% across 100 failures suggests that its diagnostic errors were more evenly distributed between knowledge gaps (56%) and reasoning-output misalignment (44%). This 24.6 percentage-point ROM gap indicates different failure profiles: GPT-4o-mini more often considers the correct diagnosis but does not commit to it, while HuatuoGPT’s failures more often lack the correct diagnosis in the reasoning trace. 
+
+GPT-4o-mini’s U-Shaped ROM Curve: GPT-4o-mini’s ROM exhibited a non-monotonic U-shaped pattern, peaking at the Narrative level (100%) and dropping sharply to its lowest point at Level 1 (53.3%), representing the highest rate of failures where the correct diagnosis was absent from the reasoning trace. This suggests the model ex-7Model Failures Overall ROM Narrative Level 0 Level 1 Level 2 Level 3 GPT-4o-mini 86 68.6% 100.0% 85.7% 53.3% 71.4% 63.0% HuatuoGPT 100 44.0% 77.8% 43.8% 42.9% 47.8% 32.3%          
+
+> Differential ( ∆)–+24.6 pp +22.2 pp +41.9 pp +10.4 pp +23.6 pp +30.7 pp
+> Table 5: Reasoning-to-output mismatch (ROM) analysis. Blue highlighting indicates the high overall ROM in GPT-4o-mini. Teal values indicate that the correct diagnosis appears in the reasoning trace for all failures at that level. The Level 1 drop marks the lowest ROM for the generalist model.
+
+periences a sharp loss of diagnostic anchors when initial clinical cues are removed, then partially adapts under sustained information constraints. 
+
+HuatuoGPT’s Progressive Degradation: In contrast, HuatuoGPT showed a general downward trend, dropping to 32.3% at Level 3. This indicates that its failures are driven by progressive knowledge degradation rather than decision-making hesitation; as information is removed, the model’s ability to retrieve the correct diagnosis from its latent knowl-edge base deteriorates proportionally (trajectory visualized in Appendix F.) 
+
+ROM and the Hidden Knowledge Paradox The ROM analysis helps explain the Hidden Knowledge Paradox observed in Section 4.4. HuatuoGPT’s high Max Diagnostic Potential (MDA: 92.5%) but lower Narrative accuracy is clarified by its moderate ROM: the model can reach the correct diagnosis under some masking conditions, but fails to access it reliably in full, verbose narratives. Conversely, GPT-4o-mini’s perfect Narrative ROM (100%) in-dicates that the correct diagnosis appears in its reasoning trace for all Narrative-level failures, but is not consistently reflected in the final answer. 
+
+5 Discussion 
+
+Our findings provide evidence for the “Evaluation Illusion” (Agrawal et al., 2025): models can main-tain surface fluency across masking levels even as diagnostic validity degrades under information scarcity. 
+
+Implications for Benchmarking Our results complement information-complete benchmarks such as MedQA (Jin et al., 2021). HuatuoGPT’s high Max Diagnostic Potential (MDA: 92.5%) sug-gests that one bottleneck is contextual reasoning stability under uncertainty, not only static medi-cal knowledge. Additionally, GPT-4o-mini’s high Monotonicity Violation Rate (27.5%) indicates that diagnostic performance can depend on surface cues and context presentation. Benchmarks should there-fore evaluate models under information scarcity to distinguish stable clinical reasoning from pattern association. 
+
+Implications for Model Development The ROM analysis suggests that different model families may require different interventions. For GPT-4o-mini, a high ROM (68.6%) indicates that the correct diagnosis often appears in the reasoning trace but is not selected in the final answer, suggesting a need for better confidence calibration and reasoning-to-answer alignment. Conversely, HuatuoGPT’s lower ROM (44.0%) indicates that 56% of its failures lack the correct diagnosis in the reasoning trace, suggesting that retrieval-augmented generation or expanded rare-disease training data may be more relevant. 
+
+Limits of Standalone LLM-as-a-Judge Evalua-tion Our consensus-failure analysis shows that relying on automated evaluators as standalone ar-biters in clinical medical NLP can be misleading. The generalist judge (GPT-4o-mini) demonstrated a 47.9% Hallucination Approval Rate (HAR), in-dicating that it can assign passing scores to fluent but clinically incorrect reasoning. The specialized judge (HuatuoGPT-o1) exhibited a 100% HAR alongside a positive self-preference bias (+0.096), suggesting that domain-specific judge models may also validate medical-sounding text over clinical correctness. Consequently, evaluations that rely only on automated judges may overestimate clinical utility due to fluency bias, reinforcing the need for human-in-the-loop expert validation. 
+
+6 Conclusions and Future Work 
+
+We introduced CLExEval, a human-in-the-loop framework for evaluating LLM clinical reasoning under progressive information masking. Across 5,600 expert annotations, CLExEval shows that flu-ent clinical explanations can remain persuasive even when diagnostic precision degrades, creating an 8evaluation illusion for both readers and automated judges. Our mechanistic analysis separates three failure modes: sensitivity to information scarcity, hidden knowledge that is not reliably retrieved or expressed, and reasoning-to-output mismatch. On a human-verified consensus failure set, standalone LLM judges approved a substantial fraction of clin-ically incorrect outputs, with HAR reaching 100% for one judge under validly scored cases. These findings support the use of expert-grounded vali-dation when evaluating clinical reasoning systems, especially in settings where surface fluency can obscure diagnostic correctness. Future work should test whether intervention-optimized reasoning methods reduce the failures ex-posed by CLExEval, including deliberative search via Tree of Thoughts (Yao et al., 2023), self-reflection for hallucination mitigation (Ji et al., 2023), and symbolic verification through Symbolic Chain-of-Thought (Xu et al., 2024). Because these methods generate longer or multi-branch reason-ing traces, evaluating them would require a new expert-annotation cycle over thousands of addi-tional outputs. Future research should also focus on developing reliable, clinically grounded automated metrics that correlate with expert human baselines, implementing architecture-specific interventions, and expanding this uncertainty-based framework to other high-stakes domains. 
+
+Limitations 
+
+While our evaluation framework provides fine-grained evidence through 5,600 expert assessments, this depth required a trade-off with scale. Generat-ing this dataset and annotation required an estimated 1,000 hours of cognitive labor across a four-member medically trained panel, consisting of two licensed physicians and two senior clinical interns with 4.5 years of medical education; the inclusion of senior interns rather than only licensed clinicians is an important limitation. This labor-intensive process limited our scope to two models and 40 source clinical narratives, expanded through progressive masking into 200 annotated case instances; repli-cating this pipeline for every new frontier model re-mains highly resource-intensive. CLExEval should therefore be viewed as a depth-oriented mechanistic evaluation rather than a broad model leaderboard. Furthermore, our deliberate selection of diagnos-tically rare, multisystem cases stress-tests causal reasoning but may not reflect model performance on routine, unambiguous clinical scenarios. Fi-nally, while the progressive masking methodology and CLExEval rubric are conceptually generaliz-able to other domains requiring reasoning under uncertainty (e.g., law, intelligence analysis), our empirical validation remains confined to clinical medicine, motivating future research into reliable, scalable automated metrics that correlate with our human baselines. 
+
+Ethical Statement and Broad Impact 
+
+Data License We will release the RARECASE-2000 benchmark and study artifacts via GitHub, including the 2,000 progressively masked clinical case variants, CLExEval rubric, and the model out-puts, reasoning traces, and 5,600 expert annotations used in our main evaluation. The source narratives are derived from the MultiCaRe dataset (Nievas Of-fidani and Delrieux, 2023), which is distributed under a Creative Commons Zero (CC0 1.0) license. We release our curated and annotated artifacts under a CC-BY 4.0 license to support reuse, redistribution, and replication. 
+
+References     
+
+> Asma Ben Abacha, Yassine Mrabet, Mark Sharp, Travis R Goodwin, Sonya E Shooshan, and Dina Demner-Fushman. 2019. Bridging the gap between consumers’ medication questions and trusted answers.
+> MedInfo , 264:25–29. Monica Agrawal, Irene Y. Chen, Freya Gulamali, and Shalmali Joshi. 2025. The evaluation illusion of large language models in medicine. npj Digital Medicine ,8(1):600. Rahul K. Arora, Jason Wei, Rebecca Soskin Hicks, Pre-ston Bowman, Joaquin Quiñonero-Candela, Foivos Tsimpourlas, Michael Sharman, Meghan Shah, An-drea Vallone, Alex Beutel, Johannes Heidecke, and Karan Singhal. 2025. HealthBench: Evaluating large language models towards improved human health.
+> Preprint , arXiv:2505.08775. Anna Bavaresco, Raffaella Bernardi, Leonardo Berto-lazzi, Desmond Elliott, Raquel Fernández, Albert Gatt, Esam Ghaleb, Mario Giulianelli, Michael Hanna, Alexander Koller, et al. 2025. LLMs instead of human judges? a large scale empirical study across 20 NLP evaluation tasks. In Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers) , pages 238– 255, Vienna, Austria. Association for Computational Linguistics. Suhana Bedi, Yixing Jiang, Philip Chung, Sanmi Koyejo, and Nigam Shah. 2025. Fidelity of medical reasoning
+
+9in large language models. JAMA Network Open ,8(8):e2526021. Balu Bhasuran, Mattia Prosperi, Karim Hanna, John Petrilli, Caretia JeLayne Washington, and Zhe He. 2026. Evaluation of causal reasoning for large lan-guage models in contextualized clinical scenarios of laboratory test interpretation. npj Digital Medicine .Owen Bianchi, Maya Willey, Chelsea X Alvarado, Ben-jamin Danek, Marzieh Khani, Nicole Kuznetsov, Anant Dadu, Syed Shah, Mathew J Koretsky, Mary B Makarious, et al. 2026. CARDBiomedBench: abenchmark for evaluating the performance of large language models in biomedical research. The Lancet Digital Health , 8(1):100943. Stephanie Cabral, Daniel Restrepo, Zahir Kanjee, Philip Wilson, Byron Crowe, Raja-Elie Abdulnour, and Adam Rodman. 2024. Clinical reasoning of a gen-erative artificial intelligence model compared with physicians. JAMA Internal Medicine , 184(5):581– 583. Hanjie Chen, Zhouxiang Fang, Yash Singla, and Mark Dredze. 2025. Benchmarking large language models on answering and explaining challenging medical questions. In Proceedings of the 2025 Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers) , pages 3563– 3599, Albuquerque, New Mexico. Association for Computational Linguistics. Christopher Chiu, Silviu Pitis, and Mihaela van der Schaar. 2025. Simulating viva voce examinations to evaluate clinical reasoning in large language mod-els. In Advances in Neural Information Processing Systems , volume 38. NeurIPS 2025. Jacob Cohen. 1960. A coefficient of agreement for nominal scales. Educational and Psychological Mea-surement , 20(1):37–46. Yella Diekmann, Chase Fensore, Rodrigo Carrillo-Larco, Eduard Castejon Rosales, Sakshi Shiromani, Rima Pai, Megha Shah, and Joyce Ho. 2025. LLMs as med-ical safety judges: Evaluating alignment with human annotation in patient-facing QA. In Proceedings of the 24th Workshop on Biomedical Language Process-ing , pages 217–224, Vienna, Austria. Association for Computational Linguistics. Andy Field. 2024. Discovering Statistics Using IBM SPSS Statistics . Sage publications limited. Scott L Fleming, Alejandro Lozano, William JHaberkorn, Jenelle A Jindal, Eduardo Reis, Rahul Thapa, Louis Blankemeier, Julian Z Genkins, Ethan Steinberg, Ashwin Nayak, et al. 2024. MedAlign: A clinician-generated dataset for instruction following with electronic medical records. In Proceedings of the AAAI Conference on Artificial Intelligence , vol-ume 38, pages 22021–22030, Vancouver, Canada. AAAI Press. Dan Hendrycks, Collin Burns, Steven Basart, Andy Zou, Mantas Mazeika, Dawn Song, and Jacob Steinhardt. 2021. Measuring massive multitask language under-standing. In International Conference on Learning Representations , Virtual Event. Ziwei Ji, Tiezheng Yu, Yan Xu, Nayeon Lee, Etsuko Ishii, and Pascale Fung. 2023. Towards mitigating LLM hallucination via self reflection. In Findings of the Association for Computational Linguistics: EMNLP 2023 , pages 1827–1843, Singapore. Association for Computational Linguistics. Yixing Jiang, Kameron C. Black, Gloria Geng, Danny Park, James Zou, Andrew Y. Ng, and Jonathan H. Chen. 2025. MedAgentBench: A virtual EHR envi-ronment to benchmark medical LLM agents. NEJM AI , 2(9):AIdbp2500144. Di Jin, Eileen Pan, Nassim Oufattole, Wei-Hung Weng, Hanyi Fang, and Peter Szolovits. 2021. What disease does this patient have? a large-scale open domain question answering dataset from medical exams. Ap-plied Sciences , 11(14):6421. Maël Jullien, Marco Valentino, and André Freitas. 2025. The knowledge-reasoning dissociation: Fundamen-tal limitations of LLMs in clinical natural language inference. Preprint , arXiv:2508.10777. Zahir Kanjee, Byron Crowe, and Adam Rodman. 2023. Accuracy of a generative artificial intelligence model in a complex diagnostic challenge. JAMA , 330(1):78– 80. Klaus Krippendorff. 2011. Computing Krippendorff’s Alpha-Reliability. University of Pennsylvania Schol-arlyCommons. Shuyue Stella Li, Vidhisha Balachandran, Shangbin Feng, Jonathan S. Ilgen, Emma Pierson, Pang Wei Koh, and Yulia Tsvetkov. 2024. MediQ: Question-asking LLMs and a benchmark for reliable interactive clinical reasoning. In Advances in Neural Information Processing Systems , volume 37, pages 28858–28888, Vancouver, Canada. Curran Associates, Inc. Liam G McCoy, Rajiv Swamy, Nidhish Sagar, Min-jia Wang, Stephen Bacchi, Jie Ming Nigel Fong, Nigel CK Tan, Kevin Tan, Thomas A Buckley, Peter Brodeur, et al. 2025. Assessment of large language models in clinical reasoning: a novel benchmarking study. NEJM AI , 2(10):AIdbp2500120. Mauro Nievas Offidani and Claudio Delrieux. 2023. The MultiCaRe dataset: A multimodal case report dataset with clinical cases, labeled images and captions from open access PMC articles. Ankit Pal, Logesh Kumar Umapathi, and Malaikannan Sankarasubbu. 2022. MedMCQA: A large-scale multi-subject multi-choice dataset for medical domain question answering. In Proceedings of the Conference on Health, Inference, and Learning , volume 174 of 
+
+Proceedings of Machine Learning Research , pages 248–260, Virtual Event. PMLR. 
+
+10 Pengcheng Qiu, Chaoyi Wu, Shuyu Liu, Yanjie Fan, Weike Zhao, Zhuoxia Chen, Hongfei Gu, Chuanjin Peng, Ya Zhang, Yanfeng Wang, and Weidi Xie. 2025. Quantifying the reasoning abilities of LLMs on clinical cases. Nature Communications , 16(1):9799. Arya S Rao, Kaiz P Esmail, Richard S Lee, Sharon Jiang, Bianca Arraiza Carlo, Jasleen Gill, Praneet Khanna, Ezra Kalmowitz, Basile Montagnese, Kimia Heydari, et al. 2026. Large language model performance and clinical reasoning tasks. JAMA Network Open ,9(4):e264003. Shamus Zi Yang Sim and Tyrone Chen. 2025. Critique of impure reason: Unveiling the reasoning behaviour of medical large language models. eLife , 14:e106187. John W. Tukey. 1949. Comparing individual means in the analysis of variance. Biometrics , 5(2):99–114. Bowen Wang, Jiuyang Chang, Yiming Qian, Guoxin Chen, Junhao Chen, Zhouqiang Jiang, Jiahao Zhang, Yuta Nakashima, and Hajime Nagahara. 2024. Di-ReCT: Diagnostic reasoning for clinical notes via large language models. In Advances in Neural Information Processing Systems , volume 37, pages 74999–75011, Vancouver, Canada. Curran Associates, Inc. Datasets and Benchmarks Track. Xinran Wang, Ziwen Long, Boran Zhu, Yan Cao, Hanfei Tang, Ke He, and Shu Zhang. 2026. Evaluation of DeepSeek-R1 and ChatGPT-4o on the Chinese national medical licensing examination: a multi-year comparative study. Scientific Reports , 16(1):2237. Weiyi Wu, Xinwen Xu, Chongyang Gao, Xingjian Diao, Siting Li, Lucas A. Salas, and Jiang Gui. 2025. As-sessing and mitigating medical knowledge drift and conflicts in large language models. In Findings of the Association for Computational Linguistics: EMNLP 2025 , pages 707–730, Suzhou, China. Association for Computational Linguistics. Zhuohan Xie, Trevor Cohn, and Jey Han Lau. 2023. The next chapter: A study of large language models in storytelling. In Proceedings of the 16th International Natural Language Generation Conference , pages 323– 351, Prague, Czechia. Association for Computational Linguistics. Zhuohan Xie, Daniil Orel, Rushil Thareja, Dhruv Sah-nan, Hachem Madmoun, Fan Zhang, Debopriyo Banerjee, Georgi Georgiev, Xueqing Peng, Lingfei Qian, Jimin Huang, Jinyan Su, Aaryamonvikram Singh, Rui Xing, Rania Elbadry, Chen Xu, Haonan Li, Fajri Koto, Ivan Koychev, Tanmoy Chakraborty, Yuxia Wang, Salem Lahlou, Veselin Stoyanov, Sophia Ananiadou, and Preslav Nakov. 2025a. FinChain: A symbolic benchmark for verifiable chain-of-thought fi-nancial reasoning. arXiv preprint arXiv:2506.02515 .Zhuohan Xie, Rui Xing, Yuxia Wang, Jiahui Geng, Hasan Iqbal, Dhruv Sahnan, Iryna Gurevych, and Preslav Nakov. 2025b. FIRE: Fact-checking with iterative retrieval and verification. In Findings of the Association for Computational Linguistics: NAACL 2025 , pages 2901–2914, Albuquerque, New Mexico. Association for Computational Linguistics. Jundong Xu, Hao Fei, Liangming Pan, Qian Liu, Mong-Li Lee, and Wynne Hsu. 2024. Faithful logical reasoning via symbolic chain-of-thought. In Proceed-ings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) ,pages 13326–13365, Bangkok, Thailand. Association for Computational Linguistics. Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Tom Griffiths, Yuan Cao, and Karthik Narasimhan. 2023. Tree of thoughts: Deliberate problem solving with large language models. Advances in neural information processing systems , 36:11809–11822. Ming Zhang, Yujiong Shen, Zelin Li, Huayu Sha, Binze Hu, Yuhui Wang, Chenhao Huang, Shichun Liu, Jingqi Tong, Changhao Jiang, Mingxu Chai, Zhiheng Xi, Shihan Dou, Tao Gui, Qi Zhang, and Xuanjing Huang. 2025. LLMEval-Med: A real-world clin-ical benchmark for medical LLMs with physician validation. In Findings of the Association for Com-putational Linguistics: EMNLP 2025 , pages 4888– 4914, Suzhou, China. Association for Computational Linguistics. Wayne Xin Zhao, Kun Zhou, Junyi Li, Tianyi Tang, Xiaolei Wang, Yupeng Hou, Yingqian Min, Beichen Zhang, Junjie Zhang, Zican Dong, Yifan Du, Chen Yang, Yushuo Chen, Zhipeng Chen, Jinhao Jiang, Ruiyang Ren, Yifan Li, Xinyu Tang, Zikang Liu, Peiyu Liu, Jian-Yun Nie, and Ji-Rong Wen. 2023. A survey of large language models. arXiv preprint arXiv:2303.18223 .
+
+A Dataset Details 
+
+We use de-identified clinical narratives from the MultiCaRe dataset (Nievas Offidani and Delrieux, 2023), an open-access corpus. From an initial pool of 10,000 narratives, clinicians conducted a multi-stage review to curate 500 diagnostically rare cases for RARECASE-2000, from which 40 structurally rich cases were selected for the RARECASE-200 evaluation subset. Rather than routine scenarios, we prioritized atypical diagnostic trajectories, over-lapping symptom clusters, and clear narrative flows. To prepare these cases for our evaluation frame-work, we restructured each selected narrative into a standardized format comprising demographics, key findings, diagnostic evolution, and outcome details. These structured cases served as the basis for constructing the five masking levels. The final 40 cases span a diverse demographic from pediatric to geriatric populations (55% male, 45% female). 
+
+A.1 Dataset Demographics 
+
+The age and gender distribution of the 40 rare clin-ical narratives selected for the RARECASE-200 11 benchmark is provided in Figure 5. The cases were specifically curated to ensure coverage across a wide spectrum of patient profiles, from pediatric to geriatric populations. This demographic diver-sity ensures the models’ diagnostic reasoning is rigorously stress-tested across varying clinical con-texts. The selection criteria for the 40 RARECASE narratives included: (1) atypical or uncommon di-agnostic trajectories, (2) multi-system involvement or overlapping symptom clusters, (3) the presence of complete demographic and clinical details, (4) a clear narrative flow enabling multi-level abstraction and masking, and (5) verified de-identification and adherence to CC0 licensing conditions. 
+
+B Prompting Details 
+
+B.1 Model Selection and Exclusion Criteria 
+
+To determine the most representative models for the RARECASE-200 benchmark, we conducted a pilot evaluation on a subset of five cases. Our initial candidate pool included MedGemma-4B ,
+
+II-Medical-8B , DeepSeek-R1-Distill-Llama-8B ,and GPT-5.1-chat .While these models showed promising general performance, several were excluded from the final evaluation based on expert feedback: 
+
+• GPT-5.1-chat: Despite its frontier capabil-ities, it consistently refused to generate the structured chain-of-thought required for our reasoning evaluation, stating: “I cannot pro-vide step-by-step internal diagnostic reason-ing, but I can give a concise, clinically relevant explanation.” 
+
+• II-Medical-8B, MedGemma & DeepSeek-R1 (8B): While functional, these models exhib-ited redundant performance profiles compared to HuatuoGPT-o1 in the pilot phase. Ultimately, expert clinicians recommended fo-cusing on HuatuoGPT-o1-8B and GPT-4o-mini 
+
+to provide the most discriminative contrast between a natively “slow-thinking” medical specialist and a high-performing generalist under the intensive human-in-the-loop scoring requirements of our framework (1,000 expert hours). 
+
+B.2 LLM Prompting and Output Generation 
+
+To ensure rigorous comparability while respect-ing architectural differences, we employed a core unified prompt strategy. Both models were evalu-ated using an identical structured user prompt that enforced a Thinking section followed by a Final Response , ensuring they were assessed on the exact same reasoning subtasks. Because GPT-4o-mini is a general-purpose model, we applied system-level scaffolding via a senior diagnostician persona and a one-shot example. In contrast, HuatuoGPT-o1-8B received no external system prompt, relying instead on its intrinsic slow-thinking mechanism. All out-puts were generated deterministically, decoded, and anonymized for blinded expert scoring. 
+
+B.3 Prompting Templates 
+
+To ensure complete reproducibility, we provide the exact prompt templates utilized in our evaluation framework. Both models received an identical user prompt to enforce comparable task constraints, while the generalist model (GPT-4o-mini) addition-ally received system-level scaffolding to induce structured clinical reasoning. 
+
+B.3.1 HuatuoGPT-o1-8B (Specialist Model) 
+
+As a specialized medical model with an intrinsic slow-thinking mechanism, HuatuoGPT-o1-8B was evaluated using only the structured user prompt, with no additional system prompt. 
+
+User Prompt for HuatuoGPT-o1-8B 
+
+User Prompt: You are a medical AI assistant trained to perform detailed, step-by-step diagnostic reasoning. Clinical Case: case Please analyze this case using systematic clinical reasoning. Structure your response as: ## Thinking - List the key clinical findings and symptoms - Generate 3-5 differential diagnoses with rationale - Systematically evaluate each diagnosis against the evidence - Eliminate unlikely diagnoses with clear reasoning - Arrive at your most likely working diagnosis ## Final Response - One-sentence summary with the most likely diagnosis and critical supporting evidence - Clearly state any uncertainties or ambiguities in the case 
+
+B.3.2 GPT-4o-mini (Generalist Model) 
+
+To approximate the clinical reasoning behavior native to the specialist model, GPT-4o-mini was provided with the identical user prompt above, sup-plemented by a comprehensive system prompt. This system prompt established a senior diagnostician persona and included a one-shot example of high-quality reasoning.(see Figure 6) 12 Figure 5: Age and gender distribution of 40 rare clinical narratives selected for evaluation. Cases span pediatric to geriatric populations. 
+
+C CLExEval Rubric 
+
+To ensure high inter-rater reliability and granular assessment of clinical reasoning, all human experts and automated evaluators utilized the standardized CLExEval rubric, visually summarized in Figure 7. Each dimension is scored on a discrete scale: 0.00, 0.25, 0.50, 0.75, or 1.00. To maintain strict scoring standards, evaluators were provided with the following dimension defini-tions during the calibration phase: 
+
+• Diagnostic Precision: Accuracy and speci-ficity of the final diagnosis. (0.00 = Wrong diagnosis; 1.00 = Fully correct, precise, and well-justified). 
+
+• Differential Reasoning Quality: Breadth and depth of alternative diagnoses considered. (0.00 = Single diagnosis stated without justi-fication; 1.00 = Fully systematic differential evaluating 3–5 alternatives). 
+
+• Evidence Integration / Grounding: Use of case evidence and avoidance of hallucina-tions. (0.00 = Ignores case data; 1.00 = Fully evidence-based reasoning). 
+
+• Diagnostic Justification Depth: Quality, depth, and completeness of the causal expla-nations linking evidence to the diagnosis. 
+
+• Completeness vs. Overload: Coverage of key clinical findings without the inclusion of distracting or irrelevant information. 
+
+• Clinical Plausibility / Soundness: Medical validity and strict adherence to established clinical standards and pathophysiology. 
+
+• Communication / Interpretability: Clarity, structural coherence, and professional presen-tation of the output. 
+
+C.1 Human Evaluation and Statistical Design 
+
+For clinical validation, our panel comprised two licensed physicians and two senior clinical interns, each with 4.5 years of formal medical education. Af-ter a structured calibration phase, two independent expert pairs double-scored balanced subsets of the narratives to reduce fatigue across the 5,600 annota-tions. We quantified inter-rater reliability across this dual-review design using Cohen’s κ (Cohen, 1960) and Krippendorff’s α (Krippendorff, 2011). Finally, we applied two-way mixed ANOVA tests (Field, 2024) and post-hoc Tukey HSD tests (Tukey, 1949) to evaluate performance degradation and structural differences under uncertainty. 
+
+D Metric Definitions 
+
+Here we provide the formal definitions for the CLEx-Eval metrics used to quantify reasoning stability, information sensitivity, latent diagnostic potential, and judge reliability. 
+
+Information Scarcity Sensitivity (ISS). Infor-mation Scarcity Sensitivity measures how much diagnostic accuracy degrades as clinical informa-tion is progressively removed: 
+
+ISS = Acc Narrative − Acc L3. (1) 13 A higher ISS indicates greater sensitivity to miss-ing information and suggests reliance on explicit clinical cues rather than robust causal reasoning. 
+
+Reasoning Gap. For model m and rubric dimen-sion d, we define the reasoning gap as: 
+
+∆m,d = Score (Narrative)  
+
+> m,d
+
+− Score (L3)  
+
+> m,d
+
+. (2) This measures how much a qualitative reasoning dimension declines between the full case and the most information-scarce version. 
+
+Label Dependence Factor (LDF). The Label De-pendence Factor measures inconsistency between the unmasked Narrative and Level 0, where the explicit diagnosis label is removed but most clinical evidence remains: 
+
+LDF = Acc Narrative − Acc L0. (3) A higher LDF suggests dependence on explicit diagnostic labels or surface-level extraction rather than independent clinical deduction. 
+
+Monotonicity Violation Rate (MVR). MVR measures how often a model violates the expected pattern that performance should not improve when clinical information is removed. Let ci,l ∈ { 0, 1}
+
+indicate whether the model correctly diagnoses case i at masking level l. A monotonicity violation occurs when: 
+
+ci,l = 0 and ci,l +1 = 1 . (4) We define: 
+
+MVR =  
+
+> ∑
+> i
+> ∑
+> l
+
+I(ci,l = 0 ∧ ci,l +1 = 1)  
+
+> ∑
+> i
+> ∑
+> l
+
+1 . (5) A higher MVR indicates greater reasoning instabil-ity, because the model succeeds with less informa-tion after failing with more information. 
+
+Maximum Diagnostic Potential (MDA). MDA estimates latent diagnostic potential by measuring whether the model reaches the correct diagnosis at any masking level: 
+
+MDA = 1
+
+N
+
+> N∑
+> i=1
+
+I
+
+> (
+
+max  
+
+> l
+
+ci,l = 1 
+
+> )
+
+. (6) High MDA with lower Narrative accuracy suggests that the model may possess the relevant diagnostic knowledge but fails to retrieve or express it reliably under some context conditions. 
+
+Reasoning-to-Output Mismatch (ROM). ROM measures cases where the model internally consid-ers the correct diagnosis but does not commit to it in the final answer. Let F be the set of failed instances where the final prediction differs from the gold diagnosis Gi, and let Ti denote the model’s internal Thinking trace: 
+
+ROM =  
+
+> ∑
+> i∈F
+
+I(Gi ∈ Ti)
+
+|F| . (7) A high ROM indicates reasoning-output misalign-ment, where correct latent knowledge appears in the reasoning trace but is omitted, changed, or suppressed in the final response. A low ROM in-dicates that failures are more likely due to genuine knowledge gaps or hallucinated reasoning. 
+
+Hallucination Approval Rate (HAR). HAR measures the fraction of human-verified clinical failures that an automated judge incorrectly ap-proves: 
+
+HAR =  
+
+> ∑
+> i∈F human
+
+I(Ji ≥ τ )
+
+|F human | , (8) where Fhuman is the set of expert-verified failure cases, Ji is the automated judge score, and τ is the approval threshold. In our experiments, τ = 0 .75 .A higher HAR indicates that an automated judge is more likely to approve clinically incorrect outputs. 
+
+Hidden Knowledge Paradox. The Hidden Knowledge Paradox occurs when a model has high MDA but lower final diagnostic accuracy in full-context or narrative settings. This indicates that the model can reach the correct diagnosis under at least one information condition, but fails to express it reliably when the full clinical narrative contains distracting or competing cues. 
+
+Attention Dispersion. Attention Dispersion refers to cases where additional clinical context reduces diagnostic focus by spreading the model’s reasoning across competing cues or distractors. Em-pirically, it appears as non-monotonic behavior: the model may fail under fuller context but recover the correct diagnosis after some information is removed. 
+
+Crossover Event. A Crossover Event occurs at a masking level where the relative performance of two models reverses. For example, if model 
+
+a outperforms model b at lower masking levels but falls below b at higher masking levels, the crossing point marks a regime where robustness to information scarcity differs between models. 14 E Extended Analysis of Judge Behavior 
+
+A dimensional breakdown of the Hallucination Approval Rate (HAR) scores reveals four recurring patterns in automated judge behavior: 1. GPT-4o-mini: fluency-sensitive judging. 
+
+On Diagnostic Precision, GPT-4o-mini is com-paratively strict, approving only 15.5% of wrong diagnoses. However, on Differential Reasoning, it approves 97.0% of incorrect reasoning chains, suggesting sensitivity to fluent chain-of-thought structure rather than clinical logic alone. 2. DeepSeek-R1-Distill-Llama-8B: stricter reasoning critique. This is the strictest judge on reasoning ( HAR = 33 .3% ), suggesting that its reasoning-oriented training may help it critique logic more effectively. However, it approves 100% of failures on Communication, indicating that fluent presentation remains difficult to penalize. 3. HuatuoGPT-o1-8B: permissive specialist judging. The medical specialist does not function as a strict differentiator in this evaluation, with a 100% HAR across almost all dimensions. This suggests that specialized medical tuning does not necessarily produce stricter evaluation behavior. 4. Llama-3.1-8B-Instruct: compressed scor-ing. This model exhibits central-tendency bias, approving 88.7% of all failures, including 81.0% of wrong diagnoses. Unlike HuatuoGPT-o1-8B, which often assigns maximum scores, Llama-3.1-8B-Instruct compresses many outputs into a passing range, functioning as a variance suppressor. 
+
+E.1 The Self-Preference Test 
+
+We extended our analysis to measure Self-Evaluation Bias by calculating the difference be-tween a model’s Self-Score and its Peer-Average Score (the resulting bias gaps are quantified in Table 6). Bias = Mean (Self-Score ) − Mean (Peer-Scores )
+
+(9)                 
+
+> Subject Model Self Peer-Avg Bias Gap Interpretation HuatuoGPT-o1-8B 0.882 0.786 +0.096 Severe Bias (∼12%)
+> GPT-4o-mini 0.907 0.856 +0.051 Moderate Bias (∼6%)
+> Table 6: Quantifying self-preference bias. The spe-cialized medical model exhibits stronger self-preference bias (red) than the generalist model (orange).
+
+These results caution against replacing human annotation with standalone LLM judges in high-stakes domains. Even the lowest-HAR judge in our experiment (GPT-4o-mini) assigns passing scores to nearly half of the consensus failures. While LLMs may assist with scalable screening or formatting checks, they do not yet provide a reliable substitute for expert assessment of medical correctness or clinical reasoning. 
+
+F Extended Expert Evaluation Profiles 
+
+Dimensional Performance Disparity: As visual-ized in Figure 8, GPT-4o-mini maintains a strong baseline of structural coherence across all seven CLExEval dimensions. The largest performance gap occurs in Differential Reasoning (0.88 vs. 0.55), reflecting the specialist model’s tendency to prema-turely fixate on single incorrect diagnoses under ver-bose clinical context. This dimensional breakdown also illustrates the Generalist’s Illusion discussed in the main text: GPT-4o-mini’s high Communica-tion score (0.94) can inflate perceived competence despite a lower Diagnostic Precision score (0.71). 
+
+GPT-4o-mini: The U-Shaped ROM Curve. 
+
+GPT-4o-mini’s ROM exhibited a non-monotonic U-shaped pattern, peaking at the Narrative level (100%) and dropping sharply to its lowest point at Level 1 (53.3%), representing the highest rate of failures where the correct diagnosis was absent from the reasoning trace. This suggests that the model loses diagnostic anchors when initial cues are removed, then partially adapts under sustained information constraints (see Figure 9). 
+
+HuatuoGPT: Progressive Knowledge Degra-dation. In contrast, HuatuoGPT showed a general downward trend, dropping to 32.3% at Level 3. This indicates that its failures are driven by progressive knowledge degradation rather than decision-making hesitation; as information is removed, the model’s ability to retrieve the correct diagnosis from its latent knowledge base deteriorates proportionally. 
+
+G Extended Reasoning Fingerprints 
+
+We quantified stability using the Monotonicity Vio-lation Rate (MVR). We found that 27.5% of GPT-4o-mini’s correct answers at Level 3 were non-monotonic recoveries, where the model failed with 
+
+more information but succeeded with less . This in-dicates Attention Dispersion, where verbose context may distract the model from retrieving knowledge it can otherwise express (visualized in Figure 10). 15 H Fluency Bias Under Level 0 Masking 
+
+To qualitatively illustrate the Evaluation Illusion and 
+
+Fluency Bias discussed, we present the complete model output for the case referenced in Figure 1. In this instance, the ground-truth diagnosis (Type C pyloric atresia) was masked under the Level 0 con-dition. Without the explicit diagnosis, both models (HuatuoGPT-o1-8B and GPT-4o-mini) produced an incorrect clinical conclusion (duodenal atresia). However, as shown in Figure 11 and Figure 12, the incorrect conclusion is embedded in a highly articulate and structurally coherent reasoning trace. We highlight the models’ unsupported confident assertions in red. This authoritative presentation helps explain why automated LLM-as-a-Judge eval-uators can incorrectly assign a perfect 1.00 /1.00 
+
+diagnostic score. 16 User Prompt and System Prompt for GPT-4o-mini 
+
+User Prompt: Identical to the HuatuoGPT-o1-8B user prompt. 
+
+System Prompt: You are a senior clinical diagnostician with years of experience in medicine. You excel at explaining your clinical reasoning step-by-step, as if teaching a medical student or junior resident. example output: ## Thinking Alright, let’s think about what we’re dealing with here. We’ve got a 53-year-old woman who has been experiencing some pretty troubling symptoms over the past decade—abdominal pain, swelling, and constant vomiting. That sounds like it might have something serious going on inside her belly. She doesn’t mention feeling nauseous or losing weight, which is interesting because those would typically accompany more severe conditions. At first glance, I’m thinking there’s definitely something unusual happening in her abdomen. Now, looking at the imaging results, there’s a large mass in her left upper abdomen. It measures about 10 by 10 centimeters and looks kind of messy on both the ultrasound and CT scans—it’s described as having varied echo patterns and low density compared to other organs. This makes me wonder if it’s either a cystic structure or maybe even a tumor. But wait, after they gave her a contrast agent during the CT scan, the mass didn’t really light up much; it stayed relatively dark compared to the rest of the area. Hmm, that suggests it isn’t aggressively growing or highly vascularized, so perhaps it’s not cancerous? During surgery, they find this encapsulated mass near where the spleen meets the liver. They decide to remove the whole thing along with part of the spleen. When they take a closer look at the tissue under the microscope, they see these blood vessels with different-sized openings covered by flat and taller endothelial cells. Oh! And there are little finger-like projections reaching out into these spaces. Sounds almost like a specific type of growth pattern. Plus, when they test the cells, they’re positive for certain markers like CD31 and CD68, indicating they line blood vessels, while being negative for others like CD34, suggesting they aren’t typical blood vessel cells. So far, everything seems to point towards a benign condition called a splenic littoral cell angioma. So, putting all this together—the age of the patient, the nature of the mass, its appearance on imaging, and especially how the cells behave—I’m confident that this is indeed a benign splenic littoral cell angioma. Everything checks out with the histological features too. Yeah, that feels right. Still, I can’t shake off the thought that there might be another explanation lurking somewhere, just in case. Maybe something less common? Like a hemangioma or even a rare form of sarcoma? Those could also fit the profile, though nothing else quite matches the specifics of this case. For now, I’ll stick with my conclusion, but keep an eye open for anything new that comes up. ## Final Response The most likely diagnosis for this 53-year-old woman based on the provided information is **benign splenic littoral cell angioma**. This conclusion is supported by several key points: 1. **Symptoms**: Her long-standing abdominal discomfort and vomiting suggest a chronic issue rather than an acute one. 2. **Imaging Findings**: The mass appears ill-defined and heterogeneous on both ultrasound and CT scans, without aggressive enhancement post-contrast, hinting at a benign or slowly-growing entity. 3. **Surgical and Histopathological Examination**: The resected mass shows characteristics consistent with a splenic littoral cell angioma, including the presence of variably sized vascular channels lined with endothelial cells and the absence of atypia or mitotic figures. While other possibilities such as hemangiomas or rare types of sarcomas exist, their presentation does not align perfectly with the specific details observed in this case. Therefore, given the combination of clinical, radiographic, and pathological data, benign splenic littoral cell angioma remains the most plausible diagnosis. However, it’s important to remain vigilant and consider alternative explanations should additional information arise. When you analyze a case: - Think aloud in a natural, conversational tone. - Walk through your thought process sequentially, explaining why you consider each piece of evidence. - Verbalize your uncertainties, alternative interpretations, and reasoning adjustments as you go. - Use phrases like "Let me think about this...", "At first, I wondered if...", "But wait, this doesn’t quite fit because...", "Putting this all together..." - Be thorough and transparent in your reasoning. Don’t just list facts—explain how they influence your diagnostic thinking. - Show your work: describe how you weight evidence, rule out alternatives, and converge on the most likely diagnosis. Your goal is to produce a rich, educational chain-of-thought narrative that helps others understand not just WHAT you conclude, but HOW and WHY you arrived at that conclusion. 
+
+Figure 6: System Prompt for GPT-4o-mini. 
+
+17 Figure 7: The CLExEval framework. A 7-dimensional clinical reasoning assessment rubric used to evaluate model outputs. The framework separates surface-level diagnostic accuracy from deep reasoning coherence, with each dimension scored on a scale from 0.00 (poor) to 1.00 (excellent). 
+
+Figure 8: Expert evaluation profile. Comparison of GPT-4o-mini (blue) vs. HuatuoGPT (red) across 7 expert rubric dimensions. The generalist model consistently outperforms the specialist, particularly in Differential Reasoning and 
+
+Communication .
+
+18 Figure 9: ROM trajectory across masking levels. The visualization tracks Reasoning-to-Output Mismatch as clinical information is systematically removed. GPT-4o-mini (blue) demonstrates a non-monotonic “U-shaped” curve, peaking at 100% in the Narrative level before dropping to its lowest ROM at Level 1 (53.3%). HuatuoGPT (purple) exhibits a general downward trend, indicating that information loss reduces the model’s retrieval reliability.    
+
+> (a) GPT-4o-mini : High Instability. (b) HuatuoGPT : Hidden Knowledge Recovery.
+
+Figure 10: Reasoning fingerprints (heatmap analysis). Green indicates correct diagnosis; red indicates failure. (a) GPT-4o-mini exhibits “checkerboard” instability (green → red → green), indicating non-monotonic reasoning behavior. (b) HuatuoGPT frequently fails the Full Narrative (red column 1) but recovers the correct diagnosis at Level 0 (green column 2), visualizing the Hidden Knowledge Paradox where verbose context contributes to retrieval failure. 
+
+19 HuatuoGPT-o1-8B output (Level 0 masking) 
+
+### AI MODEL OUTPUT: 
+
+## Thinking Alright, let’s think about what we’re dealing with here. We’ve got a little guy who just came into the world five days ago, weighs around 1700 grams, and has been having some trouble from the get-go—non-bilious vomiting right from birth. That’s already setting off alarm bells because it suggests something might be blocking his digestive tract somewhere past the stomach but before bile enters the picture. Now, he hasn’t passed meconium either, which can sometimes happen if there’s an issue like Hirschsprung’s disease or even intestinal atresia. So, I’m thinking that could definitely play a part here too. When they did the first X-ray, all we saw was a ’single bubble’ of air in the stomach, meaning nothing else seemed to have air beyond that point. This makes sense if there’s a blockage further down, confirming my suspicions about possible atresia. But then, when they took another look with an X-ray a couple of days later, things changed—they now see a ’double bubble.’ Ah, so now there’s air not only in the stomach but also in the proximal duodenum! This tells us the obstruction isn’t complete; there must be a pouch-like formation allowing some air through. The fact that the ultrasound didn’t show anything unusual kind of rules out other conditions like midgut volvulus, where you’d expect fluid levels or abnormal blood flow signs. And given these clues, both duodenal atresia and pyloric atresia seem plausible. So, during the operation, they find exactly what we suspected—a duodenal atresia with that classic ’apple-core sign,’ where the third portion of the duodenum is blocked. They fix it with aduodenogastrostomy, putting in a special tube to help him eat properly until everything heals. After the surgery, he starts doing well—he gains weight nicely, and once the tube is out, he transitions smoothly to regular food. By the time he leaves the hospital, he’s looking much better, and after following up over a year, he seems completely fine! All these details really make duodenal atresia stand out as the main problem. It fits perfectly with how he looked, acted, and responded to treatment. Yeah, I feel pretty confident saying that’s what went wrong here. ## Final Response 
+
+Based on the provided information, the most likely diagnosis for this neonate is duodenal atresia .
+
+Figure 11: HuatuoGPT-o1-8B output (Level 0 output). 
+
+20 Gpt-4o-mini output (Level 0 masking) 
+
+### AI MODEL OUTPUT: 
+
+## Thinking Alright, let’s break this case down step-by-step. 
+
+### Key Clinical Findings and Symptoms 1. Age and Birth Weight : A 5-day-old male, low birth weight at 1700g. 2. Clinical Presentation : Presenting with non-bilious vomiting since birth and has not emitted meconium. 3. Physical Examination : Appears in poor general condition, features a ’trisomic facies,’ and has a distended abdomen ("plat abdomen"). 4. Imaging Findings : - Initial abdominal X-ray showed a single bubble of gastric air with no gas beyond it—often indicative of a proximal obstruction. - Second X-ray revealed a "double bubble" sign, which is characteristic of duodenal atresia. 5. Lab Results : Biological check-up was normal. 
+
+### Differential Diagnoses 1. Duodenal Atresia : The most natural consideration given the classic presentation of double bubble on imaging and clinical findings of non-bilious vomiting and failure to pass meconium. 2. Pyloric Stenosis : Possible due to the age (early infant) and vomiting, but it’s typically associated with projectile vomiting and usually presents after a few weeks, which does not fit here. 3. Hirschsprung Disease : Possible given the failure to pass meconium, but this usually causes a more distal obstruction leading to abdominal distension and is less typical in the upper GI tract. 4. Malrotation with Midgut Volvulus : This can present with similar symptoms but is generally associated with bilious vomiting—here, the vomiting is non-bilious, which makes this diagnosis less likely. 5. Intestinal Atresia (other than duodenum) : Possible if a different segment of the intestines were obstructed, but would have been less likely given the prominent double bubble sign, particularly localized to the duodenum. 
+
+### Evaluation of Diagnoses - Duodenal Atresia : Given the key symptoms (non-bilious vomiting, double bubble on X-ray) and the surgical findings that confirmed the diagnosis, this remains the most compelling diagnosis. - Pyloric Stenosis : Rules out based on age of onset and imaging findings. - Hirschsprung Disease : Less likely because it does not correlate with the X-ray findings and the absence of bowel gas does not suggest a distal obstruction consistent with Hirschsprung. -
+
+Malrotation with Midgut Volvulus : Less likely due to non-bilious vomiting. The X-ray findings do not support this. - Intestinal Atresia : Other atresias are possible but less common; the imaging and clinical picture strongly suggest a proximal issue localized to the duodenum. 
+
+### Elimination of Unlikely Diagnoses After evaluating the above conditions, it is clear that: -Pyloric stenosis and malrotation are eliminated due to inconsistency with the clinical picture. -Hirschsprung’s Disease does not match the typical signs we see, which leads us to lean away from it as well. 
+
+### Conclusion Putting all of this together, the findings are most consistent with duodenal atresia ,especially in the context of the associated "trisomic facies" which can sometimes link to syndromic conditions like Down syndrome, known to have higher rates of duodenal atresia. 
+
+## Final Response 
+
+The most likely diagnosis for this 5-day-old male is duodenal atresia , supported by the classic double bubble sign on abdominal X-rays, non-bilious vomiting since birth, and the absence of meconium passage. The immediate clinical picture and surgical findings confirm the diagnosis of duodenal atresia. 
+
+Figure 12: Gpt-4o-mini output (Level 0 output) 
+
+21

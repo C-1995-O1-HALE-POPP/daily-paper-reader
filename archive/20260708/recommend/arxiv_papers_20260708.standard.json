@@ -1,0 +1,301 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-08T21:37:40.333004+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2607.01103v1",
+      "source": "arxiv",
+      "title": "Clinician-Level Agreement Without Clinical Caution: LLM Evaluator Limits in Medical AI Benchmarking",
+      "abstract": "Open-response evaluation provides stronger clinical validity than multiple-choice benchmarks but creates a scoring bottleneck that motivates automated LLM-asa-Judge approaches. Whether such evaluators replicate clinical calibration and caution, however, remains untested. We introduce MedQADE, the first standardised open-response clinical benchmark for German, a major clinical language lacking native evaluation infrastructure, comprising 3,800 items annotated by ten practising physicians and nine Large Language Model (LLM) evaluators. The top-performing evaluator model, Gemini 3 Flash, reached alignment consistent with the physician ceiling (\\k{appa} = 0.694 vs. \\k{appa} = 0.709), though wide confidence intervals limit interpretation. Despite this statistical alignment, automated evaluators exhibited near-absent clinical metacognition: physicians scaled abstention with item difficulty, while frontier models assigned definitive scores in every case. We additionally quantified systematic lineage-dependent biases, where models preferentially scored architectural siblings, an effect independent of language. These results show that statistical alignment does not ensure clinical caution, and that evaluator independence requires explicit verification.",
+      "authors": [
+        "William Philipp",
+        "Finn Fassbender",
+        "Thorsten Langer",
+        "Martje Pauly",
+        "Rebecca Herzog",
+        "Alexander Baumann",
+        "Markus Hobert",
+        "Theresa Paulus",
+        "Ip Chi Wang",
+        "Lukas Goede",
+        "Johanna Reimer",
+        "Sebastian Löns",
+        "Ronald Böck",
+        "Sebastian Fudickar"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-07-01T15:55:31+00:00",
+      "link": "https://arxiv.org/pdf/2607.01103v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "medical AI benchmarking with open-response clinical benchmark",
+      "llm_evidence_cn": "医疗AI基准测试，开放回答临床基准",
+      "llm_evidence": "医疗AI基准测试，开放回答临床基准",
+      "canonical_evidence": "医疗AI基准测试，开放回答临床基准",
+      "llm_tldr_en": "Introduces MedQADE, a standardized open-response clinical benchmark for German, and evaluates LLM evaluators, achieving clinician-level alignment.",
+      "llm_tldr_cn": "本文针对医疗AI开放回答评估缺乏标准基准的问题，提出了首个德语开放回答临床基准MedQADE，包含3800个由医生和LLM标注的题目。实验发现顶级评估模型Gemini 3 Flash在一致性上接近医生水平，但置信区间较宽，说明LLM评估在临床谨慎性上仍有局限。该基准为医疗AI性能评估提供了新的标准工具。",
+      "llm_tldr": "本文针对医疗AI开放回答评估缺乏标准基准的问题，提出了首个德语开放回答临床基准MedQADE，包含3800个由医生和LLM标注的题目。实验发现顶级评估模型Gemini 3 Flash在一致性上接近医生水平，但置信区间较宽，说明LLM评估在临床谨慎性上仍有局限。该基准为医疗AI性能评估提供了新的标准工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.02175v1",
+      "source": "arxiv",
+      "title": "A rubric-based controlled comparison of frontier language models on expert-authored clinical reasoning tasks",
+      "abstract": "Multiple-choice medical benchmarks are increasingly saturated, and recent rubric-based evaluations such as HealthBench have shown that open-ended clinical performance is far from solved - its \"Hard\" subset top score remains 32%. We present a small, deliberately difficult evaluation dataset of five clinician-authored clinical scenarios spanning four specialties (anaesthesia, internal/family medicine, emergency medicine, and obstetrics), each accompanied by an atomic, weighted, MECE rubric (25-62 criteria per task; 184 criteria total) authored from a clinician-drafted golden answer. We evaluate three frontier models: GPT 5.4, Claude Opus 4.7, and Gemini 3.1 Pro. Mean rubric pass rates were 0.47 (Claude), 0.39 (GPT), and 0.37 (Gemini). The central finding is an inversion of clinical priority: the highest-weighted (weight-5, critical) criteria passed at only 32.4-41.7%, while low-stakes weight-1 criteria passed at 80-90%. 56 of 108 critical (weight-5) criteria (52%) were satisfied by no model. Three LLM autoraters reproduced expert met/not-met labels on 92.8-94.7% of 552 graded criteria. We position this as a methods-and-preliminary-findings contribution: the five tasks demonstrate a scalable, defensible pipeline ready to develop into a large-scale benchmark.",
+      "authors": [
+        "Samiha A. Ismail",
+        "Fan X. Chen",
+        "Ali Merali"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-07-02T13:46:24+00:00",
+      "link": "https://arxiv.org/pdf/2607.02175v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "rubric-based evaluation of frontier models on clinical reasoning",
+      "llm_evidence_cn": "基于量规的前沿模型临床推理评估",
+      "llm_evidence": "基于量规的前沿模型临床推理评估",
+      "canonical_evidence": "基于量规的前沿模型临床推理评估",
+      "llm_tldr_en": "Presents a small difficult rubric-based clinical reasoning evaluation dataset and compares GPT, Claude, and Gemini, finding Claude best but far from solved.",
+      "llm_tldr_cn": "本文针对多项选择医疗基准饱和的问题，构建了一个由五个临床场景组成的困难评估数据集，采用原子化加权量规。评估了GPT 5.4、Claude Opus 4.7和Gemini 3.1 Pro，发现Claude平均通过率0.47最高，但整体性能仍不理想。该工作强调了开放回答评估在医疗AI中的重要性。",
+      "llm_tldr": "本文针对多项选择医疗基准饱和的问题，构建了一个由五个临床场景组成的困难评估数据集，采用原子化加权量规。评估了GPT 5.4、Claude Opus 4.7和Gemini 3.1 Pro，发现Claude平均通过率0.47最高，但整体性能仍不理想。该工作强调了开放回答评估在医疗AI中的重要性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.04419v2",
+      "source": "arxiv",
+      "title": "Agent Step Value: Probing the Observer Effect in Black-Box Traces",
+      "abstract": "Final-answer scores hide which agent transitions helped or harmed a trace. We introduce Agent Step Value (ASV), a replay framework that scores before/after states with a stateless LLM evaluator over a fixed candidate set. ASV reports entropy movement and Bayesian surprise measure belief movement, while offline gold-margin gain measures movement toward a reviewed target. It also quantifies evaluator-channel sensitivity by replaying the same frozen transitions under changed projection, rationale, prompt, or scoring rules. In a 100-question open-QA study with live PubMed retrieval and DeepSeek log-probability scoring, ASV evaluates 1,100 transitions. Entropy movement is 0.000 while mean Bayesian surprise is 2.693, exposing near-one-hot belief pivots. Under a 128-token rationale-conditioned protocol, mean gold-margin gain is -2.335 (95\\% CI [-3.395, -1.272]); direct one-token scoring on the same traces gives +4.033. A 100-transition component audit traces the reversal to short generated rationales over full states. ASV turns prompt sensitivity into a measured channel effect and localizes the largest rationale-conditioned losses to extraction and audit.",
+      "authors": [
+        "Andrew Zhang",
+        "Chengzhan Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-05T17:27:56+00:00",
+      "link": "https://arxiv.org/pdf/2607.04419v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Agent Step Value framework for evaluating agent transitions using LLM evaluator",
+      "llm_evidence_cn": "智能体步骤价值框架，利用LLM评估器评估智能体转换",
+      "llm_evidence": "智能体步骤价值框架，利用LLM评估器评估智能体转换",
+      "canonical_evidence": "智能体步骤价值框架，利用LLM评估器评估智能体转换",
+      "llm_tldr_en": "Introduces Agent Step Value (ASV), a replay framework scoring agent transitions with a stateless LLM evaluator, applicable to medical agent performance evaluation.",
+      "llm_tldr_cn": "该论文提出智能体步骤价值(ASV)，一个通过无状态LLM评估器对智能体状态变化进行评分的回放框架。实验在开放问答中使用PubMed检索评估了1100个转换，暴露了信念转变的接近独热特性。该方法可用于医疗智能体的性能评估与诊断。",
+      "llm_tldr": "该论文提出智能体步骤价值(ASV)，一个通过无状态LLM评估器对智能体状态变化进行评分的回放框架。实验在开放问答中使用PubMed检索评估了1100个转换，暴露了信念转变的接近独热特性。该方法可用于医疗智能体的性能评估与诊断。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.05775v1",
+      "source": "arxiv",
+      "title": "Beyond the Leaderboard: A Synthesis of Tool-Use, Planning, and Reasoning Failures in Large Language Model Agents",
+      "abstract": "Large language model (LLM) agents are increasingly evaluated on their ability to use tools, plan multi-step tasks, coordinate with other agents, and operate over extended horizons. Reported benchmark gains often obscure recurring failure modes documented across otherwise unrelated evaluation efforts. This paper synthesizes 27 benchmark, taxonomy, and audit papers (2023-2026), spanning 19 distinct benchmarks, into a cross-cutting taxonomy of agent limitations. To our knowledge, this is the first synthesis that integrates evidence across tool use, planning, long-horizon reasoning, multi-agent coordination, safety, and measurement validity into a single, unified taxonomy of LLM agent limitations. We identify six failure clusters: (1) tool invocation and parameter-level errors, (2) planning and constraint-satisfaction failures, (3) long-horizon degradation from context accumulation, (4) multi-agent coordination failures, (5) safety and security failures under adversarial or underspecified conditions, and (6) measurement validity problems. The taxonomy was derived iteratively by grouping independently reported error categories into themes corresponding to distinct stages of the agent reasoning-to-action pipeline. Across the literature, we find that failures compound nonlinearly with task length, that strong performance on individual sub-tasks does not reliably translate into end-to-end success, and that additional scaffolding does not consistently improve reliability. At the same time, substantial progress has been demonstrated in single-turn tool use, short-horizon web navigation, and narrowly scoped coding tasks.",
+      "authors": [
+        "Wael Albayaydh",
+        "Rui Zhao",
+        "Ivan Flechais"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-07T03:05:13+00:00",
+      "link": "https://arxiv.org/pdf/2607.05775v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Synthesis of agent failures across benchmarks, providing taxonomy for evaluating agent performance.",
+      "llm_evidence_cn": "综合智能体基准测试中的失败模式，提供评估智能体性能的分类法。",
+      "llm_evidence": "综合智能体基准测试中的失败模式，提供评估智能体性能的分类法。",
+      "canonical_evidence": "综合智能体基准测试中的失败模式，提供评估智能体性能的分类法。",
+      "llm_tldr_en": "Synthesizes 27 papers on LLM agent evaluation, identifying six failure categories useful for benchmarking medical agents.",
+      "llm_tldr_cn": "该论文综合了27篇关于LLM智能体评估的文献，涵盖19个基准测试，提出了一个包含工具使用、规划、长程推理、多智能体协调、安全性和测量有效性六个大类的失败模式分类法。这是首个统一的智能体局限性分类，为医疗智能体的基准测试和评估提供了结构化框架。",
+      "llm_tldr": "该论文综合了27篇关于LLM智能体评估的文献，涵盖19个基准测试，提出了一个包含工具使用、规划、长程推理、多智能体协调、安全性和测量有效性六个大类的失败模式分类法。这是首个统一的智能体局限性分类，为医疗智能体的基准测试和评估提供了结构化框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2606.31608v1",
+      "source": "arxiv",
+      "title": "CLExEval: A Human-in-the-Loop Framework for Qualitative Evaluation of LLM Clinical Reasoning",
+      "abstract": "Large Language Models (LLMs) achieve strong results on many medical benchmarks, but their clinical reasoning remains difficult to evaluate reliably. A central risk is an evaluation illusion: fluent and well-structured explanations can appear clinically convincing even when the final diagnosis is incorrect. We introduce CLExEval, a human-in-the-loop framework for evaluating LLM clinical reasoning under progressive information masking. CLExEval combines 5,600 expert-physician annotations with 200 clinical reasoning traces derived from 40 rare diagnostic cases. Our analysis identifies three recurring failure patterns: (i) verbosity bias, where GPT-4o-mini's diagnostic accuracy drops from 95.0% to 32.5% under information scarcity; (ii) a hidden knowledge paradox, where a specialist model reaches 92.5% maximum diagnostic potential but fails to retrieve that knowledge reliably in verbose contexts; and (iii) a 68.6% reasoning-to-output mismatch, where correct diagnoses appear in reasoning traces but are not reflected in final answers. We further evaluate the LLM-as-a-Judge paradigm on a human-verified failure set (n = 142). GPT-4o-mini approved 47.9% of clinically incorrect outputs, while HuatuoGPT-o1 approved all validly scored failures and showed a positive self-preference bias. These results suggest that standalone automated clinical evaluations can substantially overestimate clinical reliability without expert-grounded validation.",
+      "authors": [
+        "Ajmal M.",
+        "Abin Roy",
+        "Afthab Salam Kanniyan",
+        "Jawadh Abdul Kabeer",
+        "Jerin James",
+        "Preslav Nakov",
+        "Zhuohan Xie"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-06-30T12:56:42+00:00",
+      "link": "https://arxiv.org/pdf/2606.31608v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "human-in-the-loop framework for evaluating LLM clinical reasoning",
+      "llm_evidence_cn": "用于评估LLM临床推理的人机协同框架",
+      "llm_evidence": "用于评估LLM临床推理的人机协同框架",
+      "canonical_evidence": "用于评估LLM临床推理的人机协同框架",
+      "llm_tldr_en": "CLExEval uses progressive information masking and expert annotations to evaluate LLM clinical reasoning, identifying failure patterns like verbosity bias.",
+      "llm_tldr_cn": "LLM在医学基准上表现优异，但临床推理评估存在评价幻觉，流畅解释可能掩盖错误诊断。CLExEval提出人机协同框架，通过渐进信息遮掩和5600份专家标注，系统评估推理过程，识别出冗长偏差等失败模式，揭示了信息稀缺下准确率大幅下降的风险，为医疗代理的定性评估提供了可借鉴的方法论。",
+      "llm_tldr": "LLM在医学基准上表现优异，但临床推理评估存在评价幻觉，流畅解释可能掩盖错误诊断。CLExEval提出人机协同框架，通过渐进信息遮掩和5600份专家标注，系统评估推理过程，识别出冗长偏差等失败模式，揭示了信息稀缺下准确率大幅下降的风险，为医疗代理的定性评估提供了可借鉴的方法论。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.03426v1",
+      "source": "arxiv",
+      "title": "Amortising Bayesian Experimental Design for Sequential Information Gathering in LLMs",
+      "abstract": "Large language models (LLMs) exhibit strong reasoning and world-knowledge capabilities, yet often struggle to gather information effectively across the multi-turn interactions required in sequential decision-making settings. We introduce Amortised Sequential Information Gathering (ASIG), a fine-tuning approach that amortises Bayesian Experimental Design (BED) into LLM policies via a multi-turn extension of Group Relative Policy Optimisation with an Expected Information Gain reward. Evaluated on the 20 Questions task, ASIG more than doubles the success rate of the 7B base model and reduces inference cost by over $25\\times$ relative to BED-LLM, a competitive inference-time baseline. Applied to MediQ, a medical diagnosis benchmark unseen during training, ASIG improves information-seeking performance at the 7B scale, suggesting that the learned strategies can transfer out of distribution. Our findings show that amortising BED into LLM policies provides an effective and computationally efficient approach to sequential information gathering.",
+      "authors": [
+        "Jakob Hartmann",
+        "James Harvey",
+        "Jhonathan Navott",
+        "Erik Y. Wang",
+        "Luckeciano C. Melo",
+        "Flaviu Cipcigan",
+        "Cheng Zhang",
+        "Alessandro Abate"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-07-03T15:38:17+00:00",
+      "link": "https://arxiv.org/pdf/2607.03426v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "RL and LLM for medical diagnosis agent information gathering, relevant to agent evaluation",
+      "llm_evidence_cn": "使用强化学习和语言模型进行医疗智能体信息收集，与智能体评估相关",
+      "llm_evidence": "使用强化学习和语言模型进行医疗智能体信息收集，与智能体评估相关",
+      "canonical_evidence": "使用强化学习和语言模型进行医疗智能体信息收集，与智能体评估相关",
+      "llm_tldr_en": "Proposes ASIG, a fine-tuning approach that amortizes Bayesian experimental design into LLM policies using multi-turn GRPO with expected information gain reward, achieving over 2x success rate on medical diagnosis benchmark MediQ.",
+      "llm_tldr_cn": "本文提出ASIG，一种通过多轮GRPO和期望信息增益奖励将贝叶斯实验设计摊销到LLM策略中的微调方法。在医疗诊断基准MediQ上，ASIG使7B基础模型成功率翻倍，推理成本降低25倍以上，展示了强化学习与LLM结合在医疗智能体中的应用潜力。",
+      "llm_tldr": "本文提出ASIG，一种通过多轮GRPO和期望信息增益奖励将贝叶斯实验设计摊销到LLM策略中的微调方法。在医疗诊断基准MediQ上，ASIG使7B基础模型成功率翻倍，推理成本降低25倍以上，展示了强化学习与LLM结合在医疗智能体中的应用潜力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Reinforcement learning and LLM in medical agent evaluation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.05773v1",
+      "source": "arxiv",
+      "title": "Beyond Static Evaluation: Building Simulation Environments for Scalable Agentic Reinforcement Learning",
+      "abstract": "As Large Language Models (LLMs) evolve into autonomous agents, traditional static evaluation fails to capture multi-step decision-making. We introduce AgenticAI-Supervisor, an API and UI-driven RL Gym environment that decouples environment creation from scalable execution. By moving to verifiable execution outcomes, the platform generates high-fidelity traces and applies multi-dimensional reward shaping. Critically, our framework mitigates reward hacking through rigorous internal state validation and testing. This work provides a first look at our platform's core capabilities through a Customer Support Agent case study demonstrating a consistent closed-loop feedback for model optimization. Future work will focus on advanced features such as Computer Use, Tool Use, automated \"stumping\", and edge-case generation.",
+      "authors": [
+        "Akshay Arora",
+        "Ishan Nigam",
+        "Ashutosh Aggarwal",
+        "Shefali Bansal",
+        "Krishna Singh",
+        "Sweta Kumari",
+        "Nikhil Mittal",
+        "Shariq Farhan",
+        "Siddarth Malreddy"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-07T02:56:27+00:00",
+      "link": "https://arxiv.org/pdf/2607.05773v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "simulation environment for RL agent evaluation, transferable to healthcare",
+      "llm_evidence_cn": "面向强化学习智能体评估的仿真环境，可迁移至医疗",
+      "llm_evidence": "面向强化学习智能体评估的仿真环境，可迁移至医疗",
+      "canonical_evidence": "面向强化学习智能体评估的仿真环境，可迁移至医疗",
+      "llm_tldr_en": "Introduces AgenticAI-Supervisor, a RL Gym environment for scalable agent evaluation with multi-dimensional reward shaping and robust testing.",
+      "llm_tldr_cn": "本文针对静态评估无法捕捉多步决策的问题，提出了AgenticAI-Supervisor平台，为强化学习智能体提供可扩展的仿真环境。平台通过可验证执行结果生成轨迹并应用多维奖励塑形，同时通过内部状态验证防止奖励欺骗。虽以客服智能体为例，其设计可直接迁移至医疗智能体评估。",
+      "llm_tldr": "本文针对静态评估无法捕捉多步决策的问题，提出了AgenticAI-Supervisor平台，为强化学习智能体提供可扩展的仿真环境。平台通过可验证执行结果生成轨迹并应用多维奖励塑形，同时通过内部状态验证防止奖励欺骗。虽以客服智能体为例，其设计可直接迁移至医疗智能体评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

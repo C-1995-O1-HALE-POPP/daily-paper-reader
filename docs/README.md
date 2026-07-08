@@ -6,47 +6,41 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-07
-- 运行时间：2026-07-07 21:46:27 UTC
+- 最新运行日期：2026-07-08
+- 运行时间：2026-07-08 21:41:37 UTC
 - 运行状态：成功
-- 本次总论文数：9
+- 本次总论文数：7
 - 精读区：3
-- 速读区：6
+- 速读区：4
 
 ### 今日简报（AI）
-今天精读两篇9分论文、速读四篇7分论文，共推荐9篇临床AI研究。最值得关注的分别是《Medi-Gemma》的混合决策系统（EMR+RAG）和《MOSAIC》的多LLM协作严重性评估。建议优先精读这两篇，重点把握确定性分析与生成式模型融合的思路，以及多模型协同的评估框架设计。
-- 详情：[/202607/07/README](/202607/07/README)
+今日日报揭示LLM在临床评估中虽达专家级一致性，却普遍缺乏临床谨慎性，可靠性存疑。最值得关注两篇精读：一篇指出LLM评估者规避安全警示，另一篇用论文对比法暴露前沿模型在专家级推理上的局限。建议读者后续关注人类监督与安全评估框架在医疗AI中的必要性。
+- 详情：[/202607/08/README](/202607/08/README)
 
 ### 精读区论文标签
-1. [Medi-Gemma: A Hybrid Clinical Decision Support System Integrating Deterministic EMR Analytics and Retrieval-Augmented Generation](/202607/07/2607.04907v1-medi-gemma-a-hybrid-clinical-decision-support-system-integrating-deterministic-emr-analytics-and-retrieval-augmented-generation)  
+1. [Clinician-Level Agreement Without Clinical Caution: LLM Evaluator Limits in Medical AI Benchmarking](/202607/08/2607.01103v1-clinician-level-agreement-without-clinical-caution-llm-evaluator-limits-in-medical-ai-benchmarking)  
    标签：评分：9.0/10、query:ehr-agent
-   evidence：使用EMR数据的临床决策支持系统评估
-2. [Multi-Large Language Model Orchestrated Severity Assessment of Clinical Records (MOSAIC)](/202607/07/2607.05032v1-multi-large-language-model-orchestrated-severity-assessment-of-clinical-records-mosaic)  
-   标签：评分：9.0/10、query:ehr-agent
-   evidence：使用EHR进行严重程度评估的代理LLM系统，并与金标准对比评估
-3. [Evaluating Agentic Harness Systems for Autonomous Computational Pathology](/202607/07/2607.02598v1-evaluating-agentic-harness-systems-for-autonomous-computational-pathology)  
+   evidence：医疗AI基准测试，开放回答临床基准
+2. [A rubric-based controlled comparison of frontier language models on expert-authored clinical reasoning tasks](/202607/08/2607.02175v1-a-rubric-based-controlled-comparison-of-frontier-language-models-on-expert-authored-clinical-reasoning-tasks)  
    标签：评分：8.0/10、query:ehr-agent
-   evidence：计算病理学中的Agent系统基准，与医疗Agent基准测试相关
+   evidence：基于量规的前沿模型临床推理评估
+3. [Agent Step Value: Probing the Observer Effect in Black-Box Traces](/202607/08/2607.04419v2-agent-step-value-probing-the-observer-effect-in-black-box-traces)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：智能体步骤价值框架，利用LLM评估器评估智能体转换
 
 ### 速读区论文标签
-1. [MedCalc-Pro: Solving Complex Medical Calculations with LLM Agents](/202607/07/2607.02879v1-medcalc-pro-solving-complex-medical-calculations-with-llm-agents)  
+1. [Beyond the Leaderboard: A Synthesis of Tool-Use, Planning, and Reasoning Failures in Large Language Model Agents](/202607/08/2607.05775v1-beyond-the-leaderboard-a-synthesis-of-tool-use-planning-and-reasoning-failures-in-large-language-model-agents)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：提出MedCalc-Pro基准，使用真实临床案例评估LLM代理在复杂医疗计算上的表现
-2. [Reinforcement Learning for Evidence-Seeking Diagnostic Reasoning with Large Language Models](/202607/07/2607.02983v1-reinforcement-learning-for-evidence-seeking-diagnostic-reasoning-with-large-language-models)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：使用强化学习和LLM构建诊断推理代理
-3. [Agent Step Value: State-Transition Measurement with State-Grounded LLM Evaluators](/202607/07/2607.04419v1-agent-step-value-state-transition-measurement-with-state-grounded-llm-evaluators)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：通用的智能体逐步骤评估方法
-4. [AgentGym2: Benchmarking Large Language Model Agents in De-Idealized Real-World Environments](/202607/07/2607.05174v1-agentgym2-benchmarking-large-language-model-agents-in-de-idealized-real-world-environments)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：在真实世界环境中对大型语言模型代理进行基准测试，直接与医疗代理基准测试相关
-5. [DEEPMED Search: An Open-Source Agentic Platform for Medical Deep Research with Introspective Verification](/202607/07/2606.29746v1-deepmed-search-an-open-source-agentic-platform-for-medical-deep-research-with-introspective-verification)  
+   evidence：综合智能体基准测试中的失败模式，提供评估智能体性能的分类法。
+2. [CLExEval: A Human-in-the-Loop Framework for Qualitative Evaluation of LLM Clinical Reasoning](/202607/08/2606.31608v1-clexeval-a-human-in-the-loop-framework-for-qualitative-evaluation-of-llm-clinical-reasoning)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：开源医疗深度研究Agent平台，整合多种医疗数据源
-6. [Agent Reinforcement Learning via Pivotal-Aware Self-Feedback Retry](/202607/07/2607.03702v1-agent-reinforcement-learning-via-pivotal-aware-self-feedback-retry)  
+   evidence：用于评估LLM临床推理的人机协同框架
+3. [Amortising Bayesian Experimental Design for Sequential Information Gathering in LLMs](/202607/08/2607.03426v1-amortising-bayesian-experimental-design-for-sequential-information-gathering-in-llms)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：提出PivoARL，一种用于LLM代理的自反馈重试框架，可应用于医疗代理评估
+   evidence：使用强化学习和语言模型进行医疗智能体信息收集，与智能体评估相关
+4. [Beyond Static Evaluation: Building Simulation Environments for Scalable Agentic Reinforcement Learning](/202607/08/2607.05773v1-beyond-static-evaluation-building-simulation-environments-for-scalable-agentic-reinforcement-learning)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：面向强化学习智能体评估的仿真环境，可迁移至医疗
 
 
 <div class="dpr-home-promo-card">
