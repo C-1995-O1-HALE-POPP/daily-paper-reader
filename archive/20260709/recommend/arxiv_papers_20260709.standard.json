@@ -1,0 +1,97 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-09T20:51:12.770626+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.03650v1",
+      "source": "arxiv",
+      "title": "ClinOCR-Bench: A Comprehensive Clinical Scanned Document Dataset for Optical Character Recognition Model Evaluation",
+      "abstract": "Extracting textual information from scanned medical documents, such as external laboratory reports and manually filled forms, has been a major challenge in modern electronic health records (EHRs). Recent advancements in vision language models (VLMs) have shown great promise over traditional OCR tools. However, at this point, most clinical OCR studies were conducted on private, institutional data. To our knowledge, there are few publicly available datasets for evaluating OCR models in the clinical domain. Furthermore, common scanning artifacts that undermine OCR performance are not reflected in those datasets, leaving a systematic evaluation unfeasible. Therefore, we release a publicly available, realistic-looking OCR benchmark dataset, ClinOCR-Bench, with 384 scanned images across 6 subsets: Normal, Handwriting, Poor Quality, Rotation, Tables, and Mix-artifacts. ClinOCR-Bench features: 1) diverse document types and layouts, 2) full coverage of common EHR scan artifacts, 3) protected health information-free, 4) template-aware train/test split, and 5) adequate sample size for OCR benchmarking. Baseline OCR performance was evaluated using state-of-the-art open-weight and proprietary VLMs. The dataset and documentation are available on GitHub (https://github.com/ClinOCR-Bench/ClinOCR-Bench).",
+      "authors": [
+        "Enshuo Hsu",
+        "Jin Zhou",
+        "Kirk Roberts"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-07-04T00:19:31+00:00",
+      "link": "https://arxiv.org/pdf/2607.03650v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "benchmark for OCR on clinical documents from EHR",
+      "llm_evidence_cn": "基于EHR的临床文档OCR基准",
+      "llm_evidence": "基于EHR的临床文档OCR基准",
+      "canonical_evidence": "基于EHR的临床文档OCR基准",
+      "llm_tldr_en": "ClinOCR-Bench provides a realistic public dataset for evaluating OCR on scanned clinical documents, addressing EHR data extraction challenges.",
+      "llm_tldr_cn": "现有临床OCR研究多基于私有数据，且缺乏反映真实扫描伪影的公开基准。本文发布ClinOCR-Bench，一个公开的、逼真的临床扫描文档数据集，用于评估OCR模型在电子健康记录（EHR）中的性能。该基准支持对医疗代理从EHR文档中提取信息的能力进行评价，为基于EHR的医疗代理评估提供了关键的基础设施。",
+      "llm_tldr": "现有临床OCR研究多基于私有数据，且缺乏反映真实扫描伪影的公开基准。本文发布ClinOCR-Bench，一个公开的、逼真的临床扫描文档数据集，用于评估OCR模型在电子健康记录（EHR）中的性能。该基准支持对医疗代理从EHR文档中提取信息的能力进行评价，为基于EHR的医疗代理评估提供了关键的基础设施。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "What are the metrics for healthcare agent evaluation using EHR data?",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.04694v1",
+      "source": "arxiv",
+      "title": "Solve the Missing First Step: Can VLMs Standardize Raw Heterogeneous Medical Data?",
+      "abstract": "As vision-language models (VLMs) are increasingly applied to medical AI, existing benchmarks mainly focus on evaluating their diagnosis ability over given medical images and texts, implicitly assuming that standardized medical images, texts or question-answer pairs are already prepared. However, this assumption does not hold when we apply VLMs in real clinical practice, where medical data is often raw, heterogeneous, and fragmented across different sources. In this paper, we study this missing step, i.e., raw medical data standardization. Specifically, models are given raw dataset folders and evaluated on their ability to identify source formats, convert raw medical images into VLM-compatible visual inputs, extract relevant textual information, and organize the results into structured image-text pairs. To construct this Medical Data Standardization Benchmark (MDS-Bench), we manually annotate 1,939 raw medical data standardization tasks covering diverse clinical practice, radiology modalities, annotation formats, and directory layouts. Extensive experiments show that even the best performing VLMs, i.e., Gemini 3 Flash, achieve only 48.6% end-to-end success rate. Our research highlights raw medical data standardization as a critical bottleneck for medical AI diagnosis in real practice.",
+      "authors": [
+        "Xin Chen",
+        "Dongliang Xu",
+        "Cunhao Zhu",
+        "Xudong Luo",
+        "Haoyang Lyu",
+        "Xiaoxiao Sun",
+        "Serena Yeung-Levy",
+        "Yue Yao"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-06T05:52:33+00:00",
+      "link": "https://arxiv.org/pdf/2607.04694v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "addresses standardization of raw heterogeneous medical data, a prerequisite for medical agents using EHR",
+      "llm_evidence_cn": "解决原始异构医疗数据标准化问题，是医疗智能体使用EHR的前提步骤",
+      "llm_evidence": "解决原始异构医疗数据标准化问题，是医疗智能体使用EHR的前提步骤",
+      "canonical_evidence": "解决原始异构医疗数据标准化问题，是医疗智能体使用EHR的前提步骤",
+      "llm_tldr_en": "Proposes evaluating VLMs on raw medical data standardization task, converting heterogeneous data into VLM-compatible inputs, directly enabling medical agent data pipelines.",
+      "llm_tldr_cn": "当前医疗AI基准假设数据已标准化，但实际临床数据原始、异构、碎片化。本文研究原始医疗数据标准化这一缺失步骤，评估VLM识别格式、转换图像和提取文本的能力。该工作为医疗智能体利用电子健康记录提供了关键的数据预处理基础。",
+      "llm_tldr": "当前医疗AI基准假设数据已标准化，但实际临床数据原始、异构、碎片化。本文研究原始医疗数据标准化这一缺失步骤，评估VLM识别格式、转换图像和提取文本的能力。该工作为医疗智能体利用电子健康记录提供了关键的数据预处理基础。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

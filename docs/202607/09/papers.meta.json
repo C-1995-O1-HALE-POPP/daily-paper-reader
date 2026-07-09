@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-09",
+  "date": "2026-07-09",
+  "generated_at": "2026-07-09T20:52:28",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/09/2607.03650v1-clinocr-bench-a-comprehensive-clinical-scanned-document-dataset-for-optical-character-recognition-model-evaluation",
+      "section": "quick",
+      "title_en": "ClinOCR-Bench: A Comprehensive Clinical Scanned Document Dataset for Optical Character Recognition Model Evaluation",
+      "authors": "Enshuo Hsu, Jin Zhou, Kirk Roberts",
+      "date": "2026-07-04",
+      "pdf": "https://arxiv.org/pdf/2607.03650v1",
+      "score": "7.0",
+      "evidence": "基于EHR的临床文档OCR基准",
+      "tldr": "临床扫描文档OCR因缺乏公开基准而评估困难。现有数据集未覆盖手写、旋转、低质量等常见扫描伪影。我们构建了ClinOCR-Bench，包含384张多样化扫描图像，分6个子集模拟真实EHR场景。基线评估表明视觉语言模型在不同伪影下性能差异显著，揭示了真实应用的挑战。该基准推动临床OCR标准化评估与模型鲁棒性提升。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Extracting textual information from scanned medical documents, such as external laboratory reports and manually filled forms, has been a major challenge in modern electronic health records (EHRs). Recent advancements in vision language models (VLMs) have shown great promise over traditional OCR tools. However, at this point, most clinical OCR studies were conducted on private, institutional data. To our knowledge, there are few publicly available datasets for evaluating OCR models in the clinical domain. Furthermore, common scanning artifacts that undermine OCR performance are not reflected in those datasets, leaving a systematic evaluation unfeasible. Therefore, we release a publicly available, realistic-looking OCR benchmark dataset, ClinOCR-Bench, with 384 scanned images across 6 subsets: Normal, Handwriting, Poor Quality, Rotation, Tables, and Mix-artifacts. ClinOCR-Bench features: 1) diverse document types and layouts, 2) full coverage of common EHR scan artifacts, 3) protected health information-free, 4) template-aware train/test split, and 5) adequate sample size for OCR benchmarking. Baseline OCR performance was evaluated using state-of-the-art open-weight and proprietary VLMs. The dataset and documentation are available on GitHub (https://github.com/ClinOCR-Bench/ClinOCR-Bench).",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/09/2607.04694v1-solve-the-missing-first-step-can-vlms-standardize-raw-heterogeneous-medical-data",
+      "section": "quick",
+      "title_en": "Solve the Missing First Step: Can VLMs Standardize Raw Heterogeneous Medical Data?",
+      "authors": "Xin Chen, Dongliang Xu, Cunhao Zhu, Xudong Luo, Haoyang Lyu, Xiaoxiao Sun, Serena Yeung-Levy, Yue Yao",
+      "date": "2026-07-06",
+      "pdf": "https://arxiv.org/pdf/2607.04694v1",
+      "score": "6.0",
+      "evidence": "解决原始异构医疗数据标准化问题，是医疗智能体使用EHR的前提步骤",
+      "tldr": "现有视觉语言模型基准测试假设数据已标准化，但实际临床数据原始异构。本文提出原始医疗数据标准化问题，构建MDS-Bench基准，包含1939个多样化任务。实验发现，最佳模型Gemini 3 Flash仅达48.6%端到端成功率。该研究揭示了原始数据标准化是医疗AI诊断的关键瓶颈。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "As vision-language models (VLMs) are increasingly applied to medical AI, existing benchmarks mainly focus on evaluating their diagnosis ability over given medical images and texts, implicitly assuming that standardized medical images, texts or question-answer pairs are already prepared. However, this assumption does not hold when we apply VLMs in real clinical practice, where medical data is often raw, heterogeneous, and fragmented across different sources. In this paper, we study this missing step, i.e., raw medical data standardization. Specifically, models are given raw dataset folders and evaluated on their ability to identify source formats, convert raw medical images into VLM-compatible visual inputs, extract relevant textual information, and organize the results into structured image-text pairs. To construct this Medical Data Standardization Benchmark (MDS-Bench), we manually annotate 1,939 raw medical data standardization tasks covering diverse clinical practice, radiology modalities, annotation formats, and directory layouts. Extensive experiments show that even the best performing VLMs, i.e., Gemini 3 Flash, achieve only 48.6% end-to-end success rate. Our research highlights raw medical data standardization as a critical bottleneck for medical AI diagnosis in real practice.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
