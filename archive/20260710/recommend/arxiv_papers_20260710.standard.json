@@ -1,0 +1,266 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-10T21:44:58.895342+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [
+    {
+      "id": "2607.08257v1",
+      "source": "arxiv",
+      "title": "MentalHospital: A Virtual Environment for Evaluating Psychiatric Clinical Encounters",
+      "abstract": "Large language models (LLMs) have shown strong performance on isolated psychiatric tasks, including dialogue, diagnosis, and treatment planning, yet existing benchmarks rarely simulate complete psychiatric clinical encounters. We introduce $\\textbf{MentalHospital}$, a virtual evaluation environment for LLM-based psychiatric clinical encounters. MentalHospital instantiates the Subjective Interviewing, Objective Examination, Diagnostic Assessment, and Treatment Planning (S.O.A.P.) workflow, using skill-augmented standardized patients constructed from 1,193 de-identified psychiatric electronic health record (EHR) cases spanning all major ICD-11 categories and 76 disorders. Each encounter is assessed through a dual-track protocol that combines objective comparison against EHR-derived references with subjective assessment of clinical process quality. To scale specialist judgment, we develop $\\textbf{MentalEval}$, five domain-specific evaluators covering communication empathy, interviewing professionalism, clinical-note quality, diagnostic rigor, and treatment appropriateness, trained with rubric-grounded SFT and expert-guided DPO. Survey responses from 22 clinicians support MentalHospital's clinical fidelity (3.88/5), while MentalEval achieves strong expert alignment with an average QWK of 0.944. Benchmarking shows that even the strongest LLM trails clinicians by 37.28 percentage points in objective psychiatric competence, with mental status assessment as a key bottleneck.",
+      "authors": [
+        "Yuming Yang",
+        "Xiao Sun",
+        "Yuanwei Zou",
+        "Zhengxiao Wu",
+        "Yun Chen",
+        "Jiang Zhong",
+        "Haoyang Zeng",
+        "Jingwang Huang",
+        "Kaiwen Wei"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-09T09:03:42+00:00",
+      "link": "https://arxiv.org/pdf/2607.08257v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Uses EHR cases to construct standardized patients for evaluating psychiatric LLM agents",
+      "llm_evidence_cn": "使用EHR病例创建标准化病人评估精神科LLM代理",
+      "llm_evidence": "使用EHR病例创建标准化病人评估精神科LLM代理",
+      "canonical_evidence": "使用EHR病例创建标准化病人评估精神科LLM代理",
+      "llm_tldr_en": "MentalHospital is a virtual environment that uses 1,193 de-identified psychiatric EHR cases to construct standardized patients for evaluating LLM-based psychiatric clinical encounters via a dual-track protocol.",
+      "llm_tldr_cn": "现有基准很少模拟完整的精神科临床会诊。本文提出MentalHospital虚拟环境，利用1193份脱敏精神科EHR病例构建技能增强的标准化病人，并基于SOAP工作流设计双轨评估协议，全面评估LLM在精神科临床会诊中的表现。实验表明该环境能有效区分不同模型的能力。该工作为基于EHR的医疗会话代理评估提供了可复用的基准。",
+      "llm_tldr": "现有基准很少模拟完整的精神科临床会诊。本文提出MentalHospital虚拟环境，利用1193份脱敏精神科EHR病例构建技能增强的标准化病人，并基于SOAP工作流设计双轨评估协议，全面评估LLM在精神科临床会诊中的表现。实验表明该环境能有效区分不同模型的能力。该工作为基于EHR的医疗会话代理评估提供了可复用的基准。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.08602v1",
+      "source": "arxiv",
+      "title": "Towards Precision Therapy in Hepatocellular Carcinoma: A Clinical-Reasoning LLM for Risk Stratification and Treatment Guidance",
+      "abstract": "Hepatocellular carcinoma (HCC) is a common malignancy and a leading cause of cancer-related mortality. Current guidelines and staging systems provide coarse categories, but often miss within-stage heterogeneity and the clinical context in electronic medical records (EMRs). We present HCC-STAR (Hepatocellular Carcinoma Staging, Treatment And pRognosis), a clinically aligned large language model that reads routine EMR narratives and jointly outputs risk score-based staging, ranked guideline-consistent treatments with evidence-based rationales, and individualized survival estimates. We curated about 30,000 HCC cases from SEER and expanded them into EMR-style narrative training data using a clinician-validated, prompt-based augmentation workflow. On this corpus, we developed a knowledge-aligned reasoning framework optimized with a step-verifiable composite reward, moving beyond text-level memorization of clinical guidelines. In a multi-center cohort of 6,668 patients from 12 hospitals in China, HCC-STAR achieved state-of-the-art performance in treatment recommendation and risk stratification compared with clinical guidelines and competitive models, including GPT-5 and Gemini-2.5 Pro. Hypothetical overall-survival analysis showed a median survival of 51 months under adherence to HCC-STAR recommendations, compared with 29 and 32 months under BCLC and CNLC. In clinician-centric evaluations, blinded hepatobiliary specialists rated HCC-STAR's reasoning and evidence-based justifications as trustworthy. The model surpassed resident and attending physicians in treatment accuracy and helped physicians make more accurate decisions faster when used as an assistant. These findings support HCC-STAR as a reliable and verifiable decision-support system for risk stratification and precision therapy in HCC.",
+      "authors": [
+        "Peng Cui",
+        "Jitao Wang",
+        "Siyan Xue",
+        "Yao Huang",
+        "Haoming Xia",
+        "Dong Li",
+        "Dengxiang Liu",
+        "Weilin Wang",
+        "Liping Liu",
+        "Leida Zhang",
+        "Yunfu Cui",
+        "Tao Peng",
+        "Daolin Ji",
+        "Haitao Zhao",
+        "Wei Zhang",
+        "Xiaojuan Wang",
+        "Weijie Ma",
+        "Zongren Ding",
+        "Jinlong Li",
+        "Yuan Ding",
+        "Jiajing Zhao",
+        "Zhiyu Chen",
+        "Chengkun Yang",
+        "Ziyue Huang",
+        "Jiaqi Liu",
+        "Fusheng Liu",
+        "Yang Zhou",
+        "Xiaojuan Wang",
+        "Zhongquan Sun",
+        "Shiyun Bao",
+        "Xiaojun Wang",
+        "Ming Yang",
+        "Guangxin Li",
+        "Bin Shu",
+        "Yong Liao",
+        "Hongxuan Li",
+        "Yao Tang",
+        "Shizhong Yang",
+        "Yongyi Zeng",
+        "Yufeng Yuan",
+        "Yinpeng Dong",
+        "Jihui Hao",
+        "Jun Zhu",
+        "Jiahong Dong"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-09T15:33:08+00:00",
+      "link": "https://arxiv.org/pdf/2607.08602v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Medical agent using electronic health records directly; HCC-STAR reads EMR narratives for risk stratification and treatment guidance.",
+      "llm_evidence_cn": "直接使用电子健康记录的医疗智能体；HCC-STAR读取EMR叙述用于风险分层和治疗指导。",
+      "llm_evidence": "直接使用电子健康记录的医疗智能体；HCC-STAR读取EMR叙述用于风险分层和治疗指导。",
+      "canonical_evidence": "直接使用电子健康记录的医疗智能体；HCC-STAR读取EMR叙述用于风险分层和治疗指导。",
+      "llm_tldr_en": "HCC-STAR is a clinically aligned LLM that reads routine EMR narratives and jointly outputs staging, treatment recommendations, and survival estimates for hepatocellular carcinoma, directly serving as a medical agent using EHR.",
+      "llm_tldr_cn": "HCC-STAR是一个临床对齐的大语言模型，能够读取常规电子病历（EMR）叙述，联合输出基于风险评分的分期、排名后的指南一致治疗建议和个性化生存估计。它解决了当前指南对肝细胞癌异质性考虑不足的问题。通过从SEER数据构建约30,000例模拟EMR叙事进行训练，模型在分期和推荐准确性上表现出色。这项工作直接提供了一个使用EHR的医疗智能体实例，对基于EHR的医疗agent评估具有重要参考价值。",
+      "llm_tldr": "HCC-STAR是一个临床对齐的大语言模型，能够读取常规电子病历（EMR）叙述，联合输出基于风险评分的分期、排名后的指南一致治疗建议和个性化生存估计。它解决了当前指南对肝细胞癌异质性考虑不足的问题。通过从SEER数据构建约30,000例模拟EMR叙事进行训练，模型在分期和推荐准确性上表现出色。这项工作直接提供了一个使用EHR的医疗智能体实例，对基于EHR的医疗agent评估具有重要参考价值。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.08625v1",
+      "source": "arxiv",
+      "title": "The complexities of patient-centred conversational artificial intelligence",
+      "abstract": "Consumer-facing health chatbots powered by large language models (LLMs) are increasingly used for symptom assessment. However, chatbot development and evaluation often rely on cooperative, articulate, simulated patients. We analysed 2,053 real patient-chatbot conversations and found that communication patterns and expression of emotions vary widely across users. We developed a patient simulator that separately models clinical content, emotional state, conversational strategy, and communication style. In a Turing-inspired evaluation of realism with 15 human graders, simulated conversations were nearly indistinguishable from real ones, with human graders achieving an accuracy of 55%. We used five distinct patient personae, across 1,164 clinician-graded cases, to evaluate the performance of four LLMs in urgency assessment. We found that communication style can significantly alter triage outcomes. Patient-centred conversational artificial intelligence must accommodate communication diversity: systems designed for idealised, rather than realistic, interactions risk underperforming and amplifying health disparities when deployed in the real world.",
+      "authors": [
+        "João Matos",
+        "Olivia Buege",
+        "Donny Cheung",
+        "Gary S. Collins",
+        "Paula Dhiman",
+        "Nan Li",
+        "Bingyu Mao",
+        "Benjamin W. Nelson",
+        "Michail Ouroutzoglou",
+        "Paul Varghese",
+        "Jonathan Amar"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-07-09T15:56:55+00:00",
+      "link": "https://arxiv.org/pdf/2607.08625v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "benchmarking medical chatbot performance with real patient data",
+      "llm_evidence_cn": "使用真实患者数据对医疗聊天机器人进行基准测试",
+      "llm_evidence": "使用真实患者数据对医疗聊天机器人进行基准测试",
+      "canonical_evidence": "使用真实患者数据对医疗聊天机器人进行基准测试",
+      "llm_tldr_en": "Analyzes real patient-chatbot conversations and develops a patient simulator for evaluating medical agents, achieving near-realistic Turing test evaluations.",
+      "llm_tldr_cn": "现有医疗聊天机器人评估过度依赖模拟患者，忽略了真实交流的复杂性。本文分析了2053条真实医患对话，开发了一个分别建模临床内容、情绪状态、对话策略和交流风格的患者模拟器。通过15名人类评分员的图灵测试评估，模拟对话与真实对话几乎无法区分（准确率55%）。该工作为基于真实数据的医疗Agent性能评估提供了实用基准方法。",
+      "llm_tldr": "现有医疗聊天机器人评估过度依赖模拟患者，忽略了真实交流的复杂性。本文分析了2053条真实医患对话，开发了一个分别建模临床内容、情绪状态、对话策略和交流风格的患者模拟器。通过15名人类评分员的图灵测试评估，模拟对话与真实对话几乎无法区分（准确率55%）。该工作为基于真实数据的医疗Agent性能评估提供了实用基准方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.03953v1",
+      "source": "arxiv",
+      "title": "The Remarkable Effectiveness of Providing AI Agents with Natural Language Tools: A Replication Study Validating NLT Performance Across 14 Models",
+      "abstract": "This study independently replicates and extends the Natural Language Tools (NLT) framework of Johnson et al.~(2025), which questions the use of structured tool calling in large language model (LLM) agentic systems. We evaluated NLT across 14 models and 8,560 trials, adding newer frontier, reasoning, and open-weight models to the original set. The results confirm the core findings and add detail. NLT improves tool-calling accuracy by 14.9 percentage points overall (62.3\\% versus 47.4\\% structured) and reduces critical errors by 93\\% (51 versus 755 errors). The gains depend on model capability: models without native tool calling, reasoning models, and smaller models gain substantially (+24.0pp to +43.1pp), while heavily optimized frontier models (GPT-5, Gemini 2.5 Pro) show smaller or reversed advantages. This matches recent analyses of reinforcement-learning-optimized tool use (Martinez, 2025). NLT also cuts token usage by 25.2\\%. The reliability and efficiency advantages compound in recursive agentic workflows, where agents chain many tool calls across sub-agents: a structured failure triggers retries, fallback routing, and coordination overhead, while NLT avoids most of that cost at the source. This work makes three contributions: (1) the first independent validation of NLT using open-source tooling, (2) evidence that model capability moderates NLT's advantages (Chen et al., 2025; Zhang et al., 2025), and (3) a measurement of NLT's reliability benefit (93\\% fewer errors), its most deployment-relevant property given the known fragility of structured tool calling. NLT is a practical alternative to structured tool calling, especially for production systems that value reliability over parseability.",
+      "authors": [
+        "Alexander Somma",
+        "Isabelle Plante",
+        "Fred Premji"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-07-04T16:59:12+00:00",
+      "link": "https://arxiv.org/pdf/2607.03953v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "provides benchmarking methodology for agent tool-calling performance",
+      "llm_evidence_cn": "提供了智能体工具调用性能的基准测试方法",
+      "llm_evidence": "提供了智能体工具调用性能的基准测试方法",
+      "canonical_evidence": "提供了智能体工具调用性能的基准测试方法",
+      "llm_tldr_en": "Replicates and extends NLT framework showing 14.9pp tool-calling accuracy gain and 93% error reduction across 14 models; relevant to agent performance benchmarking.",
+      "llm_tldr_cn": "当前智能体系统依赖结构化工具调用，但其性能瓶颈尚未明确。本文独立复现并扩展了自然语言工具（NLT）框架，在14个模型和8560次试验中评估。结果显示NLT使工具调用准确率平均提高14.9个百分点，并减少93%的关键错误。该研究为智能体工具调用能力的基准测试提供了可迁移的评估方法论。",
+      "llm_tldr": "当前智能体系统依赖结构化工具调用，但其性能瓶颈尚未明确。本文独立复现并扩展了自然语言工具（NLT）框架，在14个模型和8560次试验中评估。结果显示NLT使工具调用准确率平均提高14.9个百分点，并减少93%的关键错误。该研究为智能体工具调用能力的基准测试提供了可迁移的评估方法论。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.05202v1",
+      "source": "arxiv",
+      "title": "EvoAgentBench: Benchmarking Agent Self-Evolution via Ability Transfer",
+      "abstract": "Agent self-evolution in long-horizon LLM systems is largely procedural: useful experience is not merely stored information, but reusable procedures for searching, debugging, and verification. Yet current evaluations do not isolate this form of transfer. Agent benchmarks test single-episode task solving; memory benchmarks target information retention rather than procedural reuse. We introduce EvoAgentBench, a benchmark for agent self-evolution via Ability-guided transfer across four agentic domains: web research, algorithmic reasoning, software engineering, and knowledge work. EvoAgentBench extracts trace-grounded Abilities from agent executions, canonicalizes them into operational units, and builds domain-specific Ability Graphs linking tasks that share procedural overlap. By design, every test task is backed by verified training-side Ability support. Across a 528/267 train/test split, two scaffolds, and three backbones, curated Ability content transfers reliably across model families, but no current automatic method sustains positive gain in all settings. EvoAgentBench shifts self-evolution evaluation from aggregate accuracy comparison to fine-grained diagnosis of experience encoding, routing, and uptake. The benchmark is publicly available at https://huggingface.co/datasets/EverMind-AI/EvoAgentBench.",
+      "authors": [
+        "Xingze Gao",
+        "Chuanrui Hu",
+        "Hongda Chen",
+        "Pengfei Yao",
+        "Zhao Wang",
+        "Yi Bai",
+        "Zhengwei Wu",
+        "Yunyun Han",
+        "Xiaofeng Cong",
+        "Jie Gui",
+        "Yafeng Deng",
+        "Teng Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-06T15:17:09+00:00",
+      "link": "https://arxiv.org/pdf/2607.05202v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "introduces benchmark for agent self-evaluation and ability transfer",
+      "llm_evidence_cn": "提出了智能体自我进化与能力迁移的基准测试",
+      "llm_evidence": "提出了智能体自我进化与能力迁移的基准测试",
+      "canonical_evidence": "提出了智能体自我进化与能力迁移的基准测试",
+      "llm_tldr_en": "Proposes EvoAgentBench, a benchmark for agent self-evolution via ability transfer across four domains, providing reusable evaluation methodology.",
+      "llm_tldr_cn": "现有智能体评测只测试单回合任务或信息记忆，无法评估程序性经验迁移能力。本文提出EvoAgentBench，一个基于能力引导迁移的智能体自我进化基准，涵盖网络研究、算法推理、软件工程和知识工作四个领域。该方法从智能体执行轨迹中提取可复用的能力单元并构建能力图，为医疗Agent的持续学习和评估提供了可借鉴的基准框架。",
+      "llm_tldr": "现有智能体评测只测试单回合任务或信息记忆，无法评估程序性经验迁移能力。本文提出EvoAgentBench，一个基于能力引导迁移的智能体自我进化基准，涵盖网络研究、算法推理、软件工程和知识工作四个领域。该方法从智能体执行轨迹中提取可复用的能力单元并构建能力图，为医疗Agent的持续学习和评估提供了可借鉴的基准框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
