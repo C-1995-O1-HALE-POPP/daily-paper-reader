@@ -1,0 +1,64 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-11T20:20:16.317038+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.07761v1",
+      "source": "arxiv",
+      "title": "Aligning Clinical Needs and AI Capabilities: A Survey on LLMs for Medical Reasoning",
+      "abstract": "Large language models (LLMs) have emerged as important tools in healthcare, showing growing potential for clinical reasoning and patient care. This survey examines recent progress in medical LLMs, focusing on reasoning applications and requirements. We present a dual-view approach that connects clinical practice with computational methods. On the clinical side, we establish a five-level competency scheme following Miller's Pyramid, progressing from knowledge recall to dynamic case management. On the computational side, we link deductive, inductive, and abductive reasoning patterns to common medical goals and tasks. We also introduce a benchmark dataset spanning five levels of medical reasoning capability and report results on 18 state-of-the-art models, revealing that medical specialist models excel in diagnosis-centric tasks while general models lead in decision support and dialogue. We conclude by discussing current progress and open challenges, including data limitations, hallucination, and grounding issues, and outline directions toward safer, more reliable, and workflow-ready systems.",
+      "authors": [
+        "Qi Peng",
+        "Jiatong Li",
+        "Sirui Huang",
+        "Yiyang Jiang",
+        "Kaisong Gong",
+        "Ronger Ding",
+        "Shijie Ye",
+        "Changmeng Zheng",
+        "Yi Cai",
+        "Xiaobo Yang",
+        "Jin Huang",
+        "Xiao-Yong Wei",
+        "Qing Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-08T15:19:37+00:00",
+      "link": "https://arxiv.org/pdf/2607.07761v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Survey on LLMs for medical reasoning with a benchmark dataset",
+      "llm_evidence_cn": "关于医疗推理LLM的综述，包含基准数据集",
+      "llm_evidence": "关于医疗推理LLM的综述，包含基准数据集",
+      "canonical_evidence": "关于医疗推理LLM的综述，包含基准数据集",
+      "llm_tldr_en": "This survey examines LLMs in medical reasoning, proposes a five-level competency scheme using Miller's Pyramid, and introduces a benchmark dataset spanning five levels of medical reasoning capability, evaluated on 18 state-of-the-art models.",
+      "llm_tldr_cn": "该综述调研了医学推理中LLM的最新进展，提出了基于Miller金字塔的五级能力方案，并构建了一个覆盖五级医学推理能力的基准数据集。在18个先进模型上的评测揭示了当前模型的优势和局限，为医疗AI评估提供了结构化框架，但与EHR驱动的Agent评估尚有距离。",
+      "llm_tldr": "该综述调研了医学推理中LLM的最新进展，提出了基于Miller金字塔的五级能力方案，并构建了一个覆盖五级医学推理能力的基准数据集。在18个先进模型上的评测揭示了当前模型的优势和局限，为医疗AI评估提供了结构化框架，但与EHR驱动的Agent评估尚有距离。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

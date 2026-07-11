@@ -1,0 +1,24 @@
+{
+  "label": "2026-07-11",
+  "date": "2026-07-11",
+  "generated_at": "2026-07-11T20:22:34",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202607/11/2607.07761v1-aligning-clinical-needs-and-ai-capabilities-a-survey-on-llms-for-medical-reasoning",
+      "section": "quick",
+      "title_en": "Aligning Clinical Needs and AI Capabilities: A Survey on LLMs for Medical Reasoning",
+      "authors": "Qi Peng, Jiatong Li, Sirui Huang, Yiyang Jiang, Kaisong Gong, Ronger Ding, Shijie Ye, Changmeng Zheng, Yi Cai, Xiaobo Yang, Jin Huang, Xiao-Yong Wei, Qing Li",
+      "date": "2026-07-08",
+      "pdf": "https://arxiv.org/pdf/2607.07761v1",
+      "score": "7.0",
+      "evidence": "关于医疗推理LLM的综述，包含基准数据集",
+      "tldr": "大语言模型在医疗推理中展现出潜力，但需与临床需求对齐。本文提出双重视角框架：临床侧采用Miller金字塔五级能力，从知识回忆到动态病例管理；计算侧连接演绎、归纳、溯因推理模式。构建基准数据集并评估18个模型，发现医疗专科模型在诊断任务中领先，通用模型在决策支持和对话中表现更优。研究明确了临床能力分级与计算推理的映射，揭示了当前模型在不同任务上的优势与差距，并指出了数据、幻觉和落地等挑战。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Large language models (LLMs) have emerged as important tools in healthcare, showing growing potential for clinical reasoning and patient care. This survey examines recent progress in medical LLMs, focusing on reasoning applications and requirements. We present a dual-view approach that connects clinical practice with computational methods. On the clinical side, we establish a five-level competency scheme following Miller's Pyramid, progressing from knowledge recall to dynamic case management. On the computational side, we link deductive, inductive, and abductive reasoning patterns to common medical goals and tasks. We also introduce a benchmark dataset spanning five levels of medical reasoning capability and report results on 18 state-of-the-art models, revealing that medical specialist models excel in diagnosis-centric tasks while general models lead in decision support and dialogue. We conclude by discussing current progress and open challenges, including data limitations, hallucination, and grounding issues, and outline directions toward safer, more reliable, and workflow-ready systems.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
