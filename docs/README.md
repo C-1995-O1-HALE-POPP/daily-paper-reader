@@ -6,26 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-11
-- 运行时间：2026-07-11 20:22:26 UTC
+- 最新运行日期：2026-07-12
+- 运行时间：2026-07-12 21:06:18 UTC
 - 运行状态：成功
-- 本次总论文数：1
+- 本次总论文数：5
 - 精读区：0
-- 速读区：1
+- 速读区：5
 
 ### 今日简报（AI）
-今日仅速读1篇综述，聚焦LLM在医学推理中的临床应用对齐问题。  
-最值得关注：论文系统梳理了大型语言模型在临床推理中的能力边界与需求差距，指出当前AI仍需提升可靠性。  
-普通读者可留心该领域后续研究，评估AI辅助诊疗的实际价值与风险。
-- 详情：[/202607/11/README](/202607/11/README)
+今日速读5篇论文，重点聚焦LLM代理工具使用诊断与对话系统测试。  
+最值得关注两篇7分论文：《ToolFailBench》诊断LLM代理工具使用失败，《Mining Workflow Graphs》探索对话代理的黑盒边界测试。  
+建议普通读者优先了解LLM代理的可靠性评估方法，以及医疗场景下生成式AI的混合方法评估。
+- 详情：[/202607/12/README](/202607/12/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Aligning Clinical Needs and AI Capabilities: A Survey on LLMs for Medical Reasoning](/202607/11/2607.07761v1-aligning-clinical-needs-and-ai-capabilities-a-survey-on-llms-for-medical-reasoning)  
+1. [ToolFailBench: Diagnosing Tool-Use Failures in LLM Agents](/202607/12/2607.04686v1-toolfailbench-diagnosing-tool-use-failures-in-llm-agents)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：关于医疗推理LLM的综述，包含基准数据集
+   evidence：LLM智能体工具使用失败诊断基准，包含医学领域任务
+2. [Mining Workflow Graphs for Black-Box Boundary Testing of Conversational LLM Agents](/202607/12/2607.06873v1-mining-workflow-graphs-for-black-box-boundary-testing-of-conversational-llm-agents)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：对话LLM智能体黑盒边界测试框架，可直接用于医疗智能体基准测试
+3. [Between Knowledge and Care: A Mixed-Methods Evaluation of Generative AI for T2DM Self-Management from Patient and Physician Perspectives](/202607/12/2607.03720v1-between-knowledge-and-care-a-mixed-methods-evaluation-of-generative-ai-for-t2dm-self-management-from-patient-and-physician-perspectives)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：开发了用于评估生成式AI健康指导的医生评分量规，为医疗AI代理评估提供方法
+4. [HAS-Bench: Evaluating LLM-Based Human-Agent Systems under Configurable Human Participation](/202607/12/2607.04329v1-has-bench-evaluating-llm-based-human-agent-systems-under-configurable-human-participation)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：评估LLM-Based人机协作系统的基准，可扩展到医疗agent评估
+5. [UniClawBench: A Universal Benchmark for Proactive Agents on Real-World Tasks](/202607/12/2607.08768v1-uniclawbench-a-universal-benchmark-for-proactive-agents-on-real-world-tasks)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：通用主动智能体基准，可迁移至医疗智能体评估
 
 
 <div class="dpr-home-promo-card">
