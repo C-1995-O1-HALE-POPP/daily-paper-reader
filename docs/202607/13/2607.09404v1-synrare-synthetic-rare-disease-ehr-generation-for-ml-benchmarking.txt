@@ -1,0 +1,115 @@
+Title: SYNRARE: Synthetic Rare Disease EHR Generation for ML Benchmarking
+
+URL Source: https://arxiv.org/pdf/2607.09404v1
+
+Published Time: Mon, 13 Jul 2026 01:13:11 GMT
+
+Number of Pages: 4
+
+Markdown Content:
+Journal Title Here , YEAR, pp. 1–4 
+
+DOI added during production Published: Date added during production 
+
+Paper 
+
+# SYNRARE: Synthetic Rare Disease EHR Generation for ML Benchmarking 
+
+# Nicolai Dinh Khang Truong 1 and Richard R¨ ottger 1, ∗
+
+> 1
+
+Department of Mathematics and Computer Science, University of Southern Denmark, Campusvej 55, 5230, Odense, Denmark 
+
+> ∗
+
+Corresponding author. Department of Mathematics and Computer Science, University of Southern Denmark, Campusvej 55, 5230, Odense, Denmark. E-mail: roettger@imada.sdu.dk 
+
+# Abstract 
+
+Motivation: Rare disease (RD) diagnosis is frequently delayed due to the similarities in symptoms to common disease variants. Machine Learning Algorithms applied to Electronic Health Records show promise for accelerating the diagnosis; however, legal and privacy concerns pose significant barriers. To address these issues, Synthetic Data Generation is an alternative method for obtaining Electronic Health Records and can be applied with any Machine Learning algorithm for benchmarking and development purposes. Despite the availability of Synthetic Data Generation algorithms, support for generating a subset of patients that differ in a definable degree from the majority to simulate patients with RD is often lacking. Results: We present SYNRARE, a graphical user interface based on the Synthea framework that enables easier modification and generation of synthetic Electronic Health Records of RD patients, which differ only to a definable degree from patients with common diseases, thereby enabling the benchmarking and testing of algorithms under controlled technical conditions. SYNRARE enables researchers to rapidly benchmark their Machine Learning algorithms across any scenario. Availability and implementation: SYNRARE, including detailed instructions for installing, is available at https://gitlab.sdu.dk/screen4care/synrare. 
+
+## Introduction 
+
+Rare diseases are defined as conditions affecting 1 in 2,000 patients in the European Union (Valdez et al., 2016; Health, 2024). Due to the low prevalence of these diseases, their symptomatological similarity to common diseases, and clinical unfamiliarity, patients undergo a diagnostic odyssey, taking several years to receive the final diagnosis (Valdez et al., 2016; Health, 2024; Dubief et al., 2024). Machine Learning on Electronic Health Records (EHRs) can accelerate the diagnosis of patients with rare diseases and therefore help shorten the path to diagnosis. Recent examples demonstrate that applying Machine Learning (ML) algorithms alone to EHRs can identify rare diseases, thereby providing clinicians with the information necessary to perform targeted interventions (Huda et al., 2021; Cohen et al., 2020; Wilson et al., 2023). However, rare diseases generally pose a challenge to ML approaches: We are normally presented with highly imbalanced datasets, resulting in increased false positives due to Bayes’ theorem. Tailored and specialized ML approaches have to be developed and tested in controlled environments to demonstrate their capabilities for the application in those cases. However, due to privacy and ethical concerns (Fecho et al., 2022), access to extensive real-world data is limited and consequently poses a significant roadblock for research on the limitations and suitability of novel ML methods for EHR data of patients with rare diseases. Synthetic data helps overcome these barriers, allowing researchers to conduct rapid benchmarking and evolution of the capabilities of their ML models in a controlled environment. For example, aresearch group can test the ability of a classifier or outlier detection method for the early detection of rare diseases and train and evaluate it on synthetic patient data under realistic circumstances before undergoing the diligent access procedure to finally access real-world data. We present SYNRARE, a GUI that leverages the Synthea framework (Walonoski et al., 2018), enabling researchers to quickly modify existing modules of common diseases to generate synthetic EHRs, including examples of slightly modified patients with a simulated rare disease. SYNRARE is readily available at https://gitlab.sdu.dk/screen4care/synrare, thereby enabling researchers to quickly set up a testbed for technical ML evaluation. It is important to note that SYNRARE is intended for the technical evaluation of ML procedures, where researcher seek to evaluate the technical capabilities of their algorithm to differentiate a minority class from a majority class with realistically appearing EHR data. Furthermore, we encourage users, especially clinical experts, to contribute to the project to capture accurate disease progression. While SYNRARE allows for the inclusion of literature-based knowledge, the data is not intended to help understand the rare disease in question, but merely to create cohorts that have a definable degree of dissimilarity from the majority class. Synthea 
+
+Received: Date Month Year. Revised received: Date Month Year. Accepted: Date Month Year 
+
+© The Author(s) YEAR. Copyright and licence statements to be updated by the publisher during production. arXiv:2607.09404v1 [cs.LG] 10 Jul 2026 2 Journal Title Here, YEAR, Volume XX, Issue x 
+
+is an open-source, rule-based synthetic data generator for patients that simulates disease trajectories for each patient from birth to the present. The framework consists of selectable disease-specific modules designed and developed by medical experts. We choose Synthea because it generates fully synthetic patient data without relying on real EHR data, unlike data-driven models such as Syntegra (Syntegra Inc., 2022), MedGAN (Choi et al., 2017), and CTGan (Alabsi et al., 2023). Synthetic data generated by rule-based data generators is preferable to data-driven models, as it allows the user to gain full control over disease trajectories and demographic parameters, thereby avoiding any biases introduced by underlying real-world data distributions. Therefore, Synthea is well-suited to systematically evaluate the performance limits of various ML models for EHR-based disease classification. The concrete contributions are as follows: 
+
+1. Generation of patients with common diseases and a subgroup of simulated RD patients with a definable degree of dissimilarity for benchmarking purposes. 
+
+2. No-code interface that reduces the barrier to entry for synthetic data generation. 
+
+3. BMI-driven comorbidity modeling based on empirical evidence. 
+
+4. Legacy module migration support. 
+
+## Synthea Overview 
+
+To fully understand SYNRARE, it is necessary to explain Synthea, as SYNRARE depends on its data generation capabilities. Synthea generates a medical history of synthetic patients on predefined modules. These modules typically represent a disease and generate several events, including symptom onset, encounters, medications, and other clinical events. These events are also known as states. This process simulates the patient’s progression from the disease’s initial manifestation to diagnosis, eventual recovery, or death. For example, a module representing Cystic Fibrosis is a rare genetic disorder resulting in abnormally thick and sticky mucus clogging up the lungs and pancreas (Ong and Ramsey, 2023). The majority of affected patients are diagnosed early in their age through newborn screening, while there are a few receiving a diagnosis later in their age. A sweat test is a reliable procedure for measuring the chloride level, where greater than or equal to 60 mmol/L indicates Cystic Fibrosis (Ong and Ramsey, 2023; Farrell et al., 2017). A state where the patient receives a diagnosis can therefore be defined as a probability exponential distribution for all patients, followed by another state capturing the chloride level in a uniform distribution between 60 -80 mmol/L. A synthetic dataset is generated based on the selected module for use in research studies. This example is simplified and serves solely to illustrate the process of synthetic patient generation. It is possible to manually edit modules to generate a rarer variant of a disease. However, this process demands a thorough understanding of Synthea’s framework, domain knowledge, and the state being modeled. Therefore, SYNRARE was developed to accelerate the generation of rarer disease variants and, therefore, enable them to establish a controlled test bed for research purposes. 
+
+## Features, Implementation and Results 
+
+One of the main features of Synthea is to view and modify an existing module. However, a key missing component is applying a global modification to the module, meaning the current user must manually modify each state to accommodate their needs. 
+
+## Installation 
+
+SYNRARE requires Python 3.8+ and Java JDK 11 to run both the software and Synthea. Additional instructions on installing and running the software are available on GitLab. After installing the software, the user can generate synthetic data based on the modules provided by Synthea. 
+
+## Module Selection 
+
+SYNRARE offers three modes: Single Module, Multiple Modules, and All Modules. Single Module allows the user to select, view, and modify states of the selected module. The viewing and modification of the states are described later in this section. Multiple Modules enable simultaneous patient generation by selecting a subset of available modules, thereby supporting the creation of customized disease combinations. All Modules include all available modules and offer a quick way to generate data of patients representing the general population in a hospital. The user can load their custom module into SYNRARE to either generate synthetic data or view and modify it. 
+
+## Module Viewing 
+
+SYNRARE extends Synthea’s functionality by enabling users to view and modify the underlying distribution of each state in Single Module mode, as well as the probabilities associated with these events and their respective distribution types. To be precise, these states follow a Uniform, Gaussian, or Exponential distribution or can be assigned an exact value. The parameters for the Uniform distribution are set to span the range from the lower to the upper bound. The Gaussian distribution requires both the mean and the variance. Finally, the Exponential distribution only requires the mean. A detailed overview of the module is shown in Figure 1A and 1B, allowing the user to check and modify some states. Many legacy modules often contain missing fields or lack support for specific distributions. SYNRARE supports legacy module migration, allowing modules to be upgraded to the latest version and, therefore, enabling users to modify them accordingly. 
+
+## Module Modification 
+
+The user can apply the Random Modification to adjust the magnitude of the variance, the range shift, and the probability of the modification occurring, thereby globally changing each state as depicted in Figure 1B and 1C. The modification depends on the distribution. As the variance increases, the Uniform and Gaussian distributions become taller or wider, respectively. In contrast, the Exponential distribution remains unaffected by the change. A range shift moves the distribution, whereas a Uniform distribution shifts both its lower and upper bounds simultaneously to the left or right. Additionally, the means of the Gaussian and Exponential distributions are similarly shifted, moving left or right as a result of this modification. To illustrate the magnitude of the shift, if the user sets the range shift to 2, a state with a uniform distribution in the range of 25 to 50 could, in extreme cases, be shifted to the range of 50 to 75. Therefore, the user should typically set the slide adjustment from 1 to 1.5 to apply minor modifications. Journal Title Here, YEAR, Volume XX, Issue x 3                       
+
+> Figure 1 Overview of the SYNRARE GUI and a PCA plot. (A) shows the display upon startup. (B) is the detailed overview of the module ”bronchitis”. The user is able to modify each state independently or globally by adjusting the variance, range shift, and the probability to apply the change for each state. (C) represents the proposed change after applying aglobal modification. (D) is the PCA representation of the original ”bronchitis” module and the modified module.
+
+Another component of the module modification feature is the ability to adjust body mass index (BMI) to simulate known health effects across the categories: Normal, Overweight, Obesity Class I, Class II, and Class III. SYNRARE automatically updates the associated health effects. An individual with obesity shows increased risks of cardiovascular events, particularly in cases of severe obesity. Epidemiological meta-analyses indicate that overweight adults (BMI 25–29 .9) have roughly 20–50% higher odds of coronary heart disease and stroke, whereas obesity (BMI ≥ 30) roughly doubles the risk of these outcomes (Guh et al., 2009). Furthermore, Table 1 presents clinical evidence that the patient generally experiences more severe symptoms with increasing BMI. For instance, the systolic blood pressure of an obesity III patient is modeled as being, on average, 25 mmHg higher than that of a normal-weight patient to simulate the high prevalence of hypertension in that group. After applying any of the changes, the user receives a summary of the affected states and their updated values, which can be approved or rejected. A new module reflecting the modifications is created; however, if the user is dissatisfied with the current modifications, they may remove it. 
+
+## Example case of generating a rare variant disease 
+
+To exemplify the usability of SYNRARE, consider a use case involving bronchitis and a rare variant of lung disease for aclassification task. The user can modify the distribution for most states in the bronchitis module to create a close variant of the disease and thus determine the degree of similarity between bronchitis and the variant. We selected the Random modification mode and set the variance, range shift, and probability to modify all states to 1.1, 1.2, and 100%, respectively. Thereafter, the user can apply different ML models to assess their performance on binary classification tasks. Figure 1D depicts a PCA plot of bronchitis and its close variant. Both diseases are similar, making simple, interpretable models, such as Logistic Regression, difficult to apply to binary classification tasks. One could consider instead whether applying complex black-box models yields stronger performance. The user can create different scenarios to make the rare variant increasingly distinguishable from bronchitis to simulate classification tasks. The use case is not limited to binary classification tasks; it can be extended to general supervised and unsupervised tasks, such as outlier detection and clustering. 
+
+## Discussion and Conclusion 
+
+SYNRARE is an ideal solution for researchers seeking to develop and benchmark ML models for accelerating rare disease diagnosis. An intuitive user interface enables domain experts to generate synthetic data and customize and tailor their modules for their test scenarios without compromising patient privacy, making SYNRARE an essential tool for supporting the rapid development and testing of ML approaches tailored for RD. SYNRARE enables users to generate synthetic data for their specific scenarios and subsequently rapidly benchmark ML algorithms used to assess their limitations. This software is particularly suitable for users with domain knowledge to model and generate comparable disease variants. To make the best use of SYNRARE, the user should ideally have domain knowledge to increase the realism of their disease scenario. This includes, but is not limited to, a strong understanding of disease progression, familiarity with clinical guidelines, and knowledge of clinical phenotypes that characterize the disease. Users should recognize the inherent limitations of Synthea, as synthetic data may not fully represent the complexity and variability present within real-world EHRs. In practice, EHRs, particularly those of rare disease patients, often contain missing data and confounding information (Li et al.; Ren et al.). In contrast, Synthea generates ”idealized” disease trajectories that include relevant symptoms and clinical interventions, but it nevertheless allows the systematic delineation of the capabilities of ML tools by creating datasets of varying difficulty. 
+
+## Acknowledgements 
+
+We thank our former master’s student, Andreas Rosenstjerne, for implementing and testing SYNRARE. 
+
+## Conflicts of interest 
+
+Nothing declared. 
+
+## Funding 
+
+This work was supported by the Innovative Medicines Initiative 2 Joint Undertaking (JU) under grant agreement No. 101034427. 
+
+## References 
+
+B. A. Alabsi, M. Anbar, and S. D. A. Rihan. Conditional tabular generative adversarial based intrusion detection system 4 Journal Title Here, YEAR, Volume XX, Issue x                                         
+
+> Adjustment (unit) Overweight Obesity I Obesity II Obesity III
+> Systolic/Diastolic BP increment (mmHg) +5 +10 +15 +25
+> Resting heart rate increment (beats/min) +2 +4 +5 +7
+> Body temperature increment ( °C) +0 .1+0 .2+0 .3+0 .5
+> Respiratory rate increment (breaths/min) +1 +2 +3 +4
+> Fasting glucose level multiplier ×1.05 ×1.10 ×1.15 ×1.24
+> Total/LDL cholesterol multiplier ×1.05 ×1.15 ×1.25 ×1.40
+> Liver enzymes (ALT, AST) multipler ×1.10 ×1.20 ×1.30 ×1.60
+> General symptom severity multiplier ×1.10 ×1.20 ×1.30 ×1.50
+> Disease probability multiplier ×1.15 ×1.35 ×1.65 ×2.10
+
+Table 1 Parameter adjustment factors for each BMI category in the BMI modification module. 
+
+for detecting ddos and dos attacks on the internet of things networks. Sensors , 23(12), 2023. ISSN 1424-8220. doi: 10.3390/s23125644. URL https://www.mdpi.com/1424-8220/23/ 12/5644 .E. Choi, S. Biswal, B. A. Malin, J. Duke, W. F. Stewart, and J. Sun. Generating multi-label discrete electronic health records using generative adversarial networks. CoRR ,abs/1703.06490, 2017. URL http://arxiv.org/abs/1703.06490 .A. M. Cohen, S. Chamberlin, T. G. Deloughery, M. U. Nguyen, S. Bedrick, S. Meninger, J. J. Ko, J. J. Amin, A. Wei, and W. R. Hersh. Detecting rare diseases in electronic health records using machine learning and knowledge engineering: Case study of acute hepatic porphyria. PLoS ONE , 15, 2020. J. Dubief, E. S. Gross, and F. Faye. Voices on newborn screening: The opinion of people living with a rare disease. Rare barometer survey report, EURORDIS–Rare Diseases Europe, May 2024. URL https://www.eurordis.org/wp-content/ uploads/2024/05/RB_NBS_report_vff.pdf . Conducted within the framework of the European Screen4Care research project (IMI2 Grant Agreement No. 101034427). P. M. Farrell, T. B. White, C. L. Ren, S. E. Hempstead, F. Accurso, N. Derichs, M. S. Howenstine, S. A. McColley, M. J. Rock, M. Rosenfeld, I. Sermet-Gaudelus, K. W. Southern, B. C. Marshall, and P. R. Sosnay. Diagnosis of cystic fibrosis: Consensus guidelines from the cystic fibrosis foundation. The Journal of Pediatrics , 181:S4–S15.e1, 2017. K. Fecho, S. C. Ahalt, M. Knowles, A. K. Krishnamurthy, M. Leigh, K. Morton, E. R. Pfaff, M. Wang, and H. Yi. Leveraging open electronic health record data and environmental exposures data to derive insights into rare pulmonary disease. Frontiers in Artificial Intelligence , 5, 2022. D. Guh, W. Zhang, N. Bansback, Z. Amarsi, L. Birmingham, and A. H. Anis. The incidence of co-morbidities related to obesity and overweight: A systematic review and meta-analysis. BMC Public Health , 9:88 – 88, 2009. T. L. G. Health. The landscape for rare diseases in 2024. The Lancet. Global health , 12 3:e341, 2024. A. Huda, A. Casta˜ no, A. Niyogi, J. Schumacher, M. M. Stewart, M. Bruno, M. Hu, F. S. Ahmad, R. C. Deo, and S. J. Shah. A machine learning model for identifying patients at risk for wild-type transthyretin amyloid cardiomyopathy. Nature Communications , 12, 2021. J. Li, X. S. Yan, D. Chaudhary, V. Avula, S. Mudiganti, H. Husby, S. Shahjouei, A. Afshar, W. F. Stewart, M. Yeasin, R. Zand, and V. Abedi. Imputation of missing values for electronic health record laboratory data. 4(1):147. ISSN 2398-6352. doi: 10.1038/s41746-021-00518-0. URL https://doi.org/10.1038/ s41746-021-00518-0 .T. Ong and B. W. Ramsey. Cystic fibrosis: A review. JAMA ,329 21:1859–1871, 2023. URL https://api.semanticscholar. org/CorpusID:259090508 .W. Ren, Z. Liu, Y. Wu, Z. Zhang, S. Hong, and H. Liu. Moving beyond medical statistics: A systematic review on missing data handling in electronic health records. 4:0176. ISSN 2765-8783 2097-1095. doi: 10.34133/hds.0176. Place: United States. Syntegra Inc. Synthetic data engine. https://www.syntegra.io/ technology , 2022. Accessed: 2026-02-25. R. Valdez, L. Ouyang, and J. C. Bolen. Public health and rare diseases: Oxymoron no more. Preventing Chronic Disease , 13, 2016. J. Walonoski, M. Kramer, J. Nichols, A. Quina, C. Moesel, D. Hall, C. Duffett, K. Dube, T. Gallagher, and S. McLachlan. Synthea: An approach, method, and software mechanism for generating synthetic patients and the synthetic electronic health care record. Journal of the American Medical Informatics Association , 25(3):230–238, 2018. A. Wilson, A. Chiorean, M. Aguiar, D. Sekuli´ c, P. Pavlick, N. Shah, L. S. King, M. G´ enin, M. Rollot, M. Blanchon, S. Gosset, M. Montmerle, C. Molony, and A. Dumitriu. Development of a rare disease algorithm to identify persons at risk of gaucher disease using electronic health records in the united states. Orphanet Journal of Rare Diseases , 18, 2023.

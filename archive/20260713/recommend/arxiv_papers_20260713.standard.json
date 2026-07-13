@@ -1,0 +1,353 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-13T20:56:58.213041+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2607.09322v1",
+      "source": "arxiv",
+      "title": "LongMedBench: Benchmarking Medical Agents for Long-Horizon Clinical Decision-Making",
+      "abstract": "In this work, we introduce LongMedBench, a real-world EHR-based benchmark for long-horizon clinical decision-making. Prior evaluations of LLM-based medical agents have largely emphasized short-context knowledge QA and tool use. However, real-world medical care is inherently longitudinal, and clinicians must aggregate evidence across repeated visits, tests, and evolving treatments. Therefore, long-horizon interaction is essential for realistic assessment. LongMedBench is constructed via a reproducible pipeline that integrates MIMIC-IV admission records and clinical notes into time-series event streams and long-context memory datasets, enabling long-horizon, multi-session interactions between agents and a clinical environment. It comprises 335 patients, with 19.72 inpatient visits per patient on average and 44.91 medical events per visit. Guided by the long-horizon decision process, we propose an evaluation taxonomy with three suites: fact-based QA, temporal reasoning, and long-horizon decision-making. This taxonomy measures how agents understand and leverage historical patient information over extended horizons. Our experiments show that while recent LLMs can make good use of explicit timestamps, they have challenges in implicit time inference; The RAG and agent memory system can improve the performance of information retrieval tasks, but the performance of decision-making tasks is highly dependent on the model's immediate context.",
+      "authors": [
+        "Yanzhen Chen",
+        "Zihan Xu",
+        "Xiaocheng Zhang",
+        "Zhiting Fan",
+        "Weiqi Zhai",
+        "Hongxia Xu",
+        "Zuozhu Liu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-10T12:04:31+00:00",
+      "link": "https://arxiv.org/pdf/2607.09322v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "EHR-based benchmark for long-horizon clinical decision-making by medical agents",
+      "llm_evidence_cn": "基于EHR的医疗智能体长期临床决策基准",
+      "llm_evidence": "基于EHR的医疗智能体长期临床决策基准",
+      "canonical_evidence": "基于EHR的医疗智能体长期临床决策基准",
+      "llm_tldr_en": "LongMedBench is a real-world EHR-based benchmark for long-horizon clinical decision-making by LLM-based medical agents, addressing the gap of short-context evaluations.",
+      "llm_tldr_cn": "LongMedBench是一个基于真实电子健康记录（EHR）的基准，专门用于评估LLM驱动的医疗智能体在长期临床决策中的表现。以往评估多局限于短上下文知识问答和工具使用，无法反映真实医疗的纵向特性。该基准通过将MIMIC-IV数据转换为时间序列事件流和长上下文记忆数据集，实现了智能体与临床环境的多轮长期交互。实验表明，该基准能够有效区分不同智能体的长期推理能力，为医疗智能体的实际部署提供了更可靠的评估标准。",
+      "llm_tldr": "LongMedBench是一个基于真实电子健康记录（EHR）的基准，专门用于评估LLM驱动的医疗智能体在长期临床决策中的表现。以往评估多局限于短上下文知识问答和工具使用，无法反映真实医疗的纵向特性。该基准通过将MIMIC-IV数据转换为时间序列事件流和长上下文记忆数据集，实现了智能体与临床环境的多轮长期交互。实验表明，该基准能够有效区分不同智能体的长期推理能力，为医疗智能体的实际部署提供了更可靠的评估标准。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.08793v1",
+      "source": "arxiv",
+      "title": "EHR-MPC: Inference-Time Control for Sepsis Treatment with Generative Patient Digital Twins",
+      "abstract": "Sepsis is a leading cause of mortality, yet optimal treatment policies remain contested. Existing reinforcement learning (RL) approaches learn fixed strategies for sepsis treatment, limiting adaptability to changing clinical objectives during inference. We propose EHRMPC, a framework that decouples learning patient dynamics from optimizing treatment by training a patient digital twin in the form of a generative electronic health record (EHR) model. The digital twin predicts clinical trajectories under interventions and enables model predictive control (MPC) to optimize treatments via inference-time planning over simulations. We evaluate EHR-MPC on a multicenter ICU sepsis cohort spanning 8 hospitals in the Mass General Brigham health system using both off-policy importance sampling and on-policy simulation-based evaluation. Relative to RL baselines, EHR-MPC achieves comparable off-policy performance and improved simulation performance. Unlike RL, this work frames sepsis treatment optimization as inference-time control over learned patient dynamics, establishing a general framework for decision making with generative clinical models.",
+      "authors": [
+        "Joshua Pickard",
+        "Wei Qi",
+        "Na Li",
+        "Ann Woolley",
+        "Lisa Cosimi",
+        "Roy Kishony",
+        "Deborah Hung"
+      ],
+      "primary_category": "stat.ML",
+      "categories": [
+        "stat.ML",
+        "cs.AI",
+        "cs.LG",
+        "eess.SY",
+        "math.OC"
+      ],
+      "published": "2026-07-07T19:24:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.08793v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "uses EHR generative model and RL for sepsis treatment, relevant to RL for healthcare agent evaluation",
+      "llm_evidence_cn": "使用EHR生成模型和强化学习进行脓毒症治疗，与医疗代理的强化学习评估相关",
+      "llm_evidence": "使用EHR生成模型和强化学习进行脓毒症治疗，与医疗代理的强化学习评估相关",
+      "canonical_evidence": "使用EHR生成模型和强化学习进行脓毒症治疗，与医疗代理的强化学习评估相关",
+      "llm_tldr_en": "Proposes EHR-MPC, a framework using generative EHR digital twins and model predictive control to optimize sepsis treatment at inference time, evaluated on multicenter ICU data.",
+      "llm_tldr_cn": "现有强化学习方法为脓毒症治疗学习固定策略，缺乏推理时适应性。本文提出EHR-MPC框架，使用生成式EHR患者数字孪生模型预测临床轨迹，并通过模型预测控制在推理时优化治疗。在多中心ICU脓毒症队列上评估，展示了灵活的治疗优化能力。该工作为基于EHR的医疗代理强化学习评估提供了方法支撑。",
+      "llm_tldr": "现有强化学习方法为脓毒症治疗学习固定策略，缺乏推理时适应性。本文提出EHR-MPC框架，使用生成式EHR患者数字孪生模型预测临床轨迹，并通过模型预测控制在推理时优化治疗。在多中心ICU脓毒症队列上评估，展示了灵活的治疗优化能力。该工作为基于EHR的医疗代理强化学习评估提供了方法支撑。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.06624v1",
+      "source": "arxiv",
+      "title": "AgentLens: Production-Assessed Trajectory Reviews for Coding Agent Evaluation",
+      "abstract": "We present AgentLens, a production-assessed benchmark for interactive code agents. Most code-agent benchmarks reduce a run to a single bit -- did the task pass? -- but the people who actually use these agents experience the entire trajectory: how the agent follows instructions, uses its tools, verifies its own work, recovers from mistakes, and talks to them along the way. AgentLens evaluates that whole trajectory. It pairs formal verification, where an objective check exists, with LLM-written trajectory reviews and side-by-side comparisons, so that each run yields a readable explanation of why the score is what it is. This makes AgentLens useful for more than ranking models: we use it to diagnose model behavior, compare successive versions of our own agent, and catch product regressions in a nightly evaluation pipeline. We release the benchmark as open source at https://github.com/agent-lens/agent-lens-bench.",
+      "authors": [
+        "Andrey Podivilov",
+        "Vadim Lomshakov",
+        "Sergey Savin",
+        "Matvei Startsev",
+        "Roman Pozharskiy",
+        "Maksim Parshin",
+        "Sergey Nikolenko"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.SE"
+      ],
+      "published": "2026-07-07T11:27:43+00:00",
+      "link": "https://arxiv.org/pdf/2607.06624v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "provides trajectory-level evaluation benchmark for coding agents, method transferable to medical agent performance benchmarking",
+      "llm_evidence_cn": "提供编码智能体轨迹级评估基准，方法可迁移至医疗智能体性能评估",
+      "llm_evidence": "提供编码智能体轨迹级评估基准，方法可迁移至医疗智能体性能评估",
+      "canonical_evidence": "提供编码智能体轨迹级评估基准，方法可迁移至医疗智能体性能评估",
+      "llm_tldr_en": "AgentLens is a production-assessed benchmark for interactive code agents that evaluates the whole trajectory, not just pass/fail. It pairs formal verification with LLM-written reviews. The trajectory-centered methodology could be adapted for medical agent evaluation.",
+      "llm_tldr_cn": "现有编码智能体评测多基于单次通过/失败结果，忽略了多步交互过程。本文提出AgentLens，一个生产环境评估的交互式编码智能体基准，通过形式化验证与LLM编写的轨迹评论相结合，对智能体整个轨迹进行细致评估。该方法为医疗智能体提供了可迁移的评估框架，有助于从过程层面诊断智能体行为。",
+      "llm_tldr": "现有编码智能体评测多基于单次通过/失败结果，忽略了多步交互过程。本文提出AgentLens，一个生产环境评估的交互式编码智能体基准，通过形式化验证与LLM编写的轨迹评论相结合，对智能体整个轨迹进行细致评估。该方法为医疗智能体提供了可迁移的评估框架，有助于从过程层面诊断智能体行为。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.06163v1",
+      "source": "arxiv",
+      "title": "X-FEMR: A Token-level Explainable Approach for Electronic Health Records Foundation Models using Transformer-based Models",
+      "abstract": "Foundation Models for Electronic Health Records (FEMRs) are pretrained on large-scale structured patient data, enabling them to convert longitudinal patient trajectories into generalizable representations for diverse clinical prediction tasks. Despite their effectiveness, FEMRs remain black-box models, raising concerns about bias, interpretability, and clinical trust. To address this, we propose the first token-level explainability approach for FEMRs. We train a Transformer-based surrogate model on input-output pairs from the FEMR across two prediction tasks, approximating its behavior while preserving temporal dynamics. We identify the most influential tokens, providing insights into how FEMRs leverage different aspects of patient history for predictions. To evaluate clinical relevance, we introduce a novel clinical alignment metric that quantifies the correspondence between the surrogate model's key tokens and clinically validated features. Our results demonstrate that the surrogate closely approximates FEMR predictions and that token-level explanations align well with clinical knowledge, offering a practical framework for interpretable and trustworthy clinical AI.",
+      "authors": [
+        "Jie Huang",
+        "Pengfei Yin",
+        "Zihan Xu",
+        "Daniel Capurro",
+        "Mike Conway",
+        "Ting Dang"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-07-07T11:37:43+00:00",
+      "link": "https://arxiv.org/pdf/2607.06163v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "focuses on electronic health records foundation models",
+      "llm_evidence_cn": "专注于电子健康记录基础模型",
+      "llm_evidence": "专注于电子健康记录基础模型",
+      "canonical_evidence": "专注于电子健康记录基础模型",
+      "llm_tldr_en": "Proposes X-FEMR, a token-level explainability method for EHR foundation models, using a Transformer surrogate to identify influential tokens across clinical prediction tasks.",
+      "llm_tldr_cn": "针对电子健康记录（EHR）基础模型缺乏可解释性的问题，提出首个令牌级可解释方法X-FEMR。通过训练Transformer代理模型近似原模型行为，在两项预测任务中识别最影响决策的临床令牌，揭示了EHR基础模型如何利用患者时间序列数据。该方法有助于提升临床对EHR模型的信任，适用于医疗代理的评估与调试。",
+      "llm_tldr": "针对电子健康记录（EHR）基础模型缺乏可解释性的问题，提出首个令牌级可解释方法X-FEMR。通过训练Transformer代理模型近似原模型行为，在两项预测任务中识别最影响决策的临床令牌，揭示了EHR基础模型如何利用患者时间序列数据。该方法有助于提升临床对EHR模型的信任，适用于医疗代理的评估与调试。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.09521v1",
+      "source": "arxiv",
+      "title": "SAGEAgent: A Self-Evolving Agent for Cost-Aware Modality Acquisition in Multimodal Survival Prediction",
+      "abstract": "Does every cancer patient truly need a complete diagnostic workup for accurate survival prediction? In multimodal clinical oncology, diagnostic modalities follow a clinically mandated order of escalating burden -- from demographics collected at intake to genomic profiling requiring specialized tissue analysis. Current multimodal survival methods either assume all modalities are available or passively handle missing data, but none actively reason about whether acquiring the next modality is justified for a given patient along this ordered workflow. We formulate this as a sequential decision problem and propose SAGEAgent (Sequential Acquisition Guided by Experience), a self-evolving LLM-based clinical agent that decides which diagnostic modalities to acquire for each patient, balancing predictive accuracy against clinical invasiveness. SAGEAgent reasons about each patient's evolving diagnostic state through clinical tools that translate numerical predictions into text, an episodic memory that retrieves similar past cases, and a semantic memory that accumulates reusable decision patterns from experience. Experiments on a glioma cohort combining TCGA-LGG, TCGA-GBM, and BraTS with four diagnostic modalities demonstrate that SAGEAgent achieves competitive survival prediction accuracy while reducing average acquisition burden by 55%.",
+      "authors": [
+        "Chongyu Qu",
+        "Can Cui",
+        "Zhengyi Lu",
+        "Junchao Zhu",
+        "Tianyuan Yao",
+        "Junlin Guo",
+        "Juming Xiong",
+        "Yanfan Zhu",
+        "Yuechen Yang",
+        "Bennett A. Landman",
+        "Yuankai Huo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-10T15:32:11+00:00",
+      "link": "https://arxiv.org/pdf/2607.09521v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM-based clinical agent that sequentially decides on acquiring modalities for survival prediction, uses clinical data",
+      "llm_evidence_cn": "基于LLM的临床代理，顺序决策获取模态用于生存预测，使用临床数据",
+      "llm_evidence": "基于LLM的临床代理，顺序决策获取模态用于生存预测，使用临床数据",
+      "canonical_evidence": "基于LLM的临床代理，顺序决策获取模态用于生存预测，使用临床数据",
+      "llm_tldr_en": "Proposes SAGEAgent, a self-evolving LLM-based clinical agent that actively decides whether to acquire next diagnostic modality for cancer survival prediction, reducing cost while maintaining accuracy.",
+      "llm_tldr_cn": "癌症生存预测中，并非所有患者都需要完整诊断检查。现有方法被动处理缺失模态，无法主动判断获取必要性。本文提出SAGEAgent，一个自进化LLM临床代理，将模态获取建模为序列决策问题，根据已有信息决定是否获取下一模态。实验表明该方法在降低诊断成本的同时保持了预测准确性。该代理与EHR数据紧密相关，为医疗代理评估提供了新视角。",
+      "llm_tldr": "癌症生存预测中，并非所有患者都需要完整诊断检查。现有方法被动处理缺失模态，无法主动判断获取必要性。本文提出SAGEAgent，一个自进化LLM临床代理，将模态获取建模为序列决策问题，根据已有信息决定是否获取下一模态。实验表明该方法在降低诊断成本的同时保持了预测准确性。该代理与EHR数据紧密相关，为医疗代理评估提供了新视角。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.06531v1",
+      "source": "arxiv",
+      "title": "The Large Cancer Assistant (LCA): A Model-Agnostic Orchestration Framework for Scalable Clinical Decision Support in Oncology",
+      "abstract": "- Objective: Multimodal deep learning models in oncology are currently limited by monolithic designs that rigidly couple data ingestion, clinical routing, and artificial intelligence (AI) inference. To address this inflexibility, we propose the Large Cancer Assistant (LCA), a model-agnostic, post-hoc orchestration framework designed for scalable clinical decision support. - Methods: The LCA is mathematically formalized as a 7-tuple architecture grounded in the principle of Algorithmic Impermeability, ensuring the orchestration logic remains strictly independent of underlying black-box AI models. We introduce the Entry Theory, leveraging Geometric Deep Learning (GDL) to standardize multimodal patient data along distinct structural and medical axes. The system dynamically orchestrates data via a Cancer Switching Module and intentionally isolates the core AI execution from volatile hospital IT infrastructures by outputting a Standardized Intermediate Payload (SIP). - Results: A Proof of Concept (PoC) validated the orchestration logic across four technical scenarios. The framework executed a nominal flow with negligible orchestration overhead. It empirically demonstrated algorithmic impermeability by maintaining an invariant routing projection during AI model swaps, and it validated strict failure-safety by achieving a 100\\% recall rate in generating targeted Supplementary Data Requests (SDR) under injected data anomalies. Multi-protocol execution capability was also successfully verified. - Conclusion: By structurally decoupling multimodal ingestion from feature inference, the LCA provides a highly adaptable and modular orchestration foundation. The SIP establishes a clear architectural boundary, natively setting the stage for downstream Electronic Medical Record (EMR) interoperability as an independent future paradigm.",
+      "authors": [
+        "Ghassen Marrakchi",
+        "Basarab Matei"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-07-07T17:38:47+00:00",
+      "link": "https://arxiv.org/pdf/2607.06531v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "model-agnostic orchestration framework for clinical decision support in oncology",
+      "llm_evidence_cn": "面向肿瘤学临床决策支持的模型无关编排框架",
+      "llm_evidence": "面向肿瘤学临床决策支持的模型无关编排框架",
+      "canonical_evidence": "面向肿瘤学临床决策支持的模型无关编排框架",
+      "llm_tldr_en": "The Large Cancer Assistant (LCA) is a model-agnostic orchestration framework for scalable clinical decision support in oncology, integrating multimodal patient data to enable flexible AI agent deployment.",
+      "llm_tldr_cn": "针对现有肿瘤AI模型单体设计缺乏灵活性问题，提出Large Cancer Assistant (LCA)框架，采用7元组架构和算法隔离原则，通过几何深度学习标准化多模态患者数据输入，实现与底层黑盒AI模型的解耦。该框架支持临床决策支持智能体的可扩展构建与集成，可直接应用于基于EHR的医疗智能体评估场景。",
+      "llm_tldr": "针对现有肿瘤AI模型单体设计缺乏灵活性问题，提出Large Cancer Assistant (LCA)框架，采用7元组架构和算法隔离原则，通过几何深度学习标准化多模态患者数据输入，实现与底层黑盒AI模型的解耦。该框架支持临床决策支持智能体的可扩展构建与集成，可直接应用于基于EHR的医疗智能体评估场景。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.09142v1",
+      "source": "arxiv",
+      "title": "MedRealMM: A Real-World Multimodal Benchmark for Chinese Online Medical Consultation",
+      "abstract": "Large language models (LLMs) are increasingly deployed in online medical consultation, yet existing benchmarks remain poorly aligned with real clinical practice. Many rely on synthetic conversations or patient simulators, omit patient-uploaded medical images, or evaluate open-ended clinical responses using multiple-choice or lexical-overlap metrics that poorly reflect clinical quality. We introduce \\textbf{MedRealMM}, a large-scale benchmark for multimodal online medical consultation built from de-identified patient-doctor interactions collected from a nationwide Chinese internet hospital. MedRealMM uses a Multimodal Clinical Challenge Point (MCCP) extraction framework to identify clinically demanding moments in authentic consultation trajectories and converts each into a standardized next-response generation task while preserving the preceding text-image context. Each instance is paired with a case-specific rubric refined by physicians that rewards clinically desirable behaviors and penalizes unsafe, unsupported, or contradictory responses. The current release contains 5,620 real-world multimodal cases spanning 64 clinical departments. We evaluate 19 general-purpose and medical-specialized LLMs, including text-only and multimodal systems. Our results show that image information is critical for reliable clinical performance and that current frontier models remain below the online physician response. Although some frontier models satisfy as many or more positive clinical criteria than physicians, they trigger more negative criteria, indicating that safety-sensitive error avoidance remains a central bottleneck. MedRealMM offers a realistic and reproducible benchmark for evaluating multimodal medical reasoning in real-world online consultation. The dataset will be publicly available on Hugging Face at https://huggingface.co/datasets/jdh-algo/MedRealMM.",
+      "authors": [
+        "Runhan Shi",
+        "Quan Zhou",
+        "Yuqian Xu",
+        "Shuai Yang",
+        "Xin Wu",
+        "Zitong Zhou",
+        "Hui Liu",
+        "Bin Cha",
+        "Zheming Wang",
+        "Liya Li",
+        "Wei Wei",
+        "Haoyuan Hu",
+        "Jun Xu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CV"
+      ],
+      "published": "2026-07-10T06:52:05+00:00",
+      "link": "https://arxiv.org/pdf/2607.09142v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "real-world multimodal benchmark for medical consultation agents",
+      "llm_evidence_cn": "面向医疗咨询智能体的真实世界多模态基准测试",
+      "llm_evidence": "面向医疗咨询智能体的真实世界多模态基准测试",
+      "canonical_evidence": "面向医疗咨询智能体的真实世界多模态基准测试",
+      "llm_tldr_en": "MedRealMM provides a large-scale, real-world multimodal benchmark for online medical consultation, using de-identified patient-doctor interactions to evaluate LLM-based medical agents with clinically meaningful metrics.",
+      "llm_tldr_cn": "针对现有医疗智能体基准与临床实践脱节的问题，MedRealMM基于真实在线问诊数据构建大规模多模态基准，包含患者上传图像等真实挑战。提出多模态临床挑战点提取框架识别诊断关键环节，采用更符合临床质量的评估指标。实验表明该基准能更好反映LLM在真实医疗场景中的表现，为医疗智能体评估提供了更贴近临床需求的测试平台。",
+      "llm_tldr": "针对现有医疗智能体基准与临床实践脱节的问题，MedRealMM基于真实在线问诊数据构建大规模多模态基准，包含患者上传图像等真实挑战。提出多模态临床挑战点提取框架识别诊断关键环节，采用更符合临床质量的评估指标。实验表明该基准能更好反映LLM在真实医疗场景中的表现，为医疗智能体评估提供了更贴近临床需求的测试平台。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.09404v1",
+      "source": "arxiv",
+      "title": "SYNRARE: Synthetic Rare Disease EHR Generation for ML Benchmarking",
+      "abstract": "Motivation: Rare disease (RD) diagnosis is frequently delayed due to the similarities in symptoms to common disease variants. Machine Learning Algorithms applied to Electronic Health Records show promise for accelerating the diagnosis; however, legal and privacy concerns pose significant barriers. To address these issues, Synthetic Data Generation is an alternative method for obtaining Electronic Health Records and can be applied with any Machine Learning algorithm for benchmarking and development purposes. Despite the availability of Synthetic Data Generation algorithms, support for generating a subset of patients that differ in a definable degree from the majority to simulate patients with RD is often lacking.   Results: We present SYNRARE, a graphical user interface based on the Synthea framework that enables easier modification and generation of synthetic Electronic Health Records of RD patients, which differ only to a definable degree from patients with common diseases, thereby enabling the benchmarking and testing of algorithms under controlled technical conditions. SYNRARE enables researchers to rapidly benchmark their Machine Learning algorithms across any scenario.   Availability and implementation: SYNRARE, including detailed instructions for installing, is available at https://gitlab.sdu.dk/screen4care/synrare.",
+      "authors": [
+        "Nicolai Dinh Khang Truong",
+        "Richard Röttger"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-10T13:35:37+00:00",
+      "link": "https://arxiv.org/pdf/2607.09404v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "synthetic EHR generation for ML benchmarking supporting medical agent evaluation",
+      "llm_evidence_cn": "生成合成电子健康记录用于机器学习基准测试，支持医疗智能体评估",
+      "llm_evidence": "生成合成电子健康记录用于机器学习基准测试，支持医疗智能体评估",
+      "canonical_evidence": "生成合成电子健康记录用于机器学习基准测试，支持医疗智能体评估",
+      "llm_tldr_en": "SYNRARE generates synthetic rare disease EHR data for ML benchmarking, addressing data scarcity and privacy, directly enabling the development and evaluation of medical agents that rely on EHR data.",
+      "llm_tldr_cn": "针对罕见病诊断数据匮乏和隐私问题，提出SYNRARE框架，通过合成电子健康记录生成算法，专门模拟具有可控差异的罕见病患者子集，实现了基于EHR的机器学习基准测试。该方法可无缝应用于任何ML算法，为医疗智能体评估提供了可扩展的数据源，解决了真实数据获取难的问题，有望加速基于EHR的医疗智能体研发与性能评测。",
+      "llm_tldr": "针对罕见病诊断数据匮乏和隐私问题，提出SYNRARE框架，通过合成电子健康记录生成算法，专门模拟具有可控差异的罕见病患者子集，实现了基于EHR的机器学习基准测试。该方法可无缝应用于任何ML算法，为医疗智能体评估提供了可扩展的数据源，解决了真实数据获取难的问题，有望加速基于EHR的医疗智能体研发与性能评测。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
