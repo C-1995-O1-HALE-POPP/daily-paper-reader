@@ -1,0 +1,69 @@
+{
+  "label": "2026-07-15",
+  "date": "2026-07-15",
+  "generated_at": "2026-07-15T21:11:29",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202607/15/2607.09322v2-longmedbench-benchmarking-medical-agents-for-long-horizon-clinical-decision-making",
+      "section": "deep",
+      "title_en": "LongMedBench: Benchmarking Medical Agents for Long-Horizon Clinical Decision-Making",
+      "authors": "Zihan Xu, Yanzhen Chen, Xiaocheng Zhang, Zhiting Fan, Weiqi Zhai, Hongxia Xu, Zuozhu Liu",
+      "date": "2026-07-10",
+      "pdf": "https://arxiv.org/pdf/2607.09322v2",
+      "score": "10.0",
+      "evidence": "基于EHR的医疗代理长时程临床决策基准",
+      "tldr": "现有医学智能体评估偏重短上下文知识问答，忽略真实医疗的长期性。LongMedBench基于MIMIC-IV构建时间事件流和长上下文记忆，支持多会话交互，包含335名患者、平均19.72次住院、每次44.91个事件。实验显示模型能利用显式时间戳但隐式时间推理困难，RAG和记忆系统提升检索性能，但决策任务仍高度依赖即时上下文。该基准填补了长期临床决策评估的空白。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "In this work, we introduce LongMedBench, a real-world EHR-based benchmark for long-horizon clinical decision-making. Prior evaluations of LLM-based medical agents have largely emphasized short-context knowledge QA and tool use. However, real-world medical care is inherently longitudinal, and clinicians must aggregate evidence across repeated visits, tests, and evolving treatments. Therefore, long-horizon interaction is essential for realistic assessment. LongMedBench is constructed via a reproducible pipeline that integrates MIMIC-IV admission records and clinical notes into time-series event streams and long-context memory datasets, enabling long-horizon, multi-session interactions between agents and a clinical environment. It comprises 335 patients, with 19.72 inpatient visits per patient on average and 44.91 medical events per visit. Guided by the long-horizon decision process, we propose an evaluation taxonomy with three suites: fact-based QA, temporal reasoning, and long-horizon decision-making. This taxonomy measures how agents understand and leverage historical patient information over extended horizons. Our experiments show that while recent LLMs can make good use of explicit timestamps, they have challenges in implicit time inference; The RAG and agent memory system can improve the performance of information retrieval tasks, but the performance of decision-making tasks is highly dependent on the model's immediate context.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/15/2607.12051v1-agentic-systems-for-breast-cancer-treatment-recommendations",
+      "section": "deep",
+      "title_en": "Agentic systems for breast cancer treatment recommendations",
+      "authors": "Vinicius Anjos de Almeida, Nícolas Henrique Borges, Leonardo Vicenzi, Helena Kociolek, Sarah Miriã de Castro Rocha, Frederico Nassif Gomes, Júlia Cristina Ferreira Ribeiro, Lucas Emanuel Silva e Oliveira",
+      "date": "2026-07-13",
+      "pdf": "https://arxiv.org/pdf/2607.12051v1",
+      "score": "9.0",
+      "evidence": "使用临床病例和评估准则评估乳腺癌治疗推荐中的智能体系统",
+      "tldr": "为评估大语言模型在复杂肿瘤治疗规划中的可靠性，本研究构建了agentic系统进行乳腺癌治疗推荐生成评测。基于72个真实临床病例和1147个不对称信息生成的评分准则，比较了七种管线，包括单模型基线、工具增强和多智能体架构。最佳配置Claude Opus 4.8 D&C+SA管线获得0.594全局得分，但工具使用和自主性增加效果不一，并存在错误推荐、引文错误和过度自信等临床相关失败。结果表明agentic系统可生成相关推荐，但尚不能用于无监督临床实践。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Large language models (LLMs) are increasingly being explored for clinical decision support, but their reliability in complex oncology treatment planning remains unclear. We evaluated agentic LLM systems for breast cancer treatment recommendation generation using 72 real clinical cases across stages I to IV and 1,147 case-specific rubrics generated through Asymmetric Information Rubric Generation (AIRG), in which the rubric generator had access to real clinical decisions unavailable to the evaluated models. Seven pipelines were compared, including single-LLM baselines, tool-augmented systems, and multi-agent architectures with fact checking and autonomous subagent spawning. The best-performing configuration, Claude Opus 4.8 with the D&C+SA pipeline, achieved a global score of 0.594 $\\pm$ 0.025. Tool use and increased agent autonomy had mixed effects, improving performance in some settings but degrading it in others. Performance varied by clinical domain and disease stage, and oncologist-led error analysis revealed persistent clinically relevant failures, including incorrect or missing recommendations, flawed justifications, citation errors, outdated claims, and overconfidence. These findings suggest that agentic LLM systems can generate clinically relevant breast cancer recommendations, but remain insufficient for unsupervised clinical use.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/15/2607.12645v1-adapcla-adaptive-prior-calibrated-logit-adjustment-for-long-tailed-longitudinal-ehr-generation",
+      "section": "quick",
+      "title_en": "AdaPCLA: Adaptive Prior-Calibrated Logit Adjustment for Long-Tailed Longitudinal EHR Generation",
+      "authors": "Shuai Cui, Chen Wenxuan, Wenjie Du, Jian Lou, Dan Li, Wenjie Feng",
+      "date": "2026-07-14",
+      "pdf": "https://arxiv.org/pdf/2607.12645v1",
+      "score": "7.0",
+      "evidence": "面向长尾纵向EHR的生成方法",
+      "tldr": "纵向电子健康记录生成面临长尾分布下罕见事件共现结构被低估的问题。本文提出AdaPCLA框架，通过模拟退火训练内化数据先验知识，并支持零样本分布控制实现免训练群体适应。理论上用标签注意力核刻画罕见代码的logit更新，推导出先验内化界限。在MIMIC-III/IV上，尾部对共现指标分别提升114.2%和65.1%，零样本跨群体F1提升3.5%。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Generative modeling of longitudinal Electronic Health Records is increasingly important for privacy-preserving research, yet standard autoregressive models tend to underrepresent the co-occurrence structure of tail events (i.e., diseases, symptoms), reducing the fidelity and faithfulness of generated data for rare subpopulations. To this end, we propose AdaPCLA framework, which enables generative models to adaptively fit and generate EHR data through a data distribution-aware training strategy; this is achieved by internalizing data knowledge parameters by simulated annealing training. It also supports training-free adaptation to a diverse clinical population for generation through zero-shot distribution control. Moreover, our theoretical analysis characterizes rare-code logit updates through the label-wise empirical NTK and derives a prior-internalization bound for how annealing speed and NTK conditioning affect retained prior signals. Experiments on real-world data show that AdaPCLA achieves consistent gains in tail plausibility, downstream utility, and zero-shot control; in particular, it improves TailPairSeen over HALO by 114.2% on MIMIC-III and 65.1% on MIMIC-IV, outperforms GPT-style generation by 3.5% F1 for zero-shot cross-population adaptation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/15/2607.11098v2-agentcheck-a-reproduce-intervene-mitigate-workbench-for-llm-agents-over-mcp",
+      "section": "quick",
+      "title_en": "AgentCheck: A Reproduce-Intervene-Mitigate Workbench for LLM Agents over MCP",
+      "authors": "Aritra Mazumder, Nusrat jahan Lia",
+      "date": "2026-07-13",
+      "pdf": "https://arxiv.org/pdf/2607.11098v2",
+      "score": "6.0",
+      "evidence": "可应用于医疗agent基准测试的agent评估工作台",
+      "tldr": "工具型LLM智能体在实际部署中面临超时、过期值等故障，而现有评估假定工具正常。本文提出AgentCheck，一个基于MCP协议的开源工作台，通过12种故障注入器扰动工具响应，结合缓存回放实现复现-干预-确认循环。在五个智能体上测试，最佳通过105/120场景，最弱仅77；重试缓解将超时错误成功率从30%提升至100%，但对过期数据故障无效。AgentCheck使故障模式可复现、可比较、可验证，为部署前安全检测提供有效工具。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Tool-using LLM agents are mostly evaluated assuming all tools work. When a tool times out, returns a week-stale value, or has its description poisoned in deployment, the developer needs a controlled way to reproduce the failure, test a fix, and confirm the fix worked before deployment. We present AgentCheck, an open-source web workbench that turns an MCP server into an intervention surface. AgentCheck runs an agent against its real tools and records every tool response, then re-runs the agent with the response perturbed by a fault (12 types) injector. Matching tool calls are replayed from cache, and later tool calls go live after the agent diverges. This yields a reproduce-intervene-confirm loop: the developer toggles a mitigation, re-runs against the identical fault, and sees if the failure goes away. Scoring has two parts: deterministic pass/fail rules, plus an LLM judge for interpretive labels, validated against human annotations. Across five agents, the best passes 105/120 scenarios and the weakest only 77. The failures are usually silent, confident use of incorrect tool outputs rather than crashes. On the weakest agent, a retry mitigation raises success on timeout error faults from as few as 30% of cases to 100%, whereas stale-data faults remain near 3-4 of 10 regardless of the mitigation. AgentCheck makes these failure modes reproducible, comparable, and verifiable before deployment.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
