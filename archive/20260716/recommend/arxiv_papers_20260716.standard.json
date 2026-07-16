@@ -1,0 +1,264 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-16T19:56:08.535001+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2607.13411v1",
+      "source": "arxiv",
+      "title": "Evaluating Frontier AI Agents as Autonomous Clinical Security Auditors",
+      "abstract": "Clinical AI models can expose patients to harm when adversarial vulnerabilities go undetected, yet formal security auditing requires statistical expertise, specialized tools, and significant time. We present an open evaluation task, built on METR Task Standard v0.3.0, that tests whether frontier AI agents can autonomously implement a structured clinical AI security audit. Given a pre-trained clinical prediction model, a patient dataset, and written instructions, each agent must implement four attacks from pseudocode, compute a Security Posture Score covering FGSM robustness, membership inference resistance, expected calibration error, and boundary attack resistance, and write a structured JSON report in a Docker container using only a bash interface and no scaffolding code. Six variants span the Wisconsin Diagnostic Breast Cancer and MIMIC-IV ICU mortality datasets across three model architectures with increasing defense strength, with reference scores from 55.60 to 90.41. We ran 54 evaluations across three frontier models, with three runs per variant. Claude Sonnet 4.6 and GPT-4.1 completed all 18 runs and received perfect evaluator scores. GPT-4o completed 61 percent of runs and used about five times the per-run token count of Claude, although provider tokenization differs. Total API costs were 8 US dollars for GPT-4.1, 12 US dollars for Claude Sonnet 4.6, and 27 US dollars for GPT-4o. GPT-4o failures involved premature session termination, an aggregation error, and an empty submission file. The task, scoring infrastructure, and Wisconsin Breast Cancer assets are publicly released; MIMIC-IV variants require separate PhysioNet access.",
+      "authors": [
+        "Michael O. Eniolade"
+      ],
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.LG"
+      ],
+      "published": "2026-07-15T03:21:55+00:00",
+      "link": "https://arxiv.org/pdf/2607.13411v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "evaluates frontier AI agents as autonomous clinical security auditors using patient dataset and structured tasks",
+      "llm_evidence_cn": "使用患者数据集和结构化任务评估前沿AI智能体作为自主临床安全审计员",
+      "llm_evidence": "使用患者数据集和结构化任务评估前沿AI智能体作为自主临床安全审计员",
+      "canonical_evidence": "使用患者数据集和结构化任务评估前沿AI智能体作为自主临床安全审计员",
+      "llm_tldr_en": "Proposes an open evaluation task (based on METR Task Standard) to test whether AI agents can autonomously implement a clinical AI security audit, including four attacks and a Security Posture Score, using a clinical prediction model and patient dataset.",
+      "llm_tldr_cn": "现有临床AI模型易受对抗攻击，但正式安全审计需要专业知识和大量时间。本文提出一个基于METR Task Standard的开放评估任务，测试AI智能体是否能自主执行结构化临床安全审计。智能体需实现四种攻击、计算安全态势分数并输出JSON报告。该评测任务为衡量临床AI智能体的安全性提供了标准化基准，促进更可靠的医疗AI部署。",
+      "llm_tldr": "现有临床AI模型易受对抗攻击，但正式安全审计需要专业知识和大量时间。本文提出一个基于METR Task Standard的开放评估任务，测试AI智能体是否能自主执行结构化临床安全审计。智能体需实现四种攻击、计算安全态势分数并输出JSON报告。该评测任务为衡量临床AI智能体的安全性提供了标准化基准，促进更可靠的医疗AI部署。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.09996v1",
+      "source": "arxiv",
+      "title": "Who&When Pro: Can LLMs Really Attribute Failures in AI Agents?",
+      "abstract": "Automated failure attribution uses LLMs to identify where and why agentic systems fail. As agents become more capable, their failures become subtler, making automated attribution increasingly important. We introduce Who&When Pro, a large-scale benchmark for automated failure attribution in agentic systems. Using a strictly controlled pipeline that injects a failure only after exactly replaying a successful prefix, we construct 12,326 failed trajectories with golden labels across 3 modalities and 26 benchmarks covering various scenarios. Beyond benchmarking, we conduct extensive experiments and analyses, revealing systematic patterns in how models attribute failures across modalities, protocols, and model families, and providing empirical guidance for future automated failure attribution systems.",
+      "authors": [
+        "Jiale Liu",
+        "Huajun Xi",
+        "Shaokun Zhang",
+        "Yifan Zeng",
+        "Tianwei Yue",
+        "Chi Wang",
+        "Jian Kang",
+        "Qingyun Wu",
+        "Huazheng Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA"
+      ],
+      "published": "2026-07-10T21:45:16+00:00",
+      "link": "https://arxiv.org/pdf/2607.09996v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "benchmark for automated failure attribution in agents, relevant to agent evaluation methods",
+      "llm_evidence_cn": "代理失败归因基准，与代理评估方法相关",
+      "llm_evidence": "代理失败归因基准，与代理评估方法相关",
+      "canonical_evidence": "代理失败归因基准，与代理评估方法相关",
+      "llm_tldr_en": "Who&When Pro provides a large-scale benchmark for automated failure attribution in agentic systems with golden labels, enabling systematic evaluation of LLMs' attribution capabilities.",
+      "llm_tldr_cn": "随着代理系统能力增强，其失败模式愈发隐蔽，自动归因变得重要。本文提出Who&When Pro基准，通过严格控制的流水线生成12326条带标注的失败轨迹，覆盖三种模态和26个场景。实验揭示了不同模型在失败归因上的系统性模式，为代理调试和评估提供指导。该基准为评估医疗等领域的代理失败归因提供了可迁移的方法论。",
+      "llm_tldr": "随着代理系统能力增强，其失败模式愈发隐蔽，自动归因变得重要。本文提出Who&When Pro基准，通过严格控制的流水线生成12326条带标注的失败轨迹，覆盖三种模态和26个场景。实验揭示了不同模型在失败归因上的系统性模式，为代理调试和评估提供指导。该基准为评估医疗等领域的代理失败归因提供了可迁移的方法论。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Reinforcement learning and LLM in medical agent evaluation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.09142v2",
+      "source": "arxiv",
+      "title": "MedRealMM: A Real-World Multimodal Benchmark for Chinese Online Medical Consultation",
+      "abstract": "Large language models (LLMs) are increasingly deployed in online medical consultation, yet existing benchmarks remain poorly aligned with real clinical practice. Many rely on synthetic conversations or patient simulators, omit patient-uploaded medical images, or evaluate open-ended clinical responses using multiple-choice or lexical-overlap metrics that poorly reflect clinical quality. We introduce \\textbf{MedRealMM}, a large-scale benchmark for multimodal online medical consultation built from de-identified patient-doctor interactions collected from a nationwide Chinese internet hospital. MedRealMM uses a Multimodal Clinical Challenge Point (MCCP) extraction framework to identify clinically demanding moments in authentic consultation trajectories and converts each into a standardized next-response generation task while preserving the preceding text-image context. Each instance is paired with a case-specific rubric refined by physicians that rewards clinically desirable behaviors and penalizes unsafe, unsupported, or contradictory responses. The current release contains 5,620 real-world multimodal cases spanning 64 clinical departments. We evaluate 19 general-purpose and medical-specialized LLMs, including text-only and multimodal systems. Our results show that image information is critical for reliable clinical performance and that current frontier models remain below the online physician response. Although some frontier models satisfy as many or more positive clinical criteria than physicians, they trigger more negative criteria, indicating that safety-sensitive error avoidance remains a central bottleneck. MedRealMM offers a realistic and reproducible benchmark for evaluating multimodal medical reasoning in real-world online consultation. The dataset will be publicly available on Hugging Face at https://huggingface.co/datasets/jdh-algo/MedRealMM.",
+      "authors": [
+        "Runhan Shi",
+        "Quan Zhou",
+        "Yuqian Xu",
+        "Shuai Yang",
+        "Xin Wu",
+        "Zitong Zhou",
+        "Hui Liu",
+        "Bin Zha",
+        "Zheming Wang",
+        "Liya Li",
+        "Wei Wei",
+        "Haoyuan Hu",
+        "Jun Xu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CV"
+      ],
+      "published": "2026-07-10T06:52:05+00:00",
+      "link": "https://arxiv.org/pdf/2607.09142v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark for multimodal online medical consultation using real-world data",
+      "llm_evidence_cn": "基于真实世界数据的多模态在线医疗咨询基准",
+      "llm_evidence": "基于真实世界数据的多模态在线医疗咨询基准",
+      "canonical_evidence": "基于真实世界数据的多模态在线医疗咨询基准",
+      "llm_tldr_en": "MedRealMM is a large-scale multimodal benchmark for online medical consultation built from de-identified patient-doctor interactions, enabling clinically grounded evaluation of LLMs in healthcare.",
+      "llm_tldr_cn": "现有在线医疗咨询基准多依赖合成数据，忽略患者上传的多模态信息，且评估指标缺乏临床意义。本文提出MedRealMM，一个基于中国互联网医院真实医患交互构建的大规模多模态基准，通过多模态临床挑战点提取框架识别关键诊断时刻，为评估LLM在真实医疗场景中的表现提供了更贴近临床实践的测试平台。",
+      "llm_tldr": "现有在线医疗咨询基准多依赖合成数据，忽略患者上传的多模态信息，且评估指标缺乏临床意义。本文提出MedRealMM，一个基于中国互联网医院真实医患交互构建的大规模多模态基准，通过多模态临床挑战点提取框架识别关键诊断时刻，为评估LLM在真实医疗场景中的表现提供了更贴近临床实践的测试平台。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.13940v1",
+      "source": "arxiv",
+      "title": "A Self-Evolving Agent for Longitudinal Personal Health Management",
+      "abstract": "Personal health management unfolds over repeated encounters, yet most health AI systems treat each request in isolation. We developed HealthClaw, an open-source agent architecture that updates support as a person's routines, preferences, measurements and risks change. It separates shared safety rules and medical knowledge from private longitudinal memory containing profile facts, reusable procedures and episodic traces. After each episode, induction determines what should update the profile, revise a procedure, remain episodic or be excluded. We evaluated HealthClaw with a synthetic year-long benchmark and nine 200-case biomedical tasks. Across 900 longitudinal support probes, answer accuracy increased from 0.2% with current-query prompting to 45.7% with HealthClaw, while prompt-side context exposure was 71.7% lower than with full-history prompting. In 100 privacy probes, HealthClaw produced higher privacy-aware answer quality and fewer unsafe disclosures than both baselines. Across the biomedical tasks, the mean absolute gain in the task-specific primary metric was 27.0 percentage points, and seven gains remained significant after false-discovery-rate correction. These offline benchmarks support governed, self-evolving memory for longitudinal personal health agents, although clinical effectiveness requires prospective evaluation. HealthClaw is publicly available at https://github.com/HC-Guo/HealthClaw.",
+      "authors": [
+        "Haoran Li",
+        "Jiebi Deng",
+        "Tong Jin",
+        "Jinghong Han",
+        "Yuxin Wang",
+        "Zexin Wang",
+        "Qingyi Si",
+        "Weikang Gong",
+        "Xiahai Zhuang",
+        "Jia You",
+        "Wei Cheng",
+        "Jianfeng Feng",
+        "Hongcheng Guo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-15T15:22:11+00:00",
+      "link": "https://arxiv.org/pdf/2607.13940v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "self-evolving agent for longitudinal personal health management",
+      "llm_evidence_cn": "用于纵向个人健康管理的自演进智能体",
+      "llm_evidence": "用于纵向个人健康管理的自演进智能体",
+      "canonical_evidence": "用于纵向个人健康管理的自演进智能体",
+      "llm_tldr_en": "HealthClaw is an open-source agent architecture that updates support as user routines change, separating shared safety rules from private longitudinal memory, evaluated on synthetic benchmarks.",
+      "llm_tldr_cn": "个人健康管理是长期过程，但大多健康AI系统每次请求独立处理。本文提出HealthClaw，一个开源智能体架构，将共享安全规则与医疗知识同私人纵向记忆（包含个人档案、可重用流程和片段痕迹）分离。每次交互后通过归纳决定更新内容。在合成的一年期基准和9个生物医学任务上评估，900个纵向支持探针的准确率从当前查询提示的0.2%提升至45.7%。该智能体虽非直接使用EHR，但其纵向记忆机制与基于EHR的智能体评估相关。",
+      "llm_tldr": "个人健康管理是长期过程，但大多健康AI系统每次请求独立处理。本文提出HealthClaw，一个开源智能体架构，将共享安全规则与医疗知识同私人纵向记忆（包含个人档案、可重用流程和片段痕迹）分离。每次交互后通过归纳决定更新内容。在合成的一年期基准和9个生物医学任务上评估，900个纵向支持探针的准确率从当前查询提示的0.2%提升至45.7%。该智能体虽非直接使用EHR，但其纵向记忆机制与基于EHR的智能体评估相关。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.12527v1",
+      "source": "arxiv",
+      "title": "Evidence-Grounded AI for Musculoskeletal Care",
+      "abstract": "Musculoskeletal diseases are among the leading causes of disability worldwide and create the greatest global need for rehabilitation. Because recovery, remodelling and degeneration often unfold over months to years, musculoskeletal care requires longitudinal management that repeatedly integrates evolving patient evidence, external medical knowledge and stage-specific functional goals. In routine practice, this evidence is fragmented across visits, departments and hospital systems, limiting individualized, evidence-based care. Here we report OrthoPilot, a clinical artificial intelligence system powered by a large language model that integrates hospital data streams with authoritative external knowledge for continuous musculoskeletal management. OrthoPilot autonomously retrieves real-time imaging, laboratory, pathology and order data and converts evolving patient states into evidence-based decisions from admission diagnosis to rehabilitation planning. We established a specialist-validated benchmark from real-world electronic health records spanning 1,000 disease codes. In a reader study across the complete care pathway, OrthoPilot was compared with 81 orthopaedic physicians and surpassed experts with 25 years of experience in diagnostic reasoning, clinical decision-making and management planning. It also outperformed all evaluated intelligent systems across 60 external clinical centres. In a prospective study of 1,870 complex cases, OrthoPilot increased full-chain management success by 10.6%. During an 8-month randomised deployment involving 8,240 inpatients, it increased cumulative cases per bed by 9.7% and improved patient-reported access to health information. These results move clinical AI from predicting isolated events toward executing longitudinal management across complete musculoskeletal care pathways.",
+      "authors": [
+        "Wenjie Li",
+        "Yujie Zhang",
+        "Fanrui Zhang",
+        "Haoran Sun",
+        "Renhao Yang",
+        "Junjun He",
+        "Weiran Huang",
+        "Yuanfeng Ji",
+        "Chenrun Wang",
+        "Kailing Wang",
+        "Hongcheng Gao",
+        "Kaipeng Zhang",
+        "Hanyu Wang",
+        "Angela Lin Wang",
+        "Xingqi He",
+        "Yilin Huang",
+        "Shiyi Yao",
+        "Lilong Wang",
+        "Yankai Jiang",
+        "Yirong Chen",
+        "Chenglong Ma",
+        "Jiyao Liu",
+        "Ming Hu",
+        "Gen Li",
+        "Yidong Xu",
+        "Chengyu Zhuang",
+        "Jiawei Liu",
+        "Yin Zhang",
+        "Lequan Yu",
+        "Lu Chen",
+        "Yinpeng Dong",
+        "Lei Liu",
+        "Carlos Gutierrez Sanroman",
+        "Yu Qiao",
+        "Weijie Ma",
+        "Xiaosong Wang",
+        "Lei Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-14T09:03:26+00:00",
+      "link": "https://arxiv.org/pdf/2607.12527v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "clinical decision support agent OrthoPilot integrating EHR data streams for continuous musculoskeletal care",
+      "llm_evidence_cn": "临床决策支持Agent OrthoPilot，集成EHR数据流用于连续肌肉骨骼护理",
+      "llm_evidence": "临床决策支持Agent OrthoPilot，集成EHR数据流用于连续肌肉骨骼护理",
+      "canonical_evidence": "临床决策支持Agent OrthoPilot，集成EHR数据流用于连续肌肉骨骼护理",
+      "llm_tldr_en": "OrthoPilot is a clinical AI system using LLM to integrate hospital data streams with external knowledge for musculoskeletal care, representing an evaluated clinical decision support agent with EHR integration.",
+      "llm_tldr_cn": "OrthoPilot是一个基于大语言模型的临床AI系统，集成医院数据流与外部知识，用于连续肌肉骨骼管理。该系统可视为一种基于EHR的临床决策支持Agent，其评估方法和设计思路与医疗Agent评估需求相关。",
+      "llm_tldr": "OrthoPilot是一个基于大语言模型的临床AI系统，集成医院数据流与外部知识，用于连续肌肉骨骼管理。该系统可视为一种基于EHR的临床决策支持Agent，其评估方法和设计思路与医疗Agent评估需求相关。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
