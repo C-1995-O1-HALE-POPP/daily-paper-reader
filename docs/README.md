@@ -6,35 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-16
-- 运行时间：2026-07-16 20:01:35 UTC
+- 最新运行日期：2026-07-17
+- 运行时间：2026-07-17 21:07:09 UTC
 - 运行状态：成功
-- 本次总论文数：5
+- 本次总论文数：6
 - 精读区：1
-- 速读区：4
+- 速读区：5
 
 ### 今日简报（AI）
-今日推荐5篇AI安全与医疗健康领域论文，精读关注前沿AI智能体作为临床安全审计员的潜力（8.0分）。最值得看的是精读论文中的AI安全审计评估，以及速读中关于AI智能体故障归因（7.0分）与个人健康管理自主进化（7.0分）的两个方向。建议优先阅读精读论文了解AI安全审计前沿，速读论文则适合延伸关注智能体故障分析与健康管理应用。
-- 详情：[/202607/16/README](/202607/16/README)
+今日精读一篇免微调多智能体临床症状检测系统，速读三篇涉及检索策略、肌肉骨骼AI及医疗安全基准。最值得关注精读文章的多智能体协同检测方案，以及MedFailBench提供的临床专家级安全边界基准。建议优先阅读精读文章理解医疗AI自主部署思路，再通过MedFailBench评估系统安全风险。
+- 详情：[/202607/17/README](/202607/17/README)
 
 ### 精读区论文标签
-1. [Evaluating Frontier AI Agents as Autonomous Clinical Security Auditors](/202607/16/2607.13411v1-evaluating-frontier-ai-agents-as-autonomous-clinical-security-auditors)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：使用患者数据集和结构化任务评估前沿AI智能体作为自主临床安全审计员
+1. [A Multi-Agent System for Autonomous, Fine-Tuning-Free Clinical Symptom Detection: Development and Validation Study](/202607/17/2607.12886v1-a-multi-agent-system-for-autonomous-fine-tuning-free-clinical-symptom-detection-development-and-validation-study)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：从EHR临床笔记中自主检测症状的多智能体系统，已进行验证评估
 
 ### 速读区论文标签
-1. [Who&When Pro: Can LLMs Really Attribute Failures in AI Agents?](/202607/16/2607.09996v1-whowhen-pro-can-llms-really-attribute-failures-in-ai-agents)  
+1. [GRASP: GRanularity-Aware Search Policy for Agentic RAG](/202607/17/2607.10463v1-grasp-granularity-aware-search-policy-for-agentic-rag)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：代理失败归因基准，与代理评估方法相关
-2. [A Self-Evolving Agent for Longitudinal Personal Health Management](/202607/16/2607.13940v1-a-self-evolving-agent-for-longitudinal-personal-health-management)  
+   evidence：使用强化学习训练代理在检索增强生成中自适应协调检索工具，可直接应用于医疗代理评估
+2. [Evidence-Grounded AI for Musculoskeletal Care](/202607/17/2607.12527v2-evidence-grounded-ai-for-musculoskeletal-care)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：用于纵向个人健康管理的自演进智能体
-3. [MedRealMM: A Real-World Multimodal Benchmark for Chinese Online Medical Consultation](/202607/16/2607.09142v2-medrealmm-a-real-world-multimodal-benchmark-for-chinese-online-medical-consultation)  
+   evidence：利用LLM与医院数据流（EHR）进行肌肉骨骼护理的临床AI系统，作为医疗智能体进行评估
+3. [MedFailBench: A Clinician-Built Open-Source Benchmark for Medical AI Safety Boundary Inspection](/202607/17/2607.15166v1-medfailbench-a-clinician-built-open-source-benchmark-for-medical-ai-safety-boundary-inspection)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：临床医生构建的医疗AI安全边界检查开源基准
+4. [AgentCompass: A Unified Evaluation Infrastructure for Agent Capabilities](/202607/17/2607.13705v1-agentcompass-a-unified-evaluation-infrastructure-for-agent-capabilities)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：基于真实世界数据的多模态在线医疗咨询基准
-4. [Evidence-Grounded AI for Musculoskeletal Care](/202607/16/2607.12527v1-evidence-grounded-ai-for-musculoskeletal-care)  
+   evidence：统一的LLM Agent评估基础设施
+5. [AgentCompass: A Unified Evaluation Infrastructure for Agent Capabilities](/202607/17/2607.13705v2-agentcompass-a-unified-evaluation-infrastructure-for-agent-capabilities)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：临床决策支持Agent OrthoPilot，集成EHR数据流用于连续肌肉骨骼护理
+   evidence：LLM智能体统一评估基础设施，可应用于医疗智能体
 
 
 <div class="dpr-home-promo-card">

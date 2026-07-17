@@ -1,0 +1,322 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-17T21:03:53.692991+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2607.12886v1",
+      "source": "arxiv",
+      "title": "A Multi-Agent System for Autonomous, Fine-Tuning-Free Clinical Symptom Detection: Development and Validation Study",
+      "abstract": "Clinical notes contain many of the signs and symptoms that bring patients to care, yet this information rarely reaches structured fields. Existing extraction approaches either rely on context-insensitive rules that generate false positives or on supervised models that require substantial fine-tuning. We present Pythia, a multi-agent system that autonomously writes and optimizes extraction prompts for clinical concepts without manual prompt engineering or fine-tuning. Running on a locally hosted open-weights model, Pythia keeps clinical notes on local infrastructure and selects prompts using development-set sensitivity and specificity. We compared Pythia with a curated lexicon across 72 signs and symptoms from 400 clinical notes representing 387 patients. Development (n=300) and validation (n=100) sets were partitioned independently for each concept. Pythia achieved mean sensitivity of 0.76 and specificity of 0.95, compared with 0.82 and 0.76 for the lexicon, and matched or exceeded the lexicon on both metrics for 20 of 62 directly comparable concepts. For 14 concepts where the lexicon labeled every note positive, Pythia recovered mean specificity of 0.97 by requiring a present-tense, patient-attributed finding rather than any textual mention of a term. Specificity transferred from development to validation with minimal degradation across prevalences, whereas sensitivity transfer weakened below 5% prevalence, reaching a mean gap of 0.25 below 2% prevalence. A BERT classifier fine-tuned per concept on the same development set achieved mean sensitivity of 0.23 and collapsed to zero sensitivity for concepts below roughly 5% prevalence. These findings suggest that autonomous, fine-tuning-free prompt optimization can produce symptom extraction prompts that generalize effectively from development to validation while remaining deployable on local infrastructure.",
+      "authors": [
+        "Cameron Cagan",
+        "Pedram Fard",
+        "Jiazi Tian",
+        "Jingya Cheng",
+        "Shawn N. Murphy",
+        "Hossein Estiri"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-14T15:32:07+00:00",
+      "link": "https://arxiv.org/pdf/2607.12886v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Multi-agent system for clinical symptom detection from EHR notes, autonomous and evaluated",
+      "llm_evidence_cn": "从EHR临床笔记中自主检测症状的多智能体系统，已进行验证评估",
+      "llm_evidence": "从EHR临床笔记中自主检测症状的多智能体系统，已进行验证评估",
+      "canonical_evidence": "从EHR临床笔记中自主检测症状的多智能体系统，已进行验证评估",
+      "llm_tldr_en": "Pythia is a multi-agent system that autonomously writes and optimizes prompts for extracting clinical symptoms from EHR notes, evaluated on 72 signs and symptoms without manual fine-tuning.",
+      "llm_tldr_cn": "临床笔记中的症状信息常缺失于结构化字段，现有方法依赖规则或需微调。Pythia是一个多智能体系统，能在本地开源模型上自主编写和优化提取提示，无需手动提示工程或微调。基于72个体征和症状的验证研究显示，其性能优于手动编制词典。",
+      "llm_tldr": "临床笔记中的症状信息常缺失于结构化字段，现有方法依赖规则或需微调。Pythia是一个多智能体系统，能在本地开源模型上自主编写和优化提取提示，无需手动提示工程或微调。基于72个体征和症状的验证研究显示，其性能优于手动编制词典。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.10463v1",
+      "source": "arxiv",
+      "title": "GRASP: GRanularity-Aware Search Policy for Agentic RAG",
+      "abstract": "Agentic retrieval-augmented generation (RAG) extends static RAG by allowing language models to iteratively reason, generate search queries, retrieve evidence, and predict answers. However, it remains challenging for models to decide when to retrieve, whether to use lexical matching or semantic similarity, and how to control context granularity to prevent irrelevant tokens from interfering with agent reasoning. In this paper, we introduce GRASP, a reinforcement learning (RL) framework for training agents to adaptively coordinate complementary retrieval tools during multi-step reasoning. GRASP provides the agent with semantic search, keyword search, and paragraph-reading actions, enabling it to retrieve sentence-level evidence and expand further context only when needed. We train the policy with a reward that jointly accounts for answer accuracy, grounded reading, complementary search, and turn efficiency. Experiments on multi-hop reasoning benchmarks show that GRASP improves both retrieval recall and downstream question answering performance compared with single-step retrieval, prompting-based agentic RAG, and RL-based retrieval baselines. Qualitative and ablation analyses show that the learned policy develops interpretable skimming and scanning behavior: it uses semantic search for broad exploration, paragraph reading for local verification, and keyword search for entity-specific evidence. These results suggest that learning to coordinate retrieval signals and context granularity is critical for agent's correct reasoning.",
+      "authors": [
+        "Varun Gandhi",
+        "Jaewook Lee",
+        "Shantanu Todmal",
+        "Franck Dernoncourt",
+        "Ryan Rossi",
+        "Zichao Wang",
+        "Andrew Lan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.IR"
+      ],
+      "published": "2026-07-11T19:58:07+00:00",
+      "link": "https://arxiv.org/pdf/2607.10463v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses reinforcement learning to train agents for adaptive coordination of retrieval tools in RAG, directly applicable to medical agent evaluation",
+      "llm_evidence_cn": "使用强化学习训练代理在检索增强生成中自适应协调检索工具，可直接应用于医疗代理评估",
+      "llm_evidence": "使用强化学习训练代理在检索增强生成中自适应协调检索工具，可直接应用于医疗代理评估",
+      "canonical_evidence": "使用强化学习训练代理在检索增强生成中自适应协调检索工具，可直接应用于医疗代理评估",
+      "llm_tldr_en": "Introduces GRASP, a reinforcement learning framework that trains agents to adaptively coordinate semantic search, keyword search, and paragraph-reading during multi-step reasoning for agentic RAG.",
+      "llm_tldr_cn": "该论文提出GRASP，一个使用强化学习训练代理在迭代推理中自适应协调语义搜索、关键词搜索和段落阅读动作的框架。通过粒度感知搜索策略，代理能在需要时仅检索句子级证据并在必要时扩展上下文。该RL方法可直接迁移到基于EHR的医疗Agent评估任务中，用于训练医疗Agent做出更精准的决策或作为评估其检索策略的基线。",
+      "llm_tldr": "该论文提出GRASP，一个使用强化学习训练代理在迭代推理中自适应协调语义搜索、关键词搜索和段落阅读动作的框架。通过粒度感知搜索策略，代理能在需要时仅检索句子级证据并在必要时扩展上下文。该RL方法可直接迁移到基于EHR的医疗Agent评估任务中，用于训练医疗Agent做出更精准的决策或作为评估其检索策略的基线。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.13705v1",
+      "source": "arxiv",
+      "title": "AgentCompass: A Unified Evaluation Infrastructure for Agent Capabilities",
+      "abstract": "As Large Language Models (LLMs) evolve into autonomous agents, the need for unified evaluation infrastructure becomes critical. However, current evaluation pipelines remain highly fragmented and tightly coupled, hindering reproducibility and causing redundant engineering. To address this, we introduce AgentCompass, an open-source, lightweight, and extensible infrastructure for evaluating LLM-based agents. AgentCompass organizes the evaluation process around three independent components, namely Benchmark, Harness, and Environment, thereby enabling flexible configurations without requiring the reimplementation of complex execution logic. Furthermore, it features a fault-tolerant asynchronous runtime and comprehensive trajectory analysis tools to transparently diagnose nuanced failure modes like reward-hacking. Natively supporting over 20 benchmarks across five capability dimensions, AgentCompass provides the community with a scalable and reproducible infrastructure for advancing agent research.",
+      "authors": [
+        "Zichen Ding",
+        "Jiaye Ge",
+        "Shufan Jiang",
+        "Kai Chen",
+        "Mo Li",
+        "Qingqiu Li",
+        "Zehao Li",
+        "Zonglin Li",
+        "Tiaohao Liang",
+        "Shudong Liu",
+        "Zerun Ma",
+        "Zixing Shang",
+        "Wenhui Tian",
+        "Zun Wang",
+        "Liwei Wu",
+        "Zhenyu Wu",
+        "Jun Xu",
+        "Bowen Yang",
+        "Dingbo Yuan",
+        "Qi Zhang",
+        "Songyang Zhang",
+        "Peiheng Zhou",
+        "Dongsheng Zhu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.SE"
+      ],
+      "published": "2026-07-15T11:11:17+00:00",
+      "link": "https://arxiv.org/pdf/2607.13705v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Unified evaluation infrastructure for LLM agents",
+      "llm_evidence_cn": "统一的LLM Agent评估基础设施",
+      "llm_evidence": "统一的LLM Agent评估基础设施",
+      "canonical_evidence": "统一的LLM Agent评估基础设施",
+      "llm_tldr_en": "AgentCompass is an open-source, extensible evaluation infrastructure for LLM agents with fault-tolerant runtime and trajectory analysis.",
+      "llm_tldr_cn": "当前Agent评估框架碎片化、紧耦合，难以复现。AgentCompass将评估过程解耦为基准、测试框架和环境三个独立组件，支持灵活配置。其异步容错运行时与轨迹分析工具可降低工程开销，为Agent评估提供通用基础设施。",
+      "llm_tldr": "当前Agent评估框架碎片化、紧耦合，难以复现。AgentCompass将评估过程解耦为基准、测试框架和环境三个独立组件，支持灵活配置。其异步容错运行时与轨迹分析工具可降低工程开销，为Agent评估提供通用基础设施。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.12527v2",
+      "source": "arxiv",
+      "title": "Evidence-Grounded AI for Musculoskeletal Care",
+      "abstract": "Musculoskeletal diseases are among the leading causes of disability worldwide and create the greatest global need for rehabilitation. Because recovery, remodelling and degeneration often unfold over months to years, musculoskeletal care requires longitudinal management that repeatedly integrates evolving patient evidence, external medical knowledge and stage-specific functional goals. In routine practice, this evidence is fragmented across visits, departments and hospital systems, limiting individualized, evidence-based care. Here we report OrthoPilot, a clinical artificial intelligence system powered by a large language model that integrates hospital data streams with authoritative external knowledge for continuous musculoskeletal management. OrthoPilot autonomously retrieves real-time imaging, laboratory, pathology and order data and converts evolving patient states into evidence-based decisions from admission diagnosis to rehabilitation planning. We established a specialist-validated benchmark from real-world electronic health records spanning 1,000 disease codes. In a reader study across the complete care pathway, OrthoPilot was compared with 81 orthopaedic physicians and surpassed experts with 25 years of experience in diagnostic reasoning, clinical decision-making and management planning. It also outperformed all evaluated intelligent systems across 60 external clinical centres. In a prospective study of 1,870 complex cases, OrthoPilot increased full-chain management success by 10.6%. During an 8-month randomised deployment involving 8,240 inpatients, it increased cumulative cases per bed by 9.7% and improved patient-reported access to health information. These results move clinical AI from predicting isolated events toward executing longitudinal management across complete musculoskeletal care pathways.",
+      "authors": [
+        "Wenjie Li",
+        "Yujie Zhang",
+        "Fanrui Zhang",
+        "Haoran Sun",
+        "Renhao Yang",
+        "Junjun He",
+        "Weiran Huang",
+        "Yuanfeng Ji",
+        "Chenrun Wang",
+        "Kailing Wang",
+        "Hongcheng Gao",
+        "Kaipeng Zhang",
+        "Hanyu Wang",
+        "Angela Lin Wang",
+        "Xingqi He",
+        "Yilin Huang",
+        "Shiyi Yao",
+        "Lilong Wang",
+        "Yankai Jiang",
+        "Yirong Chen",
+        "Chenglong Ma",
+        "Jiyao Liu",
+        "Ming Hu",
+        "Gen Li",
+        "Yidong Xu",
+        "Chengyu Zhuang",
+        "Jiawei Liu",
+        "Yin Zhang",
+        "Lequan Yu",
+        "Lu Chen",
+        "Yinpeng Dong",
+        "Lei Liu",
+        "Carlos Gutierrez Sanroman",
+        "Yu Qiao",
+        "Weijie Ma",
+        "Xiaosong Wang",
+        "Lei Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-14T09:03:26+00:00",
+      "link": "https://arxiv.org/pdf/2607.12527v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Clinical AI system using LLM and hospital data streams (EHR) for musculoskeletal care, evaluated as medical agent",
+      "llm_evidence_cn": "利用LLM与医院数据流（EHR）进行肌肉骨骼护理的临床AI系统，作为医疗智能体进行评估",
+      "llm_evidence": "利用LLM与医院数据流（EHR）进行肌肉骨骼护理的临床AI系统，作为医疗智能体进行评估",
+      "canonical_evidence": "利用LLM与医院数据流（EHR）进行肌肉骨骼护理的临床AI系统，作为医疗智能体进行评估",
+      "llm_tldr_en": "OrthoPilot is a clinical AI system powered by LLM that integrates hospital data streams with external knowledge for continuous musculoskeletal management, autonomously retrieving evidence.",
+      "llm_tldr_cn": "肌肉骨骼疾病患者数据分散于不同医院系统，难以实现连续的个体化护理。OrthoPilot是一个基于大语言模型的临床AI系统，整合医院数据流与权威外部知识，实现自主证据检索与持续管理。系统展示了AI在整合EHR与医学知识方面的潜力。",
+      "llm_tldr": "肌肉骨骼疾病患者数据分散于不同医院系统，难以实现连续的个体化护理。OrthoPilot是一个基于大语言模型的临床AI系统，整合医院数据流与权威外部知识，实现自主证据检索与持续管理。系统展示了AI在整合EHR与医学知识方面的潜力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.13705v2",
+      "source": "arxiv",
+      "title": "AgentCompass: A Unified Evaluation Infrastructure for Agent Capabilities",
+      "abstract": "As Large Language Models (LLMs) evolve into autonomous agents, the need for unified evaluation infrastructure becomes critical. However, current evaluation pipelines remain highly fragmented and tightly coupled, hindering reproducibility and causing redundant engineering. To address this, we introduce AgentCompass, an open-source, lightweight, and extensible infrastructure for evaluating LLM-based agents. AgentCompass organizes the evaluation process around three independent components, namely Benchmark, Harness, and Environment, thereby enabling flexible configurations without requiring the reimplementation of complex execution logic. Furthermore, it features a fault-tolerant asynchronous runtime and comprehensive trajectory analysis tools to transparently diagnose nuanced failure modes like reward-hacking. Natively supporting over 20 benchmarks across five capability dimensions, AgentCompass provides the community with a scalable and reproducible infrastructure for advancing agent research.",
+      "authors": [
+        "Kai Chen",
+        "Zichen Ding",
+        "Jiaye Ge",
+        "Shufan Jiang",
+        "Mo Li",
+        "Qingqiu Li",
+        "Zehao Li",
+        "Zonglin Li",
+        "Tiaohao Liang",
+        "Shudong Liu",
+        "Zerun Ma",
+        "Zixing Shang",
+        "Wenhui Tian",
+        "Zun Wang",
+        "Liwei Wu",
+        "Zhenyu Wu",
+        "Jun Xu",
+        "Bowen Yang",
+        "Dingbo Yuan",
+        "Qi Zhang",
+        "Songyang Zhang",
+        "Peiheng Zhou",
+        "Dongsheng Zhu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.SE"
+      ],
+      "published": "2026-07-15T11:11:17+00:00",
+      "link": "https://arxiv.org/pdf/2607.13705v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "unified evaluation infrastructure for LLM-based agents, applicable to medical agents",
+      "llm_evidence_cn": "LLM智能体统一评估基础设施，可应用于医疗智能体",
+      "llm_evidence": "LLM智能体统一评估基础设施，可应用于医疗智能体",
+      "canonical_evidence": "LLM智能体统一评估基础设施，可应用于医疗智能体",
+      "llm_tldr_en": "AgentCompass provides a unified, extensible infrastructure for evaluating LLM-based agents with flexible components and trajectory analysis.",
+      "llm_tldr_cn": "当前LLM智能体评估管道碎片化、耦合度高。AgentCompass提出开源、轻量、可扩展的基础设施，将评估分为基准、工具和环境三个独立组件，支持灵活配置和容错异步运行。其轨迹分析工具可帮助诊断智能体行为，适用于包括医疗在内的各类智能体评估场景。",
+      "llm_tldr": "当前LLM智能体评估管道碎片化、耦合度高。AgentCompass提出开源、轻量、可扩展的基础设施，将评估分为基准、工具和环境三个独立组件，支持灵活配置和容错异步运行。其轨迹分析工具可帮助诊断智能体行为，适用于包括医疗在内的各类智能体评估场景。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.15166v1",
+      "source": "arxiv",
+      "title": "MedFailBench: A Clinician-Built Open-Source Benchmark for Medical AI Safety Boundary Inspection",
+      "abstract": "Most medical AI benchmarks measure whether a model knows the correct answer. MedFailBench asks a different question: which safety boundary failed? We present a clinician-built synthetic benchmark and failure atlas that labels medical AI errors by severity (1--5) and safety gate type (missed urgent escalation, unsafe remote dosing, unsafe discharge reassurance, evidence fabrication, unsafe protocol execution, source support gap). The current public release (v0.2.1) contains 44 clinician-reviewed synthetic cases with severity annotations, a live HuggingFace leaderboard preview, a safety gate taxonomy, a clinical severity rubric, and an automated pipeline for archiving model-response screening runs. No patient data, clinical validation claims, or model rankings are included. MedFailBench is released under Apache-2.0 and CC-BY-4.0 and carries the Zenodo DOI 10.5281/zenodo.21205535.",
+      "authors": [
+        "Goktug Ozkan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-07-16T16:16:07+00:00",
+      "link": "https://arxiv.org/pdf/2607.15166v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "clinician-built open-source benchmark for medical AI safety boundary inspection",
+      "llm_evidence_cn": "临床医生构建的医疗AI安全边界检查开源基准",
+      "llm_evidence": "临床医生构建的医疗AI安全边界检查开源基准",
+      "canonical_evidence": "临床医生构建的医疗AI安全边界检查开源基准",
+      "llm_tldr_en": "MedFailBench is a clinician-built benchmark for medical AI safety, labeling errors by severity and safety gate type, with a failure atlas.",
+      "llm_tldr_cn": "大多数医疗AI基准只衡量模型是否知道正确答案，MedFailBench则问哪个安全边界失效了。它由临床医生构建，包含44个合成病例和严重性标注，定义了安全门类型（如错过紧急升级、不安全远程用药等），并提供了自动评估管道。该基准为医疗AI（包括医疗智能体）的安全性评估提供了新维度。",
+      "llm_tldr": "大多数医疗AI基准只衡量模型是否知道正确答案，MedFailBench则问哪个安全边界失效了。它由临床医生构建，包含44个合成病例和严重性标注，定义了安全门类型（如错过紧急升级、不安全远程用药等），并提供了自动评估管道。该基准为医疗AI（包括医疗智能体）的安全性评估提供了新维度。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
