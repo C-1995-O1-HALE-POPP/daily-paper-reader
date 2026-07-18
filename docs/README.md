@@ -6,38 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-17
-- 运行时间：2026-07-17 21:07:09 UTC
+- 最新运行日期：2026-07-18
+- 运行时间：2026-07-18 21:20:04 UTC
 - 运行状态：成功
-- 本次总论文数：6
-- 精读区：1
-- 速读区：5
+- 本次总论文数：3
+- 精读区：2
+- 速读区：1
 
 ### 今日简报（AI）
-今日精读一篇免微调多智能体临床症状检测系统，速读三篇涉及检索策略、肌肉骨骼AI及医疗安全基准。最值得关注精读文章的多智能体协同检测方案，以及MedFailBench提供的临床专家级安全边界基准。建议优先阅读精读文章理解医疗AI自主部署思路，再通过MedFailBench评估系统安全风险。
-- 详情：[/202607/17/README](/202607/17/README)
+今日日报精选3篇AI在医疗数据安全与生成方向的研究，含2篇精读。最推荐关注《Evaluating Frontier AI Agents as Autonomous Clinical Security Auditors》（9.0），探讨AI代理自动审计临床系统安全；《PRomop》（8.0）提供基于OMOP通用数据模型的决策就绪患者健康记录。建议普通读者优先了解AI在临床安全审计中的应用潜力，以及标准化数据模型对医疗分析的价值。
+- 详情：[/202607/18/README](/202607/18/README)
 
 ### 精读区论文标签
-1. [A Multi-Agent System for Autonomous, Fine-Tuning-Free Clinical Symptom Detection: Development and Validation Study](/202607/17/2607.12886v1-a-multi-agent-system-for-autonomous-fine-tuning-free-clinical-symptom-detection-development-and-validation-study)  
+1. [Evaluating Frontier AI Agents as Autonomous Clinical Security Auditors](/202607/18/2607.13411v1-evaluating-frontier-ai-agents-as-autonomous-clinical-security-auditors)  
    标签：评分：9.0/10、query:ehr-agent
-   evidence：从EHR临床笔记中自主检测症状的多智能体系统，已进行验证评估
+   evidence：使用患者数据集评估前沿AI智能体作为临床安全审计员
+2. [PRomop: A Decision-Ready Longitudinal Patient Health Record on the OMOP Common Data Model](/202607/18/2607.13947v1-promop-a-decision-ready-longitudinal-patient-health-record-on-the-omop-common-data-model)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：提供基于OMOP的立即可用的纵向患者记录，支持EHR驱动的Agent
 
 ### 速读区论文标签
-1. [GRASP: GRanularity-Aware Search Policy for Agentic RAG](/202607/17/2607.10463v1-grasp-granularity-aware-search-policy-for-agentic-rag)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：使用强化学习训练代理在检索增强生成中自适应协调检索工具，可直接应用于医疗代理评估
-2. [Evidence-Grounded AI for Musculoskeletal Care](/202607/17/2607.12527v2-evidence-grounded-ai-for-musculoskeletal-care)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：利用LLM与医院数据流（EHR）进行肌肉骨骼护理的临床AI系统，作为医疗智能体进行评估
-3. [MedFailBench: A Clinician-Built Open-Source Benchmark for Medical AI Safety Boundary Inspection](/202607/17/2607.15166v1-medfailbench-a-clinician-built-open-source-benchmark-for-medical-ai-safety-boundary-inspection)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：临床医生构建的医疗AI安全边界检查开源基准
-4. [AgentCompass: A Unified Evaluation Infrastructure for Agent Capabilities](/202607/17/2607.13705v1-agentcompass-a-unified-evaluation-infrastructure-for-agent-capabilities)  
+1. [AdaPCLA: Adaptive Prior-Calibrated Logit Adjustment for Long-Tailed Longitudinal EHR Generation](/202607/18/2607.12645v1-adapcla-adaptive-prior-calibrated-logit-adjustment-for-long-tailed-longitudinal-ehr-generation)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：统一的LLM Agent评估基础设施
-5. [AgentCompass: A Unified Evaluation Infrastructure for Agent Capabilities](/202607/17/2607.13705v2-agentcompass-a-unified-evaluation-infrastructure-for-agent-capabilities)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：LLM智能体统一评估基础设施，可应用于医疗智能体
+   evidence：专注于生成长尾纵向EHR数据
 
 
 <div class="dpr-home-promo-card">

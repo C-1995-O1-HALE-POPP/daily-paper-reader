@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-18",
+  "date": "2026-07-18",
+  "generated_at": "2026-07-18T21:20:11",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/18/2607.13411v1-evaluating-frontier-ai-agents-as-autonomous-clinical-security-auditors",
+      "section": "deep",
+      "title_en": "Evaluating Frontier AI Agents as Autonomous Clinical Security Auditors",
+      "authors": "Michael O. Eniolade",
+      "date": "2026-07-15",
+      "pdf": "https://arxiv.org/pdf/2607.13411v1",
+      "score": "9.0",
+      "evidence": "使用患者数据集评估前沿AI智能体作为临床安全审计员",
+      "tldr": "临床AI模型可能因未检测的对抗性漏洞导致患者风险，但安全审计需专业知识且耗时。该研究基于METR Task Standard设计了六个变体的审计任务，要求前沿AI代理在Docker中自主实现四种攻击、计算安全态势分数并输出结构化报告。Claude Sonnet 4.6和GPT-4.1在所有运行中获完美评分，GPT-4o完成61%且token消耗更高。任务、评分基础设施和部分数据集已公开，为自主临床AI安全审计提供基准。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Clinical AI models can expose patients to harm when adversarial vulnerabilities go undetected, yet formal security auditing requires statistical expertise, specialized tools, and significant time. We present an open evaluation task, built on METR Task Standard v0.3.0, that tests whether frontier AI agents can autonomously implement a structured clinical AI security audit. Given a pre-trained clinical prediction model, a patient dataset, and written instructions, each agent must implement four attacks from pseudocode, compute a Security Posture Score covering FGSM robustness, membership inference resistance, expected calibration error, and boundary attack resistance, and write a structured JSON report in a Docker container using only a bash interface and no scaffolding code. Six variants span the Wisconsin Diagnostic Breast Cancer and MIMIC-IV ICU mortality datasets across three model architectures with increasing defense strength, with reference scores from 55.60 to 90.41. We ran 54 evaluations across three frontier models, with three runs per variant. Claude Sonnet 4.6 and GPT-4.1 completed all 18 runs and received perfect evaluator scores. GPT-4o completed 61 percent of runs and used about five times the per-run token count of Claude, although provider tokenization differs. Total API costs were 8 US dollars for GPT-4.1, 12 US dollars for Claude Sonnet 4.6, and 27 US dollars for GPT-4o. GPT-4o failures involved premature session termination, an aggregation error, and an empty submission file. The task, scoring infrastructure, and Wisconsin Breast Cancer assets are publicly released; MIMIC-IV variants require separate PhysioNet access.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/18/2607.13947v1-promop-a-decision-ready-longitudinal-patient-health-record-on-the-omop-common-data-model",
+      "section": "deep",
+      "title_en": "PRomop: A Decision-Ready Longitudinal Patient Health Record on the OMOP Common Data Model",
+      "authors": "Adam Blum, Louis Ferger-Andrews",
+      "date": "2026-07-15",
+      "pdf": "https://arxiv.org/pdf/2607.13947v1",
+      "score": "8.0",
+      "evidence": "提供基于OMOP的立即可用的纵向患者记录，支持EHR驱动的Agent",
+      "tldr": "患者数据在存储与决策之间存在鸿沟，记录分散且需重复推导临床状态。PRomop在OMOP通用数据模型上扩展肿瘤学字段，通过PatientRecord将纵向历史展平为单行286列的决策就绪记录，一次性推导治疗线、疾病状态等并物化复用。在两家机构部署（合计17500例），20条标准的入组查询从原始OMOP需27-39次连接降为0次；基准测试中入组筛查速度提升23.9倍。该方法消除了重复推导，为分析、AI/ML、临床试验匹配和决策支持提供共享基础。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Objective: Health systems and biopharma face a persistent gap between storing patient data and acting on it. Records are fragmented across providers, structured for storage rather than decision-making, and each downstream application independently reconstructs patient clinical state. We present PRomop (PatientRecord on OMOP), an open-source longitudinal patient record designed to close that gap.   Materials and Methods: PRomop extends the OMOP Common Data Model (CDM 5.4) with oncology extensions and introduces PatientRecord, a flattened projection that collapses each patient's longitudinal history into a single decision-ready row of 286 columns. Clinical state--including lines of therapy, disease status, and normalized biomarkers--is derived once during projection and materialized for reuse by analytics, clinical trial matching, and standard-of-care evaluation. We report production deployments and a controlled benchmark on synthetic data.   Results: PRomop is deployed by two independently governed oncology organizations--the HealthTree Foundation (14,000 blood-cancer patients) and CancerBot (3,500)--supporting trial matching across 19,500 actively recruiting trials in five cancer types. A representative 20-criterion eligibility query requiring 27-39 joins on raw OMOP requires none against PatientRecord (analytical estimate: 30x-200x reduction). In a benchmark using 100 Synthea-generated breast-cancer patients, eligibility screening averaged 0.92 ms versus 20.7 ms from raw OMOP, a 23.9x speedup.   Discussion and Conclusion: PatientRecord provides a shared, decision-ready foundation for downstream applications, eliminating repeated clinical-state derivation while preserving OMOP conformance. PRomop demonstrates that a flattened projection over a standards-based longitudinal record is a practical, deployed architecture for analytics, AI/ML, clinical trial matching, and decision support.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/18/2607.12645v1-adapcla-adaptive-prior-calibrated-logit-adjustment-for-long-tailed-longitudinal-ehr-generation",
+      "section": "quick",
+      "title_en": "AdaPCLA: Adaptive Prior-Calibrated Logit Adjustment for Long-Tailed Longitudinal EHR Generation",
+      "authors": "Shuai Cui, Chen Wenxuan, Wenjie Du, Jian Lou, Dan Li, Wenjie Feng",
+      "date": "2026-07-14",
+      "pdf": "https://arxiv.org/pdf/2607.12645v1",
+      "score": "6.0",
+      "evidence": "专注于生成长尾纵向EHR数据",
+      "tldr": "针对自回归生成模型在长尾纵向电子病历中欠表示罕见事件共现结构的问题，提出AdaPCLA框架。该框架通过模拟退火训练内化数据知识参数，并支持零样本分布控制实现无训练跨群体适应。理论分析通过标签经验NTK刻画罕见码的logit更新，推导先验内化界。实验表明，在MIMIC-III和MIMIC-IV上TailPairSeen比HALO提升114.2%和65.1%，零样本跨群体适应F1比GPT风格生成提升3.5%。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Generative modeling of longitudinal Electronic Health Records is increasingly important for privacy-preserving research, yet standard autoregressive models tend to underrepresent the co-occurrence structure of tail events (i.e., diseases, symptoms), reducing the fidelity and faithfulness of generated data for rare subpopulations. To this end, we propose AdaPCLA framework, which enables generative models to adaptively fit and generate EHR data through a data distribution-aware training strategy; this is achieved by internalizing data knowledge parameters by simulated annealing training. It also supports training-free adaptation to a diverse clinical population for generation through zero-shot distribution control. Moreover, our theoretical analysis characterizes rare-code logit updates through the label-wise empirical NTK and derives a prior-internalization bound for how annealing speed and NTK conditioning affect retained prior signals. Experiments on real-world data show that AdaPCLA achieves consistent gains in tail plausibility, downstream utility, and zero-shot control; in particular, it improves TailPairSeen over HALO by 114.2% on MIMIC-III and 65.1% on MIMIC-IV, outperforms GPT-style generation by 3.5% F1 for zero-shot cross-population adaptation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

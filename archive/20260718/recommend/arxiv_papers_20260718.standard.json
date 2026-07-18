@@ -1,0 +1,128 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-18T21:18:53.477988+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.13411v1",
+      "source": "arxiv",
+      "title": "Evaluating Frontier AI Agents as Autonomous Clinical Security Auditors",
+      "abstract": "Clinical AI models can expose patients to harm when adversarial vulnerabilities go undetected, yet formal security auditing requires statistical expertise, specialized tools, and significant time. We present an open evaluation task, built on METR Task Standard v0.3.0, that tests whether frontier AI agents can autonomously implement a structured clinical AI security audit. Given a pre-trained clinical prediction model, a patient dataset, and written instructions, each agent must implement four attacks from pseudocode, compute a Security Posture Score covering FGSM robustness, membership inference resistance, expected calibration error, and boundary attack resistance, and write a structured JSON report in a Docker container using only a bash interface and no scaffolding code. Six variants span the Wisconsin Diagnostic Breast Cancer and MIMIC-IV ICU mortality datasets across three model architectures with increasing defense strength, with reference scores from 55.60 to 90.41. We ran 54 evaluations across three frontier models, with three runs per variant. Claude Sonnet 4.6 and GPT-4.1 completed all 18 runs and received perfect evaluator scores. GPT-4o completed 61 percent of runs and used about five times the per-run token count of Claude, although provider tokenization differs. Total API costs were 8 US dollars for GPT-4.1, 12 US dollars for Claude Sonnet 4.6, and 27 US dollars for GPT-4o. GPT-4o failures involved premature session termination, an aggregation error, and an empty submission file. The task, scoring infrastructure, and Wisconsin Breast Cancer assets are publicly released; MIMIC-IV variants require separate PhysioNet access.",
+      "authors": [
+        "Michael O. Eniolade"
+      ],
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.LG"
+      ],
+      "published": "2026-07-15T03:21:55+00:00",
+      "link": "https://arxiv.org/pdf/2607.13411v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Evaluates frontier AI agents as clinical security auditors using patient dataset",
+      "llm_evidence_cn": "使用患者数据集评估前沿AI智能体作为临床安全审计员",
+      "llm_evidence": "使用患者数据集评估前沿AI智能体作为临床安全审计员",
+      "canonical_evidence": "使用患者数据集评估前沿AI智能体作为临床安全审计员",
+      "llm_tldr_en": "This paper presents an evaluation task where AI agents autonomously conduct a clinical AI security audit, including attacks and security posture scoring, using a patient dataset and Docker environment.",
+      "llm_tldr_cn": "临床AI模型面临对抗性漏洞风险，但安全审计需要专业知识。本文基于METR任务标准提出一个开放评估任务，测试前沿AI智能体能否自主执行结构化临床AI安全审计。给定预训练临床预测模型、患者数据集和指令，智能体需实现四种攻击、计算安全态势分数并生成JSON报告。该工作为评估临床环境中自主智能体能力提供了基准。",
+      "llm_tldr": "临床AI模型面临对抗性漏洞风险，但安全审计需要专业知识。本文基于METR任务标准提出一个开放评估任务，测试前沿AI智能体能否自主执行结构化临床AI安全审计。给定预训练临床预测模型、患者数据集和指令，智能体需实现四种攻击、计算安全态势分数并生成JSON报告。该工作为评估临床环境中自主智能体能力提供了基准。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.13947v1",
+      "source": "arxiv",
+      "title": "PRomop: A Decision-Ready Longitudinal Patient Health Record on the OMOP Common Data Model",
+      "abstract": "Objective: Health systems and biopharma face a persistent gap between storing patient data and acting on it. Records are fragmented across providers, structured for storage rather than decision-making, and each downstream application independently reconstructs patient clinical state. We present PRomop (PatientRecord on OMOP), an open-source longitudinal patient record designed to close that gap.   Materials and Methods: PRomop extends the OMOP Common Data Model (CDM 5.4) with oncology extensions and introduces PatientRecord, a flattened projection that collapses each patient's longitudinal history into a single decision-ready row of 286 columns. Clinical state--including lines of therapy, disease status, and normalized biomarkers--is derived once during projection and materialized for reuse by analytics, clinical trial matching, and standard-of-care evaluation. We report production deployments and a controlled benchmark on synthetic data.   Results: PRomop is deployed by two independently governed oncology organizations--the HealthTree Foundation (14,000 blood-cancer patients) and CancerBot (3,500)--supporting trial matching across 19,500 actively recruiting trials in five cancer types. A representative 20-criterion eligibility query requiring 27-39 joins on raw OMOP requires none against PatientRecord (analytical estimate: 30x-200x reduction). In a benchmark using 100 Synthea-generated breast-cancer patients, eligibility screening averaged 0.92 ms versus 20.7 ms from raw OMOP, a 23.9x speedup.   Discussion and Conclusion: PatientRecord provides a shared, decision-ready foundation for downstream applications, eliminating repeated clinical-state derivation while preserving OMOP conformance. PRomop demonstrates that a flattened projection over a standards-based longitudinal record is a practical, deployed architecture for analytics, AI/ML, clinical trial matching, and decision support.",
+      "authors": [
+        "Adam Blum",
+        "Louis Ferger-Andrews"
+      ],
+      "primary_category": "cs.DB",
+      "categories": [
+        "cs.DB"
+      ],
+      "published": "2026-07-15T15:38:39+00:00",
+      "link": "https://arxiv.org/pdf/2607.13947v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "provides decision-ready longitudinal patient record on OMOP CDM, enabling EHR-based agent",
+      "llm_evidence_cn": "提供基于OMOP的立即可用的纵向患者记录，支持EHR驱动的Agent",
+      "llm_evidence": "提供基于OMOP的立即可用的纵向患者记录，支持EHR驱动的Agent",
+      "canonical_evidence": "提供基于OMOP的立即可用的纵向患者记录，支持EHR驱动的Agent",
+      "llm_tldr_en": "PRomop extends OMOP CDM with oncology extensions and creates a flattened PatientRecord with 286 columns, ready for downstream decision support agents.",
+      "llm_tldr_cn": "该论文针对健康数据和决策之间的鸿沟，提出了PRomop，基于OMOP通用数据模型扩展肿瘤学模块，并将患者纵向历史压平为包含286个字段的PatientRecord。这使得下游应用（如医疗Agent）可以直接使用决策就绪的临床状态，无需再自行重构。为基于EHR的医疗Agent提供了标准化、高效率的数据基础设施，有助于加速评估和部署。",
+      "llm_tldr": "该论文针对健康数据和决策之间的鸿沟，提出了PRomop，基于OMOP通用数据模型扩展肿瘤学模块，并将患者纵向历史压平为包含286个字段的PatientRecord。这使得下游应用（如医疗Agent）可以直接使用决策就绪的临床状态，无需再自行重构。为基于EHR的医疗Agent提供了标准化、高效率的数据基础设施，有助于加速评估和部署。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.12645v1",
+      "source": "arxiv",
+      "title": "AdaPCLA: Adaptive Prior-Calibrated Logit Adjustment for Long-Tailed Longitudinal EHR Generation",
+      "abstract": "Generative modeling of longitudinal Electronic Health Records is increasingly important for privacy-preserving research, yet standard autoregressive models tend to underrepresent the co-occurrence structure of tail events (i.e., diseases, symptoms), reducing the fidelity and faithfulness of generated data for rare subpopulations. To this end, we propose AdaPCLA framework, which enables generative models to adaptively fit and generate EHR data through a data distribution-aware training strategy; this is achieved by internalizing data knowledge parameters by simulated annealing training. It also supports training-free adaptation to a diverse clinical population for generation through zero-shot distribution control. Moreover, our theoretical analysis characterizes rare-code logit updates through the label-wise empirical NTK and derives a prior-internalization bound for how annealing speed and NTK conditioning affect retained prior signals. Experiments on real-world data show that AdaPCLA achieves consistent gains in tail plausibility, downstream utility, and zero-shot control; in particular, it improves TailPairSeen over HALO by 114.2% on MIMIC-III and 65.1% on MIMIC-IV, outperforms GPT-style generation by 3.5% F1 for zero-shot cross-population adaptation.",
+      "authors": [
+        "Shuai Cui",
+        "Chen Wenxuan",
+        "Wenjie Du",
+        "Jian Lou",
+        "Dan Li",
+        "Wenjie Feng"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-14T11:23:51+00:00",
+      "link": "https://arxiv.org/pdf/2607.12645v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "focuses on generating longitudinal EHR data",
+      "llm_evidence_cn": "专注于生成长尾纵向EHR数据",
+      "llm_evidence": "专注于生成长尾纵向EHR数据",
+      "canonical_evidence": "专注于生成长尾纵向EHR数据",
+      "llm_tldr_en": "AdaPCLA adaptively adjusts logits to generate high-fidelity longitudinal EHR data, especially for rare events, using simulated annealing and zero-shot distribution control.",
+      "llm_tldr_cn": "该论文针对标准自回归模型在EHR生成中低估罕见事件共现结构的问题，提出了AdaPCLA框架。通过模拟退火训练内化数据分布知识，并支持零样本分布控制的免训练适应，从而在隐私保护研究中生成更逼真的纵向EHR数据。实验表明该方法显著提升了罕见子群体的生成保真度，为医疗数据增强和下游任务提供了更可靠的数据基础。",
+      "llm_tldr": "该论文针对标准自回归模型在EHR生成中低估罕见事件共现结构的问题，提出了AdaPCLA框架。通过模拟退火训练内化数据分布知识，并支持零样本分布控制的免训练适应，从而在隐私保护研究中生成更逼真的纵向EHR数据。实验表明该方法显著提升了罕见子群体的生成保真度，为医疗数据增强和下游任务提供了更可靠的数据基础。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
