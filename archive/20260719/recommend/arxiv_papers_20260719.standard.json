@@ -1,0 +1,169 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-19T21:02:31.185267+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.12397v1",
+      "source": "arxiv",
+      "title": "Critic Experience Bank: Self-Evolving Step-Level Confidence Estimation for LLM Agents",
+      "abstract": "LLM agents act in external environments where each action changes the state that later decisions condition on, and where a single wrong step can waste interaction budget or trigger irreversible side effects long before the final failure is observed. Reliable deployment therefore requires \\emph{step-level confidence estimation}: a calibrated probability that each proposed action is productive, available \\emph{before} the action is executed. Existing LLM confidence estimators are designed to score a response from the given prompt, but agent confidence also depends on execution consequences: whether similar actions in similar situations actually advanced the task after the environment responded. We introduce the \\method (\\methodshort), a self-evolving critic framework in which an LLM critic accumulates evidence from its own past judgments and their observed consequences. After each trajectory, a hindsight LLM that sees the full execution feedback votes on whether each step was productive. The resulting pseudo-labels populate a memory bank from which related productive and unproductive experiences are retrieved into the critic's prompt whenever a similar step recurs. \\methodshort requires no training and uses no ground truth step labels. Across three agent benchmarks and three critic backbones, \\methodshort attains the best calibration (ECE and Brier) and ranking (AUC) in every dataset--critic combination, reducing ECE by up to $54\\%$ relative to the strongest training-free baseline.",
+      "authors": [
+        "Yaopei Zeng",
+        "Congchao Wang",
+        "JianHang Chen",
+        "Nan Wang",
+        "Yurui Chang",
+        "Lu Lin"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-14T06:17:09+00:00",
+      "link": "https://arxiv.org/pdf/2607.12397v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "step-level confidence estimation method for LLM agents, applicable to evaluation of medical agents",
+      "llm_evidence_cn": "针对LLM代理的步骤级置信度估计方法，可应用于医疗代理评估",
+      "llm_evidence": "针对LLM代理的步骤级置信度估计方法，可应用于医疗代理评估",
+      "canonical_evidence": "针对LLM代理的步骤级置信度估计方法，可应用于医疗代理评估",
+      "llm_tldr_en": "Introduces Critic Experience Bank for self-evolving step-level confidence estimation in LLM agents, leveraging execution feedback to calibrate action confidence before deployment.",
+      "llm_tldr_cn": "LLM代理在复杂环境中单步错误可能引发严重后果，现有置信度估计方法仅基于输入提示，忽略了执行后果。该研究提出Critic Experience Bank，一种自进化的步骤级置信度估计方法，通过记录相似状态下行动的执行反馈来校准代理的实时置信度。该方法可在行动前提供校准的概率，从而支持更可靠的代理部署。尽管未直接针对医疗场景，但为评估医疗代理的步骤级可靠性提供了可迁移的技术方案。",
+      "llm_tldr": "LLM代理在复杂环境中单步错误可能引发严重后果，现有置信度估计方法仅基于输入提示，忽略了执行后果。该研究提出Critic Experience Bank，一种自进化的步骤级置信度估计方法，通过记录相似状态下行动的执行反馈来校准代理的实时置信度。该方法可在行动前提供校准的概率，从而支持更可靠的代理部署。尽管未直接针对医疗场景，但为评估医疗代理的步骤级可靠性提供了可迁移的技术方案。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.13683v1",
+      "source": "arxiv",
+      "title": "Self-Evolving Agent Harnesses via Gated Semantic Quality-Diversity",
+      "abstract": "An LLM agent's real-task performance is shaped as much by the harness around its model as by the frozen model itself: its prompts, injected knowledge, runtime control, and configuration. In deployment the harness is often the only lever available, so improving it automatically is the natural way to raise performance without touching the weights. The hard part is not generating changes but knowing which one truly helped. Self-generated feedback is noisy, and an apparent gain can be a measurement artifact or an edit that merely overfits the tasks it was tuned on. We present a self-evolving agent-harness framework that separates proposing changes from crediting them: a language model diagnoses failures and proposes patches, while all sampling, measurement, and significance testing are owned by deterministic code, so every credited improvement is trustworthy by construction. Patches populate a gated, categorical quality-diversity archive (GSME) keyed on the (WHERE x WHY) pathology an edit addresses rather than the tasks it fixes, an anti-overfitting inductive bias; generalization is measured on a sealed test scored only after evolution. Across seven domains with a frozen open-weight model, the harness is train-selected and scored once on a sealed test; its credited gains there are +9 to +15.5pp and retain 86-147% of the training gain, evidence they generalize rather than overfit. The winning patch tracks the model's dominant pathology, not its size or family: changing the model can change the pathology and the patch, while the same pathology-to-patch match recurs across two model families. What transfers is the diagnose-and-credit loop, not any specific harness.",
+      "authors": [
+        "Xiaotian Luo",
+        "Fengxingyu Wang",
+        "Chuanrui Hu",
+        "Dizhan Xue",
+        "Yafeng Deng"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-07-15T10:26:26+00:00",
+      "link": "https://arxiv.org/pdf/2607.13683v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "self-evolving agent harness with evaluation feedback, usable for medical agent performance tuning",
+      "llm_evidence_cn": "自我进化的代理框架，包含评估反馈，可用于医疗代理性能调优",
+      "llm_evidence": "自我进化的代理框架，包含评估反馈，可用于医疗代理性能调优",
+      "canonical_evidence": "自我进化的代理框架，包含评估反馈，可用于医疗代理性能调优",
+      "llm_tldr_en": "A self-evolving framework for agent harness optimization with credit assignment to avoid spurious gains.",
+      "llm_tldr_cn": "LLM代理的真实性能很大程度上受prompts、注入知识和运行时配置等外围框架影响，而自动改进的关键在于正确归因增益。本文提出自我进化框架，将变更提议与信用分配分离：语言模型诊断故障并提出补丁，而采样、测量和评估模块确保增益不是统计假象。该方法可应用于医疗代理的性能调优和评估。",
+      "llm_tldr": "LLM代理的真实性能很大程度上受prompts、注入知识和运行时配置等外围框架影响，而自动改进的关键在于正确归因增益。本文提出自我进化框架，将变更提议与信用分配分离：语言模型诊断故障并提出补丁，而采样、测量和评估模块确保增益不是统计假象。该方法可应用于医疗代理的性能调优和评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.14336v1",
+      "source": "arxiv",
+      "title": "Copy-on-Write Scoring: Application-Specific Agent Evaluations",
+      "abstract": "Trustworthy deployment of LLM-based agents in software systems requires evaluating how they perform on application-specific workflows, with enough granularity to localize where they succeed and fail. Yet existing agent evaluation mechanisms are limited: benchmarks have low construct validity for application-specific workflows and environments, and replica evaluation environments are expensive and prone to drift. We propose Copy-on-Write (CoW) Scoring, a framework that evaluates agent operations directly within application environments using a PostgreSQL-level Copy-on-Write mechanism to isolate agent writes. CoW Scoring produces session- and operation-level scores that highlight where agents' database write operations succeed and fail in a given application environment, enabling inexpensive evaluation and iteration on agent harnesses and tool surfaces. We demonstrate the framework on Plane, an open-source project-management platform, where analysis surfaced specific issues in the tool surface, and corresponding fixes produced measurable improvements on affected models.   Python library: https://github.com/trail-ml/agent-cow-python",
+      "authors": [
+        "Joanna Roy",
+        "Sven Hoelzel"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI"
+      ],
+      "published": "2026-07-15T19:59:33+00:00",
+      "link": "https://arxiv.org/pdf/2607.14336v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "application-specific agent evaluation framework transferable to medical domain",
+      "llm_evidence_cn": "可迁移至医疗领域的应用特定代理评估框架",
+      "llm_evidence": "可迁移至医疗领域的应用特定代理评估框架",
+      "canonical_evidence": "可迁移至医疗领域的应用特定代理评估框架",
+      "llm_tldr_en": "Proposes Copy-on-Write Scoring to evaluate agent operations in application environments with granular session-level scores.",
+      "llm_tldr_cn": "现有代理评估基准缺乏应用特异性，副本环境昂贵且易漂移。本文提出写时复制评分框架，在应用环境中直接评估代理操作，利用PostgreSQL的写隔离机制生成会话级和操作级分数。该方法可精确定位代理在数据库写入中的成功与失败。虽然当前针对软件系统，但其评估思路和通用框架可直接应用于医疗代理（如EHR写入操作）的细粒度评估。",
+      "llm_tldr": "现有代理评估基准缺乏应用特异性，副本环境昂贵且易漂移。本文提出写时复制评分框架，在应用环境中直接评估代理操作，利用PostgreSQL的写隔离机制生成会话级和操作级分数。该方法可精确定位代理在数据库写入中的成功与失败。虽然当前针对软件系统，但其评估思路和通用框架可直接应用于医疗代理（如EHR写入操作）的细粒度评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.14275v1",
+      "source": "arxiv",
+      "title": "AI Agents Do Not Fail Alone:The Context Fails First",
+      "abstract": "Context engineering has become central to building reliable AI agents, yet it remains largely unmeasured. Agents do not fail in isolation: their behavior is shaped by the instructions, tools, memory, retrieved knowledge, guardrails, and untrusted inputs accumulated in their context. When this context is weak, agents drift, hallucinate, misuse tools, ignore constraints, become vulnerable to injection, and waste tokens. This paper validates context-engineering quality as an independent leading indicator of agent reliability. We implement the measurement in ProofAgent-Harness, an open-source infrastructure for AI agent evaluation that uses multi-juror, consensus-based scoring. The harness assesses context across seven criteria: role clarity, guardrail coverage, instruction consistency, tool schema quality, grounding sufficiency, injection hardening, and token efficiency. Crucially, the context score is isolated from behavioral metrics and release decisions, enabling a non-circular validation. Through a controlled context-quality study across regulated agent domains, holding frontier LLM agents fixed and varying only their operating context, we show that context-quality criteria consistently predict their corresponding behavioral outcomes. Grounding sufficiency predicts hallucination resistance, guardrail coverage predicts manipulation resistance, instruction consistency predicts instruction following, and tool-schema quality predicts tool use. These findings establish context measurement as a validated preflight signal for agent reliability and position context engineering as an auditable layer of agent evaluation and governance.",
+      "authors": [
+        "Fouad Bousetouane"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA"
+      ],
+      "published": "2026-07-15T18:33:02+00:00",
+      "link": "https://arxiv.org/pdf/2607.14275v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "agent evaluation infrastructure with context quality scoring",
+      "llm_evidence_cn": "提供代理评估基础设施，可迁移至医疗代理基准测试",
+      "llm_evidence": "提供代理评估基础设施，可迁移至医疗代理基准测试",
+      "canonical_evidence": "提供代理评估基础设施，可迁移至医疗代理基准测试",
+      "llm_tldr_en": "This paper validates context-engineering quality as a leading indicator of agent reliability and implements measurement in ProofAgent-Harness, an open-source agent evaluation infrastructure.",
+      "llm_tldr_cn": "现有AI代理评估缺乏对上下文工程质量的系统度量，导致代理行为不可靠。本文证明上下文质量是代理可靠性的独立领先指标，并开源ProofAgent-Harness评估框架，通过多评委共识评分衡量角色清晰度、防护栏覆盖率等七个标准。该框架可广泛用于医疗代理等场景的性能基准测试。",
+      "llm_tldr": "现有AI代理评估缺乏对上下文工程质量的系统度量，导致代理行为不可靠。本文证明上下文质量是代理可靠性的独立领先指标，并开源ProofAgent-Harness评估框架，通过多评委共识评分衡量角色清晰度、防护栏覆盖率等七个标准。该框架可广泛用于医疗代理等场景的性能基准测试。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

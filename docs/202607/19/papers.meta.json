@@ -1,0 +1,69 @@
+{
+  "label": "2026-07-19",
+  "date": "2026-07-19",
+  "generated_at": "2026-07-19T21:05:05",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202607/19/2607.12397v1-critic-experience-bank-self-evolving-step-level-confidence-estimation-for-llm-agents",
+      "section": "quick",
+      "title_en": "Critic Experience Bank: Self-Evolving Step-Level Confidence Estimation for LLM Agents",
+      "authors": "Yaopei Zeng, Congchao Wang, JianHang Chen, Nan Wang, Yurui Chang, Lu Lin",
+      "date": "2026-07-14",
+      "pdf": "https://arxiv.org/pdf/2607.12397v1",
+      "score": "7.0",
+      "evidence": "针对LLM代理的步骤级置信度估计方法，可应用于医疗代理评估",
+      "tldr": "LLM代理在环境中每步动作都影响后续状态，错误步骤可能浪费预算或导致不可逆后果，因此需要执行前的步骤级置信度估计。现有方法忽略执行后果，无法反映动作的实际效果。本文提出Critic Experience Bank，让LLM批评者从自身过去判断和观察后果中积累证据，利用后见之明生成伪标签填充记忆库，在类似步骤出现时检索相关经验辅助判断。在三个基准和三个骨干上取得最佳校准与排名，ECE降低高达54%，无需训练或真实标签，实现自我进化。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "LLM agents act in external environments where each action changes the state that later decisions condition on, and where a single wrong step can waste interaction budget or trigger irreversible side effects long before the final failure is observed. Reliable deployment therefore requires \\emph{step-level confidence estimation}: a calibrated probability that each proposed action is productive, available \\emph{before} the action is executed. Existing LLM confidence estimators are designed to score a response from the given prompt, but agent confidence also depends on execution consequences: whether similar actions in similar situations actually advanced the task after the environment responded. We introduce the \\method (\\methodshort), a self-evolving critic framework in which an LLM critic accumulates evidence from its own past judgments and their observed consequences. After each trajectory, a hindsight LLM that sees the full execution feedback votes on whether each step was productive. The resulting pseudo-labels populate a memory bank from which related productive and unproductive experiences are retrieved into the critic's prompt whenever a similar step recurs. \\methodshort requires no training and uses no ground truth step labels. Across three agent benchmarks and three critic backbones, \\methodshort attains the best calibration (ECE and Brier) and ranking (AUC) in every dataset--critic combination, reducing ECE by up to $54\\%$ relative to the strongest training-free baseline.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/19/2607.14336v1-copy-on-write-scoring-application-specific-agent-evaluations",
+      "section": "quick",
+      "title_en": "Copy-on-Write Scoring: Application-Specific Agent Evaluations",
+      "authors": "Joanna Roy, Sven Hoelzel",
+      "date": "2026-07-15",
+      "pdf": "https://arxiv.org/pdf/2607.14336v1",
+      "score": "7.0",
+      "evidence": "可迁移至医疗领域的应用特定代理评估框架",
+      "tldr": "现有LLM Agent评估对应用特定工作流缺乏细粒度且验证成本高。本文提出Copy-on-Write评分框架，利用PostgreSQL的写时复制机制隔离Agent的数据库写操作，在真实应用环境中生成会话与操作级别的成功/失败分数。在开源项目管理系统Plane上验证，该框架帮助定位工具表面的具体缺陷，修复后使受影响模型的评估指标显著提升。该方法为低成本迭代Agent工具接口提供了实用方案。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Trustworthy deployment of LLM-based agents in software systems requires evaluating how they perform on application-specific workflows, with enough granularity to localize where they succeed and fail. Yet existing agent evaluation mechanisms are limited: benchmarks have low construct validity for application-specific workflows and environments, and replica evaluation environments are expensive and prone to drift. We propose Copy-on-Write (CoW) Scoring, a framework that evaluates agent operations directly within application environments using a PostgreSQL-level Copy-on-Write mechanism to isolate agent writes. CoW Scoring produces session- and operation-level scores that highlight where agents' database write operations succeed and fail in a given application environment, enabling inexpensive evaluation and iteration on agent harnesses and tool surfaces. We demonstrate the framework on Plane, an open-source project-management platform, where analysis surfaced specific issues in the tool surface, and corresponding fixes produced measurable improvements on affected models.   Python library: https://github.com/trail-ml/agent-cow-python",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/19/2607.13683v1-self-evolving-agent-harnesses-via-gated-semantic-quality-diversity",
+      "section": "quick",
+      "title_en": "Self-Evolving Agent Harnesses via Gated Semantic Quality-Diversity",
+      "authors": "Xiaotian Luo, Fengxingyu Wang, Chuanrui Hu, Dizhan Xue, Yafeng Deng",
+      "date": "2026-07-15",
+      "pdf": "https://arxiv.org/pdf/2607.13683v1",
+      "score": "6.0",
+      "evidence": "自我进化的代理框架，包含评估反馈，可用于医疗代理性能调优",
+      "tldr": "LLM智能体的真实任务性能受其无权重可调的harness（提示、知识、控制、配置）影响。自动改进harness面临自生成反馈噪声和过拟合风险。本文提出自进化框架，将变更提议与评估分离：LLM诊断失败并提出补丁，确定性代码负责采样、测量和显著性检验，确保每个改进可信。补丁存入基于病理（WHERE x WHY）的门控质量-多样性存档GSME，引入抗过拟合归纳偏置。在7个领域使用冻结模型，训练选出补丁在密封测试集上获得+9至+15.5个百分点提升，泛化保留86-147%训练增益。贡献在于证明了可转移的诊断-credit循环而非特定补丁。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "An LLM agent's real-task performance is shaped as much by the harness around its model as by the frozen model itself: its prompts, injected knowledge, runtime control, and configuration. In deployment the harness is often the only lever available, so improving it automatically is the natural way to raise performance without touching the weights. The hard part is not generating changes but knowing which one truly helped. Self-generated feedback is noisy, and an apparent gain can be a measurement artifact or an edit that merely overfits the tasks it was tuned on. We present a self-evolving agent-harness framework that separates proposing changes from crediting them: a language model diagnoses failures and proposes patches, while all sampling, measurement, and significance testing are owned by deterministic code, so every credited improvement is trustworthy by construction. Patches populate a gated, categorical quality-diversity archive (GSME) keyed on the (WHERE x WHY) pathology an edit addresses rather than the tasks it fixes, an anti-overfitting inductive bias; generalization is measured on a sealed test scored only after evolution. Across seven domains with a frozen open-weight model, the harness is train-selected and scored once on a sealed test; its credited gains there are +9 to +15.5pp and retain 86-147% of the training gain, evidence they generalize rather than overfit. The winning patch tracks the model's dominant pathology, not its size or family: changing the model can change the pathology and the patch, while the same pathology-to-patch match recurs across two model families. What transfers is the diagnose-and-credit loop, not any specific harness.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/19/2607.14275v1-ai-agents-do-not-fail-alonethe-context-fails-first",
+      "section": "quick",
+      "title_en": "AI Agents Do Not Fail Alone:The Context Fails First",
+      "authors": "Fouad Bousetouane",
+      "date": "2026-07-15",
+      "pdf": "https://arxiv.org/pdf/2607.14275v1",
+      "score": "6.0",
+      "evidence": "提供代理评估基础设施，可迁移至医疗代理基准测试",
+      "tldr": "AI智能体的失败并非孤立发生，其行为由指令、工具、记忆等上下文因素塑造，当前缺乏对上下文质量的测量。本文提出ProofAgent-Harness框架，通过多陪审员共识评分，从角色清晰度、护栏覆盖等七个标准评估上下文。在控制LLM模型不变、仅改变上下文的实验中，上下文质量一致预测了智能体的各类行为失效，如基础充分性预测幻觉抵抗。该研究将上下文测量确立为智能体可靠性的预检信号，为智能体治理提供可审计的上下文工程层。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Context engineering has become central to building reliable AI agents, yet it remains largely unmeasured. Agents do not fail in isolation: their behavior is shaped by the instructions, tools, memory, retrieved knowledge, guardrails, and untrusted inputs accumulated in their context. When this context is weak, agents drift, hallucinate, misuse tools, ignore constraints, become vulnerable to injection, and waste tokens. This paper validates context-engineering quality as an independent leading indicator of agent reliability. We implement the measurement in ProofAgent-Harness, an open-source infrastructure for AI agent evaluation that uses multi-juror, consensus-based scoring. The harness assesses context across seven criteria: role clarity, guardrail coverage, instruction consistency, tool schema quality, grounding sufficiency, injection hardening, and token efficiency. Crucially, the context score is isolated from behavioral metrics and release decisions, enabling a non-circular validation. Through a controlled context-quality study across regulated agent domains, holding frontier LLM agents fixed and varying only their operating context, we show that context-quality criteria consistently predict their corresponding behavioral outcomes. Grounding sufficiency predicts hallucination resistance, guardrail coverage predicts manipulation resistance, instruction consistency predicts instruction following, and tool-schema quality predicts tool use. These findings establish context measurement as a validated preflight signal for agent reliability and position context engineering as an auditable layer of agent evaluation and governance.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
