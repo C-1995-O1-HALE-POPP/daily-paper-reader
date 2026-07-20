@@ -1,0 +1,529 @@
+Title: LLM4EHR: Aligning Clinical Time Series with Medical Event Sequences via Large Language Models
+
+URL Source: https://arxiv.org/pdf/2607.15447v1
+
+Published Time: Mon, 20 Jul 2026 00:19:49 GMT
+
+Number of Pages: 19
+
+Markdown Content:
+# Highlights 
+
+## LLM4EHR: Aligning Clinical Time Series with Medical Event Sequences via Large Language Models 
+
+Jingteng Li,Alexander Capstick,Louise Rigny,Iona Biggart,Neil J Sebire,Payam Barnaghi 
+
+• LLM4EHR: Introduces a multimodal fusion framework that temporally aligns LLM-encoded Electronic Health Record (EHR) event sequences with a dedicated EHR Time Series (TS) encoder via a semantic regularised contrastive objective. 
+
+• Improved prediction outcomes: LLM4EHR achieved consistent performance gains on clinically relevant downstream tasks including mortality, phenotyping, decompensation, and remaining Length of Stay (LoS) prediction when compared to supervised and self-supervised baselines. 
+
+• Improved transferability: We empirically demonstrate that LLM4EHR learns transferable clinical TS embeddings that can be deployed to new cohorts via k-shot adaptation. 
+
+• Ablation and sensitivity: Ablation study involving different pre-training objectives showed that our semantic regularised alignment objective enabled LLM4EHR to achieve improved prediction outcomes in downstream tasks. arXiv:2607.15447v1 [cs.LG] 16 Jul 2026 LLM4EHR: Aligning Clinical Time Series with Medical Event Sequences via Large Language Models 
+
+## Jingteng Li a,d ,∗, Alexander Capstick b,c , Louise Rigny b,d , Iona Biggart b,d , Neil J Sebire a,d and Payam Barnaghi a,b,c,d ,∗∗ 
+
+> a
+
+GOS Institute of Child Health, University College London, London, United Kingdom 
+
+> b
+
+Department of Brain Sciences, Imperial College London, London, United Kingdom 
+
+> c
+
+UK Dementia Research Institute, Care Research and Technology Centre, London, United Kingdom 
+
+> d
+
+NIHR Great Ormond Street Hospital Biomedical Research, Centre and GOSH Data Research, Innovation and Virtual Environments, London, United Kingdom 
+
+A R T I C L E I N F O 
+
+Keywords :Electronic health records Clinical predictive modeling Contrastive learning Representation learning Large Language Model 
+
+A B S T R A C T 
+
+Recent research in clinical machine learning, focusing on outcome predictions in intensive care unit (ICU), has shifted from bespoke supervised models to foundation models, utilising modern representation learning methods. Here, foundation models are pre-trained on mixtures of complex clinical data modalities, useful for various downstream tasks. Existing works often utilise Electronic Health Records (EHR) to provide rich and diverse patient observations to train clinical foundation models. However, existing methods do not sufficiently explore the shared temporal structures between clinical events and time series (TS) observations recorded in EHRs. This limitation potentially leads to less robust and adaptive clinical foundation models, resulting in reduced performance on downstream tasks. To fully exploit this temporal structure, we propose LLM4EHR, a new clinical foundation model trained on ICU EHR data. Combining domain adapted large language models with a transformer TS encoder, we pre-trained LLM4EHR by temporally aligning the EHR events and TS. For this, we propose a regularised contrastive objective to learn robust EHR TS representations conditioned on EHR event embeddings produced by the domain adapted LLM. Supported by an ablation study, we find that learnt EHR TS embeddings from LLM4EHR improve performance on various downstream clinical tasks with competitive performance. Further, we empirically demonstrate that LLM4EHR learns transferable clinical TS embeddings that can be deployed to new cohorts via k-shot adaptation. These findings provide a step towards building more generalisable and performant clinical foundation models. 
+
+## 1. Introduction 
+
+Electronic Health Records (EHRs) data is inherently multimodal. Temporal patient observations, interactions and measurements are recorded as EHR events and EHR Time Series (TS), as shown in Figure 1 a and Figure 1 b . Specif-ically, EHR events consist of itemised, irregularly sampled clinical interactions with specific time stamps, while EHR TS includes routinely collected patient measurements for patient monitoring. In EHR data modelling, entries such as medication prescriptions are typically treated as events due to the lack of fine-grained temporal dynamics. Con-versely, monitoring signals such as patient vital signs are best modelled as TS due to the clinical significance of tem-poral variations in these signals. These two data modalities complement each other in representing a patient’s health. However, the structural differences between these modalities pose a significant challenge for building versatile clinical foundation models. 
+
+> ∗
+
+Corresponding author 
+
+> ∗∗
+
+Corresponding author  
+
+> ucabj23@ucl.ac.uk
+
+(J. Li); p.barnaghi@imperial.ac.uk (P. Barnaghi) 
+
+> ORCID
+
+(s): 0009-0003-0011-5828 (J. Li); 0000-0002-3884-8045 (A. Capstick); 0009-0008-7252-6622 (L. Rigny); 0009-0006-5785-4295 (I. Biggart); 0000-0001-5348-9063 (N.J. Sebire); 0000-0001-8591-9638 (P. Barnaghi) 
+
+Towards overcoming this, we release a new structure for clinical foundation models, LLM4EHR, which jointly mod-els EHR events and EHR TS via a time and semantic-aware contrastive pre-training objective. We find that the resulting learnt representations can adapt to downstream clinical tasks such as mortality prediction, phenotyping and remaining Length of Stay (LoS) prediction, which we support with an ablation study. Additionally, we show that LLM4EHR can be adapted to new datasets using routinely collected EHR TS variables with consistent performance. Traditionally, bespoke supervised methods were devel-oped individually for clinical tasks, including survival anal-ysis [1, 2], risk prediction [3, 4] and phenotyping [5, 6]. However, experiments conducted on large multitask clinical benchmarks [7, 8] demonstrated that learnt information from one task is often relevant for others. Furthermore, patient observations in the clinical setting form temporal sequences, making them well-suited for language modelling techniques. These observations, along with recent findings that Large Language Models (LLMs) function as unsupervised multi-task learners [9], have driven efforts to develop multitask clinical foundation models [10]. Recent work has thus ex-plored using pre-trained LLMs for modelling EHR event trajectories [11, 12, 13, 14] or EHR TS [15, 16]. A review by Wornow et al. [10] found that clinical foundation models, pre-trained on large unlabelled EHR datasets, can adapt to downstream tasks using limited labelled data. 
+
+: Preprint submitted to Elsevier Page 1 of 16 Figure 1: a) An example of EHR TS, b) an example of EHR events and c) the difference between our regularised contrastive objective and the InfoNCE [21, 22] objective, during LLM4EHR pre-training. EHR events embeddings produced by a domain adapted LLM areused to guide the EHR TS embeddings via our proposed objective. 
+
+However, many current methods fail to incorporate mul-tiple temporal EHR data modalities during pre-training, despite evidence that combining modalities such as clinical notes and TS improves downstream performance [17, 18, 19]. Given the interdependency between EHR events and EHR TS observations, we hypothesise that similar improve-ments could be achieved by jointly modelling these two temporal modalities via self-supervised pre-training. Prior work aligning these different clinical data modali-ties focused on contrastive representation learning between pairs of samples [20]. In these cases, the alignment is often centred on shared identities between modalities, such as aligning the clinical TS and note embeddings describing the same care period [17, 19]. However, this stationary, instance-wise alignment across clinical data modalities does not consider the shared temporal structure between EHR events and EHR TS observations, which we hypothesise provide more effective learnt representations. Unlike prior work, LLM4EHR learns entangled EHR TS representations with EHR events embeddings, where a train-able EHR TS encoder is guided by a pre-trained and domain-adapted large language model (LLM) via contrastive pre-training. We reformulate the commonly used InfoNCE [21, 22] objective to temporally align the EHR TS embedding with EHR event embedding produced by a domain-adapted LLM, where EHR TS embedding is pulled closer to EHR event embedding at each time step. This leads to improved performance in downstream tasks that generalise to new datasets. Additionally, we proposed incorporating learnt semantic similarities from the pre-trained LLM into the contrastive objective to mitigate the effects of class collision [23, 24, 25] in contrastive learning. Class collision arises when similar instances are pushed apart in the embedding space due to strict one-to-one positive sampling. If EHR TS observations at 𝑡 and 𝑡 ′ correspond to similar EHR events, they should not be treated as negatives, as implied by the InfoNCE loss. We present a semantic-regularised InfoNCE objective [21, 22], where the semantic similarities between LLM-embedded EHR events are used to weigh the learnt EHR TS embeddings ( Figure 1 c ), providing improved EHR TS embeddings. Our contributions are as follows: 
+
+• We present LLM4EHR, an LLM-based framework for representation learning of EHR TS, trained on data from intensive care units. 
+
+• To train LLM4EHR, we propose a contrastive learn-ing objective to temporally align EHR events and EHR TS embeddings. With an ablation study, we find that this improves the learnt representations. 
+
+• We show that our method achieves superior perfor-mance in clinical classification tasks in few-shot and cross-dataset settings. 
+
+## 2. Related work 
+
+EHR foundation models are clinical foundation models trained on large-scale EHR data [10]. Recent methods ex-hibit notable similarities with LLMs in that they are trained on tokenised event sequences via autoregressive [13, 14, 26, 27] or masked sequence modelling [12, 11, 28, 29]. Notable examples include Foresight by Kraljevic et al. [14] and ETHOS by Renc et al. [13] , which repurposed the autoregressive attention layers of GPT-2 [9] to simulate event transitions in patient timelines. However, these works primarily treat patient trajectories as event sequences, which    
+
+> :Preprint submitted to Elsevier Page 2 of 16 Figure 2: Overview of LLM4EHR, EHR entries and clinical TS are centred on ICU admissions, where EHR operations are coloured in beige and TS operations are coloured in red, pre-trained LLM layers (besides the embedding weights for new tokens) are frozen during pre-training.
+
+can lead to fine-grained temporal dynamics being lost or obscured during modelling. Self-supervised representation learning for TS learns transferable representations of TS features from unlabelled data for downstream tasks [30, 31, 32]. Recent work demon-strated improved performance in TS forecasting by mod-elling TS via transformer architectures [33]. Here, TS seg-ments are tokenised to form temporal sequences, and at-tention layers are trained to process TS tokens via self-supervised pretext tasks. LLM4TS by Chang et al. [15] used self-supervised reconstruction to repurpose pre-trained LLMs for TS forecasting. Similarly, AutoTimes by Liu et al. [16] used language prompts during self-supervised pre-training to allow in-context TS forecasting via frozen LLMs. Different from prior works, LLM4EHR maintains a dedicated transformer encoder for EHR TS, where EHR TS embeddings are guided by EHR event embeddings produced by a pre-trained LLM during pre-training. Contrastive learning can create entangled representa-tions between pairs of samples. Prior works in clinical ma-chine learning explored aligning similar EHR TS samples via contrastive learning. EBCL by Jeong et al. [34] used contrastive pre-training to align TS observations before and after key index events and showed improved performances in downstream classification tasks. CROCS by Kiyasseh et al. [35] used contrastive learning to align ECG measurement embeddings with patient prototype embeddings, where pa-tient prototypes serve as queries to retrieve similar ECG samples. King et al. [17] explored aligning clinical time series (TS) with ICU notes via a shared LLM. However, their work maintains a stationary alignment between EHR TS and clinical notes and does not consider important temporal relationships. 
+
+## 3. Background 
+
+3.1. EHR data representation 
+
+When patients interact with care services, each measure-ment, observation, and care giver action is recorded in an Electronic Health Record (EHR). While different types of EHR data share the same structured format, they are gener-ated through different processes and often use different data modalities. Regularly collected physiological observations are usually modelled as clinical Time Series (TS) due to their dynamic nature. These variables are tracked over time to monitor a patient’s health status, with abrupt changes contributing heavily to standardised risk analyses such as SAPS [36] or SOFA [37]. Supervised methods in clinical machine learning often rely on TS features as input for downstream tasks, especially for time-sensitive predictions such as survival [1, 2] or risk [5, 6] predictions. In contrast, certain events or occurrences in EHR sys-tems are not conveniently or logically modelled as TS vari-ables. For example, while the presence of a standing drug prescription at a given time is clinically meaningful, mod-elling it as a TS variable is not informative due to the lack of temporal variation. Additionally, each unique event would be represented as a separate binary variable, which scales poorly given the natural diversity of unique interactions in EHR systems. EHR events are typically tokenised to form temporal sequences for sequence modelling [38, 13, 14], which simplifies the temporal dimension as longitudinal ordering of tokens.   
+
+> :Preprint submitted to Elsevier Page 3 of 16
+
+Similar to prior work on cross-modal alignment be-tween EHR TS and clinical notes, we define the problem of modelling multi-modal EHR data as cross-modal alignment between EHR TS and events, where TS variables and EHR events are generated separately but aligned in time. We did not use clinical notes in our framework, as while clinical notes provide a high-level summary of patient observations and treatments in the ICU, they are often documented with substantial delay and therefore cannot be assumed to align temporally with fine-grained TS observations. We define clinical time series as multivariate time series consisting of time varying patient observations, primarily lab and nurse charted lab observations. While some work does not treat irregularly sampled lab values as TS variables [39], we included them as changes in lab observations over time are clinically significant. Formally, we define an in-stance of clinical TS with 𝐿 variables over 𝑇 time steps as 
+
+𝑥 1∶ 𝑇 = { 𝑥 1, 𝑥 2, ⋯ , 𝑥 𝑇 }, 𝑥 𝑡 ∈ ℝ𝐿 .EHR events, however, are represented as time-indexed sequences. We define an EHR event sequence with 𝑁 events over 𝑇 as 𝑘 1∶ 𝑇 = { 𝑘 1 
+
+> 𝑛 1
+
+, 𝑘 2 
+
+> 𝑛 2
+
+, ⋯ , 𝑘 𝑇 𝑛 𝑇 }, where 𝑘 𝑡 𝑛 𝑡 ∈  is a set of 𝑛 𝑡 clinical events observed at time step 𝑡 . In this case, we treat time-stamped care giver actions as EHR events. In MIMIC-IV, these entries include prescription orders, med-ication administrations, infusion orders, renal replacement therapies (RRT/CRRT) settings, oxygen-delivery settings and the insertion, presence or removal of invasive lines. Since these events are not regularly sampled or distributed evenly overtime, the number of events 𝑛 𝑡 at time 𝑡 is not fixed. Finally, we consider data collected for a given pa-tient throughout a single Intensive Care Unit (ICU) stay as an ’episode’. An episode starts at ICU admission and ends at ICU discharge. A full episode is defined as 𝑒 𝑖 =(𝑥 1∶ 𝑇 𝑖  
+
+> 𝑖
+
+, 𝑘 1∶ 𝑇 𝑖  
+
+> 𝑖
+
+), where both 𝑥 𝑖 and 𝑘 𝑖 are centred on ICU admission and are aligned with the time indicator 𝑡 ∈ 𝑇 𝑖 .
+
+3.2. Multimodal pre-training of EHR data 
+
+Pre-training on clinical TS aims to learn general tempo-ral patterns in patient trajectories using a task agnostic objec-tive. The goal of the pre-training objective is to reward the model for capturing clinically meaningful dynamics, such as trends or sudden changes in physiological observations, without bias toward any specific downstream task. Because EHR TS and EHR events are generated through separate processes but are temporally aligned, we hypothesise that explicitly aligning these two modalities during pre-training allows TS encoders to learn more informative EHR TS repre-sentations, leading to better performance in context sensitive downstream tasks such as decompensation and Length-of-stay predictions. Existing multimodal pre-training frameworks for EHR data involve stationary alignment of two EHR modalities via a contrastive objective. Here, we focus on multimodal pre-training methods involving non-imaging data. The most common form of alignment occurs between clinical TS and clinical notes, where the sequence-wise representation of EHR TS across an episode is pulled closer to the embedding of clinical notes describing the same episode. The best example is the multimodal pre-training framework by King et al. [17], where a masked attention encoder is used to encode clinical TS and the resulting embedding is aligned with the clinical note embedding produced from a domain adapted BERT model [28] via a contrastive objective. We argue that stationary alignment between clinical TS and notes is insufficient due to a mismatch in temporal granular-ity, as aligning fine-grained TS representations with coarse-grained clinical note embeddings fails to adequately capture the shared temporal dynamics between the two modalities. A more recent work by Wang et al. [40] explored learn-ing shared temporal patterns between clinical TS and notes, where TS and clinical notes embeddings are first aligned at the attention level via a contrastive objective, expressed over individual time steps, and then concatenated at the final level for final output. We note that CTPD is susceptible to time mismatches between EHR TS and clinical notes, as clini-cal notes are not synchronised with EHR TS observations. Additionally, CTPD explicitly assumes that clinical notes are available during prediction, which is counterintuitive for time-sensitive predictions, as clinical notes are not produced at the point of observation and are unlikely to be available at the prediction time. Additionally, the semantic knowledge in pre-trained LLMs is not utilised in either framework. Clinical LLMs are used only as fixed encoders for clinical notes, without modifying the pre-training objective to transfer semantic structure into the TS representation. Therefore, we propose a similar framework that aligns EHR event summaries with EHR TS embeddings through an explicit temporal alignment objective derived from InfoNCE, while also leveraging the LLM’s learnt semantic similarity to guide the EHR TS representation. 
+
+## 4. Methods 
+
+4.1. LLM4EHR structure 
+
+EHR events and EHR TS provide complementary views of a patient’s ICU stay. We hypothesise that condition-ing TS representations on information from EHR events yields more informative and generalisable TS embeddings for downstream clinical tasks, such as predicting intensive care outcome or patient decompensation. Given a patient’s full EHR episode 𝑒 𝑖 , consisting of EHR event sequence 𝑘 1∶ 𝑇 𝑖 
+
+and multivariate EHR TS 𝑥 1∶ 𝑇 𝑖 , LLM4EHR pre-training aligns the EHR events embedding 𝑧 1∶ 𝑇 𝑖 with the TS embed-dings 𝑣 1∶ 𝑇 𝑖 via a contrastive objective applied at each time step and aggregated over 𝑇 .Aligning EHR events and TS embeddings directly step-by-step is problematic due to the structural differences be-tween EHR events and EHR TS data. First, as explained in 
+
+Section 3.1 , EHR events are not regularly sampled, and the number of events 𝑛 𝑡 at time step 𝑡 is not fixed. Expressing a contrastive objective directly over 𝑇 results in an ambiguous objective. Additionally, jointly learning EHR TS and EHR event embeddings is unstable for contrastive learning. Since   
+
+> :Preprint submitted to Elsevier Page 4 of 16
+
+Table 1 
+
+Example aggregated EHR summary for a 5-hour window (70–75 hours after ICU admission), the patient was given Furosemide, pantoprazole by the care givers and received scheduled Insulin infusion, no invasive lines and renal replace-ment therapies were active. Summary Text Prescriptions Prescription Orders: Prescriptions started: Furosemide (40mg/4ml Vial), Pantoprazole (40mg Tablet) Prescriptions ended: Furosemide (40mg/4ml Vial) emar Administered: Furosemide, Insulin, Pantoprazole, Remdesivir Infusion Infusion Order: - NaCl 0.9% 250ml (active) - Furosemide (Lasix) 40.00mg (active) - Insulin - Humalog 4.00 units (active) rrt/crrt No active renal replacement therapy Oxygen Delivery device: Oxymizer, High flow nasal cannula Oxygen flow: 6.0 Additional Oxygen flow: None Invasive lines No invasive lines active TS - albumin: mean: 3.50; min: 2.80; max: 3.33; std: 0.28; count: 2 - no measurements for fio2 - no measurements for Tropinin T ...... 
+
+the learnt EHR TS embedding is conditioned on EHR events embedding in LLM4EHR, rapidly changing the EHR events embedding reduces the consistency of the alignment objec-tive [22]. We propose using a domain adapted LLM to embed EHR events, similar to prior work by Wu et al. [41]. We define the EHR event set  as a set of natural language phrases describing each unique EHR event, such as the name and dosage of a prescription order. Different from Wu et al. [41], multiple EHR events at 𝑡 are aggregated into a single natural language summary using a fixed schema. An example of the aggregated summary is shown in Table 1 . Here, 𝑧 1∶ 𝑇 𝑖 
+
+is produced by a frozen LLM domain adapted using clinical domain texts and 𝑣 1∶ 𝑇 𝑖 is produced by a trainable TS encoder, as shown in Figure 2 .In MIMIC-IV, we found that aligning EHR summary embeddings with EHR TS embeddings hourly is suboptimal due to the relative sparsity of EHR events, and therefore enforced a bin width of 5 hours. In practice, a small bin would result in many instances of 𝑣 𝑡 𝑖 with no corresponding 
+
+𝑧 𝑡 𝑖 . Conversely, a large bin would degrade the temporal consistency of the alignment process, similar to the temporal mismatch between EHR TS and note alignment in Section 3.2 . EHR TS variables within each time step are aggregated with windowed features (mean, min, max, std and count). `
+
+Figure 3: Calculating the semantic alignment loss for a given episode; the figures only include the lower triangular and non-diagonal part of the soft assignment 𝜔 since 𝜔 is symmetric. 
+
+Finally, we append a plain text summary of TS variables to the end of EHR event summary at 𝑡 to provide an additional layer of mutual information between the two modalities. 
+
+4.2. Semantic alignment 
+
+The attraction between elements of 𝑣 1∶ 𝑇 𝑖 and 𝑧 1∶ 𝑇 𝑖 is defined at each timestamp via a modified InforNCE [21] loss. Similar to He et al. [22] and Kiyasseh et al. [35], we implemented the normalised variant of InfoNCE NCE , with temperature 𝜏 as: 
+
+NCE = − 
+
+> 𝑇
+
+∑
+
+> 𝑡 =1
+
+log exp ( sim (𝑣 𝑡 , 𝑧 𝑡 )∕ 𝜏 )
+
+∑𝑡 ′∈𝑇 ∖𝑡 exp ( sim (𝑣 𝑡 , 𝑧 𝑡 ′ )∕ 𝜏 ) (1) sim (𝑣 𝑡 , 𝑧 𝑡 ) = 𝑣 𝑡 ⋅ 𝑧 𝑡 
+
+‖𝑣 𝑡 ‖‖ 𝑧 𝑡 ‖ (2) However, we note that this objective is susceptible to class collision, where instances within same class are pushed apart due to the loss being defined between an instance and its augmented view. In our case, similar instances of TS observations should remain closer after embedding. Since LLMs are known to capture word similarities [42], we propose a 𝜔 -regularised variant of the InfoNCE loss to weight similarities between instances within 𝑣 1∶ 𝑇 𝑖 based on the semantic similarities between instances within 𝑧 1∶ 𝑇 𝑖 .Following Equation 1 , the regularisation function 𝜔 is given as: 
+
+𝜔 = − 
+
+> 𝑇
+
+∑
+
+> 𝑡 =1
+> 𝑇
+
+∑ 
+
+> 𝑡 ∗=1 𝑡 ∗<𝑡
+
+𝜔 𝑡,𝑡 ∗ log exp( sim (𝑣 𝑡 , 𝑣 𝑡 ∗
+
+)∕ 𝜏 )
+
+∑𝑡 ′∈𝑇 ∖𝑡 exp ( sim (𝑣 𝑡 , 𝑣 𝑡 ′ )∕ 𝜏 )
+
+(3) 
+
+𝜔 𝑡,𝑡 ∗ = exp( sim (𝑧 𝑡 , 𝑧 𝑡 ∗
+
+)) 
+
+∑𝑡 ′∈𝑇 ∖𝑡 exp( sim (𝑧 𝑡 , 𝑧 𝑡 ′ )) (4) The attraction weight 𝜔 𝑡,𝑡 ∗ is interpreted as the degree of agreement between 𝑣 𝑡 and 𝑣 𝑡 ∗
+
+, quantified using the similarity 
+
+: Preprint submitted to Elsevier Page 5 of 16 between 𝑧 𝑡 and 𝑧 𝑡 ∗
+
+. For a pair of 𝑣 𝑡 and 𝑧 𝑡 , the weight 𝜔 is a 𝑇 × 𝑇 symmetric matrix, as shown in Figure 3 . We thus used only the lower triangular part of 𝜔 , such that 𝜔 𝑡,𝑡 ∗ is only defined for 𝑡 ∗ < 𝑡 . Intuitively, Equation 3 pulls TS observations corresponding to similar EHR events closer, such that similar instances within 𝑥 𝑖 are consistent after embedding. The overall alignment objective is defined as: 
+
+align = NCE + 𝜔 (5) 
+
+Pre-training 
+
+The EHR summary embedding 𝑧 𝑡 𝑖 is obtained by passing the EHR summaries for episode 𝑒 𝑖 at 𝑡 through the pre-trained LLM, then applying masked average pooling over the hidden states after the last attention block. Since EHR summaries contain complex clinical terminologies such as specific drug compounds or ventilator settings, we used domain adapted LLMs to embed EHR summaries. We se-lected the BioClinical ModernBERT [43], a version of Mod-ernBERT [44] further trained on clinical language datasets and with a long context length of 8192. Because gradients cannot propagate through the frozen LLM, an additional dense projection layer is added for training stability. The final EHR summary embedding 𝑧 𝑡 𝑖 is produced by passing the average-pooled EHR summary embedding through the projection layer. During pre-training, we update the weights of the projection layer with a large momentum ( 𝑚 = 0 .9)via the Adam optimiser [45] to keep 𝑧 𝑡 𝑖 stable for calculating 
+
+align .As shown in Figure 2 , the EHR TS encoder is a separate, fully-trainable encoder for encoding EHR TS. We built the EHR TS encoder with 1D convolutional embedding layers, trainable positional embeddings for positional encoding, and autoregressive attention blocks [9]. Similar to LLM4TS by Chang et al. [15] and AutoTimes by Liu et al. [16], we treat instances of 𝑥 𝑡 𝑖 as tokens and employ autoregressive attention blocks to model the transition between TS observations. The EHR TS embedding 𝑣 1∶ 𝑇 𝑖 is produced by passing z-standardised EHR TS features through the embedding layers, with added positional embeddings from passing the EHR TS positional encodings through the positional em-beddings layers. The EHR TS embeddings are then passed through 𝑁 autoregressive attention blocks before calculat-ing the alignment loss via Equation 5 . To produce our final optimisation objective, we reconstruct the input TS autoregressively from the latent representation 𝑣 𝑖 and use the reconstruction loss as an auxiliary objective to align . This provides the loss value: 
+
+total = align + recon = align + 1
+
+𝑇 
+
+> 𝑇
+
+∑
+
+> 𝑡 =2
+
+‖𝑥 𝑡 𝑖 −̂𝑥 𝑖 𝑡 ‖22 (6) After pre-training, LLM4EHR can be adapted to down-stream clinical tasks using task-specific linear heads, as with other TS foundation models. During linear probing, only EHR TS observations are used to make downstream 
+
+> Table 2
+> Overview of the two datasets. MIMIC-IV is partitioned at the patient level; Physionet2012 uses predefined training/testing splits. Numbers in parentheses for ICU hours indicate the average episode length (hours) within each partition.
+
+Statistics MIMIC-IV Physionet2012 Patients (training) 23781 4000 Patients (validation) 5096 N/A Patients (testing) 5096 4000 ICU hours (training) 4082k (145) 192k (48) ICU hours (validation) 896k (146) N/A ICU hours (testing) 883k (147) 192k (48) Mortality rate 15.4% 14.0% 
+
+predictions. The TS embedding layer, positional embedding layer and TS encoder attention blocks are kept frozen dur-ing fine-tuning. For complex longitudinal prediction tasks, such as rolling patient decompensation and length-of-stays predictions, we unfreeze the last TS encoder attention block to give LLM4EHR more flexibility to adapt to the unique temporal dynamics of these downstream tasks. 
+
+## 5. Results 
+
+5.1. Datasets 
+
+We evaluated the performance of our pre-trained model on two public intensive care EHR datasets: MIMIC-IV [46] and the Physionet Challenge 2012 (Physionet2012) [47] (Table 2 ). We conducted evaluations using four downstream ICU outcome prediction tasks in MIMIC-IV and used Phys-ionet2012 as an external dataset to assess the transferability of models pre-trained on MIMIC-IV. For MIMIC-IV, we retained the first ICU stay for each unique hospital admis-sion and excluded stays shorter than 48 hours. Each ICU episode includes 32 physiological and laboratory variables as EHR TS variables, derived from nursing and laboratory observations recorded during the episode. These variables are resampled hourly, and we imputed missing values by first front filling within each episode and then filling any remain-ing gaps using the population mean. Continuous variables were z-standardised using the observed mean and standard deviation before imputation. A detailed summary of all EHR TS variables is available in the appendix. We extracted prescription orders, medication adminis-trations, infusion orders, oxygen delivery settings, invasive line operations and renal replacement therapies (RRT/CRRT) settings as EHR events for an ICU episode. These events are extracted from corresponding tables and mapped to specific episodes via unique patient and ICU stay identi-fiers. The EHR events and EHR TS observations for the same ICU episode are synchronised using their recorded timestamps. We additionally processed some EHR events to LLM-friendly phrases by mapping all medications to ATC classifications and expanding ambiguous abbreviations into full English phrases.   
+
+> :Preprint submitted to Elsevier Page 6 of 16
+
+Table 3 
+
+Summary of the hyperparameter search space for the baseline models. Hidden dim Configuration Specific parameters LR N/A N/A Inverse L1 strength: [0.01, 0.1, 1.0, 3.0, 10.0] XGB N/A N/A Max depth: [3, 4, 5, 8, 10] Subsample: [0.2, 0.8, 1.0] N estimators: [300, 500] LSTM 128, 256, 512 N layers: [1, 2, 3] N/A GRU-D 128, 256, 512 N/A N/A T-TS/T-EHR 256, 512 N layers: [4, 8] N heads: [4, 8] N/A SimMTM 256, 512 N layers: [4, 8] N heads: [4, 8] N neighbours: [2, 3, 4] Mask prob: [0.1, 0.3, 0.5, 0.8] Temperature: [0.02, 0.05, 0.1] King et al. 768 N layers: [4, 8] N heads: [4, 8] Mask prob: [0.1, 0.3, 0.5] Temperature: [0.02, 0.05, 0.1] 
+
+5.2. Experimental setting 
+
+Similar to the ICU outcome prediction benchmark Haru-tyunyan et al. [7], we defined four downstream evaluation tasks based on ICU patient outcomes: (1) Mortality pre-diction uses the first 48 hours of measurements from an ICU episode to predict the risk of in-hospital mortality; (2) Phenotyping classifies episodes agains 25 acute pheno-types extracted from ICD-coded diagnoses; (3) Decompen-sation predicts immediate patient deteriorations within each episode, characterised by risk of organ dysfunctions; and (4) Remaining LoS is a time-to-event task to predict the days untile ICU discharge for a patient. Both decompensation and remaining LoS are rolling predictions, meaning predictions are made at regular intervals throughout each episode. We compared LLM4EHR against supervised TS base-lines and self-supervised contrastive pre-training methods for EHR TS modelling. For experiments on MIMIC-IV, we used the training set for self-supervised pre-training and supervised fine-tuning, the validation set for hyperparameter tuning and reported all models’ performance on the test set. For additional experiments on Physionet2012, we used the challenge’s pre-defined training set for k-shot adaptation and evaluated all models using the pre-defined testing set. All dataset splits were performed at the patient level, with Physionet2012 containing only the first 48 hours of ICU stay per patient. Deep learning models were trained using the Adam optimiser [45] on an Nvidia A100 GPU, and we reported performance across 10 random seeds for all mod-els. We performed hyperparameter searches task-by-task for supervised models and used pre-training loss to determine the optimal hyperparameters for the self-supervised models. The hyperparameter search spaces for all baseline models are shown in Table 3 .For our implementation of LLM4EHR, we used a trans-former with 8 autoregressive transformer layers with 8 at-tention heads per layer and a hidden dimension of 512 
+
+as the EHR TS encoder. EHR summary embeddings were extracted from BioClinical ModernBERT [43], which is a domain adapted version of ModernBERT [44] trained on medical texts. To allow more efficient LLM4EHR pre-training, the EHR embeddings were pre-computed and are projected into LLM4EHR’s feature space via a dense pro-jection layer, as described in Section 4.2 . We implemented the baseline models as: 
+
+(1) Linear Model (LR) : Linear models included logistic regression for classifications and linear log-normal acceler-ated failure time (AFT) model for remaining LoS predic-tions. Similar to Lipton et al. [48], we extracted aggregated statistical features, including mean, minimum, maximum, standard deviation and count of measurements for each EHR TS variable. For sequence-level classification, we extracted features over multiple clinically relevant windows: the 24 hours before the first heart rate measurement, the 24 and 48 hour windows following it, and the full interval up to the decision point. For rolling predictions, features were aggregated from the start of each patient trajectory up to the prediction point. 
+
+(2) Gradient Boosting (XGB) : We used the XGBoost implementation by Chen and Guestrin [49], with the same feature extraction method as the linear models. For clas-sification, we trained the model using the binary logistic objective, and for LoS prediction, we used the log-normal AFT objective 
+
+(3) LSTM The input to the LSTM consisted of 32 imputed and z-standardised EHR TS variables concatenated with 32 corresponding channel-wise missingness indicator variables. We found that concatenating channel-wise miss-ingness indicators with EHR TS variables yielded better single task performances than only using the EHR TS vari-ables as input features. All LSTM models were trained end-to-end with task specific heads. For LoS prediction, we implemented the log-normal AFT objective in PyTorch [50] following the implementation by Martinsson [51]. 
+
+(4) GRU-D We implemented the GRU-D by Che et al. [52] as the second recurrent baseline. Unlike LSTM, GRU-D incorporates missingness indicators directly within the decayed GRU layer, allowing each partially observed vari-able to ’decay’ towards its observed mean during training. GRU-D additionally uses time delta variables as input fea-tures, which are the time since the last observation for each EHR TS variable. Similar to LSTM, all GRU-D models were trained end-to-end, and we used the log-normal AFT objective for the remaining LoS prediction. 
+
+(5) Supervised Transformers (T-TS & T-EHR) We included two supervised transformer baselines, T-TS and T-EHR, as ablated versions of pre-trained LLM4EHR. Both models share the same autoregressive transformer structures and task heads with LLM4EHR, but are trained directly with task supervision. T-TS uses EHR TS variables as input, and T-EHR uses temporally aligned EHR summary embeddings 
+
+: Preprint submitted to Elsevier Page 7 of 16 as input. These models are conceptually similar to super-vised transformer models for clinical TS, such as SAnD by Song et al. [53]. Both models use the log-noraml AFT objective for LoS prediction. 
+
+(6) SimMTM We implemented SimMTM by Dong et al. [30] as a unimodal contrastive learning baseline. SimMTM introduces a contrastive reconstruction objective for masked TS modelling, where each masked time step is reconstructed via a weighted aggregation from 𝑛 neighbours. We imple-mented the SimMTM pre-training and aggregation objective with a bidirectional transformer encoder and pre-trained SimMTM on the training set. The input to SimMTM consists of 32 imputed and z-standardised EHR TS variables con-catenated with 32 corresponding channel-wise missingness indicator variables. The reconstruction loss was calculated only on the 32 EHR TS variables. Pre-trained SimMTM was adapted to downstream tasks using task specific heads and supervised fine-tuning on the training labels. 
+
+(7) King et al. We implemented the pre-training method by King et al. [17] as a multimodal contrastive learning base-line. The model by King et al. aligns EHR TS embeddings with clinical notes embeddings at the sequence level via a combination of cross-model contrastive [21] and masked reconstruction objectives. In our implementation, we used the same pre-training objective to align the embedding of the 32 EHR TS variables with clinical notes embeddings from BioClinical ModernBERT [43]. Since the model by King et al. did not include additional projection layers for clinical notes embeddings, we kept the hidden dimension of the pre-trained model the same as the LLM. Similar to SimMTM, the channel-wise missingness features were concatenated with the TS variables but were excluded from the reconstruction loss. The pre-trained models were then adapted to downstream tasks using task-specific heads and supervised fine-tuning on the training labels. 
+
+5.3. Phenotyping 
+
+Similar to the MIMIC-III [54] benchmark by Harutyun-yan et al. [7], the phenotyping task aims to predict the pres-ence of 25 acute care conditions during an ICU stay. Labels were derived from ICD-coded diagnoses using the HCUP Clinical Classifications Software (CCS) mappings. For our experiments, we used the same 25 phenotypes as Harutyun-yan et al., but extracted labels via the revised HCUP CCSR mappings for ICD-10 codes. We note that several broad phenotypes in CCS, such as ’Acute cerebrovascular disease’, have been split into more specific subtypes in CSSR. In this case, our label sets cover a wider range of ICD-10 codes and therefore exhibit higher positive rates for some phenotypes. The prevalence of specific phenotypes is available in the appendix. Performance is summarised as macro-averaged AUROC and AUPRC across phenotype groups: All, Acute, Chronic/Mixed and low prevalence (Pr < 10%). As seen in Table 4 , LLM4EHR consistently outperforms all baselines in all phenotype groups. LLM4EHR achieved a 2.7% (+0 .022 ) gain in AUROC and a more sizeable 5.1% 
+
+(+0 .030 ) gain in AUPRC over the next strongest baseline across the full set (All). The same pattern can be observed across the Acute and Chronic/Mixed phenotypes, indicat-ing stable performance over clinically distinct phenotype subgroups. More importantly, LLM4EHR achieved signif-icant gains in the low prevalence group (Pr < 10%) with a 
+
+3.38% improvement in AUPRC, suggesting that LLM4EHR is more robust to rare phenotypes. However, as seen in Figure 4 , despite overall improve-ments, LLM4EHR’s performance still varies wildly across specific phenotypes. This observation is expected, as some specific phenotypes like ’lower/upper respiratory’, ’compli-cations of surgical/medical care’ or ’conduction disorders’ are harder to predict from general EHR data or charted observations and often require specific data such as chest X-ray or ECG monitoring data to consistently predict. Finally, we note that the presence of Chronic/Mixed phenotypes was harder to predict than Acute phenotypes for all models, consistent with prior observations by Harutyunyan et al. 
+
+5.4. Rolling predictions 
+
+Rolling predictions include two longitudinal ICU out-come prediction tasks useful for patient management. We used the same two tasks as Harutyunyan et al. [7] but defined the labels differently. Rolling decompensation predictions aim to predict imminent physiological deterioration. While Harutyunyan et al. used in-unit mortality as a proxy label, we instead use changes in SOFA score [37, 55], which more directly reflect acute organ dysfunction for patients under in-tensive care. Specifically, we computed SOFA score hourly using the worst measurements over the past 24 hour window. Missing components are treated as 0 (no related risk) if no previous observations and front filled (no change in risk) if previous observations exist. At time 𝑡 , decompensation is marked by either patient death or a change over +2 in SOFA score. The change is SOFA score is calculate as the difference between SOFA at 𝑡 and SOFA at 𝑡 − 1 . At each prediction point 𝑡 𝑝 , we locate the nearest decompensation indicator at 𝑡 ′ > 𝑡 𝑝 within the same ICU stay and assign a positive label to 𝑡 𝑝 if 𝑡 ′ − 𝑡 𝑝 <= 24 . We report AUROC, AUPRC and F1 score for all models. For the remaining LoS prediction, we avoided the task definition by Harutyunyan et al. and formulated the task as time-to-event regression with an accelerated failure time ob-jective. More specifically, we assume that covariates (EHR TS variables) would hasten or prolong the patient’s discharge from ICU. The aim is to predict days until discharge at at each prediction point and we imposed right censoring at 30 days. Given that the utility of LoS prediction is mostly for ICU bed management, prediction over arbitrarily long horizon is not clinically useful due the presence of extreme outliers ( Table 5 ). In our case, we consider 30 days to be a generous horizon as less than 5% of the prediction points are censored. Since the censor rate is low, we report MAE and R2 for uncensored predictions and C-index for all predictions. Due to the extreme number of prediction points (Table 2 ), we downsampled the rolling prediction to be one   
+
+> :Preprint submitted to Elsevier Page 8 of 16
+
+Table 4 
+
+Results for 25 phenotype predictions on MIMIC-IV with mean (std) over 10 runs, best results are highlighted in bold, second best results are underlined, significant results ( 𝑝 < 0.05 for paired t-test between best and second best) are noted with an asterisk. Model All Acute Chronic/Mixed Pr <10% AUROC AUPRC AUROC AUPRC AUROC AUPRC AUROC AUPRC LR 0.776 (0.004) 0.534 (0.007) 0.782 (0.005) 0.516 (0.011) 0.768 (0.004) 0.554 (0.006) 0.702 (0.003) 0.218 (0.005) XGB 0.805 (0.004) 0.578 (0.005) 0.809 (0.004) 0.549 (0.005) 0.801 (0.005) 0.609 (0.006) 0.734 (0.004) 0.242 (0.006) LSTM 0.795 (0.011) 0.542 (0.018) 0.805 (0.009) 0.520 (0.017) 0.784 (0.011) 0.565 (0.017) 0.726 (0.012) 0.209 (0.018) GRU-D 0.817 (0.004) 0.580 (0.006) 0.826 (0.005) 0.558 (0.007) 0.808 (0.005) 0.603 (0.006) 0.750 (0.005) 0.248 (0.006) T-TS 0.796 (0.005) 0.570 (0.006) 0.802 (0.005) 0.545 (0.007) 0.790 (0.006) 0.597 (0.006) 0.729 (0.008) 0.257 (0.009) T-EHR 0.803 (0.008) 0.575 (0.011) 0.809 (0.007) 0.550 (0.009) 0.797 (0.007) 0.602 (0.011) 0.737 (0.008) 0.259 (0.010) SimMTM 0.811 (0.007) 0.558 (0.010) 0.815 (0.007) 0.527 (0.008) 0.806 (0.007) 0.592 (0.0010) 0.730 (0.008) 0.266 (0.012) King et al. 0.822 (0.005) 0.580 (0.008) 0.825 (0.005) 0.550 (0.006) 0.818 (0.006) 0.612 (0.009) 0.749 (0.007) 0.250 (0.008) LLM4EHR 0.844 (0.007) ∗ 0.610 (0.009) ∗ 0.848 (0.007) ∗ 0.580 (0.008) ∗ 0.840 (0.006) ∗ 0.642 (0.010) ∗ 0.771 (0.008) ∗ 0.275 (0.009) ∗
+
+(a) AUROC distribution by task (b) AUPRC distribution by task 
+
+Figure 4: Box plot for mean AUROC and AUPRC across all 25 phenotypes. 
+
+Table 5 
+
+Summary of Decompensation and LoS labels across downsam-pled prediction points Training Validation Testing Prediction Points 525k 117k 115k Decomp Rate 20.67% 20.93% 20.2% LoS censor Rate 3.97% 4.74% 4.60% LoS Mean 8.48 8.90 10.91 LoS Max 158.43 110.80 369.75 LoS Median 4.95 5.22 5.09 LoS IQR 7.94 8.54 8.44 LoS Skew 4.19 3.18 8.86 
+
+prediction every 5 hours. We additionally limited the predic-tion period to be from 24 hours after ICU admission and 24 hours before ICU discharge to avoid trivial decompensation and LoS predictions. As shown in Table 6 , LLM4EHR achieves the best performance across both rolling prediction tasks, with sig-nificant gains in rolling decompensation. Since our defini-tion of decompensation assumes that physiological decline can occur at any point within the prediction window, the task requires models to process longitudinal observations to maintain stable performance across all metrics, as seen in models such as LR and XGB achieving substantially lower F1 scores compared with deep learning baselines. In this case, LLM4EHR’s consistent performance gain over the next best model in all metrics suggests that pre-training helped LLM4EHR to better capture temporal dependencies during downstream tuning, which is further supported by LLM4EHR outperforming the ablated baselines T-TS and T-EHR. In contrast, the performance differences between other baseline models and LLM4EHR in rolling LoS prediction are less significant. LLM4EHR performed on par with GRU-D and SimMTM in all metrics, with only marginal per-formance gains. The overall R2 was poor across all mod-els, consistent with prior work on ICU LoS regression, with Hempel et al. [56] achieving an R2 of 0.24 on a carefully curated MIMIC-IV cohort with outliers removed. This outcome demonstrates that it is far easier to discrimi-nate between short and prolonged stays than to predict the exact remaining time to discharge. However, LLM4EHR noticeably outperformed the ablated baselines T-TS and T-EHR, suggesting that LLM4EHR benefited from semantic alignment pre-training even in a complex downstream task with high label variability. 
+
+5.5. Mortality prediction 
+
+Mortality prediction aims to predict in-hospital mortality using the first 48 hours of ICU observations. We used the 
+
+: Preprint submitted to Elsevier Page 9 of 16 Table 6 
+
+Results for rolling decompensation and LoS predictions on MIMIC-IV with mean (std) over 10 runs, best results are highlighted in bold, second best results are underlined, significant results ( 𝑝 < 0.05 for paired t-test between best and second best) are noted with an asterisk. Models Decompensation LoS AUROC AUPRC F1 MAE R2 C-index LR 0.635 (0.005) 0.296 (0.007) 0.370 (0.011) 2.630 (0.006) 0.058 (0.008) 0.637 (0.005) XGB 0.701 (0.006) 0.407 (0.007) 0.194 (0.009) 4.052 (0.019) 0.093 (0.011) 0.652 (0.007) LSTM 0.777 (0.008) 0.561 (0.011) 0.515 (0.018) 2.574 (0.040) 0.036 (0.027) 0.608 (0.008) GRU-D 0.848 (0.007) 0.669 (0.009) 0.586 (0.012) 2.352 (0.030) 0.216 (0.021) 0.653 (0.010) T-TS 0.864 (0.008) 0.691 (0.009) 0.623 (0.015) 2.356 (0.029) 0.148 (0.024) 0.658 (0.009) T-EHR 0.808 (0.008) 0.587 (0.011) 0.500 (0.014) 2.486 (0.033) 0.132 (0.026) 0.646 (0.009) SimMTM 0.845 (0.008) 0.658 (0.009) 0.572 (0.015) 2.380 (0.019) 0.200 (0.024) 0.659 (0.011) King et al. 0.768 (0.007) 0.516 (0.008) 0.378 (0.009) 2.651 (0.027) 0.145 (0.020) 0.656 (0.008) LLM4EHR 0.876 (0.007) ∗ 0.723 (0.009) ∗ 0.632 (0.012) 2.343 (0.026) 0.226 (0.024) 0.675 (0.009) 
+
+Table 7 
+
+Results for full-shot mortality prediction on MIMIC-IV and Physionet2012 with mean (std) over 10 runs, best results are highlighted in bold, second best results are underlined, significant results ( 𝑝 < 0.05 for paired t-test between best and second best) are noted with an asterisk. Model MIMIC-IV Physionet2012 AUROC AUPRC AUROC AUPRC LR 0.824 (0.004) 0.354 (0.003) 0.754 (0.003) 0.322 (0.006) XGB 0.841 (0.003) 0.403 (0.005) 0.827 (0.004) 0.398 (0.005) LSTM 0.835 (0.007) 0.487 (0.006) 0.804 (0.007) 0.443 (0.008) GRU-D 0.850 (0.009) 0.533 (0.012) 0.843 (0.008) 0.484 (0.010) T-TS 0.844 (0.008) 0.511 (0.009) 0.839 (0.008) 0.452 (0.010) T-EHR 0.839 (0.011) 0.509 (0.012) N/A N/A SimMTM 0.852 (0.007) 0.522 (0.009) 0.841 (0.008) 0.487 (0.009) King et al. 0.857 (0.007) 0.534 (0.008) 0.829 (0.007) 0.484 (0.009) LLM4EHR 0.870 (0.008) ∗ 0.542 (0.009) 0.856 (0.006) ∗ 0.495 (0.008) ∗
+
+Physionet2012 challenge’s definition of in-hospital mortal-ity and assigned positive labels to patients who died before hospital discharge after spending at least 48 hours in the ICU [47]. We report AUROC and AUPRC for all models in a full-shot setting on both MIMIC-IV and Physionet2012. Additionally, we used k-shot adaptation to assess the gen-eralisability and label efficiency of pre-trained models. In this case, models pre-trained using MIMIC-IV episodes (SimMTM, the model by King et al. and LLM4EHR) were fine-tuned using 𝑘 positive and 𝑘 negative samples from the Physionet2012 training set and tested on the full test set. For each 𝑘 , we report the mean AUROC and AUPRC with 95% 
+
+confidence intervals using 1000 bootstrap samples. The full-shot mortality prediction results in Table 7 
+
+show that models pre-trained on MIMIC-IV patient TS outperformed supervised models on MIMIC-IV mortal-ity prediction, with LLM4EHR achieving the best overall performance in both datasets. LLM4EHR experienced a larger relative AUROC drop ( −1 .6% ) than GRU-D and SimMTM when adapted to Physionet2012, likely caused by LLM4EHR capturing MIMIC-IV specific patterns during pre-training. This observation is additionally supported by the few-shot results in Figure 5 , where LLM4EHR per-formed worse than SimMTM in extremely low-k settings 
+
+𝑘 < 5 but overtook both SimMTM and the model by King et al. at 𝑘 = 10 and maintained a steady lead during 
+
+Figure 5: AUROC (upper) and AUPRC (lower) for k-shot mortality prediction on Physionet2012 with mean and 95% 
+
+confidence over 1000 bootstrap samples. 
+
+moderate and high-k settings. The model by King et al., similarly pre-trained via cross-modal alignment on MIMIC-IV, experienced a larger relative performance drop than LLM4EHR ( −3 .4% in AUROC) when adapted to Phys-ionet2012, indicating that our temporal alignment objective is less sensitive to data shift than the stationary alignment objective used by King et al. 
+
+5.6. Further analysis of LLM4EHR 
+
+Ablation study of the pre-training objective 
+
+We experimented with different pre-training objectives to assess the impact of each component within LLM4EHR’s semantic alignment objective. As shown in Table 8 , the largest performance gain comes from the combination of 
+
+: Preprint submitted to Elsevier Page 10 of 16 Table 8 
+
+Ablation study on MIMIC-IV downstream tasks using different pre-training objectives, results are reported as mean (std) over 10 runs, best results are highlighted in bold, second best results are underlined, significant results ( 𝑝 < 0.05 for paired t-test between best and second best) are noted with an asterisk. Objective Mortality Phenotyping Decompensation LoS AUROC AUPRC AUROC (marco) AUPRC (marco) AUROC AUPRC MAE R2                                   
+
+> 𝑟𝑒𝑐𝑜𝑛 0.847 (0.006) 0.520 (0.009) 0.809 (0.008) 0.554 (0.009) 0.832 (0.009) 0.662 (0.013) 2.382 (0.021) 0.209 (0.019)
+> 𝑁𝐶𝐸 0.836 (0.010) 0.499 (0.013) 0.786 (0.009) 0.540 (0.013) 0.806 (0.008) 0.580 (0.011) 2.582 (0.031) 0.099 (0.033)
+> 𝑟𝑒𝑐𝑜𝑛 +𝑁𝐶𝐸 0.863 (0.008) 0.540 (0.010) 0.839 (0.007) 0.607 (0.009) 0.868 (0.008) 0.712 (0.009) 2.340 (0.022) 0.222 (0.023)
+> 𝑎𝑙𝑖𝑔𝑛 0.870 (0.008) ∗0.542 (0.009) 0.844 (0.007) ∗0.610 (0.009) 0.876 (0.007) ∗0.723 (0.009) ∗2.343 (0.026) 0.226 (0.024)
+
+Table 9 
+
+Ablation study on MIMIC-IV downstream tasks using different LLMs for embedding EHR summaries, results are reported as mean (std) over 10 runs, best results are highlighted in bold, second best results are underlined, significant results ( 𝑝 < 0.05 for paired t-test between best and second best) are noted with an asterisk. Mortality Phenotype Decompensation LoS AUROC AUPRC AUROC (macro) AUPRC (macro) AUROC AUPRC MAE R2 ModernBERT 0.850 (0.009) 0.530 (0.009) 0.822 (0.006) 0.577 (0.009) 0.869 (0.010) 0.715 (0.009) 2.348 (0.031) 0.215 (0.026) BioClinical ModernBERT 0.870 (0.008) 0.542 (0.009) 0.844 (0.007) ∗ 0.610 (0.009) ∗ 0.876 (0.007) 0.723 (0.009) ∗ 2.343 (0.026) 0.226 (0.024)                                 
+
+> Longformer 0.848 (0.008) 0.529 (0.012) 0.827 (0.010) 0.582 (0.015) 0.866 (0.008) 0.708 (0.013) 2.344 (0.022) 0.208 (0.018) Clinical-Longformer 0.864 (0.007) 0.541 (0.011) 0.839 (0.011) 0.583 (0.017) 0.869 (0.012) 0.707 (0.015) 2.344 (0.023) 0.210 (0.018) RoBERTa 0.838 (0.011) 0.392 (0.013) 0.810 (0.013) 0.552 (0.021) 0.823 (0.006) 0.660 (0.008) 2.653 (0.020) 0.060 (0.021) BioMed-RoBERTa 0.842 (0.009) 0.395 (0.014) 0.818 (0.009) 0.572 (0.011) 0.829 (0.009) 0.658 (0.012) 2.650 (0.021) 0.072 (0.019)
+
+Table 10 
+
+Summary of LLMs for embedding EHR summaries Context Length Size ModernBERT 8192 150M BioClinical ModernBERT 8192 150M Longformer 4096 150M Clinical-Longformer 4096 150M RoBERTa 512 125M BioMed-RoBERTa 512 125M 
+
+𝑟𝑒𝑐𝑜𝑛 with 𝑁𝐶𝐸 , with the addition of 𝜔 delivering marginal but consistent performance gains across all four downstream tasks. The results demonstrate that temporal alignment is crucial for LLM4EHR, with 𝜔 having a regu-larising effect on the learned TS embeddings. Additionally, models pre-trained without the reconstruction objective are significantly worse at all tasks, suggesting that reconstruc-tion is a necessary auxiliary task to contrastive alignment. 
+
+The choice of LLMs 
+
+Since our pre-training framework is compatible with most LLM structures, we investigated the impacts of using different LLMs to embed EHR summaries. We compared the results obtained from BioClinical ModernBERT [43] against two other LLMs trained on medical texts: Clinical-Longformer [57] and BioMed-RoBERTa [58]. Additionally, we also include results for ModernBERT [44], Longformer [59] and RoBERTa [60]. Table 10 summarises the con-text length and size of the LLMs. Table 9 shows that LLM4EHR pre-trained with long context LLMs outper-formed LLM4EHR pre-trained with short context LLMs. BioClinical ModernBERT and Clinical-Longformer con-sistently yielded better performance in downstream evalu-ations than their general-purpose counterparts, indicating that domain-adapted LLMs are crucial for LLM4EHR pre-training. This observation, along with the ablation results in Table 8 , shows that our pre-training objective facilitated meaning transfer of semantic knowledge from pre-trained LLM to LLM4EHR embedded EHR TS features. 
+
+The effects of the temperature 𝝉 
+
+The temperature 𝜏 is the scaling term for the similarity matrices in both 𝑁𝐶𝐸 and 𝜔 , and it is an important hyperparameter for LLM4EHR pre-training. Intuitively, a small 𝜏 sharpens the differences between similar and dissim-ilar samples, forcing the model to distinguish positive pairs from negatives aggressively. As we formulated 𝜔 to be a regularisation term for the main alignment loss 𝑁𝐶𝐸 , we prioritised investigating the effects of 𝜏 in 𝑁𝐶𝐸 and kept 
+
+𝜏 = 0 .14 for 𝜔 . In practice, we found that using 𝜏 < 0.08 for 
+
+𝜔 causes 𝑎𝑙𝑖𝑔𝑛 to be dominated by 𝜔 , leading to unstable pre-training. Table 11 shows that a smaller 𝜏 for 𝑁𝐶𝐸 
+
+is overall better for pre-training, with a noticeable drop in performance between 𝜏 = 0 .08 and 𝜏 = 0 .14 .
+
+## 6. Discussion 
+
+We presented LLM4EHR as a multimodal pre-training framework for clinical foundation models. The results in 
+
+Section 5 show that by jointly modelling EHR TS with EHR events, LLM4EHR achieves state-of-the-art perfor-mance on clinically significant downstream tasks, including mortality prediction, patient phenotyping, ICU decompen-sation, and remaining LoS prediction. The cross-dataset 
+
+: Preprint submitted to Elsevier Page 11 of 16 Table 11 
+
+The effects of the contrastive temperature 𝜏 on the downstream task, since the optimal 𝜏 was different for each task, we selected 
+
+𝜏 = 0 .02 for all evaluations as it achieved competitive results in all three tasks. Mortality Phenotype Decompensation LoS AUROC AUPRC AUROC (macro) AUPRC (macro) AUROC AUPRC MAE R2                                              
+
+> 𝜏 = 0 .02 0.870 (0.008) ∗0.542 (0.009) 0.844 (0.007) 0.610 (0.009) 0.876 (0.007) ∗0.723 (0.009) ∗2.343 (0.026) 0.226 (0.024)
+> 𝜏 = 0 .08 0.862 (0.008) 0.537 (0.010) 0.846 (0.008) 0.609 (0.011) 0.856 (0.007) 0.699 (0.010) 2.351 (0.022) 0.228 (0.020)
+> 𝜏 = 0 .14 0.849 (0.007) 0.529 (0.009) 0.811 (0.007) 0.592 (0.012) 0.825 (0.005) 0.657 (0.007) 2.339 (0.017) 0.208 (0.021)
+> 𝜏 = 0 .20 0.852 (0.008) 0.531 (0.011) 0.789 (0.006) 0.571 (0.008) 0.805 (0.006) 0.621 (0.009) 2.427 (0.025) 0.152 (0.022)
+> 𝜏 = 0 .50 0.844 (0.012) 0.522 (0.016) 0.779 (0.007) 0.554 (0.010) 0.767 (0.010) 0.576 (0.017) 2.554 (0.031) 0.112 (0.029)
+
+mortality prediction results in Section 5.5 show that pre-trained LLM4EHR can efficiently generalise to new ICU patient cohorts via few-shot learning. The ablation studies in 
+
+Section 5.6 show that our 𝜔 -regularised alignment objective improves the consistency of the learned EHR TS embed-ding and that using domain adapted LLM for embedding EHR event summaries during pre-training was crucial for LLM4EHR. The major limitation of LLM4EHR is scalability to larger language models, which have considerable memory requirements to train. Future research could consider more efficient contrastive learning structures such as He et al. [22], which uses a memory queue to store past samples for cal-culating the contrastive objective. Additionally, we focused on intensive care episodes during pre-training; future stud-ies should consider modelling extended patient trajectories spanning multiple stays, which would extend LLM4EHR to additional downstream tasks useful for long-term care mon-itoring. Lastly, we evaluated the performance of LLM4EHR using learned TS embeddings, given our focus on predicting ICU patient outcomes. Future research should investigate the applicability of LLM4EHR with schema alignment-based pre-training [41] for natural language inference, such as question answering with EHR patient observations. 
+
+## CRediT authorship contribution statement 
+
+Jingteng Li: Writing - Original Draft, Writing - Review & Editing, Data Curation, Visualization, Resources, Investi-gation, Formal analysis, Validation, Software, Methodology, Conceptualization. Alexander Capstick: Writing - Review & Editing, Methodology. Louise Rigny: Writing - Review & Editing. Iona Biggart: Writing - Review & Editing, Methodology. Neil J Sebire: Writing - Review & Editing, Supervision, Project administration, Funding acquisition. 
+
+Payam Barnaghi: Writing - Review & Editing, Methodol-ogy, Resources, Project administration, Supervision, Fund-ing acquisition, Conceptualization. 
+
+## Conflict of interest 
+
+The authors declare that they have no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper. 
+
+## Acknowledgments 
+
+This work was supported by the Great Ormond Street Hospital (GOSH) Charity (grant number 21PP30). PB would like to acknowledge funding via the Royal Academy of Engineering and Great Ormond Street Hospital, the UK Dementia Research Institute (award number UK DRI-7002) through UK DRI Ltd, principally funded by the Medical Research Council. 
+
+## Data availability 
+
+The MIMIC-IV and Physionet Challenge 2012 are pub-licly available. All code used for curating the dataset and running our experiments can be found at: https://github .com/CrankyWilliam/LLM4EHR .
+
+## References 
+
+[1] M. Ghassemi, T. Naumann, F. Doshi-Velez, N. Brimmer, R. Joshi, A. Rumshisky, P. Szolovits, Unfolding physiological state, in: Proceedings of the 20th ACM SIGKDD international conference on Knowledge discovery and data mining, ACM, 2014, pp. 75–84. URL: 
+
+> https://dl.acm.org/doi/10.1145/2623330.2623742
+
+. doi: 10.1145/2623 330.2623742 .[2] K. L. C. Barajas, R. Akella, Dynamically modeling patient’s health state from electronic medical records, in: Proceedings of the 21th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, volume 2015-August, ACM, 2015, pp. 69–78. URL: 
+
+> https://dl.acm.org/doi/10.1145/2783258.2783289
+
+. doi: 10.1145/2783 258.2783289 .[3] C. A. Alvarez, C. A. Clark, S. Zhang, E. A. Halm, J. J. Shannon, C. E. Girod, L. Cooper, R. Amarasingham, Predicting out of intensive care unit cardiopulmonary arrest or death using electronic medical record data, BMC Medical Informatics and Decision Making 13 (2013) 28. [4] Y. Cheng, F. Wang, P. Zhang, J. Hu, Risk prediction with electronic health records: A deep learning approach, in: Proceedings of the 2016 SIAM International Conference on Data Mining, Society for Industrial and Applied Mathematics, 2016, pp. 432–440. URL: https: //epubs.siam.org/doi/10.1137/1.9781611974348.49 . doi: 10.1137/1.97 81611974348.49 .[5] D. J. Albers, N. Elhadad, E. Tabak, A. Perotte, G. Hripcsak, Dy-namical phenotyping: Using temporal analysis of clinically collected physiologic data to stratify populations, PLoS ONE 9 (2014) e96443. [6] C. Liu, F. Wang, J. Hu, H. Xiong, Temporal phenotyping from longitudinal electronic health records: A graph based framework, in: Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, volume 2015-August, 2015. doi: 10.1145/2783258.2783352 .[7] H. Harutyunyan, H. Khachatrian, D. C. Kale, G. V. Steeg, A. Galstyan, Multitask learning and benchmarking with clinical time series data, Scientific Data 6 (2019) 96. 
+
+: Preprint submitted to Elsevier Page 12 of 16 [8] S. Sheikhalishahi, V. Balaraman, V. Osmani, Benchmarking machine learning models on multi-centre eicu critical care dataset, PLOS ONE 15 (2020) e0235424. [9] A. Radford, J. Wu, R. Child, D. Luan, D. Amodei, I. Sutskever, et al., Language models are unsupervised multitask learners, OpenAI blog 1 (2019) 9. [10] M. Wornow, Y. Xu, R. Thapa, B. Patel, E. Steinberg, S. Fleming, M. A. Pfeffer, J. Fries, N. H. Shah, The shaky foundations of large language models and foundation models for electronic health records, npj Digital Medicine 6 (2023) 135. [11] Y. Li, S. Rao, J. R. A. Solares, A. Hassaine, R. Ramakrishnan, D. Canoy, Y. Zhu, K. Rahimi, G. Salimi-Khorshidi, Behrt: Trans-former for electronic health records, Scientific Reports 10 (2020) 7155. [12] L. Rasmy, Y. Xiang, Z. Xie, C. Tao, D. Zhi, Med-bert: pretrained contextualized embeddings on large-scale structured electronic health records for disease prediction, npj Digital Medicine 4 (2021) 86. [13] P. Renc, Y. Jia, A. E. Samir, J. Was, Q. Li, D. W. Bates, A. Sitek, Zero shot health trajectory prediction using transformer, npj Digital Medicine 7 (2024) 256. [14] Z. Kraljevic, D. Bean, A. Shek, R. Bendayan, H. Hemingway, J. A. Yeung, A. Deng, A. Balston, J. Ross, E. Idowu, J. T. Teo, R. J. B. Dob-son, Foresight—a generative pretrained transformer for modelling of patient timelines using electronic health records: a retrospective modelling study, The Lancet Digital Health 6 (2024) e281–e290. [15] C. Chang, W.-Y. Wang, W.-C. Peng, T.-F. Chen, Llm4ts: Aligning pre-trained llms as data-efficient time-series forecasters, ACM Trans. Intell. Syst. Technol. 16 (2025). [16] Y. Liu, G. Qin, X. Huang, J. Wang, M. Long, Autotimes: Au-toregressive time series forecasters via large language models, in: A. Globerson, L. Mackey, D. Belgrave, A. Fan, U. Paquet, J. Tomczak, C. Zhang (Eds.), Advances in Neural Information Processing Sys-tems, volume 37, Curran Associates, Inc., 2024, pp. 122154–122184. URL: https://proceedings.neurips.cc/paper_files/paper/2024/file /dcf88cbc8d01ce7309b83d0ebaeb9d29-Paper-Conference.pdf .[17] R. King, T. Yang, B. J. Mortazavi, Multimodal pretraining of medical time series and notes, in: Machine Learning for Health (ML4H), PMLR, 2023, pp. 244–255. [18] N. Chan, F. Parker, W. Bennett, T. Wu, M. Y. Jia, J. Fackler, K. Ghobadi, Medtsllm: Leveraging llms for multimodal medical time series analysis, 2024. URL: https://arxiv.org/abs/2408.07773 .
+
+> arXiv:2408.07773
+
+.[19] Y. An, H. Zhang, Y. Sheng, J. Wang, X. Chen, Main: Multimodal attention-based fusion networks for diagnosis prediction, in: 2021 IEEE International Conference on Bioinformatics and Biomedicine (BIBM), 2021, pp. 809–816. doi: 10.1109/BIBM52615.2021.9669634 .[20] A. Kline, H. Wang, Y. Li, S. Dennis, M. Hutch, Z. Xu, F. Wang, F. Cheng, Y. Luo, Multimodal machine learning in precision health: A scoping review, npj Digital Medicine 5 (2022) 171. [21] A. van den Oord, Y. Li, O. Vinyals, Representation learning with contrastive predictive coding, ArXiv abs/1807.03748 (2018). [22] K. He, H. Fan, Y. Wu, S. Xie, R. Girshick, Momentum contrast for unsupervised visual representation learning, in: Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, 2020, pp. 9729–9738. [23] T. Chen, S. Kornblith, M. Norouzi, G. Hinton, A simple framework for contrastive learning of visual representations, in: Proceedings of the 37th International Conference on Machine Learning, ICML’20, JMLR.org, 2020. [24] M. Zheng, F. Wang, S. You, C. Qian, C. Zhang, X. Wang, C. Xu, Weakly supervised contrastive learning, in: Proceedings of the IEEE/CVF International Conference on Computer Vision (ICCV), 2021, pp. 10042–10051. [25] S. Wu, H. Li, X. Liu, D. Tian, H. Su, Class-aware patch based contrastive learning for medical image segmentation, in: 2024 In-ternational Joint Conference on Neural Networks (IJCNN), 2024, pp. 1–9. doi: 10.1109/IJCNN60899.2024.10650546 .[26] Z. Kraljevic, A. Shek, D. M. Bean, R. Bendayan, J. T. H. Teo, R. J. B. Dobson, Medgpt: Medical concept prediction from clinical narratives, ArXiv abs/2107.03134 (2021). [27] M. Cascella, J. Montomoli, V. Bellini, E. Bignami, Evaluating the feasibility of chatgpt in healthcare: an analysis of multiple clinical and research scenarios, Journal of medical systems 47 (2023) 33. [28] E. Alsentzer, J. Murphy, W. Boag, W.-H. Weng, D. Jindi, T. Naumann, M. McDermott, Publicly available clinical BERT embeddings, in: A. Rumshisky, K. Roberts, S. Bethard, T. Naumann (Eds.), Proceed-ings of the 2nd Clinical Natural Language Processing Workshop, Association for Computational Linguistics, Minneapolis, Minnesota, USA, 2019, pp. 72–78. URL: https://aclanthology.org/W19-1909/ .doi: 10.18653/v1/W19-1909 .[29] C. Pang, X. Jiang, K. S. Kalluri, M. Spotnitz, R. Chen, A. Perotte, K. Natarajan, Cehr-bert: Incorporating temporal information from structured ehr data to improve prediction tasks, in: Machine Learning for Health, PMLR, 2021, pp. 239–260. [30] J. Dong, H. Wu, H. Zhang, L. Zhang, J. Wang, M. Long, Simmtm: a simple pre-training framework for masked time-series modeling, in: Proceedings of the 37th International Conference on Neural Infor-mation Processing Systems, NIPS ’23, Curran Associates Inc., Red Hook, NY, USA, 2023. [31] Y. Nie, N. H. Nguyen, P. Sinthong, J. Kalagnanam, A time series is worth 64 words: Long-term forecasting with transformers, 2023. URL: https://arxiv.org/abs/2211.14730 . arXiv:2211.14730 .[32] V. Ekambaram, A. Jati, N. Nguyen, P. Sinthong, J. Kalagnanam, Tsmixer: Lightweight mlp-mixer model for multivariate time series forecasting, in: Proceedings of the 29th ACM SIGKDD Conference on Knowledge Discovery and Data Mining, KDD ’23, ACM, 2023, p. 459–469. URL: http://dx.doi.org/10.1145/3580305.3599533 .doi: 10.1145/3580305.3599533 .[33] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, Ł. Kaiser, I. Polosukhin, Attention is all you need, Advances in neural information processing systems 30 (2017). [34] H. Jeong, N. Oufattole, M. Mcdermott, A. Balagopalan, B. Jangeesingh, M. Ghassemi, C. Stultz, Event-based contrastive learning for medical time series, 2024. URL: 
+
+> https://arxiv.org/abs/2312.10308
+
+. arXiv:2312.10308 .[35] D. Kiyasseh, T. Zhu, D. Clifton, Crocs: Clustering and retrieval of cardiac signals based on patient disease class, sex, and age, in: M. Ranzato, A. Beygelzimer, Y. Dauphin, P. Liang, J. W. Vaughan (Eds.), Advances in Neural Information Processing Systems, vol-ume 34, Curran Associates, Inc., 2021, pp. 15557–15569. URL: 
+
+> https://proceedings.neurips.cc/paper_files/paper/2021/file/8 303a79b1e19a194f1875981be5bdb6f-Paper.pdf
+
+.[36] J.-R. Le Gall, P. Loirat, A. Alperovitch, P. Glaser, C. Granthil, D. Mathieu, P. Mercier, R. Thomas, D. Villers, A simplified acute physiology score for icu patients, Critical care medicine 12 (1984) 975–977. [37] A. E. Jones, S. Trzeciak, J. A. Kline, The sequential organ failure assessment score for predicting outcome in patients with severe sepsis and evidence of hypoperfusion at the time of emergency department presentation*, Critical Care Medicine 37 (2009). [38] E. Steinberg, M. Wornow, S. Bedi, J. A. Fries, M. McDermott, N. H. Shah, meds_reader: A fast and efficient ehr processing library, arXiv preprint arXiv:2409.09095 (2024). [39] D. F. Stein, M. J. Carter, J. Booth, M. J. Peters, S. Ray, N. J. Sebire, P. Barnaghi, M. Cortina-Borja, Prediction cardiovascular deterioration in a paediatric intensive care unit (picews): a machine learning modelling study of routinely collected health-care data, Eclinicalmedicine 85 (2025). [40] F. Wang, F. Wu, Y. Tang, L. Yu, CTPD: Cross-modal temporal pattern discovery for enhanced multimodal electronic health records analysis, in: W. Che, J. Nabende, E. Shutova, M. T. Pilehvar (Eds.), Findings of the Association for Computational Linguistics: ACL 2025, Associa-tion for Computational Linguistics, Vienna, Austria, 2025, pp. 6783– 6799. URL: https://aclanthology.org/2025.findings- acl.352/ .doi: 10.18653/v1/2025.findings-acl.352 .
+
+: Preprint submitted to Elsevier Page 13 of 16 [41] Z. Wu, A. Dadu, M. Nalls, F. Faghri, J. Sun, Instruction tuning large language models to understand electronic health records, in: A. Globerson, L. Mackey, D. Belgrave, A. Fan, U. Paquet, J. Tom-czak, C. Zhang (Eds.), Advances in Neural Information Processing Systems, volume 37, Curran Associates, Inc., 2024, pp. 54772–54786. URL: https://proceedings.neurips.cc/paper_files/paper/2024/file /62986e0a78780fe5f17b495aeded5bab-Paper-Datasets_and_Benchmarks _Track.pdf . doi: 10.52202/079017-1737 .[42] Y. Mahajan, M. Freestone, N. Bansal, S. Aakur, S. K. K. Santu, Revisiting word embeddings in the llm era, 2025. URL: https://arxi v.org/abs/2402.11094 . arXiv:2402.11094 .[43] T. Sounack, J. Davis, B. Durieux, A. Chaffin, T. J. Pollard, E. Lehman, A. E. W. Johnson, M. McDermott, T. Naumann, C. Lindvall, Bioclin-ical modernbert: A state-of-the-art long-context encoder for biomed-ical and clinical nlp, 2025. URL: https://arxiv.org/abs/2506.10896 .
+
+> arXiv:2506.10896
+
+.[44] B. Warner, A. Chaffin, B. Clavié, O. Weller, O. Hallström, S. Taghadouini, A. Gallagher, R. Biswas, F. Ladhak, T. Aarsen, et al., Smarter, better, faster, longer: A modern bidirectional encoder for fast, memory efficient, and long context finetuning and inference, in: Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers), 2025, pp. 2526– 2547. [45] D. P. Kingma, J. Ba, Adam: A method for stochastic optimization, arXiv preprint arXiv:1412.6980 (2014). [46] A. E. Johnson, L. Bulgarelli, L. Shen, A. Gayles, A. Shammout, S. Horng, T. J. Pollard, S. Hao, B. Moody, B. Gow, et al., Mimic-iv, a freely accessible electronic health record dataset, Scientific data 10 (2023) 1. [47] I. Silva, G. Moody, D. J. Scott, L. A. Celi, R. G. Mark, Predicting in-hospital mortality of icu patients: The physionet/computing in cardiology challenge 2012, in: 2012 computing in cardiology, IEEE, 2012, pp. 245–248. [48] Z. C. Lipton, D. C. Kale, C. Elkan, R. Wetzel, Learning to diagnose with lstm recurrent neural networks, arXiv preprint arXiv:1511.03677 (2015). [49] T. Chen, C. Guestrin, Xgboost: A scalable tree boosting system, in: Proceedings of the 22nd acm sigkdd international conference on knowledge discovery and data mining, 2016, pp. 785–794. [50] A. Paszke, S. Gross, F. Massa, A. Lerer, J. Bradbury, G. Chanan, T. Killeen, Z. Lin, N. Gimelshein, L. Antiga, A. Desmaison, A. Köpf, E. Z. Yang, Z. DeVito, M. Raison, A. Tejani, S. Chilamkurthy, B. Steiner, L. Fang, J. Bai, S. Chintala, Pytorch: An imperative style, high-performance deep learning library, CoRR abs/1912.01703 (2019). [51] E. Martinsson, WTTE-RNN : Weibull Time To Event Recurrent Neu-ral Network, Master’s thesis, Chalmers University Of Technology, 2016. [52] Z. Che, S. Purushotham, K. Cho, D. Sontag, Y. Liu, Recurrent neural networks for multivariate time series with missing values, Scientific reports 8 (2018) 6085. [53] H. Song, D. Rajan, J. J. Thiagarajan, A. Spanias, Attend and diagnose: clinical time series analysis using attention models, in: Proceedings of the Thirty-Second AAAI Conference on Artificial Intelligence and Thirtieth Innovative Applications of Artificial Intelligence Con-ference and Eighth AAAI Symposium on Educational Advances in Artificial Intelligence, AAAI’18/IAAI’18/EAAI’18, AAAI Press, 2018. [54] A. E. Johnson, T. J. Pollard, L. Shen, L.-w. H. Lehman, M. Feng, M. Ghassemi, B. Moody, P. Szolovits, L. Anthony Celi, R. G. Mark, Mimic-iii, a freely accessible critical care database, Scientific Data 3 (2016) 160035. [55] S. Lambden, P. F. Laterre, M. M. Levy, B. Francois, The sofa score—development, utility and challenges of accurate assessment in clinical trials, Critical Care 23 (2019) 374. [56] L. Hempel, S. Sadeghi, T. Kirsten, Prediction of intensive care unit length of stay in the mimic-iv dataset, Applied Sciences 13 (2023). [57] Y. Li, R. M. Wehbe, F. S. Ahmad, H. Wang, Y. Luo, Clinical-longformer and clinical-bigbird: Transformers for long clinical se-quences, CoRR abs/2201.11838 (2022). [58] S. Gururangan, A. Marasović, S. Swayamdipta, K. Lo, I. Beltagy, D. Downey, N. A. Smith, Don’t stop pretraining: Adapt language models to domains and tasks, in: Proceedings of ACL, 2020. [59] I. Beltagy, M. E. Peters, A. Cohan, Longformer: The long-document transformer, CoRR abs/2004.05150 (2020). [60] Y. Liu, M. Ott, N. Goyal, J. Du, M. Joshi, D. Chen, O. Levy, M. Lewis, L. Zettlemoyer, V. Stoyanov, Roberta: A robustly optimized BERT pretraining approach, CoRR abs/1907.11692 (2019). [61] C. Davidson-Pilon, lifelines: survival analysis in python, Journal of Open Source Software 4 (2019) 1317. [62] A. E. W. Johnson, D. J. Stone, L. A. Celi, T. J. Pollard, The mimic code repository: enabling reproducibility in critical care research, Journal of the American Medical Informatics Association 25 (2018) 32–39. 
+
+: Preprint submitted to Elsevier Page 14 of 16 A. Appendix 
+
+A.1. Curating the datasets 
+
+Here we describe the process for curating the MIMIC-IV dataset, corresponding to the Python implementation provided in our code repository. Since we did not further filter or process the Physionet Challenge 2012 dataset, we refer to the original implementation by Silva et al. [47] for details regarding dataset curation and cohort selection. 
+
+A.1.1. MIMIC-IV cohort 
+
+We curated a cohort of patients with at least one recorded ICU stay. Different from the cohort selection process by Harutyunyan et al. [7], we included patients with multiple ICU stays per hospital admission but kept only the first ICU stay per hospital admission. Harutyunyan et al. [7] argues that including hospital admissions with multiple ICU stays makes the mortality and phenotyping labels ambiguous. While doing so would be valid for predicting the onset of adverse events in a unit, such as predicting the onset of cardiac arrest in the ICU, we found no reason to remove hospital admissions with multiple ICU stays, as both phe-notype and mortality labels are defined for unique hospital admissions rather than specific stays. The labels for pheno-type and mortality would still be valid for a given ICU stay if a patient was discharged then subsequently readmitted to ICU provided both stays occurs within the same hospital admission period. Therefore, we elect to retain the first ICU stay for each hospital admission. For direct transfers between ICU wards, when the discharge time of the first ICU ward stay overlaps with the admission time of the second ICU ward stay, we merge the two stays into a single long stay. The process of curating MIMIC-IV cohort is shown in Figure 6 .
+
+A.1.2. MIMIC-IV Mortality labels 
+
+We used the Physionet2012 Challenge’s definition of in-hospital mortality and assigned positive labels to patients who died before hospital discharge after spending at least 48 hours in the ICU. Since we only included stays longer than 48 hours, all curated MIMIC-IV episodes are eligible for mortality prediction. Here, we specify that the patient mortality label is associated with unique hospital stays rather than unique ICU stays, as the hospital discharge time was used to determine in-hospital patient mortality. In this case, we included only the first ICU stay for each hospital admis-sion to avoid duplicating mortality labels. 
+
+A.1.3. MIMIC-IV Phenotype labels 
+
+Similar to the MIMIC-III benchmark by Harutyunyan et al. [7],c the phenotyping task aims to predict the presence of 25 acute care conditions during an ICU stay. Labels were derived from ICD-coded diagnoses using the HCUP Clinical Classifications Software (CCS) mappings. In their original implementation Harutyunyan et al. noted that phe-notype labels are associated with hospital stays rather than ICU stays and are predicted retrospectively using an entire ICU episode. For our experiments, we used the same 25 phenotypes as Harutyunyan et al., but extracted labels via the revised HCUP CCSR mappings for ICD-10 codes. We note that several broad phenotypes in CCS, such as ’Acute cerebrovascular disease’, have been split into more specific subtypes in CSSR. Table 12 summarises the 25 phenotype labels in MIMIC-IV. 
+
+A.1.4. MIMIC-IV decompensation labels 
+
+Rolling decompensation predictions aim to predict im-minent physiological deterioration. While Harutyunyan et al. [7] used in-unit mortality as a proxy label, we instead use changes in SOFA score, which more directly reflect acute organ dysfunction. Specifically, we computed SOFA score hourly using the worst measurements over the past 24 hour window. Missing components are treated as 0 (no related risk) if no previous observations and front filled (no change in risk) if previous observations exist. At time 
+
+𝑡 , decompensation is marked by either patient death or a change over +2 in SOFA score. The change is SOFA score is calculate as the difference between SOFA at 𝑡 and SOFA at 𝑡 − 1 . At each prediction point 𝑡 𝑝 , we locate the nearest decompensation indicator at 𝑡 ′ > 𝑡 𝑝 within the same ICU stay and assign a positive label to 𝑡 𝑝 if 𝑡 ′ − 𝑡 𝑝 <= 24 . SOFA score is calculated using the criteria in Table 13 .
+
+A.1.5. MIMIC-IV LoS labels 
+
+For the remaining LoS prediction, we avoided the task definition by Harutyunyan et al. [7] and formulated the task as time-to-event regression with an accelerated failure time objective. More specifically, we assume that covariates (EHR TS variables) would hasten or prolong the patient’s discharge from ICU. The aim is to predict days until dis-charge at at each prediction point and we imposed right cen-soring at 30 days. Given that the utility of LoS prediction is mostly for ICU bed management, prediction over arbitrarily long horizon is not clinically useful due the presence of extreme outliers ( Table 5 ). In our case, we consider 30 days to be a generous horizon as less than 5% of the prediction points are censored. 
+
+Algorithm 1 Masked negative log-likelihood for Log-normal AFT 
+
+Require: 𝜇, log 𝜎, 𝑦, event , mask ∈ ℝ𝐵 ×𝑇 , 𝜀 > 0 
+
+> 1:
+
+𝜎 ← exp(log 𝜎 ) 
+
+> 2:
+
+𝑦 ← max( 𝑦, 𝜀 ) 
+
+> 3:
+
+log 𝑦 ← ln( 𝑦 ) 
+
+> 4:
+
+𝑧 ← (log 𝑦 − 𝜇 )∕ 𝜎  
+
+> 5:
+
+log 𝑓 ← − log (𝑦 ⋅ 𝜎 √2𝜋 ) − 12 𝑧 2 
+
+> 6:
+
+log 𝑆 ← log (1 − Φ( 𝑧 ) + 𝜀 ) 
+
+> 7:
+
+nll ← −(event ⋅ log 𝑓 + (1 − event) ⋅ log 𝑆 ) 
+
+> 8:
+
+nll ← nll ⊙ mask  
+
+> 9:
+
+loss ←
+
+∑ nll 
+
+∑ mask  
+
+> 10: 11:
+
+return loss 
+
+The log-normal AFT objective for the linear and XGB baseline models were implemented by Davidson-Pilon [61]       
+
+> :Preprint submitted to Elsevier Page 15 of 16 Figure 6: Flowchart for curating the MIMIC-IV ICU stay patient cohort, short stays <48 hours are removed to allow adequate patient observations before prediction.
+
+and Chen and Guestrin [49] respectively. For remaining LoS prediction, LLM4EHR and other deep learning baselines are fitted with a accelerated failure prediction head that predicts log-scale mean 𝜇 and standard deviation log 𝜎 of the expected time to discharge. Given the observed remaining LoS 𝑦 , binary event indicator 𝑒𝑣𝑒𝑛𝑡 , validity mask 𝑚 and batch size 𝐵 , the negative log-likelihood is calculated via 
+
+Algorithm 1 , which is derived from the implementation by Martinsson [51]. The LoS prediction evaluation metrics for all baseline models were implemented by Davidson-Pilon [61]. 
+
+A.1.6. Summary EHR TS features 
+
+Table 14 summarises EHR TS features for MIMIC-IV and Physionet2012, with count of measurements and median values for each variable. The density of measurements is substantially higher in MIMIC-IV due to our MIMIC-IV dataset includes more patients and longer patient trajectories than Physionet2012. The EHR TS features for MIMIC-IV and Physionet2012 were synchronised to ICU stay hours following the curation process by Johnson et al. [62]. Prior to analysis, physically implausible outliers were removed on a variable-by-variable basis. We imputed missing values by front filling within each episode, and filled any remaining gaps with the population mean. Continuous variables were z-standardised using observed mean and standard deviation before imputation.   
+
+> :Preprint submitted to Elsevier Page 16 of 16
+
+Table 12 
+
+Summary of 25 phenotype labels in MIMIC-IV. Phenotype Type Prevalence Acute cerebrovascular disease Acute 0.159 Acute myocardial infarction Acute 0.110 Acute renal failure Acute 0.375 Cardiac dysrhythmias Chronic/Mixed 0.375 Chronic obstructive pulmonary disease Chronic/Mixed 0.175 Complications of surgical/medical care Acute 0.099 Conduction disorders Chronic/Mixed 0.097 Congestive heart failure; nonhypertensive Chronic/Mixed 0.312 Coronary atherosclerosis and related Chronic/Mixed 0.334 Diabetes mellitus with complications Chronic/Mixed 0.151 Diabetes mellitus without complications Chronic/Mixed 0.173 Disorder of lipid metabolism Chronic/Mixed 0.433 Essential hypertension Chronic/Mixed 0.404 Fluid and electrolyte disorder Acute 0.498 Gastrointestinal hemorrhage Acute 0.092 Hypertension with complications Chronic/Mixed 0.267 Other liver disease Chronic/Mixed 0.122 Other lower respiratory disease Acute 0.093 Other upper respiratory disease Acute 0.028 Pleurisy; pneumothorax; pulmonary collapse Acute 0.169 Pheumonia Acute 0.245 Respiratory failure; insufficiency; arrest Acute 0.386 Septicemia (except in labour) Acute 0.219 Shock Acute 0.261 
+
+Table 13 
+
+Scoring criteria for SOFA score components summarised from Jones et al. [37], with additional Norepinephrine equivalent dosages from Lambden et al. [55] Respiratory system Nervous system Cardiovascular System Liver system Coagulation Kidneys SOFA score PaO2/FiO2 (mmHg) Glasgow coma score MAP/Vasopressor Bilirubin (mg/dl) [umo/L] Platelets x1000/ml Creatinine (mg/dl); Urine output (ml/day) 0 >400 15 MAP >70 mmHg <1.2 (<20) >150 <1.2 1 <400 13-14 MAP <70 mmHg 1.2 - 1.9 [20 - 32] <150 1.2 - 1.9 2 <300 10-12 Dopamine <= 5 ug/kg/min Dobutamine (any dosage) 2.0 - 5.9 [33 - 101] <100 2.0 - 3.4 3 <200 with respiratory support 6-9 Norepinephrine <= 0.1 ug/kg/min Epinephrine <= 0.1 ug/kg/min Dopamine >5 ug/kg/min 6.0 - 11.9 [102 - 204] <50 3.5 - 4.9 Urine output <500 4 <100 with respiratory support <6 Norepinephrine >0.1 ug/kg/min Epinephrine >0.1 ug/kg/min Dopamine >15 ug/kg/min >12.0 [>204] <20 >5.0 Urine output <200 : Preprint submitted to Elsevier Page 17 of 16 Table 14 
+
+Summary of EHR TS features for MIMIC-IV (A) and Physionet2012 (B), Count refers to the number of measurements for each variable in the dataset 
+
+Variable Unit Count (A) Median (A) Count (B) Median (B) 
+
+heart_rate bpm 5546072 85.0 345998 86.0 sbp mmHg 5195562 119.0 207385 118.0 dbp mmHg 5194886 62.0 207362 58.0 mbp mmHg 5213104 78.0 206267 78.0 sbp_ni mmHg 3254534 119.0 162383 118.0 dbp_ni mmHg 3253952 65.0 162167 57.0 mbp_ni mmHg 3266865 79.0 160089 76.0 resp_rate breaths/min 5452082 20.0 93142 19.0 temperature °C 1698165 36.94 141273 37.1 sao2 % 5326804 97.0 15233 97.0 glucose mg/dL 1216399 136.0 26115 127.0 albumin g/dL 69185 3.0 4802 2.9 bicarbonate mmol/L 450467 24.0 27169 23.0 bun mg/dL 448356 24.0 27756 20.0 creatinine mg/dL 449072 1.1 27895 1.0 sodium mEq/L 477454 139.0 27227 139.0 potassium mEq/L 475875 4.1 29041 4.1 ph pH Unit 392576 7.38 46370 7.38 lactate mmol/L 211644 1.8 16051 2.0 fio2 % 283447 50.0 60770 50.0 pao2 mmHg 392740 98.0 44346 120.0 paco2 mmHg 392382 41.0 44404 39.0 hematocrit % 470665 28.9 36512 30.3 alt IU/L 129481 37.0 6469 43.0 alp IU/L 128635 99.0 6291 82.0 ast IU/L 131084 52.0 6473 62.0 bilirubin_total mg/dL 129401 0.9 6511 0.9 platelet 10 3/μL 403151 179.0 28290 172.0 wbc 10 3/μL 396604 10.9 25891 11.4 troponin_t ug/L 40840 0.16 5101 0.30 gcs score (3–15) 1593520 15.0 123112 13.0 urineoutput mL 2955401 100.0 265848 70.0 : Preprint submitted to Elsevier Page 18 of 16
