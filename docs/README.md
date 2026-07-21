@@ -6,41 +6,35 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-20
-- 运行时间：2026-07-20 21:38:44 UTC
+- 最新运行日期：2026-07-21
+- 运行时间：2026-07-21 21:40:18 UTC
 - 运行状态：成功
-- 本次总论文数：7
-- 精读区：2
-- 速读区：5
+- 本次总论文数：5
+- 精读区：1
+- 速读区：4
 
 ### 今日简报（AI）
-今日精读聚焦医疗AI：满分论文《Cura 1T》提出专用代理模型，8分《LLM4EHR》对齐临床时间序列与事件。最值得关注的方向是医疗领域智能代理和临床数据对齐，以及审计日志的多轴轨迹分析。建议普通读者关注医疗AI代理在诊断中的实际应用，并留意存储效率作为评估指标的新趋势。
-- 详情：[/202607/20/README](/202607/20/README)
+今日推荐5篇论文，聚焦AI Agent能力评估与评测基础设施。精读推荐《AgentCompass》8.0分，构建统一评估框架；速读关注存储足迹与长上下文推理记忆基准。建议优先关注Agent评估标准化方向及临床多模态大模型应用。
+- 详情：[/202607/21/README](/202607/21/README)
 
 ### 精读区论文标签
-1. [Cura 1T: Specialized Model for Agentic Healthcare](/202607/20/2607.15314v1-cura-1t-specialized-model-for-agentic-healthcare)  
-   标签：评分：10.0/10、query:ehr-agent
-   evidence：专门面向医疗的LLM，支持电子健康记录工具使用，并通过基准测试循环评估改进
-2. [LLM4EHR: Aligning Clinical Time Series with Medical Event Sequences via Large Language Models](/202607/20/2607.15447v1-llm4ehr-aligning-clinical-time-series-with-medical-event-sequences-via-large-language-models)  
+1. [AgentCompass: A Unified Evaluation Infrastructure for Agent Capabilities](/202607/21/2607.13705v3-agentcompass-a-unified-evaluation-infrastructure-for-agent-capabilities)  
    标签：评分：8.0/10、query:ehr-agent
-   evidence：利用大语言模型在EHR数据上对齐临床时间序列与事件序列
+   evidence：基于LLM的智能体统一评估基础设施
 
 ### 速读区论文标签
-1. [Clinical Audit Logs as Multi-Axial Traces of Care Delivery](/202607/20/2607.15397v1-clinical-audit-logs-as-multi-axial-traces-of-care-delivery)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：将EHR审计日志作为多轴轨迹用于基础模型预训练和评估
-2. [Agents Don't Just Agree, They Remember: Benchmarking Persistent Sycophancy in Stateful Personal Agents](/202607/20/2607.10526v1-agents-dont-just-agree-they-remember-benchmarking-persistent-sycophancy-in-stateful-personal-agents)  
+1. [The Hidden Footprint: Making Storage a First-Class Metric for LLM Agent Evaluation](/202607/21/2607.11149v1-the-hidden-footprint-making-storage-a-first-class-metric-for-llm-agent-evaluation)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：针对状态型智能体持续奉承行为的基准，可用于智能体评估
-3. [The Hidden Footprint: Making Storage a First-Class Metric for LLM Agent Evaluation](/202607/20/2607.11149v2-the-hidden-footprint-making-storage-a-first-class-metric-for-llm-agent-evaluation)  
+   evidence：LLM Agent评估中的存储占用指标
+2. [Large Language Models as Unified Multimodal Learners for Clinical Prediction](/202607/21/2607.15380v1-large-language-models-as-unified-multimodal-learners-for-clinical-prediction)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：将存储占用作为LLM智能体评估指标，可应用于医疗智能体基准
-4. [MemoHarness: Agent Harnesses That Learn from Experience](/202607/20/2607.14159v1-memoharness-agent-harnesses-that-learn-from-experience)  
+   evidence：将EHR数据转换为自然语言序列用于LLM微调
+3. [RECON: Benchmarking Agent Memory for Compositional Reasoning over Long Contexts](/202607/21/2607.16716v1-recon-benchmarking-agent-memory-for-compositional-reasoning-over-long-contexts)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：可迁移至医疗智能体评估的智能体框架优化方法
-5. [MCPEvol-Bench: Benchmarking LLM Agent Performance Across Dynamic Evolutions of MCP Servers](/202607/20/2607.14642v1-mcpevol-bench-benchmarking-llm-agent-performance-across-dynamic-evolutions-of-mcp-servers)  
+   evidence：包含医疗领域的智能体记忆基准测试
+4. [Enhancing Personalized Bladder Cancer Treatment Through Reinforcement Learning: A Recurrent Patient State Transition Decision Support Framework](/202607/21/2607.16916v1-enhancing-personalized-bladder-cancer-treatment-through-reinforcement-learning-a-recurrent-patient-state-transition-decision-support-framework)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：面向动态工具演化的LLM智能体基准，可应用于医疗智能体评估
+   evidence：强化学习用于自适应治疗规划，与智能体评估相关
 
 
 <div class="dpr-home-promo-card">

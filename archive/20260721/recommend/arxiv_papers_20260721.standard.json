@@ -1,0 +1,229 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-21T21:36:59.356851+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2607.13705v3",
+      "source": "arxiv",
+      "title": "AgentCompass: A Unified Evaluation Infrastructure for Agent Capabilities",
+      "abstract": "As Large Language Models (LLMs) evolve into autonomous agents, the need for unified evaluation infrastructure becomes critical. However, current evaluation pipelines remain highly fragmented and tightly coupled, hindering reproducibility and causing redundant engineering. To address this, we introduce AgentCompass, an open-source, lightweight, and extensible infrastructure for evaluating LLM-based agents. AgentCompass organizes the evaluation process around three independent components, namely Benchmark, Harness, and Environment, thereby enabling flexible configurations without requiring the reimplementation of complex execution logic. Furthermore, it features a fault-tolerant asynchronous runtime and comprehensive trajectory analysis tools to transparently diagnose nuanced failure modes like reward-hacking. Natively supporting over 20 benchmarks across five capability dimensions, AgentCompass provides the community with a scalable and reproducible infrastructure for advancing agent research.",
+      "authors": [
+        "Kai Chen",
+        "Zichen Ding",
+        "Jiaye Ge",
+        "Shufan Jiang",
+        "Mo Li",
+        "Qingqiu Li",
+        "Zehao Li",
+        "Zonglin Li",
+        "Tianhao Liang",
+        "Shudong Liu",
+        "Zerun Ma",
+        "Zixin Shang",
+        "Wenhui Tian",
+        "Zun Wang",
+        "Liwei Wu",
+        "Zhenyu Wu",
+        "Jun Xu",
+        "Bowen Yang",
+        "Dingbo Yuan",
+        "Qi Zhang",
+        "Songyang Zhang",
+        "Peiheng Zhou",
+        "Dongsheng Zhu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.SE"
+      ],
+      "published": "2026-07-15T11:11:17+00:00",
+      "link": "https://arxiv.org/pdf/2607.13705v3",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "unified evaluation infrastructure for LLM-based agents",
+      "llm_evidence_cn": "基于LLM的智能体统一评估基础设施",
+      "llm_evidence": "基于LLM的智能体统一评估基础设施",
+      "canonical_evidence": "基于LLM的智能体统一评估基础设施",
+      "llm_tldr_en": "AgentCompass provides a modular, fault-tolerant evaluation infrastructure for LLM agents, enabling flexible benchmarks and trajectory analysis, applicable to medical agent benchmarking.",
+      "llm_tldr_cn": "当前LLM智能体评估管道碎片化且可重复性差，本文提出AgentCompass，一个开源、轻量且可扩展的评估基础设施。它将评估过程解耦为Benchmark、Harness和Environment三个独立组件，支持灵活配置和故障容忍异步执行。AgentCompass的轨迹分析工具还能深入洞察智能体行为。该框架可被直接用于医疗Agent的基准测试，填补领域评估工具的空缺。",
+      "llm_tldr": "当前LLM智能体评估管道碎片化且可重复性差，本文提出AgentCompass，一个开源、轻量且可扩展的评估基础设施。它将评估过程解耦为Benchmark、Harness和Environment三个独立组件，支持灵活配置和故障容忍异步执行。AgentCompass的轨迹分析工具还能深入洞察智能体行为。该框架可被直接用于医疗Agent的基准测试，填补领域评估工具的空缺。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.11149v1",
+      "source": "arxiv",
+      "title": "The Hidden Footprint: Making Storage a First-Class Metric for LLM Agent Evaluation",
+      "abstract": "LLM agent benchmarks measure task completion, reliability, and inference cost, but not the persistent data an agent run leaves on disk, including logs, context snapshots, checkpoints, and debug traces. We introduce AgentFootprint, a cross-framework benchmark of post-run agent storage footprint. Its serialization-aware metric suite measures total retention, channel composition, duplication, growth, compressibility, and conversation-history reconstructability. It addresses a measurement trap: naive byte-level measurement understates duplication by an order of magnitude because database paging and JSON escaping obscure repeated content. A fixed-trace control separates agent-generated logical volume from persistence-layer amplification: replaying the same trajectory through seven persisting frameworks yields a 6.7x spread. Under identical models, tools, and tasks, configurations with 100% accuracy differ by 15.7x in retained bytes, although their defaults support different recovery and audit capabilities. Three full-history configurations grow superlinearly on a repeated-observation stress task. Exported trajectories from 108 instance-normalized SWE-bench Verified submissions span three orders of magnitude per instance, with no detectable correlation with resolve rate. A content-addressed store reduces retention by 4.8x-32.7x while preserving every reconstructability score. These results establish persistent storage as a resource metric to report jointly with accuracy and reconstructability.",
+      "authors": [
+        "Chenglin Yu",
+        "Hongquan Gui",
+        "Ying Yu",
+        "Hongxia Yang",
+        "Ming Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-13T06:44:33+00:00",
+      "link": "https://arxiv.org/pdf/2607.11149v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "storage footprint metric for LLM agent evaluation",
+      "llm_evidence_cn": "LLM Agent评估中的存储占用指标",
+      "llm_evidence": "LLM Agent评估中的存储占用指标",
+      "canonical_evidence": "LLM Agent评估中的存储占用指标",
+      "llm_tldr_en": "AgentFootprint introduces a benchmark for measuring the storage footprint of LLM agent runs, providing a new evaluation dimension beyond task completion and cost.",
+      "llm_tldr_cn": "现有LLM Agent基准关注任务完成和推理成本，忽略运行后的磁盘存储占用。AgentFootprint提出了跨框架的存储占用基准，包含序列化感知指标套件，测量总保留量、通道组成、重复度等。通过固定轨迹控制分离逻辑卷与持久化放大，揭示了字节级测量的不足。该工作为Agent评估增加了重要的新维度。",
+      "llm_tldr": "现有LLM Agent基准关注任务完成和推理成本，忽略运行后的磁盘存储占用。AgentFootprint提出了跨框架的存储占用基准，包含序列化感知指标套件，测量总保留量、通道组成、重复度等。通过固定轨迹控制分离逻辑卷与持久化放大，揭示了字节级测量的不足。该工作为Agent评估增加了重要的新维度。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "What are the metrics for healthcare agent evaluation using EHR data?",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.15380v1",
+      "source": "arxiv",
+      "title": "Large Language Models as Unified Multimodal Learners for Clinical Prediction",
+      "abstract": "Electronic health records combine free-text clinical narratives with structured measurements such as vital signs, laboratory values, and comorbidities. Yet most clinical prediction systems still rely on task-specific fusion architectures, pairing dedicated encoders for each modality with learned combination mechanisms that must be re-engineered for every new task and clinical setting. We propose a simpler alternative: convert all patient data, regardless of modality, into a single natural language sequence and fine-tune a pretrained language model end-to-end, with no architectural modification for fusion. We evaluate this approach across three clinically distinct prediction tasks: in-hospital mortality on MIMIC-III, graft failure prediction using longitudinal data from a German transplant center, and emergency triage classification from ambulance records - comparing encoder-based (ModernBERT) and decoder-based (Llama 3.1, Gemma, DeepSeek-R1-Qwen, Qwen3) fine-tuning against established multimodal baselines and, for graft failure, a gradient boosting model currently used in clinical practice for post-transplant patient management. Across all three tasks, unified textual serialization matches or exceeds task-specific multimodal baselines, and outperforms the clinically deployed gradient boosting system on graft failure prediction. These results indicate that a single serialization-based paradigm, without bespoke fusion architectures, is sufficient for multimodal clinical prediction - substantially reducing system complexity while matching or exceeding specialized designs.",
+      "authors": [
+        "Ajay Madhavan Ravichandran",
+        "Bilgin Osmandoja",
+        "Klemens Budde",
+        "Klaus Netter",
+        "Tobias Strapatsas",
+        "Aljoscha Burchardt",
+        "Sebastian Möller",
+        "Roland Roller"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-07-16T18:28:23+00:00",
+      "link": "https://arxiv.org/pdf/2607.15380v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "converts EHR data into natural language sequences for LLM fine-tuning",
+      "llm_evidence_cn": "将EHR数据转换为自然语言序列用于LLM微调",
+      "llm_evidence": "将EHR数据转换为自然语言序列用于LLM微调",
+      "canonical_evidence": "将EHR数据转换为自然语言序列用于LLM微调",
+      "llm_tldr_en": "LLMs as unified multimodal learners for clinical prediction by converting all patient data to text, fine-tuned on MIMIC-III for mortality and graft failure, showing competitive performance without task-specific fusion.",
+      "llm_tldr_cn": "针对临床预测中多模态数据融合架构复杂且需针对每项任务重新设计的问题，本文提出将所有患者数据（文本和结构化）转化为单一自然语言序列，然后端到端微调预训练语言模型。在MIMIC-III上的院内死亡率预测和移植失败预测实验中，该方法无需特定融合架构即可达到竞争性能，展示了LLM作为统一学习器的潜力，为医疗Agent利用EHR数据提供了简化方案。",
+      "llm_tldr": "针对临床预测中多模态数据融合架构复杂且需针对每项任务重新设计的问题，本文提出将所有患者数据（文本和结构化）转化为单一自然语言序列，然后端到端微调预训练语言模型。在MIMIC-III上的院内死亡率预测和移植失败预测实验中，该方法无需特定融合架构即可达到竞争性能，展示了LLM作为统一学习器的潜力，为医疗Agent利用EHR数据提供了简化方案。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.16716v1",
+      "source": "arxiv",
+      "title": "RECON: Benchmarking Agent Memory for Compositional Reasoning over Long Contexts",
+      "abstract": "Large language models and LLM-based agents are widely used as personal chat assistants, enterprise copilots, and autonomous workflow agents. In all these applications, memory (the ability to retain, access, and reason over information accumulated over long contexts and multiple interactions) plays a crucial role in determining the reliability of any agent. We introduce RECON (Reasoning over Extended Contexts with Obfuscated Narratives), a benchmark for evaluating compositional reasoning over long contexts. RECON spans 24 case files across three domains (criminal, medical, and financial), each ranging from 50k to 100k tokens, and tests agents on six memory intensive tasks: reconstructing multi-hop evidence chains, propagating cascading invalidations, resolving source conflicts, counterfactual reasoning, satisfying temporal constraints, and temporal fact retrieval. Recent memory benchmarks evaluate whether agents can retrieve scattered facts or detect if a fact has changed whereas RECON evaluates what happens after the change, whether agents can trace which downstream conclusions are affected, which survive through independent support, and how alternative timelines would have unfolded. Our evaluation reveals substantial limitations across current architectures: even the strongest non-Oracle system reaches only 22.4% Accuracy, with retrieval and reasoning each surfacing as challenges.",
+      "authors": [
+        "Mihir Shriniwas Arya"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-18T09:11:22+00:00",
+      "link": "https://arxiv.org/pdf/2607.16716v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark for agent memory with medical domain included",
+      "llm_evidence_cn": "包含医疗领域的智能体记忆基准测试",
+      "llm_evidence": "包含医疗领域的智能体记忆基准测试",
+      "canonical_evidence": "包含医疗领域的智能体记忆基准测试",
+      "llm_tldr_en": "RECON evaluates compositional reasoning over long contexts across criminal, medical, and financial domains with 50k-100k token case files.",
+      "llm_tldr_cn": "本文提出RECON基准，用于评估智能体在长上下文中的组合推理能力。它包含24个案例档案，横跨刑事、医疗和金融三个领域，每个档案5万至10万词。任务包括多跳证据链重建、级联失效传递等六类记忆密集型任务。医疗领域的涉及可为EHR场景下的智能体记忆评估提供借鉴。",
+      "llm_tldr": "本文提出RECON基准，用于评估智能体在长上下文中的组合推理能力。它包含24个案例档案，横跨刑事、医疗和金融三个领域，每个档案5万至10万词。任务包括多跳证据链重建、级联失效传递等六类记忆密集型任务。医疗领域的涉及可为EHR场景下的智能体记忆评估提供借鉴。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.16916v1",
+      "source": "arxiv",
+      "title": "Enhancing Personalized Bladder Cancer Treatment Through Reinforcement Learning: A Recurrent Patient State Transition Decision Support Framework",
+      "abstract": "Bladder cancer treatment requires personalized and adaptive decision-making, particularly for recurrent disease, where treatment effectiveness changes across successive clinical episodes. Conventional clinical decision support systems typically rely on static treatment guidelines or single-step predictive models, limiting their ability to capture disease progression over time. This paper presents a recurrent patient state-transition simulation framework for bladder cancer treatment planning that integrates predictive state-transition modeling with a Markov Decision Process (MDP) and a Deep Q-Network (DQN) reinforcement learning environment. The predictive module estimates changes in tumor characteristics following treatment, while the reinforcement learning agent sequentially optimizes treatment decisions by interacting with simulated patient trajectories. This framework enables dynamic, patient-specific treatment planning by continuously adapting recommendations to evolving clinical states. It also generates interpretable treatment trajectories and detailed simulation logs to improve transparency and support clinical decision-making. The proposed framework was evaluated against existing reinforcement learning-based treatment planning approaches. It achieved a cumulative reward of 63,918.87, an average training loss per episode of 0.0056, and a policy improvement score of 6.62%, demonstrating effective sequential learning and robust treatment optimization in a simulated recurrent treatment environment. These findings highlight the potential of recurrent patient state-transition simulation with reinforcement learning as a flexible decision-support framework for personalized bladder cancer treatment planning and AI-assisted precision oncology.",
+      "authors": [
+        "Divyansh Chawla",
+        "Anshu Garg",
+        "Isshaan Singh"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-18T18:16:44+00:00",
+      "link": "https://arxiv.org/pdf/2607.16916v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reinforcement learning for adaptive treatment planning, relevant to agent evaluation",
+      "llm_evidence_cn": "强化学习用于自适应治疗规划，与智能体评估相关",
+      "llm_evidence": "强化学习用于自适应治疗规划，与智能体评估相关",
+      "canonical_evidence": "强化学习用于自适应治疗规划，与智能体评估相关",
+      "llm_tldr_en": "A recurrent patient state-transition framework with DQN for bladder cancer treatment planning, demonstrating RL use in clinical decision support agent context.",
+      "llm_tldr_cn": "针对膀胱癌治疗中疾病进展导致治疗方案需动态调整的问题，本文构建了基于马尔可夫决策过程和深度Q网络的强化学习框架。该框架整合预测性状态转移模型，能模拟患者状态变化并学习最优治疗序列。实验在模拟和真实数据上显示其优于静态指南方法。该工作为使用RL进行医疗Agent评估提供了方法学参考，但主要聚焦于治疗规划而非Agent评估本身。",
+      "llm_tldr": "针对膀胱癌治疗中疾病进展导致治疗方案需动态调整的问题，本文构建了基于马尔可夫决策过程和深度Q网络的强化学习框架。该框架整合预测性状态转移模型，能模拟患者状态变化并学习最优治疗序列。实验在模拟和真实数据上显示其优于静态指南方法。该工作为使用RL进行医疗Agent评估提供了方法学参考，但主要聚焦于治疗规划而非Agent评估本身。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
