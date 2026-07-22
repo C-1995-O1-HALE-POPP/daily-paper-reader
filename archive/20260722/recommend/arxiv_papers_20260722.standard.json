@@ -1,0 +1,307 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-22T21:12:35.758631+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [
+    {
+      "id": "2607.14385v2",
+      "source": "arxiv",
+      "title": "MamaBench: Benchmarking LLM Robustness in Maternal and Child Health Diagnosis through Counterfactual Clinical Perturbation",
+      "abstract": "Large language models achieve strong scores on medical benchmarks, yet these benchmarks evaluate each question in isolation, providing no measure of whether a system can distinguish clinically similar presentations requiring different interventions. We introduce MamaBench, the first counterfactual benchmark for maternal and paediatric AI: 434 expert-authored clinical narratives in 217 pairs across 371 pathologies, evaluated via the Bias Trap Rate (BTR), the conditional probability that a model fails the counterfactual given success on the base case. We propose Evidence-Anchored RAG (EA-RAG), a three-stage retrieval method that replaces aggregate similarity with an evidence coverage objective through clinical parameter extraction, coverage auditing, and contrastive sub-queries. Across eight configurations of four frontier LLMs, base accuracy overstates robust accuracy by 16-28 percentage points in every model. EA-RAG achieves 20.3% BTR and 65.0% robust accuracy on Claude Sonnet 4.6, a 5.5 percentage point BTR reduction without degrading base accuracy. The residual 20% BTR confirms that counterfactual robustness in clinical AI remains an open challenge. Keywords: counterfactual evaluation, clinical AI, maternal healthcare, retrieval-augmented generation, diagnostic robustness",
+      "authors": [
+        "Thanni Adewuyi",
+        "Anuoluwa Sotome",
+        "Samuel Okoko",
+        "Angel Ezendu",
+        "Oluwafunke Akinbuwa",
+        "Oluwaseun Odunsi",
+        "Oluwasegun Oguntuase",
+        "Ifeoma Nwabueze",
+        "Abiodun Adereni"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-07-15T21:56:19+00:00",
+      "link": "https://arxiv.org/pdf/2607.14385v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "benchmark for medical LLM diagnosis robustness, relevant to medical agent evaluation",
+      "llm_evidence_cn": "医疗LLM诊断鲁棒性基准，与医疗智能体评估相关",
+      "llm_evidence": "医疗LLM诊断鲁棒性基准，与医疗智能体评估相关",
+      "canonical_evidence": "医疗LLM诊断鲁棒性基准，与医疗智能体评估相关",
+      "llm_tldr_en": "MamaBench is a counterfactual benchmark with 434 clinical narrative pairs for maternal and paediatric AI, evaluating LLM robustness via Bias Trap Rate, providing a method for medical agent evaluation.",
+      "llm_tldr_cn": "本文提出MamaBench，第一个面向母婴健康的反事实基准，包含434个专家编写的临床叙事（217对），覆盖371种病理。通过偏差陷阱率（BTR）评估LLM在相似临床表现上的区分能力。该基准为医疗AI智能体的鲁棒性评估提供了新方法论，可推广到基于EHR的医疗代理评估。",
+      "llm_tldr": "本文提出MamaBench，第一个面向母婴健康的反事实基准，包含434个专家编写的临床叙事（217对），覆盖371种病理。通过偏差陷阱率（BTR）评估LLM在相似临床表现上的区分能力。该基准为医疗AI智能体的鲁棒性评估提供了新方法论，可推广到基于EHR的医疗代理评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.18999v1",
+      "source": "arxiv",
+      "title": "MedDDC-Eval: Diagnosis-Decoupled Evaluation of Multi-Turn Medical Consultation Agents",
+      "abstract": "Multi-turn medical consultation agents must decide what to ask, adapt to patient responses, and determine when the collected evidence is sufficient. However, coupled evaluation conflates the quality of the policy-elicited history with policy-specific terminal diagnosis generation: strong generation can compensate for a thin history, while weaker generation can obscure a rich one. We introduce MedDDC-Eval, a diagnosis-decoupled testbed that treats elicited history as the comparison object and holds the history-to-diagnosis mapping constant through a shared frozen reader. Across two held-out sources, a grounded interface and an auditable diagnosis-trajectory-efficiency (D/T/E) harness measure diagnostic usefulness, information acquisition, and efficiency. Directional semantic coverage followed by deterministic one-to-one assignment yields coherent precision-recall counts for open-ended items, with at most one credited match per prediction or reference. Holding histories fixed, changing only the diagnostic reader shifts diagnosis F1 by 2.2-19.0 points and reverses 18% and 36% of pairwise policy orderings on the Record and Dialogue splits. We further apply standard Group Relative Policy Optimization (GRPO) over interactive multi-turn rollouts to post-train Qwen3-32B using diagnosis-result and trajectory feedback. On the 100-case Record and 70-case Dialogue splits, the trained policy improves over its initialization by 9.7 and 4.6 total-score points; removing either primary signal lowers held-out joint performance. These results show that MedDDC-Eval supports controlled attribution, interpretable elicited-history measurement, and evaluation-guided evidence-acquisition policy development.",
+      "authors": [
+        "Guofeng Zhang",
+        "Yizeng Quan",
+        "Huaiyi Fang",
+        "Jianwei Lv",
+        "Jinyao Liu",
+        "Xunxu Duan",
+        "Lening An",
+        "Yu Ouyang",
+        "Junfeng Wang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-07-21T11:32:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.18999v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "diagnosis-decoupled evaluation framework for multi-turn medical consultation agents",
+      "llm_evidence_cn": "多轮医疗咨询智能体的诊断解耦评估框架",
+      "llm_evidence": "多轮医疗咨询智能体的诊断解耦评估框架",
+      "canonical_evidence": "多轮医疗咨询智能体的诊断解耦评估框架",
+      "llm_tldr_en": "MedDDC-Eval provides a decoupled evaluation testbed for multi-turn medical consultation agents, using a frozen reader to isolate history quality from diagnosis generation.",
+      "llm_tldr_cn": "多轮医疗咨询智能体的评估常因生成能力与对话历史质量耦合而失真。本文提出MedDDC-Eval诊断解耦评估框架，通过固定阅读器隔离历史质量的影响，并设计诊断轨迹效率（D/T/E）指标。在两个数据集上的实验证明，该方法能有效区分不同智能体的信息获取策略，并提供可审计的评估轨迹。这为医疗咨询智能体的公平比较提供了新范式。",
+      "llm_tldr": "多轮医疗咨询智能体的评估常因生成能力与对话历史质量耦合而失真。本文提出MedDDC-Eval诊断解耦评估框架，通过固定阅读器隔离历史质量的影响，并设计诊断轨迹效率（D/T/E）指标。在两个数据集上的实验证明，该方法能有效区分不同智能体的信息获取策略，并提供可审计的评估轨迹。这为医疗咨询智能体的公平比较提供了新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.12527v3",
+      "source": "arxiv",
+      "title": "Evidence-Grounded AI for Musculoskeletal Care",
+      "abstract": "Musculoskeletal diseases are among the leading causes of disability and drive the greatest global need for rehabilitation. Because recovery, remodelling and degeneration of bones, joints and related tissues unfold over months to years, care requires longitudinal management rather than isolated decisions. Clinicians must repeatedly integrate evolving patient evidence, medical knowledge and stage-specific functional goals, yet evidence is often fragmented across visits, departments and hospital systems, disrupting continuous, individualised management. Here we report OrthoPilot, a clinical artificial intelligence (AI) system powered by a large language model (LLM) that integrates hospital data streams with authoritative external knowledge for continuous musculoskeletal care. It autonomously retrieves real-time imaging, laboratory, pathology and order data and translates evolving patient states into evidence-based decisions from admission diagnosis through rehabilitation planning. We established a specialist-validated benchmark from real-world electronic health records (EHRs) spanning 1,000 disease codes. In a full-pathway reader study against 81 orthopaedic physicians, OrthoPilot outperformed experts with 25 years of experience in diagnostic reasoning, clinical decision-making and management planning. This advantage generalised across 60 external clinical centres, where OrthoPilot surpassed all evaluated intelligent systems. In a prospective physician decision-making study of 1,870 complex cases, OrthoPilot improved full-chain management success by 10.6%. In a randomised deployment involving 8,240 inpatients, integration into routine care increased cumulative cases per bed by 9.7% and improved patient-reported access to health information. These results move clinical AI from predicting isolated events toward executing longitudinal management across complete musculoskeletal care pathways.",
+      "authors": [
+        "Wenjie Li",
+        "Yujie Zhang",
+        "Fanrui Zhang",
+        "Haoran Sun",
+        "Renhao Yang",
+        "Junjun He",
+        "Weiran Huang",
+        "Yuanfeng Ji",
+        "Chenrun Wang",
+        "Kailing Wang",
+        "Hongcheng Gao",
+        "Kaipeng Zhang",
+        "Hanyu Wang",
+        "Angela Lin Wang",
+        "Xingqi He",
+        "Yilin Huang",
+        "Shiyi Yao",
+        "Lilong Wang",
+        "Yankai Jiang",
+        "Yirong Chen",
+        "Chenglong Ma",
+        "Jiyao Liu",
+        "Ming Hu",
+        "Gen Li",
+        "Yidong Xu",
+        "Chengyu Zhuang",
+        "Jiawei Liu",
+        "Yin Zhang",
+        "Lequan Yu",
+        "Lu Chen",
+        "Yinpeng Dong",
+        "Lei Liu",
+        "Carlos Gutierrez Sanroman",
+        "Yu Qiao",
+        "Weijie Ma",
+        "Xiaosong Wang",
+        "Lei Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-14T09:03:26+00:00",
+      "link": "https://arxiv.org/pdf/2607.12527v3",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "clinical AI system powered by LLM integrating hospital data streams for musculoskeletal care, relevant to clinical decision support agent evaluation with EHR",
+      "llm_evidence_cn": "基于LLM的临床AI系统，整合医院数据流用于肌肉骨骼护理，与基于EHR的临床决策支持代理评估相关",
+      "llm_evidence": "基于LLM的临床AI系统，整合医院数据流用于肌肉骨骼护理，与基于EHR的临床决策支持代理评估相关",
+      "canonical_evidence": "基于LLM的临床AI系统，整合医院数据流用于肌肉骨骼护理，与基于EHR的临床决策支持代理评估相关",
+      "llm_tldr_en": "OrthoPilot is an LLM-powered clinical AI system that integrates hospital data streams with external knowledge for continuous musculoskeletal care. It serves as a clinical decision support agent using EHR, relevant to evaluation of such agents.",
+      "llm_tldr_cn": "肌肉骨骼疾病需要纵向管理，但患者证据分散在不同就诊、科室和医院系统之间。OrthoPilot是一种由大型语言模型驱动的临床AI系统，整合医院数据流与权威外部知识，实现连续护理。该系统本质上是一个利用EHR的临床决策支持代理，其性能评估直接关联用户需求。",
+      "llm_tldr": "肌肉骨骼疾病需要纵向管理，但患者证据分散在不同就诊、科室和医院系统之间。OrthoPilot是一种由大型语言模型驱动的临床AI系统，整合医院数据流与权威外部知识，实现连续护理。该系统本质上是一个利用EHR的临床决策支持代理，其性能评估直接关联用户需求。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.14191v1",
+      "source": "arxiv",
+      "title": "TEDDY: A Pediatric Foundation Model for Risk Forewarning from ICD-Coded Diagnostic Histories",
+      "abstract": "Pediatric electronic health records capture developmentally structured clinical trajectories, yet their potential for generative healthcare foundation models remains largely unexplored. Here we present TEDDY (Temporal Event Decoder for Disease in Youth), a 1.84-million-parameter decoder transformer trained on approximately 73 million ICD-10 diagnoses from 1.6 million children at a single pediatric institution. TEDDY models longitudinal diagnosis trajectories and visit timing. Predictions were made before visit codes were revealed, limited to first occurrences, and evaluated against sex- and age-matched controls. Across 797 disease-onset prediction tasks spanning 16 ICD-10 chapters, TEDDY achieved a median AUC of 72.0%, outperforming same-data DenseNet (50.0%), CNN (57.2%), RNN (60.1%), and LSTM (62.7%) baselines on 96-99% of tasks. Performance held across sex and age and was strongest among lower-prevalence diagnoses; 202 of the 225 rarest conditions (90%) had 95% confidence intervals above chance. Predictive signal remained detectable more than two years before first recorded diagnosis, with median AUCs of 59.7% in the unrestricted analysis and 64.4% in a fixed-cohort sensitivity analysis. In asthma and attention-deficit/hyperactivity disorder benchmarks, AUCs were 79.3% and 84.7%, compared with 62.7% and 71.7% for the strongest comparators, including a general-purpose language model three orders of magnitude larger. Visit-timing predictions had a 3.0-day mean absolute restricted mean survival-time error over 365 days, although median and long-tail return intervals remained miscalibrated. Together, these results establish pediatric diagnostic histories as a substrate for compact generative models supporting broad, rare-disease, and long-horizon risk forecasting without population-scale data or billion-parameter models.",
+      "authors": [
+        "Matthew Brady Neeley",
+        "Jorge Botas",
+        "Johnathan Jia",
+        "Lin Yao",
+        "Daniel Palacios",
+        "Benjamin Choi",
+        "Zhandong Liu",
+        "Hyun-Hwan Jeong"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-15T16:17:28+00:00",
+      "link": "https://arxiv.org/pdf/2607.14191v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Pediatric EHR foundation model for disease onset prediction",
+      "llm_evidence_cn": "基于儿科EHR的疾病预测基础模型",
+      "llm_evidence": "基于儿科EHR的疾病预测基础模型",
+      "canonical_evidence": "基于儿科EHR的疾病预测基础模型",
+      "llm_tldr_en": "TEDDY is a pediatric foundation model trained on 73M ICD-10 diagnoses from EHR, achieving 72% AUC for 797 disease prediction tasks.",
+      "llm_tldr_cn": "儿科电子健康记录中的纵向诊断轨迹潜力尚未被充分利用。本文提出TEDDY，一个基于1.6百万儿童、7300万条ICD-10诊断记录训练的1.84M参数解码变换器，建模诊断轨迹和就诊时间。在797种疾病预测任务上达到中位AUC 72.0%，优于基线，展示了EHR数据在医疗预测中的价值，为基于EHR的医疗代理提供了强大的特征表示。",
+      "llm_tldr": "儿科电子健康记录中的纵向诊断轨迹潜力尚未被充分利用。本文提出TEDDY，一个基于1.6百万儿童、7300万条ICD-10诊断记录训练的1.84M参数解码变换器，建模诊断轨迹和就诊时间。在797种疾病预测任务上达到中位AUC 72.0%，优于基线，展示了EHR数据在医疗预测中的价值，为基于EHR的医疗代理提供了强大的特征表示。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.16345v1",
+      "source": "arxiv",
+      "title": "AEVAL: From Anecdotal to Deterministic Testing for Agentic Skill Workflows",
+      "abstract": "Modern agentic systems increasingly rely on skills: installable packages of natural language and code that teach an LLM agent to perform a domain task. As skill repositories grow, developers need automated quality signals on every change, yet evaluation today is largely anecdotal: a developer asks an agent to \"try the skill,\" watches a demo, and forms a subjective impression. This yields neither reproducibility across runs nor comparability across versions, and scales poorly to marketplaces where one regression can silently break dozens of downstream workflows.   We present AEVAL (Agentic Evaluation), a CI-integrated framework that replaces this practice with a deterministic, reproducible test pipeline for agentic skills. Every skill change triggers a test event: the skill runs against a developer-declared evaluation contract (eval.config) inside an automated executor, emitting a structured, evidence-grounded quality signal that downstream CI can route on.   A key ingredient is a structural separation between executor and grader, preventing a subtle but pervasive failure mode: an agent that silently self-corrects during execution and then grades its own patched outputs as passing.   Our contributions are: (i) a deterministic, change-triggered evaluation protocol with per-skill contracts and per-run artifact schemas; (ii) a formalization of self-correction bias as a distinct failure mode of naive agentic evaluators; (iii) an executor/grader separation with a first-attempt grading rule and explicit self-correction tracking; and (iv) a tiered, grounded-evidence fix-suggestion scheme (LV1 causal, LV2 quality) posted as inline merge-request comments. Validated on real skills in a production agentic stack across multiple agent SDKs, AEVAL converts spurious 100% pass rates into reproducible first-attempt fail signals with an auditable record of every executor fix.",
+      "authors": [
+        "Tejas Singh Anand",
+        "Yuet Ying Christina Wang",
+        "Wanting Jiang",
+        "Steve Masson",
+        "Tian Zheng",
+        "Bingjie Zhou"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI",
+        "cs.LG",
+        "cs.PF"
+      ],
+      "published": "2026-07-16T21:33:05+00:00",
+      "link": "https://arxiv.org/pdf/2607.16345v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "deterministic testing framework for agentic skills, transferable to medical agent evaluation",
+      "llm_evidence_cn": "智能体技能确定性测试框架，可迁移至医疗智能体评估",
+      "llm_evidence": "智能体技能确定性测试框架，可迁移至医疗智能体评估",
+      "canonical_evidence": "智能体技能确定性测试框架，可迁移至医疗智能体评估",
+      "llm_tldr_en": "AEVAL provides a deterministic, reproducible test pipeline for agentic skills that can be applied to evaluate medical agents in a CI-integrated manner.",
+      "llm_tldr_cn": "AEVAL提出了一种替代人工演示的确定性测试框架，用于智能体技能的持续集成评估。该框架将每次技能变更触发自动化测试，确保可重现性和版本间可比性。虽然面向通用智能体技能，但其核心思想—用确定性测试取代主观评估—可直接应用于医疗智能体的性能评估与基准测试。",
+      "llm_tldr": "AEVAL提出了一种替代人工演示的确定性测试框架，用于智能体技能的持续集成评估。该框架将每次技能变更触发自动化测试，确保可重现性和版本间可比性。虽然面向通用智能体技能，但其核心思想—用确定性测试取代主观评估—可直接应用于医疗智能体的性能评估与基准测试。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.18754v1",
+      "source": "arxiv",
+      "title": "AgentDebugX: An Open-Source Toolkit for Failure Observability, Attribution, and Recovery in LLM Agents",
+      "abstract": "LLM agent failures are difficult to debug because the step where an error surfaces is often not the one that caused it. Existing observability tools replay execution traces but provide little support for identifying the root cause or translating diagnosis into recovery. We present AgentDebugX, an open-source debugging framework that organizes debugging as a closed loop of Detect, Attribute, Recover, and Rerun. At its core, DeepDebug performs multi-turn root-cause diagnosis through global trajectory understanding, structure-guided investigation, and cross-examination. On the Who and When benchmark, DeepDebug achieves the best strict attribution accuracy among the evaluated methods on both tested open-weight backbones, reaching 28.8 percent exact agent-and-step accuracy on qwen3.5-9b versus 21.7 percent for the strongest single-pass baseline. On GAIA, DeepDebug repairs 13 of 73 failed tasks in a single rerun, compared with 4 to 6 for three decoupled self-correction baselines, improving overall accuracy from 55.8 percent to 63.6 percent. AgentDebugX exposes this workflow through a Python library, CLI, web console, and installable agentic skill, and provides an opt-in Error Hub for sharing scrubbed failure-diagnosis-repair bundles and reusing them as debugging memory.",
+      "authors": [
+        "Kunlun Zhu",
+        "Xuyan Ye",
+        "Zhiguang Han",
+        "Yuchen Zhao",
+        "Bingxuan Li",
+        "Weijia Zhang",
+        "Muxin Tian",
+        "Xiangru Tang",
+        "Pan Lu",
+        "James Zou",
+        "Jiaxuan You",
+        "Heng Ji"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-07-21T06:21:13+00:00",
+      "link": "https://arxiv.org/pdf/2607.18754v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Agent debugging framework applicable to medical agent evaluation",
+      "llm_evidence_cn": "适用于医疗Agent评估的调试框架",
+      "llm_evidence": "适用于医疗Agent评估的调试框架",
+      "canonical_evidence": "适用于医疗Agent评估的调试框架",
+      "llm_tldr_en": "AgentDebugX is an open-source debugging framework for LLM agents that provides failure observation, attribution, and recovery, potentially applicable for debugging medical agents during evaluation.",
+      "llm_tldr_cn": "现有LLM Agent调试困难，错误定位与恢复不足。本论文提出AgentDebugX，一个开源的调试框架，通过检测、归因、恢复和重跑的闭环，结合多轮根因诊断，在Who and When基准上取得最佳归因准确率，可用于医疗Agent评估过程中的故障调试。",
+      "llm_tldr": "现有LLM Agent调试困难，错误定位与恢复不足。本论文提出AgentDebugX，一个开源的调试框架，通过检测、归因、恢复和重跑的闭环，结合多轮根因诊断，在Who and When基准上取得最佳归因准确率，可用于医疗Agent评估过程中的故障调试。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
