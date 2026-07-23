@@ -6,40 +6,33 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-22
-- 运行时间：2026-07-22 21:17:02 UTC
+- 最新运行日期：2026-07-23
+- 运行时间：2026-07-23 21:41:05 UTC
 - 运行状态：成功
-- 本次总论文数：6
-- 精读区：2
+- 本次总论文数：4
+- 精读区：0
 - 速读区：4
 
 ### 今日简报（AI）
-今日聚焦医疗AI评估，精读母婴诊断鲁棒性基准与多轮对话诊断评估两个方向。  
-最值得关注MamaBench通过反事实扰动评测LLM在母婴健康中的鲁棒性，以及MedDDC-Eval提出解耦诊断的多轮对话评估方法。  
-建议关注医疗场景下模型鲁棒性与对话评估的新工具，可用于改进临床决策支持系统。
-- 详情：[/202607/22/README](/202607/22/README)
+今日速读4篇论文，重点推荐《无环境合成数据生成用于API调用智能体》这篇7分佳作。研究方向聚焦于提升大模型在母婴健康诊断的鲁棒性测试（MamaBench）及通用AI智能体多场景基准（OmniaBench）。建议优先阅读API调用智能体相关论文，了解无需真实环境即可生成训练数据的创新方法。
+- 详情：[/202607/23/README](/202607/23/README)
 
 ### 精读区论文标签
-1. [MamaBench: Benchmarking LLM Robustness in Maternal and Child Health Diagnosis through Counterfactual Clinical Perturbation](/202607/22/2607.14385v2-mamabench-benchmarking-llm-robustness-in-maternal-and-child-health-diagnosis-through-counterfactual-clinical-perturbation)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：医疗LLM诊断鲁棒性基准，与医疗智能体评估相关
-2. [MedDDC-Eval: Diagnosis-Decoupled Evaluation of Multi-Turn Medical Consultation Agents](/202607/22/2607.18999v1-medddc-eval-diagnosis-decoupled-evaluation-of-multi-turn-medical-consultation-agents)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：多轮医疗咨询智能体的诊断解耦评估框架
+- 本次无精读推荐。
 
 ### 速读区论文标签
-1. [Evidence-Grounded AI for Musculoskeletal Care](/202607/22/2607.12527v3-evidence-grounded-ai-for-musculoskeletal-care)  
+1. [Environment-free Synthetic Data Generation for API-Calling Agents](/202607/23/2607.16900v2-environment-free-synthetic-data-generation-for-api-calling-agents)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：基于LLM的临床AI系统，整合医院数据流用于肌肉骨骼护理，与基于EHR的临床决策支持代理评估相关
-2. [TEDDY: A Pediatric Foundation Model for Risk Forewarning from ICD-Coded Diagnostic Histories](/202607/22/2607.14191v1-teddy-a-pediatric-foundation-model-for-risk-forewarning-from-icd-coded-diagnostic-histories)  
+   evidence：无需环境的合成轨迹生成方法，可用于医疗代理基准测试的数据生成
+2. [MamaBench: Benchmarking LLM Robustness in Maternal and Child Health Diagnosis through Counterfactual Clinical Perturbation](/202607/23/2607.14385v1-mamabench-benchmarking-llm-robustness-in-maternal-and-child-health-diagnosis-through-counterfactual-clinical-perturbation)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：基于儿科EHR的疾病预测基础模型
-3. [AEVAL: From Anecdotal to Deterministic Testing for Agentic Skill Workflows](/202607/22/2607.16345v1-aeval-from-anecdotal-to-deterministic-testing-for-agentic-skill-workflows)  
+   evidence：医学诊断基准，含反事实扰动，可用于医疗AI agent评估
+3. [OmniaBench: Benchmarking General AI Agents Across Diverse Scenarios](/202607/23/2607.14989v1-omniabench-benchmarking-general-ai-agents-across-diverse-scenarios)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：智能体技能确定性测试框架，可迁移至医疗智能体评估
-4. [AgentDebugX: An Open-Source Toolkit for Failure Observability, Attribution, and Recovery in LLM Agents](/202607/22/2607.18754v1-agentdebugx-an-open-source-toolkit-for-failure-observability-attribution-and-recovery-in-llm-agents)  
+   evidence：提供了一个通用AI代理基准框架，可迁移至医疗代理评估
+4. [Evaluating medical AI under missing information: same-provider judges and human raters change apparent safety](/202607/23/2607.18828v1-evaluating-medical-ai-under-missing-information-same-provider-judges-and-human-raters-change-apparent-safety)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：适用于医疗Agent评估的调试框架
+   evidence：在信息缺失下评估医疗AI，与医疗智能体评估相关
 
 
 <div class="dpr-home-promo-card">

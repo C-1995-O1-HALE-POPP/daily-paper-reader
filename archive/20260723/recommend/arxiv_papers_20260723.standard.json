@@ -1,0 +1,190 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-23T21:36:20.232978+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.16900v2",
+      "source": "arxiv",
+      "title": "Environment-free Synthetic Data Generation for API-Calling Agents",
+      "abstract": "Training API-calling large language model (LLM) agents demands massive amounts of high-quality trajectories. However, collecting such data at scale typically requires fully implemented environments with executable APIs and realistic, pre-populated backend databases, creating a major bottleneck for scalability. To overcome this, we propose an environment-free synthetic data generation approach that leverages LLMs as on-the-fly digital world models. Given only API specifications, our method generates trajectories mimicking interactions between an agent and a stateful environment. Specifically, an LLM first generates diverse tasks solvable with the provided APIs. A teacher agent then iteratively solves each task while an LLM simulator generates coherent synthetic API responses conditioned on the task context and simulation history. Finally, an LLM judge filters the trajectories to ensure the quality of the resulting dataset. We evaluate our approach on the challenging AppWorld and OfficeBench benchmarks, which include both information-retrieval and state-changing tasks. Fine-tuning models on our synthetic data yields significant performance gains, demonstrating that effective supervision for API-calling agents can be generated without any executable environment. Our results establish LLM-based API simulation as a practical, scalable solution for training agents across diverse API ecosystems.",
+      "authors": [
+        "Seanie Lee",
+        "Sanjoy Chowdhury",
+        "Chao Jiang",
+        "Cheng-Yu Hsieh",
+        "Ting-Yao Hu",
+        "Alexander T Toshev",
+        "Oncel Tuzel",
+        "Raviteja Vemulapalli"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-18T17:36:44+00:00",
+      "link": "https://arxiv.org/pdf/2607.16900v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "environment-free synthetic data generation for agent trajectories, useful for benchmarking",
+      "llm_evidence_cn": "无需环境的合成轨迹生成方法，可用于医疗代理基准测试的数据生成",
+      "llm_evidence": "无需环境的合成轨迹生成方法，可用于医疗代理基准测试的数据生成",
+      "canonical_evidence": "无需环境的合成轨迹生成方法，可用于医疗代理基准测试的数据生成",
+      "llm_tldr_en": "Proposes an environment-free method to generate synthetic trajectories for training and evaluating API-calling agents, enabling scalable benchmarking.",
+      "llm_tldr_cn": "训练API调用代理需要大量高质量轨迹，但构建完整环境成本高昂。本文提出无需真实环境的合成数据生成方法，利用LLM作为数字世界模型，仅根据API规范生成轨迹。该方法可扩展生成多样化任务和轨迹，有效降低基准测试构建门槛。该工作为医疗代理评估提供了低成本、可复制的数据生成方案。",
+      "llm_tldr": "训练API调用代理需要大量高质量轨迹，但构建完整环境成本高昂。本文提出无需真实环境的合成数据生成方法，利用LLM作为数字世界模型，仅根据API规范生成轨迹。该方法可扩展生成多样化任务和轨迹，有效降低基准测试构建门槛。该工作为医疗代理评估提供了低成本、可复制的数据生成方案。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.14385v1",
+      "source": "arxiv",
+      "title": "MamaBench: Benchmarking LLM Robustness in Maternal and Child Health Diagnosis through Counterfactual Clinical Perturbation",
+      "abstract": "Large language models achieve strong scores on medical benchmarks, yet these benchmarks evaluate each question in isolation, providing no measure of whether a system can distinguish clinically similar presentations requiring different interventions. We introduce MamaBench, the first counterfactual benchmark for maternal and paediatric AI: 434 expert-authored clinical narratives in 217 pairs across 371 pathologies, evaluated via the Bias Trap Rate (BTR), the conditional probability that a model fails the counterfactual given success on the base case. We propose Evidence-Anchored RAG (EA-RAG), a three-stage retrieval method that replaces aggregate similarity with an evidence coverage objective through clinical parameter extraction, coverage auditing, and contrastive sub-queries. Across eight configurations of four frontier LLMs, base accuracy overstates robust accuracy by 16-28 percentage points in every model. EA-RAG achieves 20.3% BTR and 65.0% robust accuracy on Claude Sonnet 4.6, a 5.5 percentage point BTR reduction without degrading base accuracy. The residual 20% BTR confirms that counterfactual robustness in clinical AI remains an open challenge. Keywords: counterfactual evaluation, clinical AI, maternal healthcare, retrieval-augmented generation, diagnostic robustness",
+      "authors": [
+        "Thanni Adewuyi",
+        "Anuoluwa Sotome",
+        "Samuel Okoko",
+        "Angel Ezendu",
+        "Oluwafunke Akinbuwa",
+        "Oluwaseun Odunsi",
+        "Oluwasegun Oguntuase",
+        "Oluwadarasimi Oguntuase",
+        "Ifeoma Nwabueze",
+        "Abiodun Adereni"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-07-15T21:56:19+00:00",
+      "link": "https://arxiv.org/pdf/2607.14385v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Medical diagnosis benchmark with counterfactual perturbations, relevant to evaluating medical AI agents",
+      "llm_evidence_cn": "医学诊断基准，含反事实扰动，可用于医疗AI agent评估",
+      "llm_evidence": "医学诊断基准，含反事实扰动，可用于医疗AI agent评估",
+      "canonical_evidence": "医学诊断基准，含反事实扰动，可用于医疗AI agent评估",
+      "llm_tldr_en": "Introduces MamaBench, a counterfactual benchmark for maternal and paediatric AI diagnosis, evaluating LLM robustness via Bias Trap Rate, and proposes Evidence-Anchored RAG.",
+      "llm_tldr_cn": "现有医疗基准仅孤立评估每个问题，无法衡量模型区分临床类似但需不同干预的能力。为此引入MamaBench，首个针对母婴诊断的反事实基准，含434个专家撰写的临床叙述，配对形成217对，覆盖371种病理，使用偏差陷阱率（BTR）评估模型在反事实上的失败概率。还提出证据锚定RAG（EA-RAG）方法。实验表明LLM在反事实扰动下鲁棒性不足，BTR为测评医疗AI系统诊断可靠性提供了新指标。",
+      "llm_tldr": "现有医疗基准仅孤立评估每个问题，无法衡量模型区分临床类似但需不同干预的能力。为此引入MamaBench，首个针对母婴诊断的反事实基准，含434个专家撰写的临床叙述，配对形成217对，覆盖371种病理，使用偏差陷阱率（BTR）评估模型在反事实上的失败概率。还提出证据锚定RAG（EA-RAG）方法。实验表明LLM在反事实扰动下鲁棒性不足，BTR为测评医疗AI系统诊断可靠性提供了新指标。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.14989v1",
+      "source": "arxiv",
+      "title": "OmniaBench: Benchmarking General AI Agents Across Diverse Scenarios",
+      "abstract": "Large language models are increasingly evolving from text generators into general agents capable of understanding user requests, invoking external tools, and completing complex tasks through interaction. However, existing agent benchmarks often focus on limited scenarios, tool ecosystems, or interaction formats, making it difficult to systematically characterize model capabilities across heterogeneous application settings. We introduce OmniaBench, a benchmark for evaluating general agents across diverse scenarios with explicit state spaces. We derive application-oriented scenario knowledge from app stores, product documents, industry resources, Web retrieval, and human refinement, forming a hierarchical taxonomy that spans ToC, ToB and ToE with 90 level-1 and 354 level-2 domains. Based on this taxonomy, we construct executable environments and synthesize single-turn and multi-turn tasks through four complementary routes: DAG, DAG-S, Solver, and Program. OmniaBench further introduces a ten-dimensional capability taxonomy and eight compositional atomic difficulty factors to support fine-grained evaluation and analysis. The resulting dataset contains 1,431 tasks, together with a challenging subset of 644 tasks designed to reduce evaluation cost and mitigate potential contamination of the full set after public release. The bench presents substantial challenges to current frontier models, with even Claude-Sonnet-5 and GPT-5.6-Sol achieving Overall Pass@1 scores of only 58.54 and 57.14, respectively. Further analyses reveal clear differences across domains and capabilities, as well as persistent limitations in planning, constraint maintenance, and adaptive correction. OmniaBench provides a broad and diagnostic benchmark for characterizing the capability boundaries of general agents.",
+      "authors": [
+        "Chengyu Shen",
+        "Yujie Fu",
+        "Gangtao Xin",
+        "Yanheng Hou",
+        "Wenlong Fei",
+        "Guojie Zhu",
+        "Jiawei Li",
+        "Hongcheng Gao",
+        "Runming He",
+        "Zhen Hao Wong",
+        "Meiyi Qiang",
+        "Hao Liang",
+        "Zhao Cao",
+        "Hao Jiang",
+        "Chong Chen",
+        "Wentao Zhang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-07-16T13:38:07+00:00",
+      "link": "https://arxiv.org/pdf/2607.14989v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "provides a general benchmark for AI agents that can be adapted to medical agent evaluation",
+      "llm_evidence_cn": "提供了一个通用AI代理基准框架，可迁移至医疗代理评估",
+      "llm_evidence": "提供了一个通用AI代理基准框架，可迁移至医疗代理评估",
+      "canonical_evidence": "提供了一个通用AI代理基准框架，可迁移至医疗代理评估",
+      "llm_tldr_en": "OmniaBench proposes a hierarchical taxonomy and benchmark for general AI agents across diverse application domains, with explicit state spaces, directly applicable to medical agent benchmarking.",
+      "llm_tldr_cn": "针对现有代理基准测试场景有限、难以系统评估通用能力的问题，OmniaBench从应用商店、产品文档等来源构建了涵盖ToC/ToB/ToE共90个一级分类的层级化基准，包含显式状态空间。该基准可用于评估各类AI代理的通用能力，其方法学可直接迁移至医疗代理的基准测试，为基于EHR的医疗代理评估提供框架参考。",
+      "llm_tldr": "针对现有代理基准测试场景有限、难以系统评估通用能力的问题，OmniaBench从应用商店、产品文档等来源构建了涵盖ToC/ToB/ToE共90个一级分类的层级化基准，包含显式状态空间。该基准可用于评估各类AI代理的通用能力，其方法学可直接迁移至医疗代理的基准测试，为基于EHR的医疗代理评估提供框架参考。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.18828v1",
+      "source": "arxiv",
+      "title": "Evaluating medical AI under missing information: same-provider judges and human raters change apparent safety",
+      "abstract": "Readiness stress-testing of medical AI has focused on closed-ended and multimodal benchmarks. We extend it to open-ended clinical conversation under missing information, where safe behavior means recognizing absent information and qualifying, clarifying, or not over-committing - and where the evaluator becomes part of the measurement. We stress-test four models - three flagships (Claude Opus 4.8, GPT-5.5, Grok 4.3) and one mid-tier model (Gemini 3.5 Flash) - by deleting the latter half of the final user turn in HealthBench conversations, grading responses with a four-provider LLM-judge panel and a blinded clinician-anchored reference. Two evaluator-facing results are robust. First, judge choice materially changes apparent safety: inter-judge agreement is only moderate (Fleiss' kappa = 0.65), and after adjusting for each judge's general leniency (vote-level logistic regression), a positive same-provider association remains (exact permutation p = 0.04; GPT-5.5 ~ +0.10 on the probability scale) - large enough to change which model appears to over-commit least once its own-provider judge is excluded. Second, LLM judges are more permissive than clinicians on a blinded 50-item subsample: all four are significantly more lenient than the stricter independent clinician (crediting appropriate uncertainty on 66-84% of items vs 52%), and three of four than the author-influenced consensus (Grok directional only; judge-vs-consensus kappa = 0.20-0.43). On the author-audited clinical-underdetermined subset the permissiveness gap widened and the point-estimate model ordering held. A closed-ended MedQA anchor confirms accuracy is high and option-order effects are within a +/-5-point equivalence region for three of four models, so the safety gap is about calibration, not knowledge. We release the harness, prompts, per-item outputs, judge panel, perturbation audit, and human-annotation protocol.",
+      "authors": [
+        "Koyar Afrasyab"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-21T08:05:35+00:00",
+      "link": "https://arxiv.org/pdf/2607.18828v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "evaluates medical AI under missing information, relevant to medical agent evaluation",
+      "llm_evidence_cn": "在信息缺失下评估医疗AI，与医疗智能体评估相关",
+      "llm_evidence": "在信息缺失下评估医疗AI，与医疗智能体评估相关",
+      "canonical_evidence": "在信息缺失下评估医疗AI，与医疗智能体评估相关",
+      "llm_tldr_en": "Evaluates medical AI safety under missing information using HealthBench conversations and LLM judges, showing evaluator choice affects safety assessment.",
+      "llm_tldr_cn": "该研究针对医疗AI在信息缺失场景下的安全性评估，通过删除HealthBench对话后半部分构建测试，并使用多提供商LLM评判和临床医生参考进行评分。结果发现评判者选择会显著改变安全评估结果，强调了评估框架中人类参考的重要性。",
+      "llm_tldr": "该研究针对医疗AI在信息缺失场景下的安全性评估，通过删除HealthBench对话后半部分构建测试，并使用多提供商LLM评判和临床医生参考进行评分。结果发现评判者选择会显著改变安全评估结果，强调了评估框架中人类参考的重要性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
