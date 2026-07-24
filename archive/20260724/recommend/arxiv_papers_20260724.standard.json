@@ -1,0 +1,93 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-24T21:05:17.747475+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.14673v1",
+      "source": "arxiv",
+      "title": "Project Kaleidoscope: Contextual, Human-Aligned Evaluation for Real-World AI Applications",
+      "abstract": "Evaluations (Evals) are a deployment bottleneck for real-world AI applications: public benchmarks rarely match a team's users, context, or policies, and human review is often tedious to scale. Motivated by our work with AI applications in the public sector, this project addresses recurring evaluation challenges encountered when applications must satisfy local policy and governance requirements. We present Kaleidoscope, an integrated workflow for contextual functional evaluation that links persona-based test generation, contextualized rubrics, and human review for reliability-gated automated scoring. Generated test cases are scored against application-specific rubrics; human annotations provide reviewable labels; and LLM judges automate scoring only when their agreement with those labels meets a configured threshold. Kaleidoscope is therefore a practical, inspectable, iterative workflow for product teams. We report early evidence from a three-week pilot across four organizational use cases and custom-rubric judge experiments on 108 annotated Q\\&A pairs spanning four domains and 14 evaluation dimensions. The results highlight useful features for end-to-end reliable, automated scoring.",
+      "authors": [
+        "Leanne Tan",
+        "Rohan Jaggi",
+        "Shaun Khoo",
+        "Roy Ka-Wei Lee"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.HC"
+      ],
+      "published": "2026-07-16T07:38:39+00:00",
+      "link": "https://arxiv.org/pdf/2607.14673v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "provides a general evaluation workflow with test generation, rubric scoring, and human review, applicable to medical agent evaluation",
+      "llm_evidence_cn": "提供包含测试生成、评分和人工审核的通用评估工作流，适用于医疗Agent评估",
+      "llm_evidence": "提供包含测试生成、评分和人工审核的通用评估工作流，适用于医疗Agent评估",
+      "canonical_evidence": "提供包含测试生成、评分和人工审核的通用评估工作流，适用于医疗Agent评估",
+      "llm_tldr_en": "Kaleidoscope offers an integrated evaluation workflow with persona-based test generation, contextual rubrics, and LLM judges, enabling contextual evaluation of AI applications including medical agents.",
+      "llm_tldr_cn": "针对现实AI应用评估缺乏上下文匹配的问题，该文提出Kaleidoscope评估工作流，包括基于角色的测试生成、上下文评分规则和LLM自动评分+人工审核。该框架可应用于医疗Agent的评估，通过定制化测试和评分来评估其性能。实验表明该方法能生成与应用场景匹配的测试用例，并提高评估可靠性。",
+      "llm_tldr": "针对现实AI应用评估缺乏上下文匹配的问题，该文提出Kaleidoscope评估工作流，包括基于角色的测试生成、上下文评分规则和LLM自动评分+人工审核。该框架可应用于医疗Agent的评估，通过定制化测试和评分来评估其性能。实验表明该方法能生成与应用场景匹配的测试用例，并提高评估可靠性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.20848v1",
+      "source": "arxiv",
+      "title": "Auditing Evidence Use in Medical LLM Diagnosis",
+      "abstract": "Medical LLMs are often evaluated by whether they select the correct diagnosis, but diagnostic accuracy alone does not show whether the model used the case evidence appropriately. We present a behavioral audit of evidence use in medical diagnosis. For each case, we decompose patient information into evidence units, score candidate diagnoses under controlled evidence subsets, and mine low-order interactions in diagnostic margins. Because medical evidence is diagnosis-relative, the audit separates interaction discovery from failure assignment: large or negative interactions can reflect plausible differential diagnosis, while suspicious interactions require robustness checks and clinical review. We evaluate five open-weight LLMs on DDXPlus, CupCase, and MedCase. Across datasets, faithful support and differential conflict or cancellation account for most interaction strength, showing that many evidence interactions are clinically plausible rather than failures. In a DDXPlus-focused blinded five-reviewer 130-item enriched review sample, invalid or shortcut-like cases concentrate in negated or absent findings and clinically local evidence. These results show that accuracy can hide candidate evidence-use failures and motivate role-aware audits for medical LLM evaluation.",
+      "authors": [
+        "Junchi Liao",
+        "Jiawen Deng",
+        "Fuji Ren"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-23T02:20:15+00:00",
+      "link": "https://arxiv.org/pdf/2607.20848v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "audits evidence use in medical LLM diagnosis, linking to medical AI agent evaluation",
+      "llm_evidence_cn": "审计医疗LLM诊断中的证据使用，涉及医疗AI代理评估",
+      "llm_evidence": "审计医疗LLM诊断中的证据使用，涉及医疗AI代理评估",
+      "canonical_evidence": "审计医疗LLM诊断中的证据使用，涉及医疗AI代理评估",
+      "llm_tldr_en": "Proposes a behavioral audit to evaluate how medical LLMs use evidence in diagnosis, decomposing cases into evidence units and scoring under controlled subsets, revealing diagnostic reasoning patterns.",
+      "llm_tldr_cn": "现有医疗大语言模型评估仅关注诊断准确性，忽视证据使用是否合理。本文提出一种行为审计方法，将患者信息分解为证据单元，在受控证据子集下评分候选诊断，并挖掘诊断边距中的低阶交互。在DDXPlus等数据集上评估五个开源模型，发现模型存在证据使用不当问题。该审计方法为医疗AI代理的可信评估提供了新工具。",
+      "llm_tldr": "现有医疗大语言模型评估仅关注诊断准确性，忽视证据使用是否合理。本文提出一种行为审计方法，将患者信息分解为证据单元，在受控证据子集下评分候选诊断，并挖掘诊断边距中的低阶交互。在DDXPlus等数据集上评估五个开源模型，发现模型存在证据使用不当问题。该审计方法为医疗AI代理的可信评估提供了新工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

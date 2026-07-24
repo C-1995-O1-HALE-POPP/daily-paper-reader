@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-24",
+  "date": "2026-07-24",
+  "generated_at": "2026-07-24T21:06:42",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/24/2607.14673v1-project-kaleidoscope-contextual-human-aligned-evaluation-for-real-world-ai-applications",
+      "section": "quick",
+      "title_en": "Project Kaleidoscope: Contextual, Human-Aligned Evaluation for Real-World AI Applications",
+      "authors": "Leanne Tan, Rohan Jaggi, Shaun Khoo, Roy Ka-Wei Lee",
+      "date": "2026-07-16",
+      "pdf": "https://arxiv.org/pdf/2607.14673v1",
+      "score": "7.0",
+      "evidence": "提供包含测试生成、评分和人工审核的通用评估工作流，适用于医疗Agent评估",
+      "tldr": "AI应用评估面临公共基准不匹配、人工审查难规模化等部署瓶颈。为此提出Kaleidoscope工作流，通过人物角色生成测试、上下文化评分标准、人工审查并基于LLM与人工标签一致性阈值启用自动评分。在四个组织用例和108个QA对14个评估维度上的实验展示了端到端可靠自动评分的实用特征。该方案提供了一个可检查、可迭代的评估框架，满足本地政策和治理要求。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Evaluations (Evals) are a deployment bottleneck for real-world AI applications: public benchmarks rarely match a team's users, context, or policies, and human review is often tedious to scale. Motivated by our work with AI applications in the public sector, this project addresses recurring evaluation challenges encountered when applications must satisfy local policy and governance requirements. We present Kaleidoscope, an integrated workflow for contextual functional evaluation that links persona-based test generation, contextualized rubrics, and human review for reliability-gated automated scoring. Generated test cases are scored against application-specific rubrics; human annotations provide reviewable labels; and LLM judges automate scoring only when their agreement with those labels meets a configured threshold. Kaleidoscope is therefore a practical, inspectable, iterative workflow for product teams. We report early evidence from a three-week pilot across four organizational use cases and custom-rubric judge experiments on 108 annotated Q\\&A pairs spanning four domains and 14 evaluation dimensions. The results highlight useful features for end-to-end reliable, automated scoring.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/24/2607.20848v1-auditing-evidence-use-in-medical-llm-diagnosis",
+      "section": "quick",
+      "title_en": "Auditing Evidence Use in Medical LLM Diagnosis",
+      "authors": "Junchi Liao, Jiawen Deng, Fuji Ren",
+      "date": "2026-07-23",
+      "pdf": "https://arxiv.org/pdf/2607.20848v1",
+      "score": "6.0",
+      "evidence": "审计医疗LLM诊断中的证据使用，涉及医疗AI代理评估",
+      "tldr": "现有医疗大语言模型诊断评估多聚焦于准确率，未能检验模型是否合理使用病例证据。本文提出行为审计方法，将患者信息分解为证据单元，在控制证据子集下评分候选诊断，并挖掘诊断边际中的低阶交互。在五个开源模型和DDXPlus等数据集上评估发现，绝大多数证据交互具有临床合理性，但否定或缺失的发现以及局部证据中集中出现无效或捷径式失败。本工作表明准确率可能掩盖证据使用缺陷，并推动了角色感知审计在医疗大语言模型评估中的应用。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Medical LLMs are often evaluated by whether they select the correct diagnosis, but diagnostic accuracy alone does not show whether the model used the case evidence appropriately. We present a behavioral audit of evidence use in medical diagnosis. For each case, we decompose patient information into evidence units, score candidate diagnoses under controlled evidence subsets, and mine low-order interactions in diagnostic margins. Because medical evidence is diagnosis-relative, the audit separates interaction discovery from failure assignment: large or negative interactions can reflect plausible differential diagnosis, while suspicious interactions require robustness checks and clinical review. We evaluate five open-weight LLMs on DDXPlus, CupCase, and MedCase. Across datasets, faithful support and differential conflict or cancellation account for most interaction strength, showing that many evidence interactions are clinically plausible rather than failures. In a DDXPlus-focused blinded five-reviewer 130-item enriched review sample, invalid or shortcut-like cases concentrate in negated or absent findings and clinically local evidence. These results show that accuracy can hide candidate evidence-use failures and motivate role-aware audits for medical LLM evaluation.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
