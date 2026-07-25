@@ -1,0 +1,54 @@
+{
+  "label": "2026-07-25",
+  "date": "2026-07-25",
+  "generated_at": "2026-07-25T20:44:34",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202607/25/2607.21419v1-pats-policy-aware-training-scaffolding-for-agentic-reinforcement-learning",
+      "section": "quick",
+      "title_en": "PATS: Policy-Aware Training Scaffolding for Agentic Reinforcement Learning",
+      "authors": "Yipeng Shi, Zhipeng Ma, Yue Wang, Qitai Tan, Yang Li, Peng Chen, Zhengzhou Zhu",
+      "date": "2026-07-23",
+      "pdf": "https://arxiv.org/pdf/2607.21419v1",
+      "score": "7.0",
+      "evidence": "PATS为智能体强化学习提供训练脚手架并集成特定任务评估，与医疗智能体强化学习评估直接相关",
+      "tldr": "针对长程LLM智能体强化学习中弱策略重复失败、rollout信息不足的问题，提出策略中心训练范式PATS。该方法将最新策略的rollout分组转化为证据卡，通过任务特定评估动态调整上下文以指导弱策略。随着策略提升，自动移除冗余上下文以减少依赖。在ALFWorld和WebShop上提升最高18.6%，在7个搜索增强QA基准上减少32.1%提示token，实现高效策略优化。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "In long-horizon LLM agent reinforcement learning, weak policies often repeat similar failures, producing uninformative rollout trajectories and limiting effective policy optimization. Existing skill-centric methods improve exploration by optimizing, filtering, or internalizing reusable skills. However, they remain centered on the skills themselves rather than being designed as adaptive training-time support for the evolving policy. To address this, we propose a policy-centric training paradigm that reframes skills as a dynamic training scaffold. Our framework, Pats, converts rollout groups from the latest policy into evidence cards and uses task-specific evaluation to adjust the context used in subsequent rollouts. Concrete guidance helps weak policies to complete challenging tasks. As policy improves, redundant context is revised or removed to reduce reliance on explicit guidance while preserving useful rollout variation. The policy is optimized with environmental rewards using standard RLVR, and the training scaffold is discarded at deployment. On ALFWorld and WebShop, Pats improves over strong baselines by up to 18.6%. Across seven search-augmented QA benchmarks, it remains competitive while using 32.1% fewer prompt tokens than the baseline.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/25/2607.16345v2-aeval-from-anecdotal-to-deterministic-testing-for-agentic-skill-workflows",
+      "section": "quick",
+      "title_en": "AEVAL: From Anecdotal to Deterministic Testing for Agentic Skill Workflows",
+      "authors": "Tejas Singh Anand, Yuet Ying Christina Wang, Wanting Jiang, Steve Masson, Tian Zheng, Bingjie Zhou",
+      "date": "2026-07-16",
+      "pdf": "https://arxiv.org/pdf/2607.16345v2",
+      "score": "6.0",
+      "evidence": "代理技能确定性测试框架",
+      "tldr": "现代智能体技能评估依赖主观演示，缺乏可复现性与可比性。AEVAL框架通过CI集成、执行器与评分器分离，实现确定性测试，避免自我修正偏见。在实际生产环境中，将虚假的100%通过率转换为可重复的首次尝试失败信号，并记录每次执行修复。该工作为技能工作流提供可审计的质量评估机制，保障下游稳定性。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Modern agentic systems increasingly rely on skills: installable packages of natural language and code that teach an LLM agent to perform a domain task. As skill repositories grow, developers need automated quality signals on every change, yet evaluation today is largely anecdotal: a developer asks an agent to \"try the skill,\" watches a demo, and forms a subjective impression. This yields neither reproducibility across runs nor comparability across versions, and scales poorly to marketplaces where one regression can silently break dozens of downstream workflows.   We present AEVAL (Agentic Evaluation), a CI-integrated framework that replaces this practice with a deterministic, reproducible test pipeline for agentic skills. Every skill change triggers a test event: the skill runs against a developer declared evaluation contract inside an automated executor, emitting a structured, evidence grounded quality signal that downstream CI can route on.   A key ingredient is a structural separation between executor and grader, preventing a subtle but pervasive failure mode: an agent that silently self-corrects during execution and then grades its own patched outputs as passing.   Our contributions are: (i) a deterministic, change-triggered evaluation protocol with per-skill contracts and per-run artifact schemas; (ii) a formalization of self correction bias as a distinct failure mode of naive agentic evaluators; (iii) an executor/grader separation with a first-attempt grading rule and explicit self-correction tracking; and (iv) a tiered, grounded evidence fix suggestion scheme (LV1 causal, LV2 quality) posted as inline merge-request comments. Validated on real skills in a production agentic stack across multiple agent SDKs, AEVAL converts spurious 100% pass rates into reproducible first-attempt fail signals with an auditable record of every executor fix.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/25/2607.20582v1-bayesian-uncertainty-estimation-improves-clinical-decision-making-in-medical-ai-agents",
+      "section": "quick",
+      "title_en": "Bayesian uncertainty estimation improves clinical decision making in medical AI agents",
+      "authors": "Frederik Hauke, Patrick Wienholt, Christiane Kuhl, Dyke Ferber, Jakob Nikolas Kather, Sven Nebelung, Daniel Truhn",
+      "date": "2026-07-22",
+      "pdf": "https://arxiv.org/pdf/2607.20582v1",
+      "score": "6.0",
+      "evidence": "评估带有不确定性估计的临床决策支持代理和错误检测",
+      "tldr": "医学图像AI模型常缺乏可靠置信度，限制其在模糊病例中的应用。本文在胸部X光多任务分类器中采用Monte Carlo dropout估计认知不确定性，该信号能追踪泛化并标记易错预测。加入该信号使错误检测AUROC提升0.023，且以二进制风险标志传达时可大幅降低自信误诊率（从8.5%降至2.7%）。研究表明不确定性估计的决策价值取决于传达方式。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Machine learning models for medical image analysis typically lack a reliable measure of confidence, limiting their use in ambiguous or atypical cases. Here we show that Monte Carlo dropout, applied to a multi-task chest-radiograph classifier (eight thoracic findings, 137,593 training images), provides an epistemic uncertainty signal that tracks generalisation across training-set scales and flags confident yet error-prone predictions. Adding this signal to the point prediction raised error-detection AUROC from 0.74 to 0.77 ($Δ$AUROC +0.023, 95% CI [+0.014, +0.033]). In a controlled 2x2 factorial experiment, a clinical-decision-support agent exploited this uncertainty only when it was delivered as a binary error-risk flag rather than as raw scores, cutting confident misdiagnoses on unreliable findings from 8.5% to 2.7%. Epistemic uncertainty estimation thus carries decision-relevant information beyond point predictions, but its value for downstream agents depends on how it is communicated.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
