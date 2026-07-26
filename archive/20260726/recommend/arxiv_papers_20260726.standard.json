@@ -1,0 +1,98 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-26T21:07:20.091900+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.19020v1",
+      "source": "arxiv",
+      "title": "Biological Amnesia in ICU Time-Series Prediction: A Drift-Adaptive Two-Stream Architecture with Temporal Retrieval",
+      "abstract": "Background: Clinical decision support systems degrade silently as treatment protocols evolve, yet standard adaptation methods treat models as monolithic blocks, unable to distinguish stable patient physiology from shifting institutional practice. Methods: We propose an adaptive clinical intelligence architecture for ICU intervention prediction that structurally decouples physiological from treatment representations, confining parameter updates to the treatment stream upon a dual distributional and accuracy trigger. Automated audit logs record which treatment features drove each adaptation event and how their importance shifted. At inference, an attribution-driven Temporal RAG module grounds each prediction in patient-specific, era-matched PubMed evidence anchored to the patient's dominant physiological features. Experiments used 84,792 MIMIC-IV stays (2008-2022) under strict chronological split. Results: Drift localised entirely to the treatment stream, validating the structural prior. Selective adaptation improved vasopressor and septic shock discrimination and calibration over the static source model. A fully retrained baseline yielded marginally higher aggregate discrimination but missed 26 septic shock cases the framework correctly identified, with none in the reverse direction; retrieval consistency with the pre-adaptation source model was preserved by the framework but degraded substantially in the retrained baseline. Conclusions: Structurally constraining adaptation to drifting components while preserving stable physiological representations enables clinical AI to evolve with practice without distorting learned patient biology. This architecture offers a template for governable, interpretable deployment of adaptive models in high-stakes clinical environments.",
+      "authors": [
+        "Fatema Ferdous Tamanna",
+        "K. M. Merajul Arefin",
+        "Md. Abdul Masud"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.IR",
+        "q-bio.QM"
+      ],
+      "published": "2026-07-21T12:07:36+00:00",
+      "link": "https://arxiv.org/pdf/2607.19020v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "ICU clinical decision support with adaptive architecture",
+      "llm_evidence_cn": "ICU临床决策支持的自适应架构",
+      "llm_evidence": "ICU临床决策支持的自适应架构",
+      "canonical_evidence": "ICU临床决策支持的自适应架构",
+      "llm_tldr_en": "Proposes a drift-adaptive two-stream architecture for ICU intervention prediction, decoupling physiology from treatment, with temporal RAG for grounding predictions.",
+      "llm_tldr_cn": "临床决策支持系统会因治疗协议演变而性能下降，现有方法无法区分稳定生理与变化实践。本文提出自适应临床智能架构，将生理与治疗表示解耦，并在检测到漂移时仅更新治疗流，同时利用时序RAG增强预测。该方法在ICU干预预测中有效提升了适应性，为EHR驱动的临床决策支持Agent提供了可迁移的评估思路。",
+      "llm_tldr": "临床决策支持系统会因治疗协议演变而性能下降，现有方法无法区分稳定生理与变化实践。本文提出自适应临床智能架构，将生理与治疗表示解耦，并在检测到漂移时仅更新治疗流，同时利用时序RAG增强预测。该方法在ICU干预预测中有效提升了适应性，为EHR驱动的临床决策支持Agent提供了可迁移的评估思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.19678v1",
+      "source": "arxiv",
+      "title": "Reference-Free Evaluation of Reasoning in Open-Ended Question Answering",
+      "abstract": "AI-generated answers in high-stakes domains are often fluent but difficult to verify, especially when they contain multi-step reasoning rather than a single final answer. We propose a reasoning-based, reference-free framework for auditing LLM-generated outputs. The method decomposes a generated reasoning trace into segments, labels local premise-target relations using Natural Language Inference (NLI), and organizes these relations into a hypergraph. A deterministic backward AND-OR search then assigns segment-level audit labels that indicate how each segment is grounded within the generated response. We evaluate the framework in two settings: deductive mathematical reasoning with Hard2Verify, and open-ended medical reasoning with UroReason, a new physician-annotated benchmark of LLM reasoning traces from real clinical cases. Across these settings, our NLI-hypergraph audit provides a more reliable reference-free evaluation signal than direct LLM-as-judge baselines. In the clinical setting, state-of-the-art LLM judges often fail to identify problematic reasoning segments, over-accepting fluent but weakly grounded responses. Our results show that QA evaluation should account for how inferential relations compose across a reasoning trace, rather than relying only on final answers or LLMs as verifiers. UroReason will be made available through an API, and our code will be released as open source.",
+      "authors": [
+        "Guneet Singh Kohli",
+        "Yuxiang Zhou",
+        "Michael Sejr Schlichtkrull",
+        "Gregory E Dean",
+        "Maria Liakata"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-07-22T02:27:51+00:00",
+      "link": "https://arxiv.org/pdf/2607.19678v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "reference-free evaluation framework for medical reasoning in LLMs",
+      "llm_evidence_cn": "用于LLM医疗推理的无参考评估框架",
+      "llm_evidence": "用于LLM医疗推理的无参考评估框架",
+      "canonical_evidence": "用于LLM医疗推理的无参考评估框架",
+      "llm_tldr_en": "A reference-free framework that decomposes reasoning traces, labels premise-target relations, and uses hypergraph AND-OR search to audit LLM outputs, evaluated on medical reasoning (UroReason).",
+      "llm_tldr_cn": "该论文提出一种无参考评估框架，将生成推理轨迹分解为片段，利用自然语言推理标定局部前提-目标关系，并通过超图和确定性回溯AND-OR搜索分配审计标签。在数学推理和医疗推理（UroReason数据集）上评估框架的有效性。尽管未使用EHR数据，但其医疗推理评估方法可直接用于医疗智能体评估。",
+      "llm_tldr": "该论文提出一种无参考评估框架，将生成推理轨迹分解为片段，利用自然语言推理标定局部前提-目标关系，并通过超图和确定性回溯AND-OR搜索分配审计标签。在数学推理和医疗推理（UroReason数据集）上评估框架的有效性。尽管未使用EHR数据，但其医疗推理评估方法可直接用于医疗智能体评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
