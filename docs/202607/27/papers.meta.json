@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-27",
+  "date": "2026-07-27",
+  "generated_at": "2026-07-27T21:34:58",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/27/2607.16989v2-real-world-evaluation-of-an-ai-agent-drafting-translational-impact-summaries",
+      "section": "quick",
+      "title_en": "Real-World Evaluation of an AI Agent Drafting Translational Impact Summaries",
+      "authors": "Mohammad Arvan, Amber E. Osterholt, Bailee Rue, Yuvaneswaren R. Sureshbabu, Krishna R. Patel, Rebecca T. Feinstein, Bethany C. Bray, Niranjan S. Karnik",
+      "date": "2026-07-18",
+      "pdf": "https://arxiv.org/pdf/2607.16989v2",
+      "score": "6.0",
+      "evidence": "在临床转化科学场景中真实评估AI代理，方法可应用于医疗代理评估",
+      "tldr": "临床转化科学奖项目需手工整理学者科研影响力记录，耗时巨大。我们开发了一个人在回路的AI智能体，自动收集学者证据并起草转化科学影响摘要。在10名学者的评估中，81.7%的发现被两位评审员认可或编辑，每位学者评审时间中位数14分钟，替代了原本15小时的手工汇编。该工具覆盖所有四个TSBM领域，并捕获了约三分之一常规流程遗漏的非学术类别影响，使队列规模的影响报告成为可能。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Introduction. Clinical and Translational Science Award (CTSA) programs must document their scholars' research impact, but assembling each scholar's record by hand takes staff an estimated 15 hours and does not scale to a full cohort. An artificial intelligence (AI) agent could serve as a tool to gather scholar data across platforms and disciplines. Methods. We built a human-in-the-loop AI agent that assembles a dossier of sourced evidence for each scholar and drafts one-sentence Translational Science Benefits Model (TSBM) impact summaries for staff review. We evaluated it in the impact-reporting workflow of one CTSA hub across 10 career-development (KL2/K12) scholars. Two evaluation staff independently coded all 507 findings as accept, edit, or reject; the primary measure was the unanimous usable rate, defined as the share both accepted or edited. Results. Both reviewers accepted or edited 81.7% of the agent's findings. Reviewers each spent a median of 14 minutes per scholar, replacing an estimated 15 hours of manual assembly. Inter-rater agreement was moderate (Cohen's kappa 0.43 on the usable-versus-reject decision). A profile discovery study found the agent's recall close to human search. The agent's impact evidence spanned all four TSBM domains, and about a third of the reviewed findings fell in non-scholarly categories that routine processes tend to miss. Reviewers rated synthesis accuracy 4.5 and usefulness 4.8 on a 5-point scale. Conclusions. A human-in-the-loop AI agent can serve as the first-pass author of a scholar's impact record, shifting staff from collecting and writing to reviewing, and making cohort-scale impact reporting feasible.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/27/2607.22264v1-autoregressive-ehr-foundation-models-with-multimodal-inputs",
+      "section": "quick",
+      "title_en": "Autoregressive EHR Foundation Models with Multimodal Inputs",
+      "authors": "Yuxuan Liu, Joshua Placidi, Jinpei Han, Alfred John Balston, Marek Rei, A. Aldo Faisal",
+      "date": "2026-07-24",
+      "pdf": "https://arxiv.org/pdf/2607.22264v1",
+      "score": "6.0",
+      "evidence": "用于临床预测的自回归EHR基础模型",
+      "tldr": "现有自回归EHR基础模型仅处理结构化事件码，缺乏多模态整合。本文提出利用潜在压缩和门控交叉注意力，将ECG波形、X光图像和临床笔记等模态融入模型。实验表明最佳压缩配置优于未压缩或均值池化，且强预训练编码器效果更好。但仅添加模态未必提升ICU死亡率预测，需精心设计融合架构并评估临床背景。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Autoregressive foundation models trained on tokenized electronic health records (EHRs) can support zero-shot clinical prediction, yet most operate on structured event codes alone, and do not incorporate multiple modalities in a principled way. We present a framework for conditioning such models on auxiliary clinical modalities, including ECG waveforms, chest X-ray images, and clinical notes, using modality-specific latent compression and gated cross-attention with temporal alignment. We investigate two key design choices: (1) how to compress long per-modality sequences (e.g., ECG time series) before they enter the multi-modal cross-attention. This feature may be essential to reduce compute overheads and may be beneficial for generalization; (2) how the choice of pretrained encoder for each modality impacts downstream performance. Through controlled ablations on MIMIC-IV, we show that the best latent-compression configurations outperforms both uncompressed cross-attention and mean pooling. Encoder choice has a clear within-modality effect, with stronger pretrained encoders consistently outperforming weaker alternatives. We further show that merely adding auxiliary modalities does not guarantee improvement on ICU mortality prediction over an EHR-only baseline. This implies that careful design of the fusion architecture and an appropriate evaluation in the clinical context are required.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

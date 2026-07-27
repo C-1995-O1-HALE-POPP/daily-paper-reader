@@ -1,0 +1,102 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-27T21:34:13.544623+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 2,
+    "quick_skim_target": 11,
+    "quick_selected": 2
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.16989v2",
+      "source": "arxiv",
+      "title": "Real-World Evaluation of an AI Agent Drafting Translational Impact Summaries",
+      "abstract": "Introduction. Clinical and Translational Science Award (CTSA) programs must document their scholars' research impact, but assembling each scholar's record by hand takes staff an estimated 15 hours and does not scale to a full cohort. An artificial intelligence (AI) agent could serve as a tool to gather scholar data across platforms and disciplines. Methods. We built a human-in-the-loop AI agent that assembles a dossier of sourced evidence for each scholar and drafts one-sentence Translational Science Benefits Model (TSBM) impact summaries for staff review. We evaluated it in the impact-reporting workflow of one CTSA hub across 10 career-development (KL2/K12) scholars. Two evaluation staff independently coded all 507 findings as accept, edit, or reject; the primary measure was the unanimous usable rate, defined as the share both accepted or edited. Results. Both reviewers accepted or edited 81.7% of the agent's findings. Reviewers each spent a median of 14 minutes per scholar, replacing an estimated 15 hours of manual assembly. Inter-rater agreement was moderate (Cohen's kappa 0.43 on the usable-versus-reject decision). A profile discovery study found the agent's recall close to human search. The agent's impact evidence spanned all four TSBM domains, and about a third of the reviewed findings fell in non-scholarly categories that routine processes tend to miss. Reviewers rated synthesis accuracy 4.5 and usefulness 4.8 on a 5-point scale. Conclusions. A human-in-the-loop AI agent can serve as the first-pass author of a scholar's impact record, shifting staff from collecting and writing to reviewing, and making cohort-scale impact reporting feasible.",
+      "authors": [
+        "Mohammad Arvan",
+        "Amber E. Osterholt",
+        "Bailee Rue",
+        "Yuvaneswaren R. Sureshbabu",
+        "Krishna R. Patel",
+        "Rebecca T. Feinstein",
+        "Bethany C. Bray",
+        "Niranjan S. Karnik"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.DL",
+        "cs.HC"
+      ],
+      "published": "2026-07-18T22:34:52+00:00",
+      "link": "https://arxiv.org/pdf/2607.16989v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "real-world evaluation of an AI agent for translational impact summaries, methodology applicable to medical agent evaluation",
+      "llm_evidence_cn": "在临床转化科学场景中真实评估AI代理，方法可应用于医疗代理评估",
+      "llm_evidence": "在临床转化科学场景中真实评估AI代理，方法可应用于医疗代理评估",
+      "canonical_evidence": "在临床转化科学场景中真实评估AI代理，方法可应用于医疗代理评估",
+      "llm_tldr_en": "This paper evaluates a human-in-the-loop AI agent that drafts translational impact summaries for CTSA scholars, with two staff coding 507 findings. While not using EHR, its evaluation framework demonstrates how to assess medical-related agent performance in real-world settings.",
+      "llm_tldr_cn": "本文介绍了一个人机协同的AI代理，用于为CTSA学者自动收集证据并起草转化影响摘要。在10名职业发展学者的工作流中进行了真实评估，两名评估人员独立编码了507个结果，包括接受、编辑或拒绝。尽管代理未使用电子健康记录，但其评估框架和真实世界测试方法为医疗代理的评估提供了直接的方法学借鉴。",
+      "llm_tldr": "本文介绍了一个人机协同的AI代理，用于为CTSA学者自动收集证据并起草转化影响摘要。在10名职业发展学者的工作流中进行了真实评估，两名评估人员独立编码了507个结果，包括接受、编辑或拒绝。尽管代理未使用电子健康记录，但其评估框架和真实世界测试方法为医疗代理的评估提供了直接的方法学借鉴。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.22264v1",
+      "source": "arxiv",
+      "title": "Autoregressive EHR Foundation Models with Multimodal Inputs",
+      "abstract": "Autoregressive foundation models trained on tokenized electronic health records (EHRs) can support zero-shot clinical prediction, yet most operate on structured event codes alone, and do not incorporate multiple modalities in a principled way. We present a framework for conditioning such models on auxiliary clinical modalities, including ECG waveforms, chest X-ray images, and clinical notes, using modality-specific latent compression and gated cross-attention with temporal alignment. We investigate two key design choices: (1) how to compress long per-modality sequences (e.g., ECG time series) before they enter the multi-modal cross-attention. This feature may be essential to reduce compute overheads and may be beneficial for generalization; (2) how the choice of pretrained encoder for each modality impacts downstream performance. Through controlled ablations on MIMIC-IV, we show that the best latent-compression configurations outperforms both uncompressed cross-attention and mean pooling. Encoder choice has a clear within-modality effect, with stronger pretrained encoders consistently outperforming weaker alternatives. We further show that merely adding auxiliary modalities does not guarantee improvement on ICU mortality prediction over an EHR-only baseline. This implies that careful design of the fusion architecture and an appropriate evaluation in the clinical context are required.",
+      "authors": [
+        "Yuxuan Liu",
+        "Joshua Placidi",
+        "Jinpei Han",
+        "Alfred John Balston",
+        "Marek Rei",
+        "A. Aldo Faisal"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-24T12:59:20+00:00",
+      "link": "https://arxiv.org/pdf/2607.22264v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "autoregressive EHR foundation model for clinical prediction",
+      "llm_evidence_cn": "用于临床预测的自回归EHR基础模型",
+      "llm_evidence": "用于临床预测的自回归EHR基础模型",
+      "canonical_evidence": "用于临床预测的自回归EHR基础模型",
+      "llm_tldr_en": "Proposes a framework for training autoregressive foundation models on EHR data with multimodal inputs, enabling zero-shot clinical prediction by conditioning on ECG, X-rays, and notes via latent compression and gated cross-attention.",
+      "llm_tldr_cn": "现有EHR基础模型大多仅使用结构化事件码，忽略了多模态信息。本文提出一种自回归框架，通过模态特定潜在压缩和门控交叉注意力，将ECG波形、胸片和临床笔记等多模态数据融入EHR模型。实验探究了长序列压缩策略和模态融合方式，为多模态EHR建模提供了重要设计指导。该工作可支持医疗代理利用丰富的EHR信息进行零样本临床预测。",
+      "llm_tldr": "现有EHR基础模型大多仅使用结构化事件码，忽略了多模态信息。本文提出一种自回归框架，通过模态特定潜在压缩和门控交叉注意力，将ECG波形、胸片和临床笔记等多模态数据融入EHR模型。实验探究了长序列压缩策略和模态融合方式，为多模态EHR建模提供了重要设计指导。该工作可支持医疗代理利用丰富的EHR信息进行零样本临床预测。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
