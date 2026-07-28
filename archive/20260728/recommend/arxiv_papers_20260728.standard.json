@@ -1,0 +1,254 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-28T21:42:43.128134+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2607.18999v2",
+      "source": "arxiv",
+      "title": "MedDDC-Eval: Diagnosis-Decoupled Evaluation of Multi-Turn Medical Consultation Agents",
+      "abstract": "Evaluating multi-turn medical consultation agents requires judging the diagnostic support provided by the histories they elicit through interaction. Yet coupled evaluation lets each policy both elicit the history and generate the terminal diagnosis, so a diagnosis score confounds the elicited history with the policy's own terminal diagnosis generator. We introduce MedDDC-Eval, a diagnosis-decoupled evaluation testbed over held-out cases derived from medical records and online consultations. It applies the same frozen shared diagnostic reader to every policy-elicited history, holding terminal diagnosis generation fixed across policies and enabling comparison under the shared diagnostic reader. It reports diagnostic support, information-acquisition coverage, and efficiency. LLM-assisted semantic matching followed by deterministic one-to-one assignment makes the diagnosis-trajectory-efficiency (D/T/E) scores auditable. In a fixed-history audit across eight policies, replacing each policy's own generator with the shared diagnostic reader shifts diagnosis F1 by 2.2-19.0 points and reverses 18% and 36% of pairwise orderings on the Record and Dialogue splits. To examine downstream utility, we use standard Group Relative Policy Optimization (GRPO) with a separate training-time reward that targets the same diagnosis and trajectory dimensions. Relative to its Qwen3-32B initialization, the trained policy gains 9.6 and 4.6 aggregate-score points on the held-out Record and Dialogue splits, respectively, and ablating either feedback signal reduces the aggregate score on both. Together, MedDDC-Eval supports comparison under a shared diagnostic reader and evaluation-informed policy development, while complementing end-to-end evaluation when terminal diagnosis generation is also part of the target capability.",
+      "authors": [
+        "Guofeng Zhang",
+        "Yizeng Quan",
+        "Huaiyi Fang",
+        "Jianwei Lv",
+        "Jinyao Liu",
+        "Xunxu Duan",
+        "Lening An",
+        "Yu Ouyang",
+        "Junfeng Wang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-07-21T11:32:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.18999v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "diagnosis-decoupled evaluation for multi-turn medical consultation agents using medical records",
+      "llm_evidence_cn": "使用医疗记录对多轮医疗咨询智能体进行诊断解耦评估",
+      "llm_evidence": "使用医疗记录对多轮医疗咨询智能体进行诊断解耦评估",
+      "canonical_evidence": "使用医疗记录对多轮医疗咨询智能体进行诊断解耦评估",
+      "llm_tldr_en": "Introduces MedDDC-Eval, a testbed that evaluates multi-turn medical consultation agents by decoupling diagnosis from history elicitation, using a shared diagnostic reader on held-out medical records; directly benchmarks medical agent performance with EHR-like data.",
+      "llm_tldr_cn": "该论文提出MedDDC-Eval，一个诊断解耦的多轮医疗咨询智能体评估测试平台。它从医疗记录和在线咨询中提取病例，通过冻结共享诊断阅读器来解耦诊断生成与历史信息收集过程，从而公平比较不同智能体策略的诊断支持能力。实验证明了该方法的有效性，为基于EHR的医疗智能体评估提供了标准化基准。",
+      "llm_tldr": "该论文提出MedDDC-Eval，一个诊断解耦的多轮医疗咨询智能体评估测试平台。它从医疗记录和在线咨询中提取病例，通过冻结共享诊断阅读器来解耦诊断生成与历史信息收集过程，从而公平比较不同智能体策略的诊断支持能力。实验证明了该方法的有效性，为基于EHR的医疗智能体评估提供了标准化基准。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.23619v1",
+      "source": "arxiv",
+      "title": "The Atoms of the Score: Record-Level versus In-Engine Composite Evaluation of Clinical Quality Language",
+      "abstract": "Clinical Quality Language (CQL) engines serve two axes: decision support (evaluate one patient, now) and quality measurement (score a population). The composite score is rarely the end product, because the individual determinations behind it are what let a score be inspected, attributed, and acted on. Two architectures follow from where aggregation happens: one computes the composite inside the engine over the whole store (no data movement); the other evaluates individual records and lets the composite be totaled externally, keeping every intermediate available.   Mercury is a purpose-built CQL database engine of the second kind. It treats CQL evaluation as a database problem -- FHIR stored in a compact binary encoding keyed patient-first, indexes derived from what CQL retrieves filter on, a planner selecting access paths, CQL as the query language -- rather than as in-memory interpretation over a generic FHIR store. We evaluate Mercury 2.0.1 against Blaze 1.10.1, among the fastest CQL evaluators, using Blaze's own published benchmark suite on identical AWS hardware over a 100,000-patient Synthea corpus (112.3M resources).",
+      "authors": [
+        "Angelo Kastroulis"
+      ],
+      "primary_category": "cs.DB",
+      "categories": [
+        "cs.DB",
+        "cs.CE",
+        "cs.PF"
+      ],
+      "published": "2026-07-26T11:54:56+00:00",
+      "link": "https://arxiv.org/pdf/2607.23619v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "evaluation of clinical quality language engines using EHR data",
+      "llm_evidence_cn": "使用EHR数据评估临床质量语言引擎",
+      "llm_evidence": "使用EHR数据评估临床质量语言引擎",
+      "canonical_evidence": "使用EHR数据评估临床质量语言引擎",
+      "llm_tldr_en": "Mercury is a CQL database engine that evaluates individual records for decision support, enabling transparent and inspectable clinical scores from EHR data.",
+      "llm_tldr_cn": "针对临床质量语言引擎在决策支持和质量测量中的评估架构问题，提出了Mercury数据库引擎，采用记录级评估而非引擎内聚合，保留每个中间结果。该引擎将CQL评估视为数据库问题，基于FHIR紧凑二进制编码实现，支持临床分数的可检查、可归因和可操作。",
+      "llm_tldr": "针对临床质量语言引擎在决策支持和质量测量中的评估架构问题，提出了Mercury数据库引擎，采用记录级评估而非引擎内聚合，保留每个中间结果。该引擎将CQL评估视为数据库问题，基于FHIR紧凑二进制编码实现，支持临床分数的可检查、可归因和可操作。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.24371v1",
+      "source": "arxiv",
+      "title": "Closed-Loop Validation-Repair for Healthcare Interoperability: A Multi-Model Study of Schema Compliance in Clinical LLMs",
+      "abstract": "Healthcare interoperability requires AI systems to produce structured outputs conforming to standardized schemas including ICD-10 for diagnostic coding, CPT for procedure billing, and HL7 FHIR for data exchange. While large language models demonstrate clinical reasoning capabilities, their integration into electronic health record systems faces a critical barrier: schema noncompliance. We evaluate three open-source models, Qwen2.5 7B, Llama 3.1 8B, and Gemma2 9B, via local deployment across 320 clinical scenarios spanning ten medical specialties, yielding 960 model-scenario pairs assessed under paired baseline and validation-repair conditions. First, schema noncompliance is consistent across the three model families, with baseline compliance rates ranging from 85.9 to 91.6 percent despite varying architectures and training data, suggesting shared gaps in medical training corpora rather than model-specific limitations. Second, 96 percent of validator-detected failures are representation-level format violations such as alternative medical abbreviations and code prefixes, indicating models follow clinical writing conventions but lack awareness of healthcare IT standards. Third, the validation-repair framework achieves 99.0 percent overall compliance, ranging from 98.4 to 99.4 percent across models, with most errors resolving within one or two iterations. Exact McNemar p-values below 0.001 and absolute improvements of 7.8 to 12.5 percentage points across model sizes confirm statistical significance. These results support closed-loop validation-repair as an effective system-level safeguard for healthcare interoperability, improving schema-level readiness for downstream clinical system integration.",
+      "authors": [
+        "Jianru Shen"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-07-27T12:45:27+00:00",
+      "link": "https://arxiv.org/pdf/2607.24371v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "evaluates LLM schema compliance for EHR interoperability with validation-repair",
+      "llm_evidence_cn": "评估LLM在EHR互操作性中的模式合规性，采用验证-修复方法",
+      "llm_evidence": "评估LLM在EHR互操作性中的模式合规性，采用验证-修复方法",
+      "canonical_evidence": "评估LLM在EHR互操作性中的模式合规性，采用验证-修复方法",
+      "llm_tldr_en": "Evaluates three open-source LLMs on 320 clinical scenarios for schema compliance (ICD-10, CPT, FHIR) and proposes a closed-loop validation-repair method to improve EHR integration.",
+      "llm_tldr_cn": "该论文针对医疗互操作性中LLM输出不符合EHR标准模式（ICD-10、CPT、HL7 FHIR）的问题，在320个临床场景上评估了Qwen2.5 7B、Llama 3.1 8B和Gemma2 9B三个开源模型。提出了一种闭环验证-修复方法，通过本地部署对960个模型-场景对进行基线条件与修复条件的对比实验。结果表明模式不合规是普遍现象，而验证-修复显著提升了合规性。该工作为评估和提升EHR环境中临床决策智能体的输出可靠性提供了直接方法。",
+      "llm_tldr": "该论文针对医疗互操作性中LLM输出不符合EHR标准模式（ICD-10、CPT、HL7 FHIR）的问题，在320个临床场景上评估了Qwen2.5 7B、Llama 3.1 8B和Gemma2 9B三个开源模型。提出了一种闭环验证-修复方法，通过本地部署对960个模型-场景对进行基线条件与修复条件的对比实验。结果表明模式不合规是普遍现象，而验证-修复显著提升了合规性。该工作为评估和提升EHR环境中临床决策智能体的输出可靠性提供了直接方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.18431v1",
+      "source": "arxiv",
+      "title": "Using binary silver labels in electronic health records-based computable phenotyping algorithms",
+      "abstract": "Gold-standard phenotype labels are often unavailable at scale in electronic health record (EHR) studies because they require manual chart review. Weakly supervised phenotyping methods instead use silver-standard labels, such as diagnosis-code counts, natural language processing (NLP) mentions, medication indicators, or laboratory thresholds. PheNorm is widely used for this purpose, but its original formulation was designed for count-valued silver labels and relies on log transformation, utilization normalization, and Gaussian mixture modeling. These steps are not directly suited to binary silver labels, which are common and may be highly informative. We propose Binary PheNorm, an extension that uses binary silver labels directly in the corruption-and-regression denoising step and produces a continuous phenotype score without EM calibration. We also consider a lasso-regularized version for high-dimensional EHR settings and combined models using both binary and count labels. In simulations, Binary PheNorm achieved strong discrimination using binary labels alone and often improved performance when combined with count labels. In anaphylaxis, AUC increased from 0.793 for an epinephrine-mention indicator to 0.891-0.892 after Binary PheNorm. In acute pancreatitis, AUC increased from 0.736 for a lipase-threshold indicator to 0.805-0.819. These results support Binary PheNorm as a practical weakly supervised approach when informative binary silver labels are available.",
+      "authors": [
+        "Shuhe Wang",
+        "Matthew T. Slaughter",
+        "Jennifer C. Nelson",
+        "Brian D. Williamson"
+      ],
+      "primary_category": "stat.ME",
+      "categories": [
+        "stat.ME",
+        "cs.LG",
+        "stat.ML"
+      ],
+      "published": "2026-07-20T18:32:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.18431v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "proposes binary silver label method for EHR phenotyping algorithms",
+      "llm_evidence_cn": "提出用于EHR表型算法的二元银标签方法",
+      "llm_evidence": "提出用于EHR表型算法的二元银标签方法",
+      "canonical_evidence": "提出用于EHR表型算法的二元银标签方法",
+      "llm_tldr_en": "Extends PheNorm to handle binary silver labels for EHR-based computable phenotyping, addressing a key data challenge in EHR studies.",
+      "llm_tldr_cn": "该论文针对EHR研究中金标准标签缺乏的问题，扩展了弱监督表型算法PheNorm，使其支持二元银标签（如诊断代码、NLP提及等）。提出Binary PheNorm，通过直接利用二元标签实现高效表型计算，提高了EHR数据中表型识别的可扩展性。该工作虽不直接评估医疗智能体，但所处理的EHR数据质量和标签问题是医疗智能体训练与评估的基础。",
+      "llm_tldr": "该论文针对EHR研究中金标准标签缺乏的问题，扩展了弱监督表型算法PheNorm，使其支持二元银标签（如诊断代码、NLP提及等）。提出Binary PheNorm，通过直接利用二元标签实现高效表型计算，提高了EHR数据中表型识别的可扩展性。该工作虽不直接评估医疗智能体，但所处理的EHR数据质量和标签问题是医疗智能体训练与评估的基础。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.19524v1",
+      "source": "arxiv",
+      "title": "SynPre-FL: Synthetic data-driven pretraining integrated Federated Learning training framework",
+      "abstract": "Federated learning (FL) offers a promising approach to privacy-preserving clinical risk prediction, but its deployment remains limited by restricted data sharing, client heterogeneity, class imbalance, and the lack of realistic tabular electronic health record (EHR) benchmarks. Synthetic data generation may alleviate data scarcity, yet its integration with federated optimisation has received limited systematic study. We propose SynPre-FL, a unified framework combining high-fidelity synthetic EHR generation with synthetic-pretrained FL for robust prediction under non-IID conditions. A latent autoencoder-diffusion model generates privacy-preserving synthetic cohorts, which are used to warm-start federated training. This pretraining is followed by heterogeneity-aware optimisation using class-balanced local objectives, proximal regularisation, and adaptive server aggregation. Post-hoc calibration and federated-safe explainability support reliable and interpretable risk estimates. Experiments show that the synthetic generator preserves univariate, bivariate, and multivariate structure while protecting against membership-inference and reconstruction attacks. The generated data achieve strong downstream utility under TSTR, TRTS, and model-based evaluations. Across federated settings with 5, 10, and 15 heterogeneous clients, SynPre-FL consistently improves robustness and scalability over baseline methods, especially under severe non-IID fragmentation. Calibration improves probability reliability, while SHAP analysis produces stable and clinically coherent feature attributions across federation sizes. SynPre-FL therefore provides a practical and reproducible framework for combining synthetic data with FL to enable privacy-aware, interpretable, and robust clinical prediction from distributed tabular EHR data.",
+      "authors": [
+        "Akarsh K Nair",
+        "Muhammad Arifur Rahman",
+        "Nicholas Shopland",
+        "Andy Burton",
+        "Jun He",
+        "Yuan Shen",
+        "David Baldwin",
+        "Emma O'Dowd",
+        "Amna Burzic",
+        "Mufti Mahmud",
+        "David J. Brown"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.DC"
+      ],
+      "published": "2026-07-21T19:12:48+00:00",
+      "link": "https://arxiv.org/pdf/2607.19524v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "EHR data, clinical risk prediction, synthetic data for pretraining",
+      "llm_evidence_cn": "电子健康记录数据、临床风险预测、用于预训练的合成数据",
+      "llm_evidence": "电子健康记录数据、临床风险预测、用于预训练的合成数据",
+      "canonical_evidence": "电子健康记录数据、临床风险预测、用于预训练的合成数据",
+      "llm_tldr_en": "Proposes SynPre-FL combining synthetic EHR generation with federated learning for robust clinical prediction under non-IID conditions.",
+      "llm_tldr_cn": "该论文提出SynPre-FL框架，针对联邦学习中数据异质性和缺乏真实EHR基准的问题，利用潜在自动编码器-扩散模型生成高保真合成EHR数据，用于预训练联邦模型。在非独立同分布条件下提升了临床风险预测的鲁棒性。该工作为隐私保护的医学AI提供了可复用的EHR基准和训练方法。",
+      "llm_tldr": "该论文提出SynPre-FL框架，针对联邦学习中数据异质性和缺乏真实EHR基准的问题，利用潜在自动编码器-扩散模型生成高保真合成EHR数据，用于预训练联邦模型。在非独立同分布条件下提升了临床风险预测的鲁棒性。该工作为隐私保护的医学AI提供了可复用的EHR基准和训练方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.22448v1",
+      "source": "arxiv",
+      "title": "Where FactsGo Missing: A LayerwiseTaxonomy and Per-Layer Attribution of Information Omissionin Air-Gapped LLM Agent Pipelines",
+      "abstract": "Air-gapped and on-premises deployments in regulated settings (clinical FHIR services, legal review, sovereign infrastructure) cannot call frontier APIs; they run quantized 4-8B models via llama.cpp or vLLM behind tool servers. The dominant reliability failure is omission: the silent absence of a decision-critical fact, such as an agent reading 20 of 400 records and reporting \"no anomalies.\" We argue omission is a pipeline phenomenon, not a model phenomenon, and make four contributions. First, a nine-layer taxonomy (L0-L8) locating every omission mechanism from ingestion through the agent loop. Second, an attribution methodology separating deterministic layers (L0-L3) from behavioral layers (L4-L8) via controlled ablation and logit decomposition, quantifying each with an omission waterfall. Third, an open cross-architecture harness comparing sliding-window-hybrid, full-attention, and SSM-hybrid models across engines and frameworks. Fourth, a runtime-detection framework for air-gapped settings where you own the logits. Results from a 75,476-trial sweep across five models and two engines show a pooled omission rate of 0.62; 68% originates in deterministic middleware (L0-L3), relocating where operators should intervene. Server-side profile factors (weight quantization, KV-cache type, RoPE scaling) were fixed and left for future work.",
+      "authors": [
+        "Santhiya Rajan"
+      ],
+      "primary_category": "cs.MA",
+      "categories": [
+        "cs.MA"
+      ],
+      "published": "2026-07-24T16:10:21+00:00",
+      "link": "https://arxiv.org/pdf/2607.22448v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "evaluates omission failure in agent pipelines for clinical FHIR services",
+      "llm_evidence_cn": "评估临床FHIR服务中智能体流水线的信息遗漏故障",
+      "llm_evidence": "评估临床FHIR服务中智能体流水线的信息遗漏故障",
+      "canonical_evidence": "评估临床FHIR服务中智能体流水线的信息遗漏故障",
+      "llm_tldr_en": "Proposes a nine-layer taxonomy and attribution methodology for omission failures in air-gapped LLM agent pipelines, with clinical FHIR as a key use case.",
+      "llm_tldr_cn": "该论文针对气隙部署的LLM智能体流水线中常见的决策关键事实遗漏问题，提出了一个九层分类体系（L0-L8）和归因方法论，将遗漏机制从数据摄入到智能体循环逐层定位。方法通过分离确定性层与行为层，揭示了遗漏主要是流水线现象而非模型现象。实验以临床FHIR服务为典型场景，展示了对智能体可靠性的评估框架。该工作为医疗环境中部署的EHR相关智能体提供了系统化的评估维度。",
+      "llm_tldr": "该论文针对气隙部署的LLM智能体流水线中常见的决策关键事实遗漏问题，提出了一个九层分类体系（L0-L8）和归因方法论，将遗漏机制从数据摄入到智能体循环逐层定位。方法通过分离确定性层与行为层，揭示了遗漏主要是流水线现象而非模型现象。实验以临床FHIR服务为典型场景，展示了对智能体可靠性的评估框架。该工作为医疗环境中部署的EHR相关智能体提供了系统化的评估维度。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

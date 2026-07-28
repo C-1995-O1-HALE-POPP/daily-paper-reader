@@ -6,31 +6,40 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-27
-- 运行时间：2026-07-27 21:34:52 UTC
+- 最新运行日期：2026-07-28
+- 运行时间：2026-07-28 21:45:45 UTC
 - 运行状态：成功
-- 本次总论文数：2
-- 精读区：0
-- 速读区：2
+- 本次总论文数：6
+- 精读区：3
+- 速读区：3
 
 ### 今日简报（AI）
-今日速读两篇AI医学论文，聚焦翻译摘要助手与多模态电子健康记录基础模型。
-
-两篇均获6分，值得关注AI在临床翻译摘要自动生成及多模态数据融合的进展。
-
-建议读者尝试用真实病例测试摘要生成工具，并关注多模态EHR模型的隐私与公平性。
-- 详情：[/202607/27/README](/202607/27/README)
+今日聚焦医疗咨询智能体评估与临床质量语言评估，精读两篇高分论文。  
+10分满分论文《MedDDC-Eval》提出诊断解耦的多轮医疗咨询评估方法，8分论文探讨临床质量语言的原子级与复合评估，两者均对医疗AI评估有重要参考。  
+建议关注医疗领域AI评估标准与可解释性研究，以及合成数据在联邦学习中的初步应用。
+- 详情：[/202607/28/README](/202607/28/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [MedDDC-Eval: Diagnosis-Decoupled Evaluation of Multi-Turn Medical Consultation Agents](/202607/28/2607.18999v2-medddc-eval-diagnosis-decoupled-evaluation-of-multi-turn-medical-consultation-agents)  
+   标签：评分：10.0/10、query:ehr-agent
+   evidence：使用医疗记录对多轮医疗咨询智能体进行诊断解耦评估
+2. [The Atoms of the Score: Record-Level versus In-Engine Composite Evaluation of Clinical Quality Language](/202607/28/2607.23619v1-the-atoms-of-the-score-record-level-versus-in-engine-composite-evaluation-of-clinical-quality-language)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：使用EHR数据评估临床质量语言引擎
+3. [Closed-Loop Validation-Repair for Healthcare Interoperability: A Multi-Model Study of Schema Compliance in Clinical LLMs](/202607/28/2607.24371v1-closed-loop-validation-repair-for-healthcare-interoperability-a-multi-model-study-of-schema-compliance-in-clinical-llms)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：评估LLM在EHR互操作性中的模式合规性，采用验证-修复方法
 
 ### 速读区论文标签
-1. [Real-World Evaluation of an AI Agent Drafting Translational Impact Summaries](/202607/27/2607.16989v2-real-world-evaluation-of-an-ai-agent-drafting-translational-impact-summaries)  
+1. [Using binary silver labels in electronic health records-based computable phenotyping algorithms](/202607/28/2607.18431v1-using-binary-silver-labels-in-electronic-health-records-based-computable-phenotyping-algorithms)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：在临床转化科学场景中真实评估AI代理，方法可应用于医疗代理评估
-2. [Autoregressive EHR Foundation Models with Multimodal Inputs](/202607/27/2607.22264v1-autoregressive-ehr-foundation-models-with-multimodal-inputs)  
+   evidence：提出用于EHR表型算法的二元银标签方法
+2. [SynPre-FL: Synthetic data-driven pretraining integrated Federated Learning training framework](/202607/28/2607.19524v1-synpre-fl-synthetic-data-driven-pretraining-integrated-federated-learning-training-framework)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：用于临床预测的自回归EHR基础模型
+   evidence：电子健康记录数据、临床风险预测、用于预训练的合成数据
+3. [Where FactsGo Missing: A LayerwiseTaxonomy and Per-Layer Attribution of Information Omissionin Air-Gapped LLM Agent Pipelines](/202607/28/2607.22448v1-where-factsgo-missing-a-layerwisetaxonomy-and-per-layer-attribution-of-information-omissionin-air-gapped-llm-agent-pipelines)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：评估临床FHIR服务中智能体流水线的信息遗漏故障
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,287 @@
+Title: The Atoms of the Score: Record-Level versus In-Engine Composite Evaluation of Clinical Quality Language
+
+URL Source: https://arxiv.org/pdf/2607.23619v1
+
+Published Time: Tue, 28 Jul 2026 01:04:49 GMT
+
+Number of Pages: 12
+
+Markdown Content:
+# The Atoms of the Score: Record-Level versus In-Engine Composite Evaluation of Clinical Quality Language 
+
+Angelo Kastroulis Carrera Group 
+
+akastroulis@alumni.harvard.edu 
+
+Draft v2 — July 2026 
+
+Abstract 
+
+Clinical Quality Language (CQL) engines serve two axes of clinical computation: decision support — evaluate one patient, now — and quality measurement — score a population against a measure. Quality measurement is itself multidimensional: the composite score is rarely the end product, because the individual determinations that make it up are what allow a score to be inspected, attributed, and acted on. Two engine architectures follow from where that aggre-gation happens. One computes the composite inside the engine over the whole store — no data movement, maximal aggregate throughput. The other evaluates individual records and lets the composite be totaled externally, keeping every intermediate determination available. Mer-cury is a purpose-built CQL database engine of the second kind: it treats CQL evaluation as a database problem — FHIR resources stored in a compact binary encoding keyed patient-first, indexes derived from what CQL retrieves filter on, a planner selecting access paths, and CQL itself as the query language — rather than as in-memory interpretation over a generic FHIR store. We evaluate Mercury 2.0.1 against Blaze 1.10.1 — an engine of the first kind and among the fastest CQL evaluators available, which is precisely why it is the right benchmark — using Blaze’s own published suite on identical AWS hardware over a 100,000-patient Synthea corpus (112.3 M resources). The engines disagree by orders of magnitude in both directions : Mercury answers record-level queries 7.5–25.7 × faster at the median (1.0–9.7 ms vs. 26.8–72.6 ms) and sustains 7.3–9.1 × higher extraction throughput, while Blaze computes in-engine composites 13–1,082 × faster. Correctness is held to a record-level standard, not merely count equality: a 10,000-pair per-patient agreement gate across engines reached 100.000 % after uncovering — and driving fixes for — two ingest bugs that composite-count comparison provably could not detect, because the aggregates were accidentally correct while individual answers were wrong. Ingest also favors the purpose-built path (74.7 min vs. 4 h 36 m to query-ready). We attribute both regimes to a single architectural choice, quantify a “store hygiene tax” in which a correctness fix sped up every lookup 1.2–2.8 ×, and argue that record-level agreement gates should be standard practice in engine benchmarking. 
+
+# 1 Introduction 
+
+CQL execution in production systems runs along two axes. The first is decision support : a CDS Hooks call, a point-of-care gap check, a patient-facing application — one subject, a millisecond budget, an answer that must arrive while someone is waiting. The second is quality measurement :scoring a population against a measure for reporting, improvement, or payment. The second axis 1arXiv:2607.23619v1 [cs.DB] 26 Jul 2026 is more layered than it first appears. The composite score — a numerator over a denominator — is rarely what an organization actually needs; the atoms of the score, the per-patient determinations, are what make the score explainable and actionable. A rate without its members cannot tell you whom to call, what documentation is missing, or why the number moved. Where the aggregation happens therefore divides engine architecture. One family computes the composite in the engine , scanning the whole store: no data movement, one compiled plan, maximal aggregate throughput — and the intermediate determinations are a byproduct the caller may or may not be able to afford to extract. The other family evaluates individual records 
+
+and leaves totaling to the caller: every atom is first-class and inspectable, decision support and measurement share one execution path, and the composite is a trivial external sum — at the cost of paying per-record evaluation overhead as many times as there are records. Neither choice is free. This paper measures both sides of that trade with one corpus on one machine class. This paper also takes a position: an atom-level methodology is more useful than an aggregate totaling machine . Three observations carry the argument. First, the atoms serve both axes — the same record-level evaluation that answers a decision-support call is the path to a quality measure totaled externally — while a composite-only result serves one. Second, the information flows one way: the composite is recoverable from the atoms by trivial summation, but the atoms are not recoverable from the composite. Third, and most consequentially for benchmarking, correctness is only checkable at the atom level: Section 6 presents two bugs that left aggregate counts exactly correct while individual answers were wrong — a failure mode no amount of composite validation can detect. The price of this position is measured rather than hidden: when the composite truly is all that is needed, the in-engine scan is dramatically faster (Section 5), and we report that with the same prominence as our wins. 
+
+Why a purpose-built CQL database engine. The prevailing reference stacks do not trans-late CQL to SQL. They interpret it — compiled to ELM — in memory, typically on the JVM, against FHIR resources fetched from a generic FHIR server. What they do not do is treat evalu-ation the way a database would: store the data compactly in a form chosen to optimize retrieval, then build the machinery needed to locate and compute — indexes over the properties retrieves actually filter on, a planner selecting access paths, an execution layer that owns its storage. The engine is a calculator bolted to a store that knows nothing about it; every retrieve is a round-trip into somebody else’s data layout, parsed from JSON on arrival. Building the engine as adatabase instead lets CQL evaluation inherit what decades of data-systems research made routine — compact binary encodings and compression, zero-copy reads, indexing, access-path selection, query planning — with the healthcare-specific nuances baked in: the FHIR resource as the native record, the patient partition as the unit of physical locality (matching CQL’s unit of evaluation, the subject context), and index keys derived from CQL retrieve shapes. Blaze took this database turn for the population axis — it owns its store and compiles queries against it, which is why it is fast. Mercury takes the same turn for the record axis, and is deliberately an engine of the record-level family. That makes Blaze the appropriate benchmark: if the record-level design cannot hold its own against the best database-shaped engine of the other family, the design is not interesting. This paper makes five contributions. (1) A two-regime benchmark design — interactive record-level latency, concurrent record-level extraction, and in-engine composite aggregation — layered on Blaze’s own published query suite and protocol: the defender’s home field. (2) Head-to-head results on identical hardware and corpus in which each engine wins its regime by one to three orders of magnitude; both results are true simultaneously and follow from one storage decision. (3) A record-level cross-engine agreement gate (10,000 paired booleans) as a correctness methodology, 2with case studies in which it caught bugs invisible to aggregate-count equality — including one where the aggregate was accidentally correct . (4) A complete failure taxonomy: both engines fail the same terminology-dependent queries loudly; one disclosed DNF; zero silent wrongs after fixes. (5) Ingest-path attribution isolating allocator policy ( ∼8×), lock removal ( ∼4× parallel-phase, 1.3 × end-to-end), and a merge-operator experiment ( ≈ nil). 
+
+# 2 Background 
+
+CQL and measure evaluation. A FHIR Library carries CQL source; a Measure references it; 
+
+$evaluate-measure evaluates an initial-population expression per subject ( reportType=subject )or over the store ( reportType=population ). The two report types are the API surface of the two axes above. 
+
+The CQF operation surface is wider than $evaluate-measure . The CQF framework defines a family of record-level operations beyond measure evaluation: Library/$evaluate (eval-uate any named expression for a subject), the system-level $cql operation (ad-hoc expressions), 
+
+$data-requirements , and $package . These are where CQL is used as a language — the sub-strate of decision support and application logic — rather than as a measure-report generator, and a benchmark centered on CQL arguably ought to make them its focus: $evaluate-measure is one case, and for record-level workloads a marginal one. Blaze’s published suite, which we adopt ver-batim as the defender’s home field, exercises $evaluate-measure only; a dedicated cross-engine benchmark of the full CQF record-level surface ( CQF-Bench ) is in development by the authors and is out of scope here. 
+
+Blaze. A Clojure FHIR server that compiles CQL once per evaluation and iterates the patient axis in a tight scan; amortized per-patient cost on that axis is sub-microsecond. Blaze publishes its benchmark suite (queries, Synthea recipe, timing protocol, an eval-duration extension) in its repository; we adopt all of it. 
+
+Mercury. A Rust engine over RocksDB, version 2.0.1 evaluated here. Every clinical row is keyed patient|type|id with index postings patient|property|value ; the store is physically partitioned by subject. Evaluation binds one subject’s context and reads only that subject’s keys. Around that storage core Mercury carries the full database toolchain: a query planner with access-path selection (index routes vs. scans, chosen per retrieve), a compact FHIR-shaped binary record format with zero-copy reads, intelligent valueset-and-code matching (terminology resolved to direct code filters at compile time, unresolvable references failing loudly), and the CQF operation surface ( $evaluate-measure , Library/$evaluate , $cql , $data-requirements ,
+
+$package ). The design intent is the record-level family: O(1) subject workflows, simple deletion and compaction, atoms as the primary product; in-engine composite scans were the known un-optimized path. 33 Method 
+
+3.1 Test setup: corpus, hardware, physical footprint, load time 
+
+Table 1: Test setup. One engine resident at a time on the same instance class; stores snapshotted to object storage for reproduction. Ingest paths differ by design and are declared: Blaze ingests FHIR transaction bundles over HTTP (blazectl, 16-way concurrent); Mercury ingests NDJSON through its bulk path — the same resources, reference-rewritten per the FHIR transaction rules.                             
+
+> Corpus Synthea (seed 3256262546): 100,000 patients, 112,322,471 re-sources
+> Raw corpus 100,000 gzipped transaction bundles, 17.8 GB
+> NDJSON (Mercury path) 20 gzipped shards, 10.4 GB
+> Hardware AWS r6i.8xlarge : 32 vCPU, 256 GB RAM; gp3 1 TB, 16 K IOPS Blaze 1.10.1, documented benchmark config: 64 GB heap, 64 GB block cache Mercury 2.0.1, community engine: 32 GB block cache, 30 eval threads Store on disk Blaze 127.3 GB ; Mercury 185.0 GB (binary FHIR + patient-scoped postings) Load time Blaze 4 h 36 m (≈6,800 res/s); Mercury 74.7 min (≈25,100 res/s) —
+> 3.7 ×
+> Protocol Blaze’s 9-run protocol, first two discarded; container restart between queries
+
+Table 2: Resource-type profile (exact counts). Observation-dominated — Synthea’s longitudinal-record shape — averaging ∼1,123 resources ( ∼640 observations) per patient. Consistency check: the Condition row count equals the stratifier-condition-code strata total both engines re-ported (Table 4).                     
+
+> Resource type Count Share Observation 63,950,790 56.9 % DiagnosticReport 17,237,029 15.3 % Procedure 15,615,811 13.9 % Encounter 9,551,864 8.5 % Condition 5,658,095 5.0 % MedicationAdministration 104,441 0.1 % Medication 104,441 0.1 % Patient 100,000 0.1 %
+> Total 112,322,471 100 %
+
+Tables 1 and 2 summarize the setup and corpus. Declared deviations: Mercury lacks the FHIR transaction interaction for artifact creation (individual POSTs); Mercury received reportType=population 
+
+explicitly; and unscoped composite evaluation — disabled and reported not supported in Mercury as shipped — was explicitly enabled for the Regime-B runs. 
+
+3.2 Before the test: the ingest observation 
+
+The timed protocol begins at a loaded store, so ingest is not part of the benchmark — but getting both engines to that starting line was itself instructive, and we report it as an observation. Blaze ingested the corpus the way its documentation prescribes: 16-way concurrent FHIR transaction 4bundles over HTTP, sustaining ≈6,800 resources/s for 4 h 36 m end-to-end. Mercury ingested the same resources through its bulk path at ≈25,100 resources/s — 74.7 minutes to query-ready, 3.7 × sooner on wall clock, including the FHIR-transaction-rule reference rewriting. The paths differ by design and the comparison is observational, not protocolized; but the operational difference is real for anyone who must stand up, refresh, or replay a store. Mercury’s ingest surface also extends beyond what this exercise used: bulk FHIR $import , asynchronous ingest jobs with progress reporting, and direct NDJSON file reads that bypass HTTP entirely — the modalities a database offers because loading is part of its job, not an inconvenience in front of it. The trade is disclosed in the other direction too: Mercury pays more disk for what it builds (185.0 vs. 127.3 GB) — the patient-first key space plus per-property index postings are the physical price of the millisecond read path measured in Section 4. 
+
+3.3 The two regimes 
+
+Regime A (record-level). A seeded-random sample of 1,000 patients (seed 42; sample SHA-256 published). A1 interactive : sequential per-subject $evaluate-measure , three passes, first discarded; wall p50/p95/p99/max and server-side evaluation time via the eval-duration ex-tension (implemented in Mercury for parity). A2 extraction : the same subjects fanned out at concurrency 16 — the compute-the-atoms-and-total-externally path to a quality measure. Full fan-out : all 100,000 subjects at c=16 for one query; the externally-totaled composite this produces is cross-checked against both engines’ in-engine composites. Regime B (in-engine composite). 
+
+Blaze’s own regime: unscoped evaluation over the store, 9-run protocol. 
+
+3.4 The agreement gate 
+
+Count equality is necessary but not sufficient — it validates the composite, not the atoms. For every Regime-A query we record each engine’s per-patient initial-population boolean and join across engines (10 queries × 1,000 patients). Cross-engine subject identity is itself non-trivial — Blaze assigns new server ids at transaction ingest — so the join key is the Synthea identifier (map published). Section 6 shows this gate catching two bug classes that composite comparison could not. 
+
+# 4 Results: Regime A (record-level) 
+
+Mercury is 7.5–25.7 × faster at the median and 3.2–12.1 × at p99 (Table 3); on eight of ten queries Mercury’s p99 ( ≈2.4–2.7 ms) sits an order of magnitude below Blaze’s median . The worst single Mercury call in ∼20,000 timed calls was 59 ms — roughly Blaze’s median for condition-all .Server-side, Mercury’s typical evaluation is ≈0.65 ms (the remaining ∼0.9 ms of wall time is HTTP/JSON envelope). 5Table 3: Regime A on the 100 k store: 1,000-patient sample, three passes (first discarded), con-currency 16 for throughput. Agreement is per-patient boolean equality across engines.                                                                          
+
+> A1 p50 (ms) A2 (patients/s) Query Mercury Blaze Speedup Mercury Blaze Speedup condition-450-rare 9.72 72.63 7.5 ×986 132 7.5 ×
+> condition-all 6.26 52.45 8.4 ×1,618 178 9.1 ×
+> condition-ten-frequent 1.57 27.91 17.8 ×2,397 305 7.9 ×
+> condition-ten-rare 1.23 27.82 22.6 ×2,442 306 8.0 ×
+> condition-two 1.07 27.13 25.3 ×2,506 314 8.0 ×
+> observation-17861-6 1.04 26.86 25.7 ×2,523 326 7.7 ×
+> observation-44261-6 1.08 26.75 24.9 ×2,528 318 8.0 ×
+> observation-72514-3 1.57 26.81 17.0 ×2,306 315 7.3 ×
+> observation-788-0 1.06 26.81 25.3 ×2,531 312 8.1 ×
+> observation-8310-5 1.17 26.80 22.8 ×2,463 321 7.7 ×
+> Agreement gate: 10,000/10,000 = 100.000 % (every query 1,000/1,000). Full 100 k fan-out (o-17861, c=16): Mercury 41.0 s vs. Blaze 313.2 s (7.6 ×); both 2,515 true, 0 errors.
+
+4.1 The structural finding: a latency floor vs. proportional cost 
+
+Blaze’s median is ∼27 ms on eight of ten queries — within 1 ms of each other regardless of selectivity or result size: a fixed per-evaluation orchestration floor, rising only when the retrieve itself is heavy. Mercury has no comparable floor; its latency tracks data touched (1.04–9.72 ms). Figure 1 is that finding in one chart: a flat line crossing a proportional one. 
+
+> c-450-rare
+> c-all
+> c-ten-freq
+> c-ten-rare
+> c-two
+> o-17861
+> o-44261
+> o-72514
+> o-788
+> o-8310
+
+10 0
+
+10 1
+
+10 2
+
+> A1 median latency (ms, log)
+
+Blaze 1.10.1 
+
+Mercury 
+
+Figure 1: Median single-subject latency by query. Blaze pays a ∼27 ms per-evaluation floor — eight of ten medians land within 1 ms of each other regardless of selectivity — rising only when the retrieve itself is heavy. Mercury has no comparable floor; its cost is proportional to data touched. The same architecture inverts in the composite regime (Table 4). Figure 2 extends the finding to the tails: the two engines’ latency bands (p50–p99) do not overlap on any query. 6c450 
+
+> call
+> c10f
+> c10r
+> c2
+> o17861
+> o44261
+> o72514
+> o788
+> o8310
+
+10 0
+
+10 1
+
+10 2
+
+query (ordered as Table 3)   
+
+> latency (ms, log)
+> Blaze p50 Blaze p99
+> Mercury p50 Mercury p99
+
+Figure 2: The tail ladder: p50 (solid) and p99 (dashed) per engine. The bands never overlap — on eight of ten queries Mercury’s p99 sits below Blaze’s p50 by roughly an order of magnitude. The one visible Mercury tail (o-72514, p99 9.1 ms) is a single 59 ms call among 2,000. 
+
+# 5 Results: Regime B (in-engine composite) 
+
+Blaze is 13–1,082 × faster (Table 4) — this regime is what its architecture is for, and the num-bers show it. Mercury matches its composite counts exactly on all seventeen countable queries, including the 5.66 M-strata stratifier. One asymmetry deserves emphasis: unscoped in-engine composite evaluation is not a supported mode of Mercury as shipped — the operation is disabled and reports not supported ; we enabled it explicitly for this comparison so the regime could be measured rather than merely declared out of scope. We did not attempt to tune it (Section 9). 7Table 4: Regime B: unscoped in-engine composite evaluation, Blaze’s 9-run protocol. Every countable query matches exactly. The three valueset ( -vs ) queries fail loudly on both en-gines (no terminology service in either documented configuration). One disclosed Mercury DNF: 
+
+stratifier-observation-laboratory-code (41.65 M strata). 
+
+Query Blaze n Mercury n Blaze avg (s) Mercury avg (s) Slowdown condition-450-rare 391 391 0.070 75.71 1,082 ×
+
+condition-all 99,777 99,777 1.543 44.73 29 ×
+
+condition-ten-frequent 96,397 96,397 0.121 4.70 39 ×
+
+condition-ten-rare 391 391 0.060 3.10 52 ×
+
+condition-two 8,589 8,589 0.066 1.63 25 ×
+
+observation-17861-6 2,515 2,515 0.063 1.33 21 ×
+
+observation-44261-6 35,996 35,996 0.087 1.71 20 ×
+
+observation-72514-3 99,815 99,815 0.119 11.73 99 ×
+
+observation-788-0 2,242 2,242 0.056 1.32 24 ×
+
+observation-8310-5 60,092 60,092 0.092 1.23 13 ×
+
+obs-body-weight-10 6,701 6,701 0.072 7.60 106 ×
+
+obs-body-weight-50 47,953 47,953 0.097 7.84 81 ×
+
+obs-body-weight-100 99,807 99,807 0.130 8.61 66 ×
+
+calcium-date-age 18,698 18,698 0.096 13.56 141 ×
+
+hemoglobin-date-age 13,781 13,781 0.077 4.13 54 ×
+
+inpatient-stress 1,628 1,628 1.133 110.82 98 ×
+
+stratifier-condition-code 5,658,095 5,658,095 3.063 41.98 14 ×
+
+Figure 3 superimposes both regimes on a single signed log-ratio axis: the mirror image is the finding. 8c450 
+
+> call
+> c10f
+> c10r
+> c2
+> o17861
+> o44261
+> o72514
+> o788
+> o8310
+
+1000 ×
+
+100 ×
+
+10 ×
+
+1×
+
+10 ×
+
+0
+
+> ← Blaze wins  (log ratio)  Mercury wins  →
+> Regime A: record-level (Mercury/Blaze speedup)
+> Regime B: composite (Blaze/Mercury speedup)
+
+Figure 3: Two regimes, one architecture. For each query, Mercury’s record-level speedup is plotted upward and its composite slowdown downward (signed log 10 ratio). The same storage decision produces both halves; no query escapes the mirror. The downward half measures a mode Mercury does not even ship enabled — unscoped composite evaluation is off by default and reports not supported ; it was switched on for this test. The deepest bar ( c450 , 1,082 ×) is the 450-code retrieve — the shape Future Work item 4 targets from both directions at once. 
+
+# 6 The correctness journey 
+
+The first campaign scored 10/21 exact-count matches. Every failure traced to three root causes. 
+
+(1) Dropped code filters : named code /concept definitions were never bound, and unresolvable valuesets fell through unfiltered, so retrieves matched everything; counts were wrong loudly and count comparison caught them. The fix also made unresolved terminology a hard evaluation error, matching Blaze’s honesty. (2) urn:uuid split-keying at ingest : Synthea transaction bundles reference subjects as urn:uuid:X ; Mercury keyed clinical rows under the literal string and Patient rows under the bare id. Record-level evaluation under the bare id found no data — yet in-engine composites were accidentally correct because the registry enumerated both key forms. Composite comparison could never catch this; the agreement gate did (59.97 % agreement is an unmistakable alarm). (3) Un-rewritten intra-bundle references : FHIR transaction rules require urn:uuid references to be rewritten to Type/id ; Mercury stored them literally, so reference-string joins ( C.encounter.reference = ’Encounter/’ + E.id ) matched nothing and inpatient-stress returned 0 against Blaze’s 1,628 — silently wrong, the worst class. Arelated evaluation gap (choice-type value[x] compared against a Quantity hard-erroring instead of yielding null per ELM cast semantics) was fixed with spec-compliant null-coercion while keeping genuinely ill-typed comparisons loud. After fixes and a full re-ingest: 17/17 exact composites and 100.000 % record-level agreement. The store-hygiene bonus : repairing the split-key layout made every per-patient lookup 1.2–2.8 ×
+
+faster (e.g. 2.82 ms → 1.04 ms p50) and the full fan-out 48 s → 41 s — the bug had been taxing every read with double-key resolution. 97 Attribution: why both regimes are true at once 
+
+Measured on the live 112 M-resource store, Mercury’s single-subject evaluation costs p50 227 μs, of which storage reads are ≈1 % (patient-scoped point-gets, 2–5 μs); the remainder is per-subject environment, terminology binding, and AST interpretation — repeated once per subject. Blaze compiles once and pays ≈0.63 μs per patient amortized on the population axis, but ≈27 ms per call on the subject axis. One architectural choice, two mirror-image bills. Ingest attribution on the same corpus (Figure 4): glibc malloc arena policy ( MALLOC_ARENA_MAX 
+
+2→64) ≈8×; global-lock removal ≈3.5–4 × in the parallel phase but 1.3 × end-to-end (a shared single-threaded tail — Amdahl’s law applied twice in one experiment); RocksDB merge-operator vs. read-modify-write ≈ nil. Final ingest: 112.3 M resources in 74.7 min including spec-required reference rewriting (Blaze: 4 h 36 m via transaction bundles — different paths, declared as such).    
+
+> naive config +allocator arenas +lock removal final engine
+
+10 0
+
+10 1
+
+10 2
+
+10 3
+
+10 4 
+
+> 4.2/s
+> 2,330/s
+> 19,183/s 25,100/s
+> sustained ingest (resources/s, log)
+
+Figure 4: The ingest journey (log scale): a ∼6,000 × path from the naive configuration to the final engine. The largest single factor was the memory allocator’s arena policy, not any database code. Blaze’s sustained transaction-bundle rate on the same corpus is ≈6,800 res/s (4 h 36 m end-to-end) — Mercury’s final NDJSON path lands 3.7 × faster end-to-end. Figure 5 compresses every measured ratio into one view of the regime boundary. 10 A1 p50 
+
+> A1 p99
+> A2 thru
+> Regime B
+> c450
+> call
+> c10f
+> c10r
+> c2
+> o17861
+> o44261
+> o72514
+> o788
+> o8310
+> B 1000 ×
+> B 100 ×
+> B 10 ×
+> 1×
+> M 10 ×
+
+Figure 5: Every measured ratio in one view (signed log 10 ; blue = Mercury faster, gray = Blaze faster). The regime boundary is a vertical line: three record-level metrics are uniformly blue, the composite column uniformly gray. No query crosses it — the tradeoff is architectural, not query-specific. 
+
+# 8 Discussion 
+
+Regime-match, not engine-superiority. Decision support and atom-level measurement (mil-lisecond budgets, inspectable individual determinations) fit record-level engines; whole-store com-posite reporting (minute budgets, no data movement) fits compiled scan engines. The procurement question is “which regime am I buying for?” — and, within quality measurement, “do I need the atoms or only the score?” 
+
+Methodology. Run the defender’s own suite under the defender’s protocol; add record-level agreement gates (two of our three bug classes were invisible to composite comparison); publish the failure taxonomy with the same prominence as the speedups. 
+
+Threats to validity. Single corpus generator (Synthea); cohort-scoring boolean measures only; Blaze measured once on its documented configuration without further tuning (its published num-bers are consistent with ours); Blaze’s $cql endpoint (beta) was unavailable in this deployment, so the CDS-surface comparison rests on $evaluate-measure ; engines measured serially on the same box class, not simultaneously; one Mercury latency-tail note (a single 59 ms call among 2,000 on observation-72514-3 , p95 3.8 ms). 
+
+# 9 Future work 
+
+In-engine composite aggregation is not what Mercury is for — but we thought it would be fun to find out, and it shows: Blaze does an excellent job in that regime. The gap is closable with-out abandoning the patient-first layout, in escalating order of ambition: (1) hoist per-subject 11 setup (estimated 227 μs → 20–50 μs per subject); (2) composite-shape recognition in the plan-ner, answering boolean code-exists forms from index postings ( ≈100 k point-gets ≈ 10–50 ms parallel — competitive with Blaze’s 63 ms on the 2.5 % query); (3) a value-first auxiliary index (type|property|value →patients) making population enumeration a single prefix scan, backfil-lable through the existing reconcile machinery; (4) multi-code retrieves via ordered prefix scan (removing the 450-point-get shape behind both the 1,082 × composite outlier and the 9.7 ms Regime-A entry); (5) stratifier streaming (removing the disclosed DNF); (6) streamed result out-put : large evaluations currently pay full materialization and serialization of the report before the first byte returns — the cost behind both the subject-list report shape and the stratifier DNF. A streaming mode would return the aggregate immediately and then serialize matches and per-stratum intermediates incrementally, so an analyst can obtain the answer and re-run the same query streaming out its intermediate matches for inspection — without the engine ever holding the full result set in memory. This composes with (5), and it is the natural API for an engine whose thesis is that the atoms matter: intermediate results become an analysis feature rather than a memory liability. Beyond the engine: CQF Ruler as a third subject, CV/ratio measures, non-Synthea corpora, and CQF-Bench — a cross-engine benchmark of the full CQF record-level operation surface (Section 2) that $evaluate-measure -centric suites, this one included, leave unmeasured. 
+
+# 10 Conclusion 
+
+Two engines, one corpus, one machine class, and the defender’s own benchmark suite — and each engine wins by one to three orders of magnitude in the regime it was built for, with record-level answers agreeing 10,000/10,000. The tradeoff is architectural, predictable, and measurable — provided benchmarks test both regimes and hold correctness to a record-level standard. 
+
+Data availability. Engine and harness: carreraGroup/mercury (scripts/blaze-native-bench/ ). Query suite and protocol: samply/blaze docs/performance , used verbatim. Result artifacts (9-run raw durations, per-patient booleans for both engines, identifier map, sample checksums, store snapshots, full pipeline logs) are archived in S3; release mode (public bucket vs. on-request) to be finalized with the preprint. 12
