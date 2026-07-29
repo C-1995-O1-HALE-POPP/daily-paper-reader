@@ -6,40 +6,37 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-28
-- 运行时间：2026-07-28 21:45:45 UTC
+- 最新运行日期：2026-07-29
+- 运行时间：2026-07-29 21:45:25 UTC
 - 运行状态：成功
-- 本次总论文数：6
-- 精读区：3
+- 本次总论文数：5
+- 精读区：2
 - 速读区：3
 
 ### 今日简报（AI）
-今日聚焦医疗咨询智能体评估与临床质量语言评估，精读两篇高分论文。  
-10分满分论文《MedDDC-Eval》提出诊断解耦的多轮医疗咨询评估方法，8分论文探讨临床质量语言的原子级与复合评估，两者均对医疗AI评估有重要参考。  
-建议关注医疗领域AI评估标准与可解释性研究，以及合成数据在联邦学习中的初步应用。
-- 详情：[/202607/28/README](/202607/28/README)
+今日推荐聚焦医疗AI智能体基准与临床转化评估，两篇满分精读文章值得深入研读。  
+最值得关注的方向是《PatientAgentBench》构建的患者导向健康AI代理基准框架，以及《Agentic AI in medicine》系统梳理的医学智能体架构与临床应用挑战。  
+建议普通读者优先从这两篇入手，理解当前医疗AI代理的评估标准与落地瓶颈，再结合速读中的多模态诊断推理与预训练模型采样方法拓展认知。
+- 详情：[/202607/29/README](/202607/29/README)
 
 ### 精读区论文标签
-1. [MedDDC-Eval: Diagnosis-Decoupled Evaluation of Multi-Turn Medical Consultation Agents](/202607/28/2607.18999v2-medddc-eval-diagnosis-decoupled-evaluation-of-multi-turn-medical-consultation-agents)  
+1. [PatientAgentBench: A Benchmark Framework for Evaluating Patient-Facing Health AI Agents](/202607/29/2607.25485v1-patientagentbench-a-benchmark-framework-for-evaluating-patient-facing-health-ai-agents)  
    标签：评分：10.0/10、query:ehr-agent
-   evidence：使用医疗记录对多轮医疗咨询智能体进行诊断解耦评估
-2. [The Atoms of the Score: Record-Level versus In-Engine Composite Evaluation of Clinical Quality Language](/202607/28/2607.23619v1-the-atoms-of-the-score-record-level-versus-in-engine-composite-evaluation-of-clinical-quality-language)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：使用EHR数据评估临床质量语言引擎
-3. [Closed-Loop Validation-Repair for Healthcare Interoperability: A Multi-Model Study of Schema Compliance in Clinical LLMs](/202607/28/2607.24371v1-closed-loop-validation-repair-for-healthcare-interoperability-a-multi-model-study-of-schema-compliance-in-clinical-llms)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：评估LLM在EHR互操作性中的模式合规性，采用验证-修复方法
+   evidence：面向患者的健康AI智能体基准测试，使用健康记录和模拟患者
+2. [Agentic AI in medicine: architectures, applications, evaluation, and challenges for clinical translation](/202607/29/2607.25489v1-agentic-ai-in-medicine-architectures-applications-evaluation-and-challenges-for-clinical-translation)  
+   标签：评分：10.0/10、query:ehr-agent
+   evidence：关于医学自主AI的范围综述，涵盖评估实践和临床转化挑战
 
 ### 速读区论文标签
-1. [Using binary silver labels in electronic health records-based computable phenotyping algorithms](/202607/28/2607.18431v1-using-binary-silver-labels-in-electronic-health-records-based-computable-phenotyping-algorithms)  
+1. [Pretraining EHR Foundation Models with Patient-Aware Sampling](/202607/29/2607.22114v1-pretraining-ehr-foundation-models-with-patient-aware-sampling)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：改进了EHR基础模型的预训练，与医学智能体使用EHR的场景相关
+2. [Evaluating Multi-Turn Multimodal Diagnostic Reasoning on Challenging Real-World Clinical Cases](/202607/29/2607.25933v1-evaluating-multi-turn-multimodal-diagnostic-reasoning-on-challenging-real-world-clinical-cases)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：提供了使用真实临床案例的多轮多模态诊断推理基准，与临床决策支持智能体评估相关
+3. [Messier: A High-Resolution Corpus for Cross-Benchmark Agent Evaluation](/202607/29/2607.25891v1-messier-a-high-resolution-corpus-for-cross-benchmark-agent-evaluation)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：提出用于EHR表型算法的二元银标签方法
-2. [SynPre-FL: Synthetic data-driven pretraining integrated Federated Learning training framework](/202607/28/2607.19524v1-synpre-fl-synthetic-data-driven-pretraining-integrated-federated-learning-training-framework)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：电子健康记录数据、临床风险预测、用于预训练的合成数据
-3. [Where FactsGo Missing: A LayerwiseTaxonomy and Per-Layer Attribution of Information Omissionin Air-Gapped LLM Agent Pipelines](/202607/28/2607.22448v1-where-factsgo-missing-a-layerwisetaxonomy-and-per-layer-attribution-of-information-omissionin-air-gapped-llm-agent-pipelines)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：评估临床FHIR服务中智能体流水线的信息遗漏故障
+   evidence：跨基准智能体评估语料库，直接相关于智能体性能基准测试
 
 
 <div class="dpr-home-promo-card">
