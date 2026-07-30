@@ -6,37 +6,26 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-07-29
-- 运行时间：2026-07-29 21:45:25 UTC
+- 最新运行日期：2026-07-30
+- 运行时间：2026-07-30 21:43:49 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：2
-- 速读区：3
+- 本次总论文数：2
+- 精读区：1
+- 速读区：1
 
 ### 今日简报（AI）
-今日推荐聚焦医疗AI智能体基准与临床转化评估，两篇满分精读文章值得深入研读。  
-最值得关注的方向是《PatientAgentBench》构建的患者导向健康AI代理基准框架，以及《Agentic AI in medicine》系统梳理的医学智能体架构与临床应用挑战。  
-建议普通读者优先从这两篇入手，理解当前医疗AI代理的评估标准与落地瓶颈，再结合速读中的多模态诊断推理与预训练模型采样方法拓展认知。
-- 详情：[/202607/29/README](/202607/29/README)
+今日重点关注《ClinLens》与《Agent Benchmarks》两篇论文，分别聚焦临床数据科学长期代理与AI基准协议有效性。前者评分9.0，建议精读其纵向多模态临床数据研究方法；后者指出当前代理基准可能无法真实反映能力，需关注协议设计。后续可优先应用ClinLens思路于实际临床数据项目，同时参考Agent Benchmarks反思自身评估体系。
+- 详情：[/202607/30/README](/202607/30/README)
 
 ### 精读区论文标签
-1. [PatientAgentBench: A Benchmark Framework for Evaluating Patient-Facing Health AI Agents](/202607/29/2607.25485v1-patientagentbench-a-benchmark-framework-for-evaluating-patient-facing-health-ai-agents)  
-   标签：评分：10.0/10、query:ehr-agent
-   evidence：面向患者的健康AI智能体基准测试，使用健康记录和模拟患者
-2. [Agentic AI in medicine: architectures, applications, evaluation, and challenges for clinical translation](/202607/29/2607.25489v1-agentic-ai-in-medicine-architectures-applications-evaluation-and-challenges-for-clinical-translation)  
-   标签：评分：10.0/10、query:ehr-agent
-   evidence：关于医学自主AI的范围综述，涵盖评估实践和临床转化挑战
+1. [ClinLens: Towards Long-Horizon Coding Agents for Longitudinal Multimodal Clinical Data Science](/202607/30/2607.26155v1-clinlens-towards-long-horizon-coding-agents-for-longitudinal-multimodal-clinical-data-science)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：基于EHR的临床决策支持智能体基准测试
 
 ### 速读区论文标签
-1. [Pretraining EHR Foundation Models with Patient-Aware Sampling](/202607/29/2607.22114v1-pretraining-ehr-foundation-models-with-patient-aware-sampling)  
+1. [Do Agent Benchmarks Measure Capability? Protocol Validity in the Age of Agentic AI](/202607/30/2607.22368v1-do-agent-benchmarks-measure-capability-protocol-validity-in-the-age-of-agentic-ai)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：改进了EHR基础模型的预训练，与医学智能体使用EHR的场景相关
-2. [Evaluating Multi-Turn Multimodal Diagnostic Reasoning on Challenging Real-World Clinical Cases](/202607/29/2607.25933v1-evaluating-multi-turn-multimodal-diagnostic-reasoning-on-challenging-real-world-clinical-cases)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：提供了使用真实临床案例的多轮多模态诊断推理基准，与临床决策支持智能体评估相关
-3. [Messier: A High-Resolution Corpus for Cross-Benchmark Agent Evaluation](/202607/29/2607.25891v1-messier-a-high-resolution-corpus-for-cross-benchmark-agent-evaluation)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：跨基准智能体评估语料库，直接相关于智能体性能基准测试
+   evidence：智能体基准测试协议有效性审计方法，可应用于医疗智能体评估
 
 
 <div class="dpr-home-promo-card">

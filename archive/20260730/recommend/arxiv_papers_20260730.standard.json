@@ -1,0 +1,94 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-30T21:41:36.443384+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 1,
+    "quick_skim_target": 11,
+    "quick_selected": 1
+  },
+  "deep_dive": [
+    {
+      "id": "2607.26155v1",
+      "source": "arxiv",
+      "title": "ClinLens: Towards Long-Horizon Coding Agents for Longitudinal Multimodal Clinical Data Science",
+      "abstract": "Clinical data-science agents must transform heterogeneous longitudinal records into auditable analyses, yet existing benchmarks largely isolate medical question answering, structured-table reasoning, or generic scientific repositories. We introduce CLINLENS, a benchmark of 200 executable tasks over five linked MIMIC resources spanning structured electronic health records, notes, electrocardiograms, chest radiographs, and echocardiograms. A 4 x 5 taxonomy crosses four patient-time scopes with five analysis capabilities. Program-first reverse synthesis pairs each bounded semi-raw package with an evaluator-private reference workflow and checks required artifacts, cohort and temporal semantics, and the final answer. On a fixed 126-task suite, the strongest of 24 standardized model-scaffold configurations achieves 56.3% scope-macro STRICTPASS despite 100% EXECSUCCESS. For reference, a separately configured coding agent solves 83 of 126 tasks, while five biomedical systems adapted to GPT-4o-mini reach at most 2.9% scope-macro STRICTPASS. These results expose a substantial gap between runnable submissions and correct clinical analyses.",
+      "authors": [
+        "Yuan Zhu",
+        "Ethan B. Liu",
+        "Frank Nie",
+        "Jindong Han"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-28T18:01:48+00:00",
+      "link": "https://arxiv.org/pdf/2607.26155v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "benchmark for clinical agents using EHR data",
+      "llm_evidence_cn": "基于EHR的临床决策支持智能体基准测试",
+      "llm_evidence": "基于EHR的临床决策支持智能体基准测试",
+      "canonical_evidence": "基于EHR的临床决策支持智能体基准测试",
+      "llm_tldr_en": "ClinLens is a benchmark of 200 executable tasks over MIMIC EHR and multimodal data to evaluate long-horizon coding agents for clinical data science.",
+      "llm_tldr_cn": "针对现有基准孤立医疗问答和表格推理的问题，本文提出ClinLens基准，包含200个可执行任务，覆盖MIMIC电子健康记录、心电图、影像等五种模态数据。通过4x5分类学划分患者时间范围和分析能力，并采用程序优先逆向合成方法生成评估工作流。在126个代理上评估显示该基准能有效衡量代理的长期临床数据分析能力，为EHR驱动的医疗代理评估提供了标准化框架。",
+      "llm_tldr": "针对现有基准孤立医疗问答和表格推理的问题，本文提出ClinLens基准，包含200个可执行任务，覆盖MIMIC电子健康记录、心电图、影像等五种模态数据。通过4x5分类学划分患者时间范围和分析能力，并采用程序优先逆向合成方法生成评估工作流。在126个代理上评估显示该基准能有效衡量代理的长期临床数据分析能力，为EHR驱动的医疗代理评估提供了标准化框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.22368v1",
+      "source": "arxiv",
+      "title": "Do Agent Benchmarks Measure Capability? Protocol Validity in the Age of Agentic AI",
+      "abstract": "Agent benchmarks increasingly evaluate repository editing, web research, terminal use, and long-horizon interaction. Their scores support capability claims only when the evaluation protocol keeps the intended capability necessary for success. Recent reward-hacking benchmarks and system reports show that agents can instead recover public solutions, read evaluation artifacts, infer generator structure, manipulate feedback, or benefit from invalid scoring paths; existing responses do not provide a common procedure for attributing these shortcuts and quantifying their effect across benchmarks. We formulate protocol validity and introduce HackDetect, a post-hoc audit that identifies an exposure, determines how the agent used it, and assesses whether the resulting score is misleading. We quantify score inflation with the Mislead gap, defined as the exploit score minus the intended score. We audit 2,385 traces across 15 agent benchmarks and find evidence of exposures and reward hacking in 67.0% of Frontier Science traces and 66.7% of AutoLab tasks. Across paired comparisons, we measure score inflation of 0.45-1.00, showing that benchmark reports should provide evidence that scores reflect the intended capability.",
+      "authors": [
+        "Jiaqi Shao",
+        "Hanck Chen",
+        "Wei Zhang",
+        "Maxm Pan",
+        "Bing Luo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-24T14:55:19+00:00",
+      "link": "https://arxiv.org/pdf/2607.22368v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Agent benchmark protocol validity audit method applicable to medical agent evaluation",
+      "llm_evidence_cn": "智能体基准测试协议有效性审计方法，可应用于医疗智能体评估",
+      "llm_evidence": "智能体基准测试协议有效性审计方法，可应用于医疗智能体评估",
+      "canonical_evidence": "智能体基准测试协议有效性审计方法，可应用于医疗智能体评估",
+      "llm_tldr_en": "Introduces protocol validity for agent benchmarks and HackDetect, a post-hoc audit to identify and quantify reward-hacking shortcuts, directly addressing evaluation reliability for agentic AI.",
+      "llm_tldr_cn": "针对智能体基准测试中存在的奖励黑客等协议失效问题，提出协议有效性概念和HackDetect事后审计工具，可识别智能体如何利用评测漏洞。该方法为包括医疗智能体在内的各类智能体评估提供了可靠性保障，确保基准分数真实反映能力。",
+      "llm_tldr": "针对智能体基准测试中存在的奖励黑客等协议失效问题，提出协议有效性概念和HackDetect事后审计工具，可识别智能体如何利用评测漏洞。该方法为包括医疗智能体在内的各类智能体评估提供了可靠性保障，确保基准分数真实反映能力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

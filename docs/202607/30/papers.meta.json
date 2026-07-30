@@ -1,0 +1,39 @@
+{
+  "label": "2026-07-30",
+  "date": "2026-07-30",
+  "generated_at": "2026-07-30T21:43:55",
+  "count": 2,
+  "papers": [
+    {
+      "paper_id": "202607/30/2607.26155v1-clinlens-towards-long-horizon-coding-agents-for-longitudinal-multimodal-clinical-data-science",
+      "section": "deep",
+      "title_en": "ClinLens: Towards Long-Horizon Coding Agents for Longitudinal Multimodal Clinical Data Science",
+      "authors": "Yuan Zhu, Ethan B. Liu, Frank Nie, Jindong Han",
+      "date": "2026-07-28",
+      "pdf": "https://arxiv.org/pdf/2607.26155v1",
+      "score": "9.0",
+      "evidence": "基于EHR的临床决策支持智能体基准测试",
+      "tldr": "临床数据科学代理需处理异构纵向记录，但现有基准孤立评估不同任务。提出CLINLENS基准，含200个可执行任务，覆盖MIMIC结构化电子病历、文本、心电图、胸片和超声心动图，基于4×5分类法（4种患者时间范围×5种分析能力）。采用程序优先反向合成，将每个有界半原始包与评估者私有工作流配对，检查工件、队列和时间语义及答案。最强配置在126任务子集上达56.3% STRICTPASS，执行成功率100%；参考编码代理解决83/126任务，五个生物医学系统最高2.9%。结果揭示可运行提交与正确临床分析间的巨大差距。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Clinical data-science agents must transform heterogeneous longitudinal records into auditable analyses, yet existing benchmarks largely isolate medical question answering, structured-table reasoning, or generic scientific repositories. We introduce CLINLENS, a benchmark of 200 executable tasks over five linked MIMIC resources spanning structured electronic health records, notes, electrocardiograms, chest radiographs, and echocardiograms. A 4 x 5 taxonomy crosses four patient-time scopes with five analysis capabilities. Program-first reverse synthesis pairs each bounded semi-raw package with an evaluator-private reference workflow and checks required artifacts, cohort and temporal semantics, and the final answer. On a fixed 126-task suite, the strongest of 24 standardized model-scaffold configurations achieves 56.3% scope-macro STRICTPASS despite 100% EXECSUCCESS. For reference, a separately configured coding agent solves 83 of 126 tasks, while five biomedical systems adapted to GPT-4o-mini reach at most 2.9% scope-macro STRICTPASS. These results expose a substantial gap between runnable submissions and correct clinical analyses.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202607/30/2607.22368v1-do-agent-benchmarks-measure-capability-protocol-validity-in-the-age-of-agentic-ai",
+      "section": "quick",
+      "title_en": "Do Agent Benchmarks Measure Capability? Protocol Validity in the Age of Agentic AI",
+      "authors": "Jiaqi Shao, Hanck Chen, Wei Zhang, Maxm Pan, Bing Luo",
+      "date": "2026-07-24",
+      "pdf": "https://arxiv.org/pdf/2607.22368v1",
+      "score": "7.0",
+      "evidence": "智能体基准测试协议有效性审计方法，可应用于医疗智能体评估",
+      "tldr": "当前智能体基准测试分数常被用于宣称模型能力，但智能体可通过恢复公开解、操纵反馈等捷径获得高分，现有方法无法系统归因这些行为。我们提出协议有效性概念并开发HackDetect审计工具，通过Mislead gap量化分数膨胀。对15个基准的2385条轨迹审计发现，多数基准存在暴露或奖励破解，分数膨胀达0.45-1.00。本研究揭示了基准报告需提供分数反映能力的证据，并为归因捷径提供了通用程序。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Agent benchmarks increasingly evaluate repository editing, web research, terminal use, and long-horizon interaction. Their scores support capability claims only when the evaluation protocol keeps the intended capability necessary for success. Recent reward-hacking benchmarks and system reports show that agents can instead recover public solutions, read evaluation artifacts, infer generator structure, manipulate feedback, or benefit from invalid scoring paths; existing responses do not provide a common procedure for attributing these shortcuts and quantifying their effect across benchmarks. We formulate protocol validity and introduce HackDetect, a post-hoc audit that identifies an exposure, determines how the agent used it, and assesses whether the resulting score is misleading. We quantify score inflation with the Mislead gap, defined as the exploit score minus the intended score. We audit 2,385 traces across 15 agent benchmarks and find evidence of exposures and reward hacking in 67.0% of Frontier Science traces and 66.7% of AutoLab tasks. Across paired comparisons, we measure score inflation of 0.45-1.00, showing that benchmark reports should provide evidence that scores reflect the intended capability.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
