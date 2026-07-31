@@ -1,0 +1,501 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-07-31T21:32:09.254518+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 13,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [
+    {
+      "id": "2607.26160v1",
+      "source": "arxiv",
+      "title": "GuideSkill: Evolving Executable LLM Agent Skills for Guideline-Grounded Clinical Reasoning",
+      "abstract": "Clinical practice guidelines (CPGs) encode diagnostic criteria, but LLM systems typically retrieve guideline text or absorb it through training rather than execute its rules. We introduce GuideSkill, an external reasoning layer that compiles disease-specific criteria into executable functions returning ordinal diagnostic-support scores. GuideSkill-Zero is initialized from guidelines, while GuideSkill-Evo uses case--diagnosis pairs to refine covered skills and add missing diagnoses. At inference, an LLM proposes a differential diagnosis, grounds the features required by each matched skill, and fuses its ranking with the executed skill scores. Across four benchmarks and four backbones, GuideSkill-Zero improves macro-average accuracy over guideline RAG by 13.45% on average. GuideSkill-Evo achieves the highest macro-average for every backbone, improves over direct inference by 18.49% relatively, and increases gold-label skill coverage from 56.5% to 99.5%. On Qwen3.5-9B, it also exceeds the strongest parameter-update baseline by 11.16% without updating the backbone. Expert evaluation further indicates that GuideSkill produces clinically sound and broadly acceptable skills, suggesting that its initialized and evolved rules are reliable and practically meaningful. These results support executable skills as a model-agnostic mechanism for combining guideline-derived procedures with case-derived diagnostic patterns.",
+      "authors": [
+        "Lang Cao",
+        "Yuhao Shen",
+        "Tianyang Luo",
+        "Simo Du",
+        "Hao Peng",
+        "Yue Guo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-28T18:10:33+00:00",
+      "link": "https://arxiv.org/pdf/2607.26160v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Benchmarks an LLM clinical reasoning agent across four benchmarks",
+      "llm_evidence_cn": "在四个基准上评估了LLM临床推理智能体的性能",
+      "llm_evidence": "在四个基准上评估了LLM临床推理智能体的性能",
+      "canonical_evidence": "在四个基准上评估了LLM临床推理智能体的性能",
+      "llm_tldr_en": "GuideSkill compiles clinical guideline criteria into executable functions for an LLM differential-diagnosis agent and evaluates the agent across four benchmarks, improving macro-average accuracy.",
+      "llm_tldr_cn": "临床指南包含诊断标准，但LLM系统往往检索文本而非执行规则。本文提出GuideSkill外部推理层，将疾病标准编译为可执行函数并返回诊断支持评分，推理时由LLM提出鉴别诊断并与技能评分融合。在四个基准和四个主干模型上，GuideSkill-Zero显著提升宏平均准确率。该工作展示了可演化、可执行的LLM智能体技能用于指南落地的有效性。",
+      "llm_tldr": "临床指南包含诊断标准，但LLM系统往往检索文本而非执行规则。本文提出GuideSkill外部推理层，将疾病标准编译为可执行函数并返回诊断支持评分，推理时由LLM提出鉴别诊断并与技能评分融合。在四个基准和四个主干模型上，GuideSkill-Zero显著提升宏平均准确率。该工作展示了可演化、可执行的LLM智能体技能用于指南落地的有效性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.21324v1",
+      "source": "arxiv",
+      "title": "GRADRAG: Cross-Component Prompt Adaptation for Coordinated Multi-Agent RAG",
+      "abstract": "Retrieval-Augmented Generation (RAG) systems increasingly employ multiple LLM agents. Yet, most prior work optimizes components in isolation rather than coordinating improvements across the pipeline. We introduce GRADRAG, a framework for cross-component prompt adaptation that models the RAG pipeline as a computational graph and propagates structured evaluation feedback to update upstream agents. An Evaluator critiques downstream answers and supporting evidence, producing actionable feedback that a Prompt Optimizer uses to iteratively update adaptive agents, such as retrievers, graph constructors, and answerers. The Evaluator also triggers early stopping when the output is deemed satisfactory. We evaluate GRADRAG on the SQUALITY and QMSUM benchmarks under two retrieval paradigms: flat chunk-based retrieval using IRCoT-style query refinement (Trivedi et al., 2023), and graph-based retrieval that constructs and iteratively enriches an entity-relation graph from the document. Across both settings, GRADRAG consistently outperforms one-step refinement baselines that update only the final generator, achieving a 12-15 percentage point net preference margin in LLM-judged pairwise comparisons, with most gains realized within two refinement iterations.",
+      "authors": [
+        "Paolo Pedinotti",
+        "Enrico Santus"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-07-23T13:54:38+00:00",
+      "link": "https://arxiv.org/pdf/2607.21324v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Presents a multi-agent RAG framework that uses structured evaluation feedback to update agents, relevant to benchmarking agent performance.",
+      "llm_evidence_cn": "提出多智能体RAG框架，利用结构化评估反馈更新各智能体，与智能体性能基准测试相关。",
+      "llm_evidence": "提出多智能体RAG框架，利用结构化评估反馈更新各智能体，与智能体性能基准测试相关。",
+      "canonical_evidence": "提出多智能体RAG框架，利用结构化评估反馈更新各智能体，与智能体性能基准测试相关。",
+      "llm_tldr_en": "Introduces GRADRAG, a cross-component prompt adaptation framework for multi-agent RAG that propagates evaluator feedback to update retrievers and answerers, evaluated on SQUALITY and QMSUM.",
+      "llm_tldr_cn": "多智能体检索增强生成(RAG)系统常孤立地优化各组件。GRADRAG将RAG流水线建模为计算图，通过评估器（Evaluator）对回答与证据的反馈传播至上游智能体（检索器、图构建器、回答器），并支持早停判断。在SQUALITY和QMSUM基准上验证了其有效性，为多智能体系统的协调评估与优化提供了通用框架。",
+      "llm_tldr": "多智能体检索增强生成(RAG)系统常孤立地优化各组件。GRADRAG将RAG流水线建模为计算图，通过评估器（Evaluator）对回答与证据的反馈传播至上游智能体（检索器、图构建器、回答器），并支持早停判断。在SQUALITY和QMSUM基准上验证了其有效性，为多智能体系统的协调评估与优化提供了通用框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.20827v1",
+      "source": "arxiv",
+      "title": "Auditing Provenance Sensitivity in LLM Agent Action Selection",
+      "abstract": "LLM agents choose tools and arguments from context that mixes user requests, tool outputs, retrieved records, memory, and untrusted text. Evidence can be relevant without being authorized to determine a decision, so a correct action need not be grounded only in permitted evidence. We introduce a target-specific authorization audit that labels context factors separately for each tool and argument target. Its primary test holds the task, proposition, position, and policy fixed while changing only the proposition's source authority. We then test behavior when valid evidence is weakened and use context-subset interactions as a secondary localization diagnostic. Across 450 controlled next-action tasks and multiple open-weight LLM families, trusted and untrusted variants produce different actions in 5.4 percent of competing cases versus 1.7 percent of supporting cases. Under controlled degradation, unauthorized competition is retained in a full-correct, mixed-error, clean-correct pattern in 2.4 percent of comparisons, with a 95 percent confidence interval from 2.1 to 3.0 percent. These are controlled stress-set rates, not deployment prevalence. The models respond to textual source-authority cues, but this does not prevent untrusted evidence from influencing their actions.",
+      "authors": [
+        "Junchi Liao"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-23T01:28:18+00:00",
+      "link": "https://arxiv.org/pdf/2607.20827v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Provides an audit method for LLM agent action selection that can be transferred to evaluating EHR-based medical agents' evidence grounding.",
+      "llm_evidence_cn": "提出可迁移的LLM智能体动作选择审计方法，用于评估基于EHR的医疗智能体证据依据。",
+      "llm_evidence": "提出可迁移的LLM智能体动作选择审计方法，用于评估基于EHR的医疗智能体证据依据。",
+      "canonical_evidence": "提出可迁移的LLM智能体动作选择审计方法，用于评估基于EHR的医疗智能体证据依据。",
+      "llm_tldr_en": "Proposes a target-specific authorization audit that tests whether LLM agents ground actions in permitted evidence, useful for evaluating medical agents' use of EHR records.",
+      "llm_tldr_cn": "针对LLM智能体在混合上下文中选择工具和参数时可能误用未授权证据的问题，提出了一种目标特定的来源授权审计方法。该方法固定任务与策略，仅改变命题来源权限，并结合上下文子集交互进行定位诊断。在450个受控动作选择任务中，多个开源LLM系族展示了可信与不可信来源的影响。该方法可迁移到基于EHR的医疗智能体评估，用于检验其决策是否依据合法证据。",
+      "llm_tldr": "针对LLM智能体在混合上下文中选择工具和参数时可能误用未授权证据的问题，提出了一种目标特定的来源授权审计方法。该方法固定任务与策略，仅改变命题来源权限，并结合上下文子集交互进行定位诊断。在450个受控动作选择任务中，多个开源LLM系族展示了可信与不可信来源的影响。该方法可迁移到基于EHR的医疗智能体评估，用于检验其决策是否依据合法证据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.23955v1",
+      "source": "arxiv",
+      "title": "EviBack: Search-Agent Reinforcement Learning via Evidence-Constrained Teacher Backoff",
+      "abstract": "Reinforcement learning enables Agentic RAG systems to learn multi-turn search from verifiable outcome rewards, but all- zero rollout groups provide no comparative signal and may hide useful search behavior. We present EviBack, an evidence- constrained Teacher backoff that supplies auxiliary super- vision to such groups while preserving verifiable Actor re- wards. It separates evidence assessment from answer refine- ment, preventing reference answers from overriding evidence- insufficiency judgments. A fully automated, end-to-end GPT- 5.5-assisted APE pipeline starts from a manually authored single-prompt dual-task Teacher, automatically partitions and labels rollout data, and performs ablation, task decomposition, evaluation, and selection to produce a gated two-stage Teacher. Compared with the manual design, the resulting Teacher im- proves downstream F1 and valid-answer rate while reduc- ing search, duplicate queries, and forced termination. Across seven open-domain QA benchmarks and three Qwen3 scales, EviBack improves F1 over Search-R1 and raises both single- and multi-hop macro F1. We guarantee that the code will be made publicly available at a later stage.",
+      "authors": [
+        "Xiao Ma",
+        "Zhiquan Hu",
+        "Yi Wei",
+        "Chenchen Zhao",
+        "Yijun Chen",
+        "Jicheng Zhao",
+        "Yuming Li Chuang Dai"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-27T02:59:27+00:00",
+      "link": "https://arxiv.org/pdf/2607.23955v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Addresses sparse rewards in RL for search agents, a key issue in healthcare agent evaluation.",
+      "llm_evidence_cn": "解决了搜索智能体强化学习中的稀疏奖励问题，对医疗智能体评估中的RL应用具有参考价值。",
+      "llm_evidence": "解决了搜索智能体强化学习中的稀疏奖励问题，对医疗智能体评估中的RL应用具有参考价值。",
+      "canonical_evidence": "解决了搜索智能体强化学习中的稀疏奖励问题，对医疗智能体评估中的RL应用具有参考价值。",
+      "llm_tldr_en": "EviBack introduces an evidence-constrained teacher backoff to supply auxiliary supervision for all-zero rollout groups in agentic RAG reinforcement learning, preserving verifiable rewards.",
+      "llm_tldr_cn": "在智能体RAG的强化学习训练中，全零奖励的回合组缺乏比较信号，掩盖了有效搜索行为。EviBack通过证据约束的教师回退为这类回合组提供辅助监督，同时区分证据评估与答案优化，避免参考答案干扰证据判断。该方法用自动化API流程完成数据标注与消融，提升搜索智能体的学习效率，可用于医疗智能体的奖励设计。",
+      "llm_tldr": "在智能体RAG的强化学习训练中，全零奖励的回合组缺乏比较信号，掩盖了有效搜索行为。EviBack通过证据约束的教师回退为这类回合组提供辅助监督，同时区分证据评估与答案优化，避免参考答案干扰证据判断。该方法用自动化API流程完成数据标注与消融，提升搜索智能体的学习效率，可用于医疗智能体的奖励设计。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.22005v1",
+      "source": "arxiv",
+      "title": "What Clinicians Need: Designing, Developing and Evaluating an AI-Based Decision Support System for Autism Assessment",
+      "abstract": "AI methods promise to support autism spectrum condition (ASC) diagnostics in adults, a complex and time-consuming process, that is characterized by a shortage of specialized clinicians. To date, clinicians' needs and their interaction with such AI-based support remain underexplored. Our work aims to develop and evaluate an AI-based clinical decision support system (CDSS) for ASC assessment, and to investigate how it impacts clinicians' decision-making. By interviewing clinicians of varying experience levels, we identified five challenges and derived design strategies. Based on that, we developed SIT-CARE, a CDSS, which provides AI-based recommendations and data visualizations of clinically relevant nonverbal behavior. Through an evaluation study with newly recruited clinicians, we found that SIT-CARE led to different decision paths in regard to the ASC assessment, which are reflected in clinicians' mental models and decision changes. Overall, SIT-CARE demonstrated potential in improving initial diagnostic assessments, supporting in-depth diagnosis and empowering less experienced clinicians.",
+      "authors": [
+        "Ulrike Schäfer",
+        "William Saakyan",
+        "Matthias Norden",
+        "Fabrizio Kuruc",
+        "Peter Sörries",
+        "Isabel Dziobek",
+        "Claudia Müller-Birn",
+        "Hanna Drimalla"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ],
+      "published": "2026-07-24T06:10:06+00:00",
+      "link": "https://arxiv.org/pdf/2607.22005v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Designs, develops, and evaluates an AI-based clinical decision support system for autism assessment",
+      "llm_evidence_cn": "设计、开发并评估了基于AI的自闭症评估临床决策支持系统",
+      "llm_evidence": "设计、开发并评估了基于AI的自闭症评估临床决策支持系统",
+      "canonical_evidence": "设计、开发并评估了基于AI的自闭症评估临床决策支持系统",
+      "llm_tldr_en": "This paper develops and evaluates SIT-CARE, an AI-based clinical decision support system for autism spectrum condition assessment, using clinician interviews to identify challenges and design strategies.",
+      "llm_tldr_cn": "针对成人自闭症诊断流程复杂且专科医生短缺的问题，本文通过访谈不同经验水平的临床医生，识别出五大挑战并推导设计策略，开发了CDSS系统SIT-CARE。该系统提供AI推荐和临床相关非语言特征可视化，旨在支持临床决策。通过临床医生交互研究评估，探索其对决策过程的影响，为临床决策支持系统的以人为本设计提供了经验。",
+      "llm_tldr": "针对成人自闭症诊断流程复杂且专科医生短缺的问题，本文通过访谈不同经验水平的临床医生，识别出五大挑战并推导设计策略，开发了CDSS系统SIT-CARE。该系统提供AI推荐和临床相关非语言特征可视化，旨在支持临床决策。通过临床医生交互研究评估，探索其对决策过程的影响，为临床决策支持系统的以人为本设计提供了经验。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.25038v1",
+      "source": "arxiv",
+      "title": "Grounded in Consensus, In Step With Emerging Science: A Consensus-Anchored Multi-Corpus Clinical Chatbot for Long COVID",
+      "abstract": "Long COVID (LC) poses a challenge for clinical decision support because relevant evidence is distributed across sources with different update cycles, evidentiary roles, and levels of clinical maturity. We present a clinician-facing chatbot that organizes four sources within a retrieval-augmented workflow: expert-curated consensus guidance, current PubMed literature, registered interventional trials, and evidence from living systematic reviews. Consensus guidance is always included to frame responses, while the remaining sources are retrieved in parallel when selected by the user. In an exploratory automated evaluation on 50 clinician-facing questions, our chatbot showed comparable mean ratings to OpenEvidence, with numerically higher scores and lower score variability in an LLM-judged comparison.",
+      "authors": [
+        "Yining Wu",
+        "Philip DiGiacomo",
+        "Ying Ding",
+        "William Brode"
+      ],
+      "primary_category": "cs.IR",
+      "categories": [
+        "cs.IR",
+        "cs.AI"
+      ],
+      "published": "2026-07-27T19:57:23+00:00",
+      "link": "https://arxiv.org/pdf/2607.25038v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Clinical decision support chatbot with automated evaluation, relevant to clinical agent benchmarking",
+      "llm_evidence_cn": "临床决策支持聊天机器人及其自动评估，与临床智能体评测相关",
+      "llm_evidence": "临床决策支持聊天机器人及其自动评估，与临床智能体评测相关",
+      "canonical_evidence": "临床决策支持聊天机器人及其自动评估，与临床智能体评测相关",
+      "llm_tldr_en": "A clinician-facing Long COVID chatbot anchors responses in consensus guidance and retrieves supplementary evidence, achieving comparable ratings to OpenEvidence in automated evaluation.",
+      "llm_tldr_cn": "长新冠的临床决策支持面临证据分散、更新周期不一致等挑战。研究者构建了一个面向临床医生的聊天机器人，以专家共识指导为框架，并行检索PubMed文献、注册试验和活体系统综述。在50个临床问题的自动化评估中，聊天机器人平均评分与OpenEvidence相当。该工作为临床决策支持智能体的构建和多源证据整合提供了可行范例，其评估方法也可供医疗智能体评测借鉴。",
+      "llm_tldr": "长新冠的临床决策支持面临证据分散、更新周期不一致等挑战。研究者构建了一个面向临床医生的聊天机器人，以专家共识指导为框架，并行检索PubMed文献、注册试验和活体系统综述。在50个临床问题的自动化评估中，聊天机器人平均评分与OpenEvidence相当。该工作为临床决策支持智能体的构建和多源证据整合提供了可行范例，其评估方法也可供医疗智能体评测借鉴。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.22114v1",
+      "source": "arxiv",
+      "title": "Pretraining EHR Foundation Models with Patient-Aware Sampling",
+      "abstract": "Autoregressive foundation models for electronic health records (EHRs) typically inherit pretraining methods from language modeling, where patient trajectories are concatenated into a single token stream and windows are sampled from that stream. In EHR data, this choice is consequential: windows may mix multiple patients, and patients with longer records contribute more optimization updates, potentially introducing bias. We propose Patient Sampling, a pretraining sequence-construction method that allows us to control how training signal is distributed across patients. We compare this method to the standard approach, which we refer to as Global Stream. We show that stochastic Patient Sampling with controllable weighting improves performance on real-world EHR data. Across downstream clinical tasks on MIMIC-IV v2.2 and v3.1, Patient Sampling improves Macro AUROC and AUPRC over the Global Stream baseline. These results identify training and validation sequence construction as important and underexplored design choices for autoregressive EHR foundation models.",
+      "authors": [
+        "Joshua Placidi",
+        "Yuxuan Liu",
+        "Jinpei Han",
+        "Marek Rei",
+        "A. Aldo Faisal"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-24T09:10:43+00:00",
+      "link": "https://arxiv.org/pdf/2607.22114v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Develops patient-aware pretraining for EHR foundation models, directly enabling medical agents using EHR.",
+      "llm_evidence_cn": "提出了患者感知的EHR基础模型预训练方法，可直接支撑使用EHR的医疗智能体。",
+      "llm_evidence": "提出了患者感知的EHR基础模型预训练方法，可直接支撑使用EHR的医疗智能体。",
+      "canonical_evidence": "提出了患者感知的EHR基础模型预训练方法，可直接支撑使用EHR的医疗智能体。",
+      "llm_tldr_en": "Proposes Patient Sampling for pretraining EHR foundation models to control training signal distribution and reduce bias, improving performance on real-world EHR data.",
+      "llm_tldr_cn": "现有EHR基础模型沿用语言模型的预训练方式，将患者轨迹拼接成词流可能混入多个患者或产生偏差。提出患者采样(Patient Sampling)预训练序列构造方法，以可控权重分配训练信号，避免长记录患者主导优化。实验显示该方法在真实EHR数据上提升了性能，为医疗智能体提供更可靠的EHR表示基础。",
+      "llm_tldr": "现有EHR基础模型沿用语言模型的预训练方式，将患者轨迹拼接成词流可能混入多个患者或产生偏差。提出患者采样(Patient Sampling)预训练序列构造方法，以可控权重分配训练信号，避免长记录患者主导优化。实验显示该方法在真实EHR数据上提升了性能，为医疗智能体提供更可靠的EHR表示基础。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.27056v1",
+      "source": "arxiv",
+      "title": "Setoka: A Benchmark for Hierarchical User Understanding in Personalized Agents over Heterogeneous Data",
+      "abstract": "Personalized agents are increasingly applied to assist users across a wide range of tasks. Effective personalized assistance requires not only retrieving explicit facts from past interactions stored in agent memory, but also inferring abstract personal characteristics. However, existing memory benchmarks primarily evaluate whether an agent can retrieve information explicitly stated in conversational histories, failing to provide an effective assessment of deeper user understanding. In this work, we propose Setoka, a benchmark for evaluating memory-augmented personalized agents with hierarchical user understanding from heterogeneous data. Grounded in theories from cognitive and personality psychology, Setoka defines four levels of user understanding, i.e., semantic memory, episodic memory, behavior pattern, and personality trait. Moreover, to enable realistic yet privacy-preserving evaluation, we design a psychometrics-based pipeline that synthesizes diverse, coherent heterogeneous user data and queries at scale. Finally, we leverage Setoka to evaluate 3 language models combined with 5 memory systems for 10 synthetic users. Our comprehensive evaluation reveals that while existing systems perform well on semantic memory retrieval, their performance declines on episodic memory. Moreover, when dealing with behavior pattern and personality trait understanding tasks that require integrating heterogeneous and fragmented information dispersed over time, performance declines even further. These findings demonstrate that user understanding cannot be handled by simple fact retrieval, motivating the design of memory mechanisms for cross-source integration and abstraction over long-term user behavior.",
+      "authors": [
+        "Lingyang Zeng",
+        "Guangze Chen",
+        "Kaichen Yu",
+        "Zhicheng Pan",
+        "Siyang Weng",
+        "Zirui Hu",
+        "Xiangyun Du",
+        "Hailin He",
+        "Rong Zhang",
+        "Chengcheng Yang",
+        "Kai Huang",
+        "Xuan Zhou"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-07-29T15:47:40+00:00",
+      "link": "https://arxiv.org/pdf/2607.27056v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Provides a benchmark for evaluating personalized agents, with methodology applicable to medical agent benchmarking.",
+      "llm_evidence_cn": "提出个性化智能体分层用户理解基准，其评估方法可迁移至医疗智能体评测。",
+      "llm_evidence": "提出个性化智能体分层用户理解基准，其评估方法可迁移至医疗智能体评测。",
+      "canonical_evidence": "提出个性化智能体分层用户理解基准，其评估方法可迁移至医疗智能体评测。",
+      "llm_tldr_en": "Setoka is a benchmark for memory-augmented personalized agents, evaluating hierarchical user understanding over heterogeneous data instead of only retrieving explicit facts.",
+      "llm_tldr_cn": "现有记忆基准只关注从会话中检索显式事实，难以评估个性化智能体对用户深层特征的理解。Setoka从认知与人格心理学理论出发，定义了分层用户理解基准，测量智能体在异构数据上提取抽象用户特征的能力。该基准为评估个性化智能体提供了新的维度，可迁移到医疗场景的智能体评测。",
+      "llm_tldr": "现有记忆基准只关注从会话中检索显式事实，难以评估个性化智能体对用户深层特征的理解。Setoka从认知与人格心理学理论出发，定义了分层用户理解基准，测量智能体在异构数据上提取抽象用户特征的能力。该基准为评估个性化智能体提供了新的维度，可迁移到医疗场景的智能体评测。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.24663v1",
+      "source": "arxiv",
+      "title": "A corrective agentic hybrid RAG and an operations-grounded evaluation for a scientific facility",
+      "abstract": "Scientific user facilities accumulate decades of operational knowledge that no single search index covers: electronic logbooks, technical documents, internal wikis, operations chat messages, maintenance records, and live control-system data. We present APS-RAG, Advanced Photon Source Retrieval Augmented Generation, a deployed platform that makes the institutional knowledge at the Advanced Photon Source (APS) accessible to staff through natural-language queries, along with an operations-grounded evaluation. The retrieval engine fuses dense, sparse, and knowledge-graph (KG) channels with query-type-adaptive reciprocal-rank fusion, adds a corrective agentic loop, and runs a native-tool ReAct executor over a Model Context Protocol (MCP) tooling layer. We construct APS-Bench, a 50-question, question-answering (QA) dataset with auditable gold answers. Every retrieval-augmented variant numerically improves strict vital-nugget recall over a naive BM25 baseline (63.8%), with the full corrective Agentic GraphRAG scoring (70.3%). The cross-encoder reranker contributes significantly to answer quality: removing it and allowing the LLM to score relevance drastically reduces strict vital recall by 32.8%. The graph channel and corrective loop contribute positively as expected, but the performance gains are marginal. Additionally, we also compare the performance of open-source and closed-source LLMs in final answer synthesis. We release the APS-Bench construction methodology, the six-layer evaluation harness, and the underlying codebase, along with the '/aps-rag' retrieval agent skill framework, to support reproduction and adoption at other facilities. Together, the deployed platform and its operations-grounded evaluation present a promising workflow for trustworthy, statistically grounded AI assistance in facility operations, transferable to other large scientific instruments.",
+      "authors": [
+        "Rajat Sainju",
+        "Dariusz Jarosz",
+        "Hairong Shang",
+        "Michael Prince",
+        "Ryan M. Aydelott",
+        "Mathew J. Cherukara",
+        "Yine Sun",
+        "Michael D. Borland"
+      ],
+      "primary_category": "physics.acc-ph",
+      "categories": [
+        "physics.acc-ph",
+        "cs.AI",
+        "cs.IR"
+      ],
+      "published": "2026-07-27T17:01:30+00:00",
+      "link": "https://arxiv.org/pdf/2607.24663v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Agentic RAG platform with operations-grounded evaluation, demonstrating evaluation methodology for deployed agents.",
+      "llm_evidence_cn": "面向科学设施的智能体RAG平台及其运维评估，可借鉴其智能体评估方法。",
+      "llm_evidence": "面向科学设施的智能体RAG平台及其运维评估，可借鉴其智能体评估方法。",
+      "canonical_evidence": "面向科学设施的智能体RAG平台及其运维评估，可借鉴其智能体评估方法。",
+      "llm_tldr_en": "Presents APS-RAG, a deployed corrective agentic RAG platform for scientific facility knowledge, with an operations-grounded evaluation of natural-language queries.",
+      "llm_tldr_cn": "科学设施积累了多源操作知识，单一检索引擎难以覆盖。APS-RAG融合稠密、稀疏和知识图谱检索通道，加入纠偏智能体循环和ReAct执行器，为工作人员提供自然语言问答，并配套基于实际运维场景的评估。该平台展示了智能体RAG在实际设施中的可用性与评估落地经验。",
+      "llm_tldr": "科学设施积累了多源操作知识，单一检索引擎难以覆盖。APS-RAG融合稠密、稀疏和知识图谱检索通道，加入纠偏智能体循环和ReAct执行器，为工作人员提供自然语言问答，并配套基于实际运维场景的评估。该平台展示了智能体RAG在实际设施中的可用性与评估落地经验。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.27564v1",
+      "source": "arxiv",
+      "title": "Inference-Time Agentic Decision Rules Beat Longer Evolving Search for Multi-Image Medical Reasoning",
+      "abstract": "Multi-image medical VQA is not merely a prompt-length problem; it is a fundamental challenge of agentic decision-making. Medical vision-language agents must aggregate evidence across ordered images, remain robust to answer-order perturbations, and avoid overfitting to noisy search-time feedback. We study MedFrameQA through a controlled comparison of five inference-time agentic strategies, optimized using the same high-budget ShinkaEvolve configuration and evaluated on a reproducible internal frozen split (1,331 evolution, 665 holdout, 855 final test). Across five independent repeated runs, the strongest method emerges as the simplest robust aggregator: the \\textbf{order-vote} policy achieves $57.89 \\pm 0.65\\%$ final-test accuracy, significantly outperforming the fixed baseline ($52.73 \\pm 0.42\\%$) and the more complex, albeit brittle, order-rerank variant ($55.79 \\pm 0.43\\%$). Paired bootstrap analysis confirms these significant gains. Extending the evolutionary search budget from 50 to 100 generations yields no generalization benefit: while holdout performance marginally increases, final-test accuracy drops from $57.89\\%$ to $56.02\\%$. Our findings suggest that for multi-image medical reasoning, defining the correct agentic decision rule is substantially more impactful than expanding the optimization search budget.",
+      "authors": [
+        "Site Li",
+        "Jianyi Hao",
+        "Xiaofeng Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-30T01:16:32+00:00",
+      "link": "https://arxiv.org/pdf/2607.27564v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Medical vision-language agent strategies evaluated under controlled benchmark, relevant to medical agent evaluation",
+      "llm_evidence_cn": "对医学视觉语言智能体多种策略进行受控评估，与医疗智能体评估高度相关",
+      "llm_evidence": "对医学视觉语言智能体多种策略进行受控评估，与医疗智能体评估高度相关",
+      "canonical_evidence": "对医学视觉语言智能体多种策略进行受控评估，与医疗智能体评估高度相关",
+      "llm_tldr_en": "Controlled comparison of five inference-time agentic strategies for multi-image medical VQA shows a simple order-vote policy outperforms longer evolving search, improving robustness in medical reasoning agents.",
+      "llm_tldr_cn": "多图像医学VQA不仅是提示词长度问题，更是智能体决策问题。该论文在固定分割下对五种推理期智能体策略进行受控比较，发现最简单的order-vote聚合策略在最终测试集上达到57.89±0.65%的准确率，优于更耗时的演化搜索，且对答案顺序扰动更鲁棒。该结果表明稳健的推理期决策规则能提升医学视觉语言智能体的可靠性，为医疗智能体评测提供了有价值的策略基线。",
+      "llm_tldr": "多图像医学VQA不仅是提示词长度问题，更是智能体决策问题。该论文在固定分割下对五种推理期智能体策略进行受控比较，发现最简单的order-vote聚合策略在最终测试集上达到57.89±0.65%的准确率，优于更耗时的演化搜索，且对答案顺序扰动更鲁棒。该结果表明稳健的推理期决策规则能提升医学视觉语言智能体的可靠性，为医疗智能体评测提供了有价值的策略基线。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.25947v1",
+      "source": "arxiv",
+      "title": "A Cost-Effective Multimodal LLM Reasoning Framework for Question Answering over Irregular Clinical Time Series",
+      "abstract": "Question answering (QA) over irregular clinical time series (ICTS) plays a pivotal role in a wide range of healthcare applications. Although recent multimodal time-series large language models (LLMs) have shown considerable promise in general-purpose time-series QA, they remain poorly equipped to model the sparsity, asynchrony, and irregular sampling patterns of clinical observations. To fill this gap, we propose ClinPRISM, a cost-effective multimodal LLM reasoning framework for question answering over ICTS data. First, we devise an irregularity-aware multi-scale encoder to capture sparse clinical evidence at diverse temporal scales. Then, we propose a temporal evidence distiller to integrate representations across these scales and compress them into a small number of LLM-compatible tokens. Moreover, we introduce a progressive alignment strategy that sequentially aligns the irregular trajectories with the LLM's textual embedding space. To facilitate training, we construct 30,000 clinical time series paired with multi-scale descriptions, together with 41,000 instruction-tuning instances spanning 11 tasks. Using a 4-billion-parameter LLM backbone, ClinPRISM achieves state-of-the-art performance on the held-out evaluation benchmark while using only 16 time-series tokens and achieving an average inference latency of 0.15 seconds per question.",
+      "authors": [
+        "Frank Nie",
+        "Ethan B Liu",
+        "Yuan Zhu",
+        "Wei Fan",
+        "Jindong Han"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-07-28T16:33:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.25947v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Multimodal LLM reasoning framework for irregular clinical time series, relevant to EHR-based medical agents",
+      "llm_evidence_cn": "面向不规则临床时间序列的LLM推理框架，与基于EHR的医疗智能体紧密相关",
+      "llm_evidence": "面向不规则临床时间序列的LLM推理框架，与基于EHR的医疗智能体紧密相关",
+      "canonical_evidence": "面向不规则临床时间序列的LLM推理框架，与基于EHR的医疗智能体紧密相关",
+      "llm_tldr_en": "ClinPRISM is a cost-effective multimodal LLM reasoning framework for QA over irregular clinical time series, capturing sparse evidence with an irregularity-aware encoder.",
+      "llm_tldr_cn": "面向不规则临床时间序列的问答在医疗中重要，但通用多模态时间序列大模型难以处理其稀疏、异步和不规则采样。该论文提出ClinPRISM，包含不规则感知多尺度编码器和时间证据蒸馏器，以经济高效方式支持QA。在相关评测中，ClinPRISM以较低成本获得良好效果，为基于EHR的医疗智能体提供可靠的临床推理与评估基础。",
+      "llm_tldr": "面向不规则临床时间序列的问答在医疗中重要，但通用多模态时间序列大模型难以处理其稀疏、异步和不规则采样。该论文提出ClinPRISM，包含不规则感知多尺度编码器和时间证据蒸馏器，以经济高效方式支持QA。在相关评测中，ClinPRISM以较低成本获得良好效果，为基于EHR的医疗智能体提供可靠的临床推理与评估基础。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.28037v1",
+      "source": "arxiv",
+      "title": "ClawTrack: Towards Trace-Level Evaluation and Improvement of Real-World Autonomous Agents",
+      "abstract": "As LLM-based agents are deployed in complex, multi-step workflows, a critical evaluation gap has emerged: most existing benchmarks judge only final outcomes, unable to distinguish reliable reasoning from lucky success or attribute failures to specific process deficiencies, hindering attribution in long-horizon tasks.   In this work, we present ClawTrack, a dual-assessment benchmark that simultaneously measures what an agent achieves (Task Score) and how it achieves it (Process Score). ClawTrack comprises 320 tasks across 8 domains with 25+ deterministic mock services. A Process Grader scores each reasoning turn along four dimensions (goal alignment, efficiency, information utilization, and result verification), anchored by 12,541 task-specific rubric items. Evaluating 21 models over 16,000+ trials, we find that: (1) process scores effectively attribute success and failure to specific reasoning dimensions, filtering lucky passes invisible to outcome-only evaluation; (2) the four dimensions are complementary, with result verification as the systematic bottleneck; (3) the framework is robust to evaluator choice across different judge LLMs; and (4) process-based trajectory filtering yields consistent post-training improvements across model scales.",
+      "authors": [
+        "Xingjian Wu",
+        "Xuhang Zhu",
+        "Xingchen Liu",
+        "Junlin Liu",
+        "Jianing Wang",
+        "Linsen Guo",
+        "Xiaoyu Li",
+        "Xuezhi Cao",
+        "Xunliang Cai"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-07-30T11:18:47+00:00",
+      "link": "https://arxiv.org/pdf/2607.28037v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Benchmark for autonomous agents with trace-level process and task scoring, transferable to medical agent evaluation",
+      "llm_evidence_cn": "面向自主智能体的双维度评估基准，与医疗智能体评估需求紧密相关",
+      "llm_evidence": "面向自主智能体的双维度评估基准，与医疗智能体评估需求紧密相关",
+      "canonical_evidence": "面向自主智能体的双维度评估基准，与医疗智能体评估需求紧密相关",
+      "llm_tldr_en": "ClawTrack is a dual-assessment benchmark that scores both task outcomes and reasoning processes across 320 tasks, enabling attribution of agent failures in long-horizon workflows.",
+      "llm_tldr_cn": "现有智能体基准多只评估最终结果，难以归因失败。该论文提出ClawTrack双评估基准，同时测量任务得分与过程得分，包含320个任务和8个领域，按四个维度对每个推理步骤打分。该基准提供12,541条锚定数据，能够对长程智能体进行轨迹级诊断，为包括医疗在内的智能体评估提供了可迁移的通用方法。",
+      "llm_tldr": "现有智能体基准多只评估最终结果，难以归因失败。该论文提出ClawTrack双评估基准，同时测量任务得分与过程得分，包含320个任务和8个领域，按四个维度对每个推理步骤打分。该基准提供12,541条锚定数据，能够对长程智能体进行轨迹级诊断，为包括医疗在内的智能体评估提供了可迁移的通用方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}

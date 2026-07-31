@@ -1,0 +1,1260 @@
+Title: GuideSkill: Evolving Executable LLM Agent Skills for Guideline-Grounded Clinical Reasoning
+
+URL Source: https://arxiv.org/pdf/2607.26160v1
+
+Published Time: Thu, 30 Jul 2026 00:04:17 GMT
+
+Number of Pages: 26
+
+Markdown Content:
+# GuideSkill: Evolving Executable LLM Agent Skills for Guideline-Grounded Clinical Reasoning 
+
+## Lang Cao Yuhao Shen ✦ Tianyang Luo Simo Du ✧ Hao Peng Yue Guo 
+
+University of Illinois Urbana-Champaign 
+
+> ✦
+
+The Chinese University of Hong Kong, Shenzhen 
+
+> ✧
+
+Albert Einstein College of Medicine 
+
+Abstract 
+
+Clinical practice guidelines (CPGs) encode diagnostic crite-ria, but LLM systems typically retrieve guideline text or absorb it through training rather than execute its rules. We introduce 
+
+GuideSkill , an external reasoning layer that compiles disease-specific criteria into executable functions returning ordinal diagnostic-support scores. GuideSkill-Zero is initialized from guidelines, while GuideSkill-Evo uses case–diagnosis pairs to refine covered skills and add missing diagnoses. At inference, an LLM proposes a differential diagnosis, grounds the fea-tures required by each matched skill, and fuses its ranking with the executed skill scores. Across four benchmarks and four backbones, GuideSkill-Zero improves macro-average ac-curacy over guideline RAG by 13.45% on average. GuideSkill-Evo achieves the highest macro-average for every backbone, improves over direct inference by 18.49% relatively, and in-creases gold-label skill coverage from 56.5% to 99.5%. On Qwen3.5-9B, it also exceeds the strongest parameter-update baseline by 11.16% without updating the backbone. Expert evaluation further indicates that GuideSkill produces clinically sound and broadly acceptable skills, suggesting that its initial-ized and evolved rules are reliable and practically meaningful. These results support executable skills as a model-agnostic mechanism for combining guideline-derived procedures with case-derived diagnostic patterns. 
+
+## 1 Introduction 
+
+Clinical diagnosis is not only a knowledge-recall problem. It is a multistep process that requires gathering and synthe-sizing patient information, generating and comparing plau-sible diagnoses, determining which findings and thresholds support or weaken each candidate, excluding alternatives, and identifying decisive tests (McDuff et al. 2025; Hager et al. 2024; Cao, Chen, and Guo 2026; You et al. 2026). Clinical practice guidelines (CPGs) encode evidence-based recommendations and conditional decision logic that can guide these decisions (Institute of Medicine 2011; Shen et al. 2026b). However, providing guideline-derived criteria to an LLM does not guarantee that they will be applied correctly to the patient: even when guideline-based checklists are sup-plied, criterion-level evaluation remains imperfect (Schubert et al. 2025). LLMs can generate ranked differential diag-noses from free-text cases (McDuff et al. 2025), but may omit clinician-identified reasoning evidence and fail to fol-low diagnostic guidelines (Wu et al. 2025; Hager et al. 2024). We therefore ask whether CPGs can be transformed from passive references into an evolvable library of executable di-agnostic skills that combines flexible candidate generation with explicit disease-specific rule application. Prior work incorporates CPGs by supplying guideline text or checklists at inference (Schubert et al. 2025), adapt-ing model parameters with guideline-containing corpora or guideline-derived supervision (Chen et al. 2023; Staniek, Sokolov, and Riezler 2025; Shen et al. 2026b), and translating guidelines into structured decision trees or program-aided pathways (Oniani et al. 2024; Li et al. 2023; Deng et al. 2026). These approaches demonstrate several ways to operationalize guideline knowledge in LLM systems, but they leave open a complementary systems question: can guideline-derived procedures be organized as an external, disease-indexed skill library that compares evidence across candidate diagnoses, transfers across LLM backbones, and expands without updat-ing model parameters? This question is particularly relevant to differential diagnosis, where several conditions may plau-sibly explain the same presentation and must be compared against disease-specific evidence (McDuff et al. 2025). Be-cause the initial guideline corpus covers only a finite set of diagnoses, we further examine whether labeled cases can extend the library to diagnoses absent from that corpus, in-cluding the rare and complex conditions represented in case-report benchmarks (Wu et al. 2025). We introduce GuideSkill , which transforms CPGs from passive references into an external library of executable, disease-specific skills. Externalizing this knowledge makes diagnostic criteria reusable across LLM backbones and al-lows the library to be updated without modifying model pa-rameters. GuideSkill-Zero initializes the library from guide-lines, providing explicit supporting and contradictory rules for covered diagnoses. GuideSkill-Evo then uses labeled cases to refine existing skills and add diagnoses absent from the guideline corpus, expanding coverage while updating disease-specific decision rules outside the backbone. At in-ference, the LLM and the skill library address complemen-tary limitations. The LLM generates a ranked differential from the full patient narrative, including diagnoses beyond the finite skill library, while matched skills apply explicit disease-specific criteria to covered candidates. Their fusion preserves open-ended candidate generation while allowing reusable evidence rules to refine the ranking, rather than re-1arXiv:2607.26160v1 [cs.AI] 28 Jul 2026 lying entirely on either an LLM-only ranking or incomplete skill coverage. Because the skills remain external, the same diagnostic logic can be inspected, updated, and reused across backbones. We evaluate GuideSkill on four heterogeneous diagnostic-reasoning benchmarks—MedCaseReasoning (Wu et al. 2025), ER-Reason (Mehandru et al. 2025), MIMIC-CDM-FI (Hager et al. 2024), and MedThink-Bench (Zhou et al. 2025)—using four proprietary and open-weight LLM back-bones. Using only guideline-derived executable skills, 
+
+GuideSkill-Zero achieves higher macro-average accuracy than guideline RAG for every backbone. After evolu-tion, GuideSkill-Evo outperforms direct inference in all 16 dataset–backbone comparisons, with a mean relative im-provement of 18.49%, while increasing pooled gold-label skill coverage from 56.50% to 99.50%. On MedThink-Bench, which is excluded from evolution training, it achieves the best or tied-best accuracy across all four backbones, demon-strating transfer to an unseen benchmark. On Qwen3.5-9B, it also outperforms the evaluated supervised fine-tuning, reinforcement-learning, and guideline-decision-tree base-lines without updating the backbone. Together, these results demonstrate the benefits of external executable skills for di-agnostic accuracy and coverage. Our contributions are threefold: 
+
+• We formulate guideline-grounded diagnosis as agentic skill execution and develop a disease-indexed compila-tion pipeline that converts CPG recommendations into ex-ecutable ordinal scorers. 
+
+• We introduce a case-conditioned evolution mechanism that refines covered skills and adds previously uncovered diag-noses outside the LLM parameters. 
+
+• We develop a candidate-level inference procedure and eval-uate it across four backbones and four benchmarks, separat-ing the contribution of guideline-only initialization from the additional coverage and downstream gains obtained through evolution. 
+
+## 2 Related Work 
+
+Clinical Guidelines as Reasoning Resources. Because CPGs synthesize reviewed clinical evidence into recom-mendations, they are a valuable foundation for clinical decision support (Institute of Medicine 2011). LLM-based systems have incorporated them as retrieved prompt context (Schubert et al. 2025; Oniani et al. 2024), super-vised examples (Staniek, Sokolov, and Riezler 2025), or reinforcement-learning signals (Tziakouri and Menolascina 2025). More structured approaches operationalize their decision logic: MedDM represents clinical pathways as LLM-executable guidance trees (Li et al. 2023), CPG-Prompt translates CPGs into decision trees traversed during inference (Deng et al. 2026), and MedGuideX executes guideline logic to generate factual and counterfactual supervision for post-training (Shen et al. 2026b). However, the guideline-derived component of these systems remains bounded by the source corpus: it provides no procedure for diagnoses outside that corpus and no mechanism to learn additional diagnostic patterns from labeled case presentations. GuideSkill addresses this gap by initializing an external skill library from guidelines and using labeled cases to refine covered skills and add uncovered diagnoses. It thereby retains guideline-derived procedures while extending beyond the initial corpus. 
+
+Evolving Skills in Healthcare and Biomedicine. Agent skills externalize reusable procedures so that capabilities can accumulate without changing model parameters. Trace2Skill induces transferable operating procedures from recurring patterns in execution trajectories (Ni et al. 2026), while Skill-Claw aggregates cross-user trajectories to refine and extend a shared skill repository (Ma et al. 2026). In healthcare, an empirical study of public skills finds that they primarily support patient-facing workflow automation and monitoring, with limited coverage of diagnosis and treatment (Xu et al. 2026). Related biomedical systems target scientific work-flows: SkillFoundry mines heterogeneous resources into val-idated executable skills and demonstrates them on genomics tasks (Shen et al. 2026a), whereas STELLA evolves rea-soning templates and tool use for biomedical research and experimental discovery (Jin et al. 2025). These studies cap-ture experience or operational procedures but do not address evolving evidence-based knowledge for patient-level diag-nosis. GuideSkill fills this gap by initializing skills from CPGs, expanding them with labeled cases, and executing them against patient evidence. 
+
+## 3 Methodology 
+
+Figure 1 provides an overview of GuideSkill . The framework first constructs an initial skill library, GuideSkill-Zero , from clinical guidelines, then evolves the library with real patient cases to obtain GuideSkill-Evo , and finally applies the learned disease-specific skills during inference. 
+
+3.1 Task Formulation 
+
+Given an undiagnosed patient case x, our goal is to predict the final diagnosis d⋆ ∈ D . Here, x includes the patient’s demographics, chief complaint, medical history, physical ex-amination findings, and available test results. The diagnosis space D is standardized using three-character WHO ICD-10 categories (World Health Organization 2019), which provide normalized disease identifiers across datasets. During inference, an LLM M first generates a ranked differential diagnosis set: 
+
+C(x) = {d1, . . . , d K }, C(x) ⊆ D , (1) where K = 5 by default. For each candidate diagnosis 
+
+d ∈ C (x), we convert its rank into an LLM ranking score 
+
+sLLM (x, d ). Specifically, if d is ranked at position rd with zero-based indexing, then 
+
+sLLM (x, d ) = 1
+
+rd + 1 . (2) 
+
+GuideSkill then retrieves the corresponding disease-specific skill gd from the skill library G and executes it on the patient case to obtain a skill-based evidence score: 
+
+sskill (x, d ) = gd(x). (3) 2Skill Initialization 
+
+> Clinical Practice
+> Guideline
+> Filtering
+> & Curation
+
+1  
+
+> Executable Skill Library
+> GuideSkill -Zero
+> LLM -based
+> Conversion
+> Depressive Episode (F32) :
+> In a terminally ill patient, diagnose a
+> depressive episode when depressed mood
+> persists for at least two weeks and is
+> accompanied by symptoms of hopelessness,
+> helplessness, worthlessness, guilt, lack of
+> reactivity, or suicidal ideation.
+> ……
+> Depressive_Episode_F32_skill.py
+
+Skill Evolution 2 Skill Execution 3        
+
+> Real Patient Case Ground -truth Diagnosis
+> LLM -generated
+> Rationale
+> Disease -wise Aggregation
+> & Experience Distillation
+> Disease -specific Clinical Rules
+> GuideSkill -Evo Quality & Coverage
+> Skill -Available Path Skill -Missing Path
+> Skill Generation
+> Skill Optimization
+> Integration
+> Undiagnosed
+> Patient Case
+> LLM -based
+> Differential Diagnosis
+> Diagnosis A Diagnosis B Diagnosis C
+> LLM Ranking
+> Score
+> Skill Evidence
+> Score
+> GuideSkill -Evo
+> Fused Score
+> Guideline -
+> Grounded
+> Execution
+> 0.6 10.3
+> 0.3 0.5 1
+> 0.45
+
+0.75 0.65   
+
+> Final Diagnosis Determination
+> by Max -Score Selection
+> Because his interest
+> and pleasure are gone,
+> won‘t eat ……
+
+Figure 1: Overview of GuideSkill . Guideline recommendations are compiled into the initial executable library ( GuideSkill-Zero ); labeled cases refine covered skills and add missing diagnoses ( GuideSkill-Evo ); and, during inference, executed skill scores are fused with an LLM-generated differential ranking. The final diagnosis score combines the LLM ranking score and the skill-based evidence score: 
+
+S(x, d ) = αs LLM (x, d ) + (1 − α)sskill (x, d ), (4) where α ∈ [0 , 1] controls the relative contribution of the two signals. The final prediction is selected from the candidate set: ˆd = arg max 
+
+d∈C (x) S(x, d ). (5) 
+
+3.2 Skill Initialization 
+
+The first stage constructs the initial skill library, denoted as GuideSkill-Zero . Given a collection of clinical practice guidelines, P = {p1, . . . , p M }, we first filter and curate the raw guideline documents to obtain a high-quality guideline set P′. Details of the guideline preprocessing are provided in Appendix B. Each curated guideline is then parsed into disease-specific clinical recommendations, where each rec-ommendation captures a clinically relevant diagnostic crite-rion, finding, exclusion rule, or decision rule that supports or refutes a specific diagnosis. Since GuideSkill operates at the ICD-10 category level, we group recommendations by their mapped ICD-10 diagnosis category. For a diagnosis category d, we denote the extracted recommendation set as: Rd = {rd, 1, r d, 2, . . . , r d,m d },
+
+where md is the number of recommendations extracted and mapped to diagnosis category d.Each recommendation set Rd is then converted by an LLM into executable diagnostic logic, yielding an initial disease-specific skill: 
+
+g(0) 
+
+d = LLM Compile (Rd). (6) The initialized skill library is therefore defined as: 
+
+G(0) = {g(0) 
+
+d | d ∈ D guide }, (7) where Dguide denotes the set of ICD-10 diagnosis categories covered by the curated guidelines. Each skill g(0) 
+
+d is implemented as an executable Python function. It takes the relevant features of a patient case x as input and returns a skill-based evidence score: 
+
+sskill (x, d ) = g(0) 
+
+d (x). (8) The score is computed by matching the clinical evidence in 
+
+x against the executable diagnostic rules encoded in g(0) 
+
+d .Specifically, each skill assigns the evidence to one of four support levels: Confirmed , Strongly Suggestive ,
+
+Compatible , and Not Supported . Contradictory evi-dence is further used to downgrade the support level when applicable. The final evidence score is normalized to the range [0 , 1] . Since each skill is executable, it can be directly invoked by an LLM agent to obtain a structured evidence score for diagnosis d. In this way, GuideSkill-Zero provides a guideline-grounded and interpretable mechanism for diag-nosis scoring. 
+
+3.3 Skill Evolution 
+
+Although GuideSkill-Zero is grounded in clinical guidelines, guidelines mainly capture general diagnostic principles and key decision points, while real-world cases often contain heterogeneous presentations and atypical clinical patterns. We therefore evolve the skill library using labeled patient cases. Let the training set be T = {(xj , d j )}nj=1 , where xj
+
+is a patient case and dj is the ground-truth diagnosis. For each case (xj , d j ), the LLM generates a diagnostic rationale zj that summarizes the clinical evidence support-ing dj . Rationales associated with the same diagnosis are then aggregated and distilled into additional disease-specific rules: 
+
+∆Rd = LLM Distill 
+
+ {zj | dj = d}. (9) The newly distilled rules are used to update the skill library. If diagnosis d already has an existing skill, the rules are used to optimize that skill; otherwise, they are used to generate a 3new skill: 
+
+g(t+1)  
+
+> d
+
+=
+
+(
+
+Optimize  g(t) 
+
+> d
+
+, ∆Rd
+
+, if d ∈ D G(t) ,
+
+Generate  ∆Rd
+
+, otherwise . (10) Here, DG(t) denotes the set of diagnoses currently covered by the skill library G(t). After applying this update across training diagnoses, we obtain the evolved skill library GEvo .This process improves both skill quality and skill coverage: existing skills become better aligned with real patient cases, while diagnoses missing from the initial guideline-derived library can be newly added. 
+
+3.4 Skill Execution 
+
+During inference, given an unseen patient case x, the LLM first generates a ranked differential diagnosis set C(x) ⊆ D .For each candidate diagnosis di ∈ C (x), GuideSkill retrieves the corresponding skill from the evolved skill library by matching either the disease name or the ICD-10 code: 
+
+gdi ← Retrieve( GEvo , d i). (11) Because different skills may require different clinical fea-tures, the LLM extracts the skill-specific inputs needed by each retrieved skill: 
+
+ϕdi (x) = LLM feat (x, g di ), (12) where ϕdi (x) denotes the subset of patient features required to execute gdi . The retrieved skill is then executed on these extracted features to produce a skill-based evidence score: 
+
+sskill (x, d i) = gdi
+
+ ϕdi (x). (13) Meanwhile, the LLM-generated differential diagnosis list provides a ranking over the candidate set. We convert this rank into an LLM ranking score: 
+
+sLLM (x, d i) = 1rank i + 1 , (14) where rank i is the zero-based rank of candidate di. The final fused score combines the LLM ranking score with the skill-based evidence score: 
+
+sfuse (x, d i) = αs LLM (x, d i) + (1 − α)sskill (x, d i), (15) where α ∈ [0 , 1] controls the relative contribution of the two signals. By default, we set α = 0 .5. The final diagnosis is selected as: 
+
+ˆd = arg max  
+
+> di∈C (x)
+
+sfuse (x, d i). (16) Compared with direct LLM inference, this process grounds the final decision in executable clinical rules while preserving the broad diagnostic capability of the LLM. 
+
+## 4 Experiments 
+
+Data. We evaluate GuideSkill-Zero and GuideSkill-Evo on four heterogeneous diagnostic-reasoning benchmarks: Med-CaseReasoning (Wu et al. 2025), ER-Reason (Mehandru et al. 2025), MIMIC-CDM-FI (Hager et al. 2024), and MedThink-Bench (Zhou et al. 2025), spanning published 0 20 40 60 80 100                     
+
+> share of gold diagnoses in the test split (%)
+> MedCase
+> ER-Reason
+> MIMIC
+> MedThink
+> 34 7697710
+> 915 912 7810 17
+> 100
+> 711 911 15 7722
+> ICD-10 chapter
+> Neoplasms
+> Digestive
+> Circulatory
+> Infectious
+> Musculoskeletal
+> Endocrine/Metabolic
+> Genitourinary
+> Blood/Immune
+> Skin
+> Congenital
+> Respiratory
+> Other
+
+Figure 2: Test-split diagnosis distribution by ICD-10 chapter across the four benchmarks. Each horizontal bar shows the percentage of gold diagnoses belonging to each chapter.                                         
+
+> Statistic MedCase ER-Reason MIMIC MedThink Total Training split for evolution (#)
+> Cases 11,598 1,235 219 -13,052 Distinct ICD-10 categories 463 232 5-473 New skills added 263 102 0-267
+> Test split for inference (#)
+> Cases 894 360 94 55 1,403 Distinct ICD-10 categories 389 130 549 448
+> Skill coverage on test cases (%)
+> GuideSkill-Zero 43.1 79.2 100.0 50.9 56.5
+> GuideSkill-Evo 100.0 100.0 100.0 87.3 99.5 (+43.0)
+
+Table 1: Benchmark statistics and skill coverage. GuideSkill-Evo substantially improves test-case skill coverage over 
+
+GuideSkill-Zero , increasing overall coverage by 43.0 points. case narratives, sequential emergency-department reasoning, full-information acute-abdominal diagnosis, and multistep medical QA. Training splits from the first three benchmarks are used for skill evolution, whereas MedThink-Bench is re-served for external evaluation and excluded from evolution. For cross-benchmark comparison, we normalize reference diagnoses to three-character ICD-10 categories, such as K35 
+
+for acute appendicitis, and evaluate category-level rather than subtype-level diagnosis. We use Claude-Sonnet-4.6 for skill initialization and evolution. The four test sets contain 1,403 cases across 448 ICD-10 categories (Table 1), with their chapter-level diagnosis distributions shown in Figure 2. 
+
+Baselines To assess GuideSkill against representative inference-time alternatives under a common evaluation pro-tocol, we compare six baselines: direct prompting, chain-of-thought prompting (Wei et al. 2022), 3-shot in-context learning (Brown et al. 2020), guideline RAG (Lewis et al. 2020), LLM-generated differential diagnosis (DDx), and LLM-generated DDx with guideline retrieval. These base-lines test whether performance gains can be explained by explicit reasoning, case demonstrations, access to guide-line text, broader candidate generation, or their combination. We evaluate every method using GPT-5.4 , Claude-Sonnet-4.6 , MedGemma-27B , and Qwen3.5-9B , covering propri-etary and open-weight, general-purpose and medically spe-cialized backbones. We further compare GuideSkill with rep-resentative parameter-update and structured-guideline alter-natives on Qwen3.5-9B : fine-tuning with guidelines (Staniek, Sokolov, and Riezler 2025), cases (Wu et al. 2025), or both; RL with cases (Chen et al. 2024); guideline fine-tuning fol-lowed by case-based RL; and guidelines represented as de-cision trees (Deng et al. 2026). These methods span the 4Base Model Method MedCaseReasoning ER-Reason MIMIC-CDM-FI MedThink-Bench Average 
+
+GPT-5.4 
+
+Direct 25.73 42.22 93.62 29.09 47.67 CoT 25.17 43.06 89.36 36.36 48.49 3-shot ICL 28.97 43.89 92.55 34.55 49.99 
+
+RAG 23.71 43.06 93.62 32.73 48.28 LLM DDx 25.28 40.00 90.43 34.55 47.57 LLM DDx + RAG 25.39 39.72 90.43 27.27 45.70 
+
+GuideSkill-Zero 35.01 53.06 95.74 34.55 54.59 
+
+GuideSkill-Evo 39.71 +37.07% 55.00 +25.31% 96.81 +3.41% 36.36 +0.00% 56.97 +13.96% 
+
+Claude-Sonnet-4.6 
+
+Direct 23.27 41.11 92.55 34.55 47.87 CoT 23.94 39.17 89.36 32.73 46.30 3-shot ICL 25.95 39.94 92.55 34.55 48.25 
+
+RAG 23.83 43.06 91.49 29.09 46.87 LLM DDx 22.04 34.44 92.55 30.91 44.99 LLM DDx + RAG 22.15 35.56 91.49 27.27 44.12 
+
+GuideSkill-Zero 32.33 47.22 94.68 25.45 49.92 
+
+GuideSkill-Evo 40.27 +55.18% 50.56 +17.42% 95.74 +3.45% 40.00 +15.77% 56.64 +17.39% 
+
+MedGemma 27B 
+
+Direct 19.02 32.22 91.49 25.45 42.05 CoT 20.02 33.89 92.55 25.45 42.98 3-shot ICL 20.25 30.28 91.49 27.27 42.32 RAG 14.54 30.83 91.49 21.82 39.67 LLM DDx 18.57 39.17 92.55 21.82 43.03 
+
+LLM DDx + RAG 17.90 39.44 92.55 18.18 42.02 
+
+GuideSkill-Zero 23.60 44.72 92.55 27.27 48.08 
+
+GuideSkill-Evo 25.95 +28.15% 48.89 +23.96% 93.62 +1.16% 30.91 +13.35% 49.84 +15.83% 
+
+Qwen3.5 9B 
+
+Direct 19.69 39.44 92.55 21.82 43.38 CoT 19.57 36.11 93.62 23.64 43.24 3-shot ICL 20.69 39.94 92.55 23.64 44.21 
+
+RAG 16.55 33.33 90.43 23.64 40.99 LLM DDx 17.67 33.33 93.62 20.00 41.16 LLM DDx + RAG 19.13 35.28 92.55 21.82 42.20 
+
+GuideSkill-Zero 23.71 41.67 94.68 25.45 46.38 
+
+GuideSkill-Evo 26.17 +26.49% 46.39 +16.15% 96.81 +3.41% 34.55 +46.15% 50.98 +15.31% 
+
+Table 2: Main results across four benchmarks and four base models, reported as accuracy (%). For each base model and column, 
+
+bold indicates the best score, and italic indicates the strongest baseline. Green numbers show the relative improvement of 
+
+GuideSkill-Evo over the strongest baseline. GuideSkill-Evo achieves the best accuracy across all benchmarks and base models, with the largest gains over the strongest baselines and GuideSkill-Zero .principal supervision sources, optimization strategies, and guideline representations relevant to our setting. To ensure comparability, we implement them using the same backbone, data splits, evaluation protocol, and curated guideline corpus whenever applicable, rather than comparing with published results obtained on different tasks. The cited methods there-fore motivate matched baseline adaptations rather than exact reproductions. For case-based training, we reserve 20% of the training split for validation and use the remainder for optimization. 
+
+Evaluation. We report accuracy on each benchmark and the macro-average across the four benchmarks. Gold diag-noses are normalized to three-character WHO ICD-10 cat-egories during preprocessing, and cases without a reliable mapping to a single diagnostic category are excluded. Be-cause all methods are instructed to return an ICD-10 category code, we use exact equality between the predicted and refer-ence codes as the primary correctness criterion; malformed or code-free outputs are counted as incorrect. Appendix H provides the model and inference settings, baseline imple-mentations, training configurations, and complete evaluation protocol. Appendix I describes ICD-10 normalization, data filtering, and benchmark splits. 
+
+## 5 Results 
+
+Main Results Table 2 reports results across four backbone models. GuideSkill-Evo achieves the highest macro-average accuracy for every backbone: 56.97 with GPT-5.4 , 56.64 with Claude-Sonnet-4.6 , 49.84 with MedGemma-27B , and 50.98 with Qwen3.5-9B . For GPT-5.4 and Claude-Sonnet-4.6 , these scores exceed the strongest non-GuideSkill baseline by 6.98 and 8.39 percentage points, respectively. The gains therefore extend across proprietary, open-weight, general-purpose, and medically specialized backbones, indicating that the improvement is not tied to a particular LLM. Even without case-based evolution, GuideSkill-Zero often ranks second within each backbone block and outperforms guideline RAG for every backbone. This is notable because its guideline-derived library covers only a subset of the eval-uated diagnoses; candidates without a matching skill rely primarily on the LLM ranking. Its competitive performance 50     
+
+> 25
+> 50
+> 75
+> 100
+> accuracy (%)
+> Existing skills New skills
+> +2.1
+> -0.7
+> +1.1
+> +7.1
+> +12.4 +18.7
+> +22.2
+> Claude-Sonnet-4.6
+> Zero
+> Evo
+> Existing skills New skills
+> +1.8
+> -1.4
+> +1.1
+> -3.6
+> +6.9
+> +14.7
+> +7.4
+> GPT-5.4
+> MedCase
+> ER-Reason
+> MIMIC
+> MedThink
+> MedCase
+> ER-Reason
+> MedThink
+> 0
+> 25
+> 50
+> 75
+> 100
+> accuracy (%)
+> Existing skills New skills
+> -1.0
+> -1.1
+> +0.0
+> +0.0
+> +4.9
+> +4.0
+> +7.4
+> MedGemma-27B
+> MedCase
+> ER-Reason
+> MIMIC
+> MedThink
+> MedCase
+> ER-Reason
+> MedThink
+> Existing skills New skills
+> +1.3
+> +1.8
+> +1.1
+> +3.6
+> +3.3
+> +16.0
+> +14.8
+> Qwen3.5-9B
+
+Figure 3: Accuracy of GuideSkill-Zero and GuideSkill-Evo on initially covered and newly added ICD-10 categories. Evolution improves all new-skill settings while preserving or improving existing-skill performance in 11 of 16 settings. 
+
+Method MedCaseReasoning ER-Reason MIMIC-CDM-FI MedThink-Bench Average 
+
+Qwen3.5 9B 
+
+Direct Inference 19.69 39.44 92.55 21.82 43.38 Fine-tuning w/ Guidelines (Staniek, Sokolov, and Riezler 2025) 23.94 43.33 92.55 18.18 44.50 Fine-tuning w/ Cases (Wu et al. 2025) 23.27 46.94 92.55 18.18 45.24 Fine-tuning w/ Guidelines + Cases 24.50 45.28 93.62 16.36 44.94 RL w/ Cases (Chen et al. 2024) 25.95 42.50 92.55 16.36 44.34 Fine-tuning w/ Guidelines + RL w/ Cases 24.94 43.06 93.62 21.82 45.86 
+
+Guidelines as Decision Trees (Deng et al. 2026) 20.58 29.17 56.38 32.73 34.72 
+
+GuideSkill-Zero (Ours) 23.71 41.67 94.68 25.45 46.38 
+
+GuideSkill-Evo (Ours) 26.17 46.39 96.81 34.55 50.98 
+
+Table 3: Training results on Qwen3.5-9B across four benchmarks, reported as accuracy (%). For each column, bold indicates the best score. GuideSkill-Evo achieves the best performance across all benchmarks and attains the highest average accuracy, consistently outperforming fine-tuning and RL-based training variants. shows that guideline-derived executable skills provide sub-stantial diagnostic value before using benchmark training cases. Rather than creating this benefit from scratch, evo-lution builds on it by expanding the library from 349 to 473 ICD-10 categories and increasing gold-label skill cov-erage from 56.5% to 99.5%. The resulting GuideSkill-Evo 
+
+improves over GuideSkill-Zero on MedCaseReasoning, ER-Reason, and MedThink-Bench. On MedThink-Bench, which is excluded from evolution, it outperforms GuideSkill-Zero 
+
+across all four backbones, suggesting that case-derived up-dates can transfer to an unseen benchmark. The advantage over guideline RAG further highlights the value of operationalizing guideline knowledge. Whereas RAG appends retrieved passages and relies on the LLM to in-terpret them, GuideSkill executes disease-specific criteria to produce candidate-level support scores. To examine robust-ness, efficiency, and mechanism, additional analyses show that α = 0 .5 is a competitive fusion setting and that accuracy largely saturates at K = 5 (Figures 4 and 5). Batched feature grounding in GuideSkill-Effi reduces estimated GPT-5.4 API cost by 72.7% with a 0.34-point accuracy decrease on Med-CaseReasoning (Appendix F; Table 6). A case study further illustrates how candidate-specific skill scores can correct an initially incorrect LLM ranking (Appendix K). 
+
+Skill Evolution We analyze evolution from two comple-mentary perspectives: skill coverage and downstream di-agnostic utility. Gold-label skill coverage is the percent-age of test cases whose reference ICD-10 category has a corresponding executable skill. As shown in Table 1, evo-lution expands the library from 349 to 473 ICD-10 cate-gories and increases coverage from 56.5% with GuideSkill-Zero to 99.5% with GuideSkill-Evo , filling nearly all gaps in the initial guideline-derived library. Figure 3 examines whether this expansion improves newly covered diagnoses without degrading the original skills. For newly covered cat-egories, GuideSkill-Evo improves accuracy in all 12 available backbone–benchmark comparisons, with gains of 3.3–22.2 percentage points. For initially covered categories, accuracy improves or remains unchanged in 11 of 16 comparisons; gains reach 7.1 points, whereas declines are limited to 3.6 points. Evolution therefore substantially improves newly cov-ered diagnoses while preserving or strengthening the initial skills in most settings. To identify the remaining bottlenecks, we conduct an error analysis with Claude-Sonnet-4.6 . Of the 749 errors, 456 (60.9%) occur because the reference ICD-10 category is absent from the candidate set and therefore cannot be recovered by downstream skill execution. Candidate recall is thus the dominant remaining failure mode; Appendix G 6Dataset Executable Skill Textual Skill 
+
+Claude-Sonnet-4.6 
+
+MedCaseReasoning 45.00 ± 0.00 44.60 ± 0.80 ER-Reason 63.00 ± 0.00 61.40 ± 0.80 MIMIC-CDM-FI 95.74 ± 0.00 96.38 ± 0.52 MedThink-Bench 40.00 ± 0.00 40.00 ± 0.00 
+
+Average 60.94 ± 0.00 60.60 ± 0.13 
+
+Table 4: Comparison between executable and textual skill representations using the same GuideSkill-Evo candidate sets. Executable skills provide deterministic tier scoring af-ter feature grounding, while textual skills rely on direct LLM interpretation of plain-text rubrics. and Table 7 provide the complete error breakdown. 
+
+Comparison with Training- and Guideline-Based Base-lines Table 3 compares GuideSkill with parameter-update and structured-guideline baselines using the same 
+
+Qwen3.5-9B backbone. GuideSkill-Evo achieves the highest macro-average accuracy of 50.98, exceeding the strongest parameter-update baseline by 5.12 percentage points and Guidelines as Decision Trees by 16.26 points. It ranks first on three of four benchmarks; the only exception is ER-Reason, where case fine-tuning exceeds it by 0.55 points. Notably, 
+
+GuideSkill-Zero already achieves a macro-average of 46.38, surpassing the strongest parameter-update baseline before case-based skill evolution. On MedThink-Bench, which is excluded from skill evolution and case-based parameter train-ing, GuideSkill-Evo achieves 34.55, compared with 21.82 for the strongest parameter-update baseline and 32.73 for Guide-lines as Decision Trees. This indicates stronger transfer to an unseen benchmark. By storing diagnostic knowledge in ex-ternal functions that directly execute disease-specific criteria, 
+
+GuideSkill improves accuracy without updating the backbone while keeping its decision logic explicit. 
+
+Comparison Between Executable and Textual Skills Un-der identical GuideSkill-Evo candidate sets and fusion pa-rameters, executable and textual skills achieve similar mean accuracy (60.94 versus 60.60), but only the executable vari-ant shows no run-to-run accuracy variation over five evalua-tions, providing a more repeatable scoring interface (Table 4; Appendix C). 
+
+Clinician Assessment of Skill Quality One clinician eval-uated ten disease skills, five guideline-initialized and five case-derived, covering 42 initial rules, 100 evolution cases, 120 final rules, and 51 held-out cases. For each skill, the clinician first assigned an expected support tier (0–3) and confidence score to held-out cases without seeing the skill output, enabling comparison with the method-assigned tiers. For guideline-initialized skills, the clinician then assessed whether each initial rule was consistent with its cited guide-line passage and whether clinically important criteria were omitted or incorrectly encoded. Next, the clinician rated whether each evolution case was suitable for skill evolu-tion and whether it supported a new or revised rule. Finally,                                  
+
+> Measure Guideline Case-derived Overall
+> Initial rule and skill validity
+> Guideline-consistent rules 95.2% ––Skills without major clinical errors 5/5 ––
+> Evolution case utility
+> Cases suitable for skill evolution 90.0% 80.0% 85.0%
+> supporting a new or revised rule 60.0% 70.0% 64.7% Blinded held-out case assessment
+> Correct diagnoses assigned tier ≥212/12 11/11 23/23 Agreement within one tier 88.0% 84.6% 86.3% Exact tier agreement 52.0% 34.6% 43.1% Quadratic-weighted κ0.64 0.55 0.60
+> Final skill acceptability
+> Skills accepted unchanged/minor 4/5 5/5 9/10
+
+Table 5: Clinician assessment of guideline-initialized and case-derived skills. Tier-agreement metrics compare the clin-ician’s blinded judgments with the corresponding skill out-puts. after reviewing the rule changes and final skill, the clini-cian recommended accepting, revising, or rejecting the skill. This staged protocol reduces anchoring from the skill output; Appendix J provides the complete questionnaire. As shown in Table 5, 95.2% of the initial rules were guideline-consistent, and all five guideline-initialized skills were judged to have no major clinical errors. Among evolu-tion cases, 85.0% were rated as suitable for skill evolution, with 64.7% supporting a new or revised rule. On blinded held-out cases, all correct diagnoses received a support tier of at least 2, and 86.3% of skill outputs were within one tier of the clinician judgment. The overall quadratic-weighted κ
+
+was 0.60, indicating moderate clinician–skill agreement. Fi-nally, 9/10 final skills were accepted unchanged or with only minor revisions. A detailed case review showed that the only final skill requiring major revision resulted from an evolution case that changed an originally correct rule into an inappro-priate one by overgeneralizing a case-specific pattern rather than capturing a generalizable diagnostic rule. Overall, these results suggest that GuideSkill produces clinically validated and largely acceptable skills through both skill initialization and evolution, while highlighting the need for careful vali-dation of case-derived updates. 
+
+## 6 Conclusion 
+
+We introduced GuideSkill , an external reasoning layer that compiles guideline criteria into executable disease-specific skills and evolves them from labeled cases without updat-ing the backbone. Across four benchmarks and four LLMs, guideline-initialized skills outperform guideline RAG, while evolution improves all 16 direct-inference comparisons and raises gold-label skill coverage from 56.5% to 99.5%. On Qwen3.5-9B , GuideSkill-Evo also exceeds the strongest matched parameter-update baseline. These results show that clinical knowledge can be maintained as a reusable, in-spectable, and extensible execution layer across LLM back-bones; broader clinician validation remains necessary before clinical use. 7References 
+
+Anthropic. 2026. Claude Sonnet 4.6. Accessed July 21, 2026. Brown, T. B.; Mann, B.; Ryder, N.; Subbiah, M.; Kaplan, J.; Dhariwal, P.; Neelakantan, A.; Shyam, P.; Sastry, G.; Askell, A.; Agarwal, S.; Herbert-Voss, A.; Krueger, G.; Henighan, T.; Child, R.; Ramesh, A.; Ziegler, D. M.; Wu, J.; Winter, C.; Hesse, C.; Chen, M.; Sigler, E.; Litwin, M.; Gray, S.; Chess, B.; Clark, J.; Berner, C.; McCandlish, S.; Radford, A.; Sutskever, I.; and Amodei, D. 2020. Language Models are Few-Shot Learners. In Advances in Neural Information Processing Systems , volume 33, 1877–1901. Cao, L.; Chen, Q.; and Guo, Y. 2026. EHR-RAG: Bridg-ing Long-Horizon Structured Electronic Health Records and Large Language Models via Enhanced Retrieval-Augmented Generation. arXiv preprint arXiv:2601.21340 .Chen, J.; Cai, Z.; Ji, K.; Wang, X.; Liu, W.; Wang, R.; Hou, J.; and Wang, B. 2024. Huatuogpt-o1, towards medical complex reasoning with llms. arXiv preprint arXiv:2412.18925 .Chen, Z.; Cano, A. H.; Romanou, A.; Bonnet, A.; Matoba, K.; Salvi, F.; Pagliardini, M.; Fan, S.; Köpf, A.; Mohtashami, A.; et al. 2023. Meditron-70b: Scaling medical pretraining for large language models. arXiv preprint arXiv:2311.16079 .Deng, R.; Martin, G.; Wang, T.; Zhang, G.; Liu, Y.; Weng, C.; Wang, Y.; Rousseau, J. F.; and Peng, Y. 2026. CPGPrompt: Translating Clinical Guidelines into LLM-Executable Deci-sion Support. arXiv preprint arXiv:2601.03475 .Google. 2026. MedGemma 27B Instruction-Tuned Model Card. Accessed July 21, 2026. Hager, P.; Jungmann, F.; Holland, R.; Bhagat, K.; Hubrecht, I.; Knauer, M.; Vielhauer, J.; Makowski, M.; Braren, R.; Kaissis, G.; and Rueckert, D. 2024. Evaluation and mitiga-tion of the limitations of large language models in clinical decision-making. Nature medicine , 30(9): 2613–2622. Hu, E. J.; Shen, Y.; Wallis, P.; Allen-Zhu, Z.; Li, Y.; Wang, S.; Wang, L.; and Chen, W. 2022. LoRA: Low-Rank Adaptation of Large Language Models. In International Conference on Learning Representations .Institute of Medicine. 2011. Clinical Practice Guidelines We Can Trust . Washington, DC: The National Academies Press. Jin, R.; Xu, M.; Meng, F.; Wan, G.; Cai, Q.; Jiang, Y.; Han, J.; Chen, Y.; Lu, W.; Wang, M.; Lan, Z.; Jiang, Y.; Liu, J.; Wang, D.; Cong, L.; and Zhang, Z. 2025. STELLA: Towards a Biomedical World Model with Self-Evolving Multimodal Agents. bioRxiv .Kwon, W.; Li, Z.; Zhuang, S.; Sheng, Y.; Zheng, L.; Yu, C. H.; Gonzalez, J. E.; Zhang, H.; and Stoica, I. 2023. Efficient Memory Management for Large Language Model Serving with PagedAttention. In Proceedings of the 29th Symposium on Operating Systems Principles , 611–626. Lewis, P.; Perez, E.; Piktus, A.; Petroni, F.; Karpukhin, V.; Goyal, N.; K"uttler, H.; Lewis, M.; Yih, W.-t.; Rockt"aschel, T.; Riedel, S.; and Kiela, D. 2020. Retrieval-Augmented Gen-eration for Knowledge-Intensive NLP Tasks. In Advances in Neural Information Processing Systems , volume 33, 9459– 9474. Li, B.; Meng, T.; Shi, X.; Zhai, J.; and Ruan, T. 2023. Meddm: Llm-executable clinical guidance tree for clinical decision-making. arXiv preprint arXiv:2312.02441 .Loshchilov, I.; and Hutter, F. 2019. Decoupled Weight Decay Regularization. In International Conference on Learning Representations .Ma, Z.; Yang, S.; Ji, Y.; Wang, X.; Wang, Y.; Hu, Y.; Huang, T.; and Chu, X. 2026. SkillClaw: Let Skills Evolve Collectively with Agentic Evolver. arXiv preprint arXiv:2604.08377 .McDuff, D.; Schaekermann, M.; Tu, T.; Palepu, A.; Wang, A.; Garrison, J.; Singhal, K.; Sharma, Y.; Azizi, S.; Kulkarni, K.; et al. 2025. Towards accurate differential diagnosis with large language models. Nature , 642: 451–457. Mehandru, N.; Golchini, N.; Garg, N.; LeSaint, K. T.; Nash, C. J.; Ramachandran, A.; Zack, T.; McCoy, L. G.; Rodman, A.; Bamman, D.; Molina, M.; and Alaa, A. 2025. Er-reason: A benchmark dataset for llm-based clinical reasoning in the emergency room. arXiv preprint arXiv:2505.22919 .Ni, J.; Liu, Y.; Liu, X.; Sun, Y.; Zhou, M.; Cheng, P.; Wang, D.; Zhao, E.; Jiang, X.; and Jiang, G. 2026. Trace2Skill: Dis-till Trajectory-Local Lessons into Transferable Agent Skills. 
+
+arXiv preprint arXiv:2603.25158 .Oniani, D.; Wu, X.; Visweswaran, S.; Kapoor, S.; Koora-gayalu, S.; Polanska, K.; and Wang, Y. 2024. Enhancing large language models for clinical decision support by in-corporating clinical practice guidelines. In 2024 IEEE 12th International Conference on Healthcare Informatics (ICHI) ,694–702. IEEE. OpenAI. 2026a. GPT-5.4 Model Documentation. OpenAI API documentation. Accessed July 21, 2026. OpenAI. 2026b. text-embedding-3-small Model Documen-tation. OpenAI API documentation. Accessed July 21, 2026. Qwen Team. 2026. Qwen3.5-9B Model Card. Accessed July 21, 2026. Schubert, M. C.; Soyka, S.; Wick, W.; and Venkataramani, V. 2025. Guideline-incorporated large language model-driven evaluation of medical records using MedCheckLLM. JMIR Formative Research , 9: e53335. Shao, Z.; Wang, P.; Zhu, Q.; Xu, R.; Song, J.; Bi, X.; Zhang, H.; Zhang, M.; Li, Y. K.; Wu, Y.; and Guo, D. 2024. DeepSeekMath: Pushing the Limits of Mathemati-cal Reasoning in Open Language Models. arXiv preprint arXiv:2402.03300 .Shen, S.; Cheng, W.; Ma, M.; Turcan, A.; Zhang, M. J.; and Ma, J. 2026a. SKILLFOUNDRY: Building Self-Evolving Agent Skill Libraries from Heterogeneous Scientific Re-sources. arXiv preprint arXiv:2604.03964 .Shen, Y.; Cao, L.; Du, S.; Wang, Y.; Zhou, J.; Peng, H.; and Guo, Y. 2026b. MedGuideX: Internalizing Decision Logic from Executable Guidelines into Large Language Models for Clinical Reasoning. arXiv preprint arXiv:2605.26567 .Staniek, M.; Sokolov, A.; and Riezler, S. 2025. Training and Evaluation of Guideline-Based Medical Reasoning in LLMs. 
+
+arXiv preprint arXiv:2512.03838 .8Tziakouri, A.; and Menolascina, F. 2025. Reinforcement Learning for Clinical Reasoning: Aligning LLMs with ACR Imaging Appropriateness Criteria. arXiv preprint arXiv:2510.05194 .Wei, J.; Wang, X.; Schuurmans, D.; Bosma, M.; Ichter, B.; Xia, F.; Chi, E. H.; Le, Q. V.; and Zhou, D. 2022. Chain-of-Thought Prompting Elicits Reasoning in Large Language Models. In Advances in Neural Information Processing Sys-tems , volume 35, 24824–24837. World Health Organization. 2019. International Statistical Classification of Diseases and Related Health Problems, 10th Revision. Version 2019. Wu, K.; Wu, E.; Thapa, R.; Wei, K.; Zhang, A.; Suresh, A.; Tao, J. J.; Sun, M. W.; Lozano, A.; and Zou, J. 2025. Med-casereasoning: Evaluating and learning diagnostic reasoning from clinical case reports. arXiv preprint arXiv:2505.11733 .Xu, G.; Tang, N.; Li, X.; Li, T. J.-J.; Zheng, Z.; Jin, W.; and Shi, Y. 2026. An Empirical Study of Agent Skills for Healthcare: Practice, Gaps, and Governance. arXiv preprint arXiv:2605.02709 .You, Z.; Chen, X.; Vashishtha, A.; Du, S.; Erion-Barner, G.; Mei, H.; Peng, H.; and Guo, Y. 2026. Improving clinical diagnosis with counterfactual multi-agent reasoning. arXiv preprint arXiv:2603.27820 .Zheng, L.; Chiang, W.-L.; Sheng, Y.; Zhuang, S.; Wu, Z.; Zhuang, Y.; Lin, Z.; Li, Z.; Li, D.; Xing, E. P.; Zhang, H.; Gonzalez, J. E.; and Stoica, I. 2023. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. arXiv preprint arXiv:2306.05685 .Zhou, S.; Xie, W.; Li, J.; Zhan, Z.; Song, M.; Yang, H.; Espinoza, C.; Welton, L.; Mai, X.; Jin, Y.; Xu, Z.; Chung, Y.-H.; Xing, Y.; Tsai, M.-H.; Schaffer, E.; Shi, Y.; Liu, N.; Liu, Z.; and Zhang, R. 2025. Automating expert-level medical reasoning evaluation of large language models. npj Digital Medicine .9A Limitations 
+
+Although GuideSkill substantially improves clinical reason-ing accuracy by integrating executable clinical skills with LLM-based reasoning, it still has several limitations. First, the current skill library is built from a limited set of clin-ical guidelines. Many high-quality guidelines remain to be collected, curated, and incorporated, which may further im-prove the coverage and reliability of the skill library. Second, for scalability, the current framework performs skill initial-ization and skill evolution in a fully automated manner using LLMs. While this design makes GuideSkill easy to scale, involving physicians in the verification process could further improve the quality and clinical validity of the generated skills, though at the cost of additional time and annotation effort. Finally, GuideSkill is still a research prototype and is not intended for direct deployment in real clinical settings. Our goal is to provide an initial step toward combining exe-cutable clinical knowledge with LLM-based reasoning, and further clinical validation is required before practical use. 
+
+## B Preprocessing of Clinical Practice Guidelines 
+
+Our preprocessing pipeline serves two goals: (A) curating a corpus of usable clinical practice guidelines from a large and heterogeneous source, and (B) compiling this free text into a library of executable disease-level diagnostic skills. 
+
+B.1 Guideline Corpus Curation 
+
+We start from the publicly available epfl-llm/guidelines cor-pus (Chen et al. 2023), which is commonly used as a pretrain-ing corpus for medical LLMs. The corpus contains 37 ,970 
+
+clinical practice guideline (CPG) documents drawn from nine public sources. However, because these documents were scraped from online sources, the raw collection is highly noisy: some documents have missing or empty body text, some are extremely short or excessively long, and many con-tain content that is not directly relevant to actionable clini-cal guidance. In addition, the corpus varies substantially in length, ranging from 5 to over 255 ,000 words, with a median of 618 words. We therefore apply a four-stage cascade filter to curate a usable guideline corpus. 
+
+Source filtering. We first retain only seven authoritative clinical guideline sources: NICE, PubMed, CMA, CDC, SPOR, WHO, and CCO. We discard the crowd-sourced and quality-inconsistent wikidoc subset ( 33 ,058 documents), as well as the length-extreme icrc subset ( 49 documents). This reduces the corpus from 37 ,970 to 4,863 documents. 
+
+Length filtering. We remove documents with missing body text or fewer than 100 words, yielding 4,675 docu-ments. 
+
+Usability filtering. Even authoritative sources contain ta-bles of contents, reference lists, methodology sections, dis-claimers, announcements, and abstracts without actionable guidance. To remove such documents, we use an LLM-as-a-judge, Claude-Sonnet-4.6 , to determine whether each docu-ment, truncated to its first 12 ,000 characters, contains action-able clinical guidance , defined as concrete recommendations on diagnosis, treatment, screening, management, dosing, or eligibility. Only documents judged usable are retained, leav-ing 4,145 documents. 
+
+Length-outlier truncation. Finally, we remove the longest 
+
+5% of documents using a p 95 word-count cutoff. This pre-vents overlong documents from dominating downstream con-text and diluting relevant content. The final curated corpus contains 3,938 clinical practice guidelines, with a median length of 4,030 words, a mean length of 5,046 words, and a range of 101 –18 ,662 words. By source, it comprises 1,585 
+
+NICE, 1,236 PubMed, 377 CMA, 374 CDC, 184 SPOR, 108 
+
+WHO, and 74 CCO documents. 
+
+B.2 From Guidelines to Executable Diagnostic Skills 
+
+Free-text guidelines cannot be executed directly. We therefore compile the curated corpus into a disease-indexed library of executable diagnostic skills through three steps. 
+
+Recommendation extraction. Using Claude-Opus-4.8 ,we extract disease-diagnosis recommendations from each guideline, namely rules of the form clinical findings or di-agnostic criteria → confirm or rule out a specific disease 
+
+X. Here, a recommendation refers to an actionable diag-nostic rule that links observable patient evidence, such as symptoms, signs, laboratory results, imaging findings, or di-agnostic criteria, to a disease-level conclusion. To ensure executability, we impose three strict constraints. First, we re-tain only rules whose output is a disease-level conclusion, explicitly excluding test-appropriateness statements, such as whether to order a scan, even when they mention diagno-sis or staging. Second, each recommendation must map to a three-character ICD-10 category, such as K35 ; recommen-dations that do not map to a valid disease category, such as non-disease findings codable only in the Z chapter, are discarded. Third, each recommendation is annotated with a disease name, its ICD-10 category, and an is-us flag indi-cating whether the content is specific to United States clinical practice. This step yields 1,200 diagnostic recommendations spanning 349 unique ICD-10 disease categories, of which 
+
+193 are marked as US-specific. 
+
+Merging by disease. Because the same disease is of-ten covered by multiple guidelines, we merge all recom-mendations within each ICD-10 category into a single self-contained, complementary, and de-duplicated diagnos-tic statement. During merging, we reconcile US-specific and non-US content using the is-us flag. This produces one merged diagnostic statement for each ICD-10 category, re-sulting in 349 statements in total. 
+
+Skill synthesis and indexing. Each merged statement is compiled into an executable Python diagnostic function, or skill , that takes structured features extracted from a pa-tient case as input and returns a diagnostic confidence tier for the corresponding disease. The result is an ICD-10-indexed library of 349 executable diagnostic skills. Overall, the pipeline distills 37 ,970 heterogeneous documents into 
+
+3,938 curated guidelines and further compiles them into 349 
+
+disease-organized, deterministically executable skills, which 10 0.0 0.2 0.4 0.6 0.8 1.0                
+
+> α (1 = LLM-only, 0 = skill-only)
+> 30
+> 32
+> 34
+> 36
+> 38
+> accuracy (%)
+> MedCaseReasoning
+> best α=0.5 (36.8%)
+> α=0.5 (default)
+> 0.0 0.2 0.4 0.6 0.8 1.0
+> α (1 = LLM-only, 0 = skill-only)
+> 48
+> 49
+> 50
+> 51
+> 52
+> 53
+> 54
+> accuracy (%)
+> ER-Reason
+> best α=0.5 (53.1%)
+> α=0.5 (default)
+> 0.0 0.2 0.4 0.6 0.8 1.0
+> α (1 = LLM-only, 0 = skill-only)
+> 80
+> 85
+> 90
+> 95
+> 100
+> accuracy (%)
+> MIMIC-CDM-FI
+> best α=0.35 (95.7%)
+> α=0.5 (default)
+> 0.0 0.2 0.4 0.6 0.8 1.0
+> α (1 = LLM-only, 0 = skill-only)
+> 15
+> 20
+> 25
+> 30
+> 35
+> accuracy (%)
+> MedThink-Bench
+> best α=0.0 (32.7%)
+> α=0.5 (default)
+
+Figure 4: Sensitivity analysis of the fusion weight α on four clinical reasoning benchmarks. α = 1 corresponds to LLM-only ranking, while α = 0 corresponds to skill-only scoring. The vertical dashed line marks the default setting α = 0 .5. Across datasets, GuideSkill remains relatively stable over a broad range of α, showing that fusing LLM ranking with executable skill scores provides robust diagnostic performance. 1 2 3 4 5 6 7 8 9 10 
+
+> top-k candidates
+> 45
+> 50
+> 55
+> 60
+> 65
+> 70
+> 75
+> accuracy (%)
+> recall@k (ceiling)
+> GuideSkill (fused, α=0.5)
+
+Figure 5: Sensitivity analysis of candidate set size. We vary the number of candidate diagnoses K generated by the LLM and report the average accuracy. The dotted curve shows recall@ K, which serves as an upper-bound ceiling. As K
+
+increases, the final accuracy of GuideSkill quickly saturates, indicating that a moderate candidate set provides a practical balance between candidate coverage and selection difficulty. serve as the knowledge base for the retrieval and fusion stages of our method. 
+
+## C Details of the Textual-Skill Comparison 
+
+We compare executable and textual representations using identical GuideSkill-Evo candidate sets and the same fu-sion rule. Executable skills apply Python functions to LLM-grounded features to produce deterministic support tiers (0– 3), whereas textual skills ask the LLM to assign tiers directly from equivalent plain-text rubrics. We evaluate 349 cases over five runs with Claude-Sonnet-4.6 at temperature 0 and report mean accuracy and run-to-run standard deviation. 
+
+## D Sensitivity Analysis of Score Fusion 
+
+Figure 2 analyzes the sensitivity of GuideSkill to the fusion weight α across the four benchmarks. Recall that α controls the relative contribution of the LLM ranking score and the executable skill score: α = 1 corresponds to relying only on the LLM ranking, while α = 0 corresponds to relying only on the skill score. In our main experiments, we use the default setting α = 0 .5.Overall, the fused scoring mechanism is robust across a broad range of α values, but the best setting varies slightly by benchmark. On MedCaseReasoning and ER-Reason, perfor-mance peaks around α = 0 .5, indicating that both the LLM’s ranking prior and the skill-based evidence contribute useful information. On MIMIC-CDM-FI, the best performance is obtained around α = 0 .35 , suggesting that the executable skills provide particularly strong diagnostic signal in this more structured setting. On MedThink-Bench, performance is highest near α = 0 , indicating that skill scores are more reliable than the LLM ranking for these compact but chal-lenging reasoning cases. These results show that neither pure LLM ranking nor pure skill scoring is uniformly optimal across benchmarks. Instead, combining the two sources of evidence yields stable performance, with α = 0 .5 serving as a simple default that performs competitively across datasets without benchmark-specific tuning. 
+
+## E Effect of Top-K Candidate Diagnoses 
+
+Figure 3 analyzes the effect of the candidate set size K
+
+on diagnostic accuracy based on Claude-Sonnet-4.6 . In our main experiments, we set K = 5 by default. As expected, recall@ K consistently increases as more candidate diag-noses are included, since a larger candidate set is more likely to contain the ground-truth diagnosis. However, the final ac-curacy of GuideSkill does not always increase at the same rate, because the model must still select the correct diagnosis from a larger set of plausible candidates. On MedCaseRea-soning and ER-Reason, GuideSkill quickly reaches a stable performance after a small number of candidates, indicat-ing that most useful diagnostic evidence is already captured in the top-ranked candidates. On MIMIC-CDM-FI, perfor-mance improves with larger K and then saturates, closely following the high recall ceiling. On MedThink-Bench, in-creasing K brings more noticeable gains, suggesting that challenging reasoning cases benefit from a broader candi-date set. Overall, this analysis shows that K = 5 provides a good trade-off between candidate coverage and decision 11 Method Accuracy Input Tokens / Case Output Tokens / Case Cost / 10k Cases                             
+
+> GPT-5.4
+> CoT 25.17 332.87 1287.27 201.41 3-shot ICL 28.97 1178.87 1007.13 180.54 RAG 23.71 771.70 841.33 145.49 LLM DDx 25.28 775.10 1808.27 290.62 LLM DDx + RAG 25.39 1244.03 1988.57 329.39
+> GuideSkill (Ours) 39.71 9722.60 1106.30 409.01 GuideSkill-Effi (Ours) 39.37 3207.70 208.80 111.51
+
+Table 6: Accuracy, token usage, and estimated inference cost of different prompting and reasoning methods. GuideSkill achieves the highest accuracy, while GuideSkill-Effi maintains nearly the same accuracy with substantially fewer output tokens and much lower inference cost. complexity, and supports its use as the default setting. 
+
+## F Efficiency Analysis 
+
+We evaluate the efficiency of GuideSkill against baseline methods to assess its potential for future deployment. The original GuideSkill framework performs skill-level evidence extraction independently for each candidate skill, which en-ables accurate and fine-grained reasoning but incurs rela-tively high inference cost. To improve deployment efficiency, 
+
+GuideSkill-Effi performs feature extraction in a unified pass, allowing shared case-level evidence to be extracted once and reused across skills. Specifically, GuideSkill-Effi is an efficiency-oriented variant that reduces the number of LLM calls per case from 1 + N to exactly two, where N is the number of matched skills. In GuideSkill , inference consists of one differential-diagnosis proposal followed by one feature-extraction call for each matched skill. In GuideSkill-Effi , the first call proposes the top-K differential diagnosis as above, while the second call extracts the required features for all 
+
+matched skills in a single pass. The model is instructed to return only feature keys that are explicitly present in the case, with all other features defaulting to absent. Each skill is then executed locally without further LLM calls, and fusion pro-ceeds identically to GuideSkill . Because feature extraction is a form-filling task rather than a reasoning task, GuideSkill-Effi runs both calls without reasoning. This design preserves the main benefit of skill-guided rea-soning while greatly reducing generation overhead. We eval-uate both GuideSkill and its efficient variant against baseline methods on the MedCaseReasoning benchmark, where both 
+
+GuideSkill variants use the evolved skill library. As shown in Table 3, GuideSkill-Effi achieves 39.37% accuracy, only 0.34 points lower than GuideSkill , while reducing the estimated cost from 409.01 to 111.51 per 10k cases. Importantly, GuideSkill-Effi still substantially outperforms all baseline methods in accuracy, while achieving the lowest inference cost among all compared methods. This shows that the efficient design does not simply trade accuracy for lower cost, but provides a better accuracy-cost balance. This reduc-tion is particularly meaningful because, in many commercial LLM APIs, output tokens are priced higher than input tokens. GPT-5.4 follows this common pricing pattern: the official API price is $2.50 per 1M input tokens and $15.00 per 1M output tokens, so output tokens are 6 × more expensive than            
+
+> Stage Clinical Type %
+> Candidate omission (60.9%) Coding granularity 74.8 Common diagnosis that should be listed 14.3 Rare or atypical diagnosis 11.0 Skill under-scoring (12.6%) Adjacent same-system diagnosis 40.4 Cross-system mimic 36.2 Causal chain 22.3 Distractor selection (26.6%) Adjacent same-system diagnosis 47.2 Causal chain 27.6 Cross-system mimic 24.6
+
+Table 7: Error analysis of GuideSkill-Evo with Claude-Sonnet-4.6 across all test cases. Stage percentages indicate each error stage’s share among all analyzed errors; clinical-type percentages are computed within each stage. input tokens 1. As a result, inference cost is often dominated by output length. GuideSkill-Effi directly addresses this bot-tleneck by transferring much of the reasoning process from free-form LLM generation to structured executable skills, yielding much shorter outputs with little accuracy degrada-tion. 
+
+## G Error Analysis of GuideSkill-Evo 
+
+Although GuideSkill-Evo achieves the best overall perfor-mance, it still leaves substantial room for improvement. We conduct an error analysis on all test cases using Claude-Sonnet-4.6 as the backbone and categorize the remaining errors into three stages. The analysis is judge and cateogirze also by Claude-Sonnet-4.6 Recall-miss errors occur when the gold diagnosis is not included in the LLM-generated candidate set. Skill-underscoring errors occur when the gold diagnosis is recalled but its executable skill assigns an insuf-ficient score. Lost-to-distractor errors occur when the gold diagnosis is recalled and scored, but another plausible can-didate receives a higher fused score. As shown in Table 6, the largest source of error is recall failure: in 456 cases, the gold ICD-10 category is not included in the candidate set, making it impossible for skill execution to recover the correct answer. Most recall-miss errors are due to coding granularity, where the LLM proposes a clinically related diagnosis but not the exact ICD-10 category required by evaluation. Among cases where the gold diagnosis is re-called, errors often arise from fine-grained clinical distinc-
+
+> 1
+
+https://developers.openai.com/api/docs/models/gpt-5.4 
+
+12 tions. Skill-underscoring errors are dominated by adjacent same-system diagnoses and cross-system mimics, suggesting that some skills still underweight discriminative evidence. Lost-to-distractor errors show a similar pattern: the correct diagnosis is present, but a nearby diagnosis, causal down-stream condition, or cross-system mimic receives a stronger fused score. These results suggest that future improvements should target both candidate recall at the ICD-10 category level and finer-grained skill calibration among clinically sim-ilar diagnoses. 
+
+## H Experiment Details 
+
+Models. We evaluate all methods using four backbone LLMs spanning both proprietary and open-weight mod-els. The proprietary models are accessed through Microsoft Azure 2: Claude-Sonnet-4.6 ( claude-sonnet-4-6 ) (An-thropic 2026) and GPT-5.4 (gpt-5.4 ) (OpenAI 2026a). The open-weight models are served locally with vLLM (Kwon et al. 2023): MedGemma-27B (google/medgemma-27b-it ) (Google 2026) and Qwen3.5-9B ( Qwen/Qwen3.5-9B ) (Qwen Team 2026). We use Claude-Sonnet-4.6 for skill initialization and skill evolution in GuideSkill . For experiments involving non-public clinical data from PhysioNet, we follow the Phys-ioNet responsible-use guidance for MIMIC data with LLMs 3.Specifically, restricted clinical data are used with proprietary models only through an institutionally approved Azure de-ployment that ensures zero data retention, no training on submitted data, and no human review of prompts or out-puts. The locally served open-weight models provide a fully controlled deployment path. 
+
+LLM Inference. Proprietary models are queried through the Azure API. For Claude backbones, we set temperature to 
+
+0 and do not enable extended thinking. GPT-5.4 is queried with the API default settings, including the default temper-ature of 1 and the default reasoning configuration. Open-weight models are served through vLLM with a 32 ,768 -token context window. For Qwen3.5-9B, we set tempera-ture to 0 and explicitly disable thinking mode by setting 
+
+enable_thinking=False , so that the final answer is returned directly rather than embedded in a long reasoning trace. For MedGemma-27B, we use temperature 0; since it is not a reasoning model, no thinking mode is used. Unless otherwise noted, generation is capped at 4,096 tokens. 
+
+Skill Evolution. We evolve the skill library using amerged training set from MedCaseReasoning, ER-Reason, and MIMIC-CDM-FI, with no overlap with the test splits. Each case is labeled with its three-character ICD-10 cate-gory. The evolution pipeline mirrors skill initialization and also uses claude-sonnet-4-6 . First, in rationale generation ,the model is given each training case and its gold diagno-sis, and is asked to extract the key clinical variables and explain why they support that diagnosis. Second, in case-to-recommendation , cases are grouped by ICD-10 label and 
+
+> 2https://azure.microsoft.com/en-us
+> 3https://physionet.org/news/post/llm-responsible-use/
+
+distilled into a single recommendation that captures only cri-teria recurring across cases, while discarding case-specific incidentals. When a matching guideline recommendation al-ready exists, it is used as the backbone and is never weakened. We process cases in batches of 10 using a map-reduce strat-egy: the model first drafts recommendations for each batch and then iteratively refines them, preventing prompt overflow and reducing specificity loss. Third, in recommendation-to-skill , the resulting recommendations are compiled using the same generator and tier contract as in skill initialization. Skill evolution yields 473 case-derived skills. After merging them with the initialized skill library, we obtain the evolved skill library covering 473 ICD-10 categories, including 206 
+
+categories shared with the initialized library and 267 newly added categories from training cases. 
+
+Baselines. We compare GuideSkill with both prompting-based and training-based baselines, using the same backbone models whenever applicable. For prompting-based baselines, we include: (i) Direct , which directly prompts the model to produce the final diagnosis; (ii) CoT , which performs chain-of-thought diagnostic reasoning before producing the final answer (Wei et al. 2022); (iii) 3-shot ICL , which uses three fixed in-domain demonstrations from each dataset’s train-ing split (Brown et al. 2020). Since MedThink-Bench does not provide a training split, we use demonstrations from MedCaseReasoning; (iv) RAG , which retrieves from curated guideline recommendations and prepends the top-5 passages retrieved by text-embedding-3-small (OpenAI 2026b) as con-text before answering (Lewis et al. 2020); (v) LLM DDx , a two-pass differential-diagnosis baseline that first proposes the top-5 candidate diagnoses and then selects one final an-swer without using external knowledge; and (vi) LLM DDx + RAG , which extends the two-pass differential-diagnosis baseline by conditioning the final selection on the same re-trieved guideline context used in RAG. For training-based baselines, we conduct comparisons on 
+
+Qwen-3.5 and include: (vii) Fine-tuning w/ Guidelines ,which fine-tunes the model on all curated guideline recom-mendations; (viii) Fine-tuning w/ Cases , which fine-tunes the model on training cases with gold diagnoses; (ix) Fine-tuning w/ Guidelines + Cases , which fine-tunes on the union of guideline-derived supervision and case-level supervision; (x) RL w/ Cases , which applies reinforcement learning on training cases using diagnosis correctness as the reward sig-nal; and (xi) Fine-tuning w/ Guidelines + RL w/ Cases ,which first fine-tunes the model with guideline supervision and then further optimizes it with case-level reinforcement learning. All training baselines are implemented with verl 4
+
+using the default training configuration. We also include (xii) 
+
+Guidelines as Decision Trees , which converts guideline rec-ommendations into decision-tree-style reasoning structures and uses them as explicit diagnostic guidance. We use the official implementation released by the original paper (Deng et al. 2026). 
+
+Details of Training Baselines. For all trainable variants, we apply LoRA (Hu et al. 2022) to all linear layers with rank 
+
+> 4https://github.com/verl-project/verl
+
+13 16 and α = 32 . Training uses bfloat16 precision, gradient checkpointing, AdamW optimization (Loshchilov and Hutter 2019), a learning rate of 1 × 10 −5, a constant learning-rate schedule with 10 warmup steps, a global batch size of 512, a maximum sequence length of 8,192 tokens, and three training epochs. For case-based learning, we randomly split the orig-inal training set into training and validation subsets using an 8:2 ratio. Guideline SFT is performed on the clinical guide-line corpus, whereas case SFT is conducted on standardized diagnosis cases using answer-only supervision. The Guide-lines + Cases setting performs these two stages sequentially. For RL, we adopt GRPO (Shao et al. 2024) with a learning rate of 5 × 10 −6, two training epochs, a batch size of 32, and 24 rollouts per prompt. The maximum prompt and response lengths are set to 8,192 and 512 tokens, respectively. We use one policy-update epoch, a KL coefficient of 0.005, an en-tropy coefficient of 0, a rollout temperature of 1.0, and top-p
+
+of 1.0. Checkpoints are saved after every SFT epoch and ev-ery 10 RL updates, and the best checkpoint is selected based on validation performance. All experiments are conducted on a single server equipped with eight NVIDIA RTX 5090 GPUs. 
+
+Evaluation Protocol. We evaluate predictions at the three-character ICD-10 category level: a prediction is counted as correct if it maps to the same ICD-10 category as the gold diagnosis. Semantic matching between the predicted diag-nosis and the gold label is performed using an LLM-as-a-judge, claude-haiku-4-5 , with temperature set to 0. The judge treats synonyms, abbreviations, subtype-level differences, and clinically equivalent paraphrases as matches when they fall within the same ICD-10 category. LLM judges can ex-hibit systematic biases and reasoning limitations (Zheng et al. 2023); we therefore identify judge-based semantic matching as a limitation of the evaluation. The full LLM-as-a-judge prompt is shown below. 
+
+> LLM Judge Prompt for ICD-10 Category Matching
+
+Decide whether the predicted diagnosis and the ground-truth diagnosis refer to the same disease at the ICD-10 3-character category level (e.g., "K35"). Judge at the category granularity: they match if they fall under the same ICD-10 3-character category, even if the subtype or wording differs. Predicted diagnosis: {pred} Ground-truth diagnosis: {gold} Please answer directly with "yes" or "no". 
+
+## I Benchmark Details and Examples 
+
+The four benchmarks originate from different data sources and represent case reports, emergency-department records, structured clinical decision-making cases, and medical QA vignettes. Training splits from MedCaseReasoning, ER-Reason, and MIMIC-CDM-FI are used for skill evolution and parameter-update baselines; the corresponding held-out test splits and the MedThink-Bench test set are used for eval-uation. The benchmark data are separate from the guideline corpus used to initialize GuideSkill-Zero .
+
+• MedCaseReasoning (Wu et al. 2025): A long-form open diagnostic reasoning benchmark based on open-access clinical case reports from the New England Journal of Medicine Clinicopathological Conferences (NEJM CPC). It evaluates case-based differential diagnosis over broad and long-tailed clinical conditions. 
+
+Example: MedCaseReasoning 
+
+Case: A 30-year-old man presented with several months of pain, tenderness, and swelling on the left side of his palate. T2-weighted MRI showed a hyperintense lesion, and biopsy suggested a soft-tissue tumor. Given the case, what is the final di-agnosis? [case report excerpt; approximately 890 words] Diagnosis: Other disorders of nerve roots and plexuses. ICD-10: G54. 
+
+• ER-Reason (Mehandru et al. 2025): An emergency-department diagnosis prediction benchmark derived from real emergency-room patient records. It evaluates whether a model can infer the final diagnosis from noisy, time-sensitive clinical presentations in the emergency setting. 
+
+Example: ER-Reason 
+
+Case: Age: 26; Sex: Female; Chief Complaint: hematuria. The record includes a full emergency-department note with pregnancy and delivery his-tory, normal spontaneous vaginal delivery, second-degree perineal laceration repair, hematuria with dysuria, lower abdominal pain, and sexual history. [long EHR excerpt; approximately 15,400 words] Diagnosis: Tubulo-interstitial nephritis, not speci-fied as acute or chronic. ICD-10: N12. 
+
+• MIMIC-CDM-FI (Hager et al. 2024): A full-information open clinical decision-making benchmark derived from MIMIC-IV, which is based on electronic health records from Beth Israel Deaconess Medical Center. It evaluates full-information clinical decision making. 
+
+Example: MIMIC-CDM-FI 
+
+Case: Patient history describes 10 hours of abdomi-nal pain that began near the umbilicus and migrated to the right lower quadrant, with one episode of di-arrhea and no nausea, vomiting, or fever. Physical examination shows right-lower-quadrant tender-ness, positive obturator sign, and negative Rovs-ing sign. Laboratory tests include urea nitrogen, sodium, potassium, lipase, creatinine, and other values. [structured history, exam, and laboratory excerpt; approximately 4,000 words] Diagnosis: Acute appendicitis. ICD-10: K35. 
+
+• MedThink-Bench (Zhou et al. 2025): An expert-curated medical reasoning benchmark constructed from ten pub-14 licly available medical QA datasets. The benchmark fil-ters for complex questions requiring multi-step reasoning across ten medical domains. In our setting, we use it as a compact but challenging open-ended diagnosis-oriented reasoning benchmark. 
+
+Example: MedThink-Bench 
+
+Case: A 23-year-old female weightlifter presents with neck and right shoulder pain. Osteopathic structural examination reveals restricted motion of Sibson’s fascia, and the clavicles appear asymmet-ric. What is the most likely diagnosis? [medical QA excerpt; approximately 780 words] Diagnosis: Other acquired deformities of muscu-loskeletal system. ICD-10: M95. 
+
+Preprocessing and Data Split. To normalize answer la-bels across benchmarks, we first map all gold diagnoses to ICD-10 categories. Specifically, we use Claude-Sonnet-4.6 
+
+to convert each dataset’s original answer label into an ICD-10 code. We discard examples for which no reliable ICD-10 mapping can be obtained. We also remove examples whose gold answer does not correspond to a single disease diagno-sis, since our evaluation requires one normalized diagnostic target per case. After preprocessing, we randomly split MedCaseReason-ing, ER-Reason, and MIMIC-CDM-FI into training and test sets. MedThink-Bench does not provide a training split in our setting, so we use it only for evaluation. The final processed data contain 11,598 training and 894 test cases for Med-CaseReasoning, 1,235 training and 360 test cases for ER-Reason, 219 training and 94 test cases for MIMIC-CDM-FI, and 55 test cases for MedThink-Bench. In total, our exper-iments use 13,052 training cases and 1,403 test cases after ICD-10 normalization and filtering. 
+
+## J Clinician Assessment Questionnaire 
+
+This appendix gives the complete instrument used for the clinician assessment reported in Table 5, together with the order in which material was presented. The study was deliv-ered as a single-page web application; each packet covers one disease skill, and the clinician worked through the screens in a fixed order without being able to see later material in advance. 
+
+J.1 Presentation Order 
+
+Each packet is presented as four screens. Critically, the held-out screen comes first : the clinician assigns an expected sup-port tier to unseen cases before any part of the skill — guide-line passages, rule tables, or code — is revealed. Presenting the skill first would let its output anchor the expected tiers and inflate agreement. 1. Held-out cases (Q5). Blinded tier assignment on cases never used to build the skill. The skill’s own output stays hidden throughout. 2. Guideline and initial skill (Q1, Q2). Numbered guideline passages G1–G n, a human-readable rule table R1–R n
+
+linking each rule to its supporting passage, and the initial Python function in an expandable panel. 3. Evolution cases (Q3). Ten cases per skill, unlabeled and in fixed order, with the final skill still hidden. 4. Initial-to-final update (Q4). The change log with per-change provenance, the final rule table, and the final Python function; the disposition is recorded last. For case-derived skills there is no guideline-initialized predecessor, so Screen 2 and questions Q1–Q2 are omitted (three screens, Q3–Q5). These packets are explicitly labeled “case-derived skill; no guideline-derived initialization.” In both tracks, “cannot assess / outside expertise” is available on every question and is excluded from the corresponding denominator rather than treated as a negative rating. 
+
+J.2 Questions 
+
+Q1 — Guideline support (per rule; guideline-initialized skills only). For each rule in the initial skill, how well is it supported by the provided guideline passages? 
+
+• Fully supported 
+
+• Mostly supported (minor interpretation) 
+
+• Partially supported (substantial interpretation) 
+
+• Unsupported or contradictory 
+
+• Cannot assess Table 5 reports two thresholds on this scale: rules rated fully or mostly supported , and rules not rated unsupported or con-tradictory. 
+
+Q2 — Errors or omissions in the initial skill (per skill). 
+
+Based only on the provided guideline passages, does the ini-tial skill omit or incorrectly encode any clinically important criterion, threshold, exclusion, exception, or logical relation-ship? 
+
+• No clinically important problem 
+
+• Minor problem (unlikely to change the support tier) 
+
+• Major problem (could change the support tier) 
+
+• Potentially dangerous / seriously misleading 
+
+• Cannot assess Q1 and Q2 are locked before the clinician proceeds to the evolution cases. 
+
+Q3 — Contribution of an evolution case (per case). If a rule for this skill were written from this case, what would it do to future patients? 
+
+A Add or change a rule — shows a criterion the skill needs and might otherwise miss B Keep the rules as they are — textbook presentation; con-firms what a skill would already check C Would apply to almost no one else — a rule from this case would rarely fire again; harmless but useless D Would fire on the wrong patients — a rule from this case would misjudge future patients (scores a mimic as this disease, drops a needed requirement, or relies on a non-specific feature) E Cannot assess 15 The deciding test between C and D is stated in the instrument: 
+
+would a rule taken from this case ever fire on a patient who does not have this disease? No → C; yes → D. An optional free-text field records the finding or omission that drove the rating. Cases rated A, B, or C are counted as generalizable in Table 5; D marks a case that should not influence the skill. 
+
+Q4 — Final update and disposition (per skill). After reviewing the guideline, the cases, and the initial-to-final diff, what is your recommendation for the final skill? 
+
+• Accept unchanged 
+
+• Accept with minor edits 
+
+• Major revision required 
+
+• Reject 
+
+• Cannot assess If the recommendation is not “accept unchanged”, the clin-ician selects all applicable concerns from: insufficient case support; case- or dataset-specific pattern; conflicts with the guideline; weakens a guideline-supported requirement; omits an important criterion; treats an unreported feature as absent; treats an unexcluded mimic as excluded; incorrect threshold, unit, negation, or AND/OR logic; inappropriate support tier; other. A free-text field records the single most important required change. 
+
+Q5 — Expected support tier (per held-out case). Based on the available evidence, what diagnostic-support tier should a skill for this disease assign to this case? 
+
+• 3 — Confirmed / highest support 
+
+• 2 — Strongly suggestive 
+
+• 1 — Compatible 
+
+• 0 — Not supported 
+
+• Insufficient information to assign a tier 
+
+• Cannot assess A confidence rating (low / moderate / high) accompanies each tier. These are the same four tiers the skills themselves emit, so the clinician’s blinded judgment and the skill’s executed tier are directly comparable; agreement is computed only after all held-out cases for a packet are submitted. 
+
+J.3 Held-Out Case Construction 
+
+Held-out cases are drawn from the MedCaseReasoning test split and are disjoint from every case used to build the skill. Each packet mixes two kinds, and the kind is not shown to the clinician: 
+
+• Correct diagnoses (23 cases): the reviewed category is the gold diagnosis. 
+
+• Look-alikes (28 cases): the gold diagnosis is a differ-ent category, but the reviewed category appeared in the model’s proposed differential — an operational, repro-ducible definition of clinical similarity. Because both kinds are presented identically, Q5 measures whether the skill’s tier tracks clinical judgment on cases that do and do not warrant support, rather than only on positives. 16 K Case Study 
+
+We present a representative MedCaseReasoning example as a case study of GuideSkill . In this example, GuideSkill cor-rects the base LLM’s plausible but incorrect top-ranked di-agnosis. The patient is a 60-year-old woman with dyspep-sia, unintentional weight loss, postprandial vomiting, gas-tric ulcers on endoscopy, and biopsy showing large conflu-ent non-caseating epithelioid granulomas. The base LLM initially ranks Crohn’s disease as the most likely diagno-sis, likely because gastrointestinal ulcers and granulomas are common cues for Crohn’s disease. However, after executing candidate-specific skills, GuideSkill assigns different diag-nostic strengths to the same evidence. The Crohn’s disease skill treats granulomas as a specific but insufficient feature and stops at tier 2, while the sarcoidosis skill treats non-caseating granulomas as confirmatory histologic evidence and assigns tier 3. The fusion step therefore overturns the LLM ranking and selects sarcoidosis, matching the gold di-agnosis. The key mechanism is that the two executed skills as-sign different evidential status to the same grounded finding. For sarcoidosis, non-caseating granulomas with unsupported mimics enter a direct tier-3 branch. For Crohn’s disease, granulomas alone are only a specific tier-2 feature unless additional Crohn’s-specific criteria or mimic-exclusion re-quirements are satisfied. Thus, the same clinical evidence is sufficient to confirm sarcoidosis but only suggestive for Crohn’s disease, making the tier-based fusion interpretable. 17 Field Content 
+
+Case A 60-year-old woman with no medical comorbidities presented with a 2-month history of dyspepsia, unintentional weight loss, and anorexia. She noted postprandial fullness, early satiety, and multiple episodes of non-bilious, non-projectile vomiting occurring 20–30 minutes after meals, containing undigested food. She had no fever, abdominal pain, gastrointestinal bleeding, or history of medication use. On examination, she was dehydrated and tachycardic. Abdominal examination revealed a distended and tender upper abdomen; the liver edge was palpable 2 cm below the right costal margin. Laboratory tests showed a low hemoglobin level with otherwise normal routine studies. Upper endoscopy demonstrated an oval pre-pyloric ulcer with erythematous, everted margins and a whitish exudate at the base, surrounded by normal mucosa, and an irregular fundal ulcer with inverted margins and whitish exudate, surrounded by normal mucosa. Multiple gastric biopsies revealed patchy chronic inflammation, mild crypt architectural disarray, and several large confluent non-caseating epithelioid granulomas. Ground Truth Diagnosis Sarcoidosis (D86) LLM Top-5 Differential Diagnosis (1) Crohn’s disease [regional enteritis] (K50) (2) Sarcoidosis (D86) (3) Malignant neoplasm of stomach (C16) (4) Tuberculosis of other organs (A18) (5) Gastric ulcer (K25) Skill Execution Trace Crohn’s disease (K50) tier 2 / 0.667 Granulomas and GI ulcers are specific evidence, but the case lacks decisive Crohn’s evidence such as transmural or terminal ileal involvement, and direct-confirmation branches require mimics to be excluded. Sarcoidosis (D86) tier 3 / 1.000 Non-caseating epithelioid granulomas provide con-firmatory histologic evidence for sarcoidosis when competing mimics are not supported. Malignant neoplasm of stomach (C16) tier 0 / 0.000 Endoscopic ulcers raise concern, but biopsy does not report malignant cells. Tuberculosis of other organs (A18) tier 1 / 0.333 Granulomas are compatible with tuberculosis, but the non-caseating pattern and lack of TB-specific evidence weakens this diagnosis. Gastric ulcer (K25) tier 1 / 0.333 Gastric ulcers are present, but ulcer disease alone does not explain the granulomatous pathology as the final diagnosis. 
+
+GuideSkill Prediction Sarcoidosis (D86), selected after fusion. The tier-3 sarcoidosis evidence overrides the LLM’s top-ranked Crohn’s disease prediction. 
+
+Table 8: Case study on MedCaseReasoning. The table includes the patient case, ground-truth diagnosis, the LLM’s top-5 differential diagnosis, and the executable skill trace used by GuideSkill .18 Executed Skill: Sarcoidosis (D86) 
+
+1 def score_sarcoidosis(case): 
+
+2 """id: 148 | icd10: D86 | disease: Sarcoidosis""" 
+
+34 # DIRECT (tier 3): biopsy non −caseating granuloma + mimics excluded, 
+
+5 # OR three −pillar clinical/radiographic/pathologic support, 
+
+6 # OR cardiac/neuro imaging support with mimics excluded. 
+
+7 direct_confirmed = ( 
+
+8 (biopsy_noncaseating_granuloma is True and mimics_excluded is True) 
+
+9 or (three_pillars_met is True) 
+
+10 or (cardiac_neuro_imaging_supported is True and mimics_excluded is True) 
+
+11 )
+
+12 13 # CONTRADICTING evidence: caseating granuloma, positive AFB/fungal testing, 
+
+14 # malignant cells, or another confirmed mimic. 
+
+15 if direct_confirmed and not any_contradiction: 
+
+16 tier = 3 
+
+17 elif any_specific: 
+
+18 tier = 1 if any_contradiction else 2 
+
+19 elif any_generic: 
+
+20 tier = 0 if any_contradiction else 1 
+
+21 else: 
+
+22 tier = 0 
+
+23 24 return ("Sarcoidosis", "D86", tier / 3.0) 
+
+Executed Skill: Crohn’s Disease (K50) 
+
+1 def score_crohns_disease(case): 
+
+2 """id: 313 | icd10: K50 | disease: Crohn’s disease [regional enteritis]""" 
+
+34 # DIRECT (tier 3) requires Crohn’s −specific evidence and mimics_excluded. 
+
+5 direct_findings = [ 
+
+6 (noncaseating_granulomas_with_giant_cells is True) and mimics_excluded, 
+
+7 (segmental_skip_transmural_terminal_ileum is True) and mimics_excluded, 
+
+8 (biopsy_proven_crohns is True) and penetrating_or_perianal and mimics_excluded, 
+
+9 ]
+
+10 11 # SPECIFIC (tier 2): granulomas, skip/transmural pattern, perianal disease, 
+
+12 # or other characteristic Crohn’s features without full direct confirmation. 
+
+13 if any(direct_findings): 
+
+14 tier = 3 
+
+15 elif any_specific: 
+
+16 tier = 2 
+
+17 elif any_generic: 
+
+18 tier = 1 
+
+19 else: 
+
+20 tier = 0 
+
+21 22 return ("Crohn’s disease [regional enteritis]", "K50", tier / 3.0) 
+
+19 L Prompt Design 
+
+The three stages of GuideSkill involve multiple LLM calls, with different prompts designed for preprocessing, skill con-struction, and inference-time reasoning. In the Skill Initialization stage, four prompts are used: ICD-10 Label Normalization maps free-text diagnoses to ICD-10 categories; Guideline to Recommendation extracts atomic di-agnostic recommendations from clinical guidelines; Recom-mendation Merge consolidates recommendations that map to the same ICD-10 category; and Recommendation to Exe-cutable Skill compiles each merged recommendation into an executable diagnostic skill. In the Skill Evolution stage, three prompts are used: Ra-tionale Generation derives diagnosis-supporting rationales from training cases; Case-to-Recommendation Distillation 
+
+distills recurring diagnostic criteria across cases into disease-level recommendations; and Case-to-Recommendation Re-finement updates existing recommendations with new batches of case evidence. In the Skill Execution stage, three prompts are used: Dif-ferential Diagnosis Proposal proposes a ranked ICD-10 dif-ferential diagnosis; Skill Feature Grounding maps a patient case into the input features required by a selected skill; and 
+
+Efficient Skill Feature Grounding grounds features for mul-tiple candidate skills in a single pass, which is used by the efficient variant of GuideSkill .The full prompt templates are shown below. Placeholders to be replaced at runtime are enclosed in curly braces ({ }). 20 Skill Initialization: ICD-10 Label Normalization 
+
+1 # Task 
+
+2 You map a free −text clinical diagnosis to a single standard ICD −10 disease CATEGORY. 
+
+34 # Diagnosis 
+
+5 {answer} 
+
+67 # Rules 
+
+8 − Map the diagnosis to its standard ICD −10 category and respond with ONLY a JSON object: 
+
+9 {"answer": "<category title>", "icd10": "<CODE>"}. 
+
+10 − "answer" is the official ICD −10 category title, written as a disease name with NO code in it. 
+
+11 − "icd10" MUST be the 3 −character ICD −10 CATEGORY code: one letter + two digits, NO decimal. 
+
+12 Use "K35", never "K35.2". 
+
+13 − If the diagnosis does NOT map to any valid ICD −10 disease category, respond with exactly: 
+
+14 {"answer": null, "icd10": null}. 
+
+15 − If the diagnosis refers to multiple diseases, symptoms only, procedures, treatments, social history, 
+
+16 or non −disease concepts, respond with exactly: 
+
+17 {"answer": null, "icd10": null}. 
+
+18 19 # Examples 
+
+20 {"answer": "Acute appendicitis", "icd10": "K35"} 
+
+21 {"answer": "Pulmonary tuberculosis", "icd10": "A15"} 
+
+Skill Initialization: Guideline to Recommendation 
+
+1 # Task 
+
+2 Extract atomic diagnostic recommendations from the given clinical practice guideline. 
+
+34 # Clinical Practice Guideline 
+
+5 {guideline} 
+
+67 # Rules 
+
+8 − Extract only recommendations that support disease identification, diagnosis, differential diagnosis, 
+
+9 or clinically meaningful diagnostic decision −making. 
+
+10 − Each recommendation should describe a finding −to −disease or evidence −to −disease rule. 
+
+11 − Keep concrete clinical criteria, thresholds, tests, signs, symptoms, imaging findings, laboratory values, 
+
+12 pathology findings, risk factors, and exclusion criteria when they affect diagnosis. 
+
+13 − Do NOT extract general background, epidemiology, treatment −only advice, administrative guidance, 
+
+14 or recommendations that do not help diagnose a disease. 
+
+15 − Each extracted recommendation must be self −contained and understandable without the full guideline. 
+
+16 − Stay faithful to the source. Do not add, weaken, strengthen, or invent any criterion. 
+
+17 18 # Output Format 
+
+19 Return ONLY a JSON array. Each item must have: 
+
+20 {
+
+21 "disease": "<diagnosed disease name>", 
+
+22 "icd10": "<3 −character ICD −10 category if available, otherwise null>", 
+
+23 "recommendation": "<self −contained diagnostic recommendation>" 
+
+24 }
+
+21 Skill Initialization: Recommendation Merge 
+
+1 # Role 
+
+2 You merge several diagnostic recommendations that all diagnose the SAME disease 
+
+3 (the same ICD −10 category) into ONE coherent, self −contained diagnostic statement. 
+
+45 # Disease 
+
+6 {disease} 
+
+78 # ICD −10 Category 
+
+9 {icd10} 
+
+10 11 # Recommendations 
+
+12 {recommendations} 
+
+13 14 # Instructions 
+
+15 − Synthesize ALL diagnostic criteria into one coherent recommendation. 
+
+16 − Combine overlapping criteria, keep every distinct diagnostic criterion, and remove pure repetition. 
+
+17 − Preserve thresholds, test names, signs, symptoms, imaging findings, laboratory findings, pathology, 
+
+18 exclusion criteria, and differential clues when present. 
+
+19 − Stay faithful: do not add, strengthen, weaken, or invent any criterion or threshold. 
+
+20 − The merged recommendation should be concise but complete enough to support diagnosis. 
+
+21 22 # Output Format 
+
+23 Return ONLY the merged diagnostic recommendation text. 
+
+22 Skill Initialization: Recommendation to Executable Skill 
+
+1 # Task 
+
+2 Convert the diagnostic recommendation into an executable Python diagnostic skill. 
+
+34 # Disease 
+
+5 {disease} 
+
+67 # ICD −10 Category 
+
+8 {icd10} 
+
+910 # Diagnostic Recommendation 
+
+11 {recommendation} 
+
+12 13 # Requirements 
+
+14 Write a Python function named diagnose(case) that takes one dictionary case as input 
+
+15 and returns a dictionary: 
+
+16 {
+
+17 "disease": "<disease name>", 
+
+18 "icd10": "<3 −character ICD −10 category>", 
+
+19 "tier": <0, 1, 2, or 3>, 
+
+20 "score": <tier divided by 3>, 
+
+21 "rationale": "<brief explanation>" 
+
+22 }
+
+23 24 # Tier Contract 
+
+25 − tier = 0: The case provides no meaningful support, contradicts the disease, or lacks the required evidence. 
+
+26 − tier = 1: The case is compatible with the disease but only has nonspecific or weak supporting evidence. 
+
+27 − tier = 2: The case is strongly suggestive of the disease based on characteristic findings. 
+
+28 − tier = 3: The case confirms the disease using decisive evidence such as definitive imaging, 
+
+29 pathology, microbiology, diagnostic test, or explicit gold −standard criterion. 
+
+30 31 # Instructions 
+
+32 − Encode the recommendation as explicit, executable decision logic. 
+
+33 − Use only variables that can be extracted from a patient case. 
+
+34 − Handle missing values safely. Missing evidence should not be treated as positive evidence. 
+
+35 − Preserve the clinical thresholds and diagnostic criteria from the recommendation. 
+
+36 − Include a docstring that documents every expected key in the case dictionary. 
+
+37 − Do not call external APIs, import non −standard libraries, or use hidden state. 
+
+38 − The skill should be comparable across diseases through the same 0 −− 3 tier scale. 
+
+39 40 # Output Format 
+
+41 Return ONLY valid Python code. 
+
+23 Skill Evolution: Rationale Generation 
+
+1 # Task 
+
+2 You are given a patient case and its CONFIRMED final diagnosis. 
+
+3 Produce a diagnostic rationale. 
+
+45 # Patient Case 
+
+6 {question} 
+
+78 # Confirmed Final Diagnosis 
+
+9 {disease} (ICD −10 category {icd10}) 
+
+10 11 # Instructions 
+
+12 Produce: 
+
+13 1. key_variables: the clinically IMPORTANT variables from the case. For each variable, 
+
+14 give its name and VALUE exactly as stated in the case whenever possible. 
+
+15 2. rationale: FIRST state the necessary variables and their values; THEN explain why they 
+
+16 establish {disease}. 
+
+17 18 # Output Format 
+
+19 Return ONLY a JSON object: 
+
+20 {
+
+21 "key_variables": [ 
+
+22 {"name": "<variable name>", "value": "<value from case>"} 
+
+23 ], 
+
+24 "rationale": "<diagnostic rationale>" 
+
+25 }
+
+Skill Evolution: Case-to-Recommendation Distillation 
+
+1 # Task 
+
+2 Distill recurring diagnostic criteria for the same disease from multiple case rationales. 
+
+34 # Disease 
+
+5 {disease} 
+
+67 # ICD −10 Category 
+
+8 {icd10} 
+
+910 # Case Rationales 
+
+11 {rationales} 
+
+12 13 # Instructions 
+
+14 − Identify recurring criteria that reliably support the diagnosis across cases. 
+
+15 − Keep clinically meaningful symptoms, signs, labs, imaging findings, pathology findings, 
+
+16 history, risk factors, and exclusion criteria. 
+
+17 − Drop incidental, case −specific, demographic, or noisy details that do not define the disease. 
+
+18 − Add discriminating features that help distinguish this disease from plausible alternatives 
+
+19 when they are supported by the rationales. 
+
+20 − Do not invent criteria not supported by the cases. 
+
+21 − Write the result as a reusable diagnostic recommendation for future cases. 
+
+22 23 # Output Format 
+
+24 Return ONLY the distilled diagnostic recommendation. 
+
+24 Skill Evolution: Case-to-Recommendation Refinement 
+
+1 # Task 
+
+2 Refine an existing diagnostic recommendation using a new batch of case rationales. 
+
+34 # Disease 
+
+5 {disease} 
+
+67 # ICD −10 Category 
+
+8 {icd10} 
+
+910 # Existing Recommendation 
+
+11 {current_recommendation} 
+
+12 13 # New Case Rationales 
+
+14 {new_rationales} 
+
+15 16 # Instructions 
+
+17 − Preserve the useful diagnostic criteria from the existing recommendation. 
+
+18 − Add new recurring criteria only if they are clinically meaningful and supported by the new batch. 
+
+19 − Remove or soften criteria that appear overly specific, incidental, or unsupported. 
+
+20 − Avoid bloating the recommendation with one −off details. 
+
+21 − Keep the recommendation coherent, self −contained, and faithful to the evidence. 
+
+22 − Do not add thresholds, tests, or claims that are not supported by the rationales. 
+
+23 24 # Output Format 
+
+25 Return ONLY the refined diagnostic recommendation. 
+
+Skill Execution: Differential Diagnosis Proposal 
+
+1 # Task 
+
+2 Give EXACTLY the {k} most likely diagnoses for this patient as ICD −10 3 −character categories, 
+
+3 ranked from most to least likely. 
+
+45 # Patient Case 
+
+6 {question} 
+
+78 # Rules 
+
+9 − Each candidate is one ICD −10 3 −character category. 
+
+10 − Diagnose at the category level, not the decimal subcode level. 
+
+11 − You MUST return EXACTLY {k} candidates with {k} DIFFERENT categories. 
+
+12 − Prefer specific disease categories that best explain the patient case. 
+
+13 − Do not include symptoms, procedures, treatments, or non −disease concepts as diagnoses. 
+
+14 15 # Output Format 
+
+16 Reply with ONLY a JSON array of exactly {k} objects: 
+
+17 [
+
+18 {"disease": "<ICD −10 category title>", "icd10": "<3 −character ICD −10 code>"} 
+
+19 ]
+
+25 Skill Execution: Skill Feature Grounding 
+
+1 # Task 
+
+2 You are given a patient case and a diagnostic skill function. 
+
+3 Extract the function’s input as a JSON object matching the case dict described in the docstring. 
+
+45 # Patient Case 
+
+6 {question} 
+
+78 # Skill Function 
+
+9 {skill_content} 
+
+10 11 # Instructions 
+
+12 − Read the docstring to identify every key the case dict expects. 
+
+13 − Extract each value from the patient case as faithfully as possible. 
+
+14 − Use null if the case does not state the value. 
+
+15 − Booleans must be true, false, or null. 
+
+16 − Numeric values should be numbers when possible. 
+
+17 − Do not infer unsupported facts. 
+
+18 − Do not add keys that are not requested by the skill docstring. 
+
+19 20 # Output Format 
+
+21 Return ONLY a JSON object that can be passed directly as the case argument to diagnose(case). 
+
+Skill Execution: Efficient Skill Feature Grounding 
+
+1 # Task 
+
+2 You are given a patient case and several diagnostic skill functions, one per candidate diagnosis. 
+
+3 Each skill lists its input features and their meaning in the docstring. 
+
+4 In a SINGLE pass, identify which features are clearly PRESENT (true) in the patient case. 
+
+56 # Patient Case 
+
+7 {question} 
+
+89 # Diagnostic Skills 
+
+10 {skills_block} 
+
+11 12 # Instructions 
+
+13 − For each candidate diagnosis, list ONLY the feature keys that the case shows to be TRUE (present). 
+
+14 − Omit every feature that is false, absent, or not mentioned; any feature you do not list is assumed false or unknown. 
+
+15 − Do not infer unsupported facts. 
+
+16 − Do not add keys that are not requested by the skill docstrings. 
+
+17 18 # Output Format 
+
+19 Return ONLY a JSON object mapping each candidate’s ICD −10 code to the list of its true features, 
+
+20 i.e. {{"<icd10>": ["<true_feature>", ...], ...}} (use [] if none are true), 
+
+21 directly usable to construct the case argument for each diagnose(case). 
+
+26
