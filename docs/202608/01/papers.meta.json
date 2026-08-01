@@ -1,0 +1,24 @@
+{
+  "label": "2026-08-01",
+  "date": "2026-08-01",
+  "generated_at": "2026-08-01T21:06:15",
+  "count": 1,
+  "papers": [
+    {
+      "paper_id": "202608/01/2607.25045v1-cogeegagent-toward-autonomous-cognitive-eeg-analysis-with-grounded-execution-and-selection-aware-verification",
+      "section": "quick",
+      "title_en": "CogEEGAgent: Toward Autonomous Cognitive EEG Analysis with Grounded Execution and Selection-Aware Verification",
+      "authors": "Dengzhe Hou, Lingyu Jiang, Fangzhou Lin, Kazunori D Yamada",
+      "date": "2026-07-27",
+      "pdf": "https://arxiv.org/pdf/2607.25045v1",
+      "score": "6.0",
+      "evidence": "面向EEG分析的医学LLM智能体，具备可执行性与选择感知验证",
+      "tldr": "认知脑电分析依赖专家经验与多种可辩护选择，LLM代理虽能灵活解析自然语言，但需确保所选分析可靠。CogEEGAgent将LLM语义解析与确定性科学验证分离，通过类型化契约、确认控制和证据绑定发布实现接地执行。基准测试及盲法评估表明其路由准确且可阻断滥用，压力测试显示确认机制抑制自适应搜索假阳性，为科学自动化提供可审计范式。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Electroencephalography (EEG) analysis in cognitive studies requires specialized expertise and involves many defensible choices over contrasts, channels, time windows, and statistical tests. LLM agents can translate varied natural-language questions into analysis choices, offering a flexible interface for automation. Yet fluent reports alone cannot establish that an agent selected the requested analysis or evaluated a confirmatory claim independently of adaptive search. We present CogEEGAgent, a cognitive-EEG analysis agent grounded in MNE-Python. Its EEG-specific scientific harness separates semantic from scientific authority. The LLM interprets intent and proposes registered analyses, while deterministic components validate typed contracts, control confirmation access, and authorize evidence-bound release. On a prespecified routing benchmark, CogEEGAgent maps language to registered analyses more accurately than a matched deterministic router, while matched preflight makes both systems abstain whenever required. In an externally model-authored, outcome-blind campaign, the complete system releases supported analyses with participant-disjoint confirmation and blocks prespecified capability hazards and lifecycle-reuse requests. Policy stress testing shows that held-out confirmation curbs false positives from uncorrected adaptive search. Together, these studies establish bounded autonomy and an auditable automation framework for cognitive-EEG workflows. More broadly, they show how scientific agents can combine flexible language understanding with fail-closed control over inference and release.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
