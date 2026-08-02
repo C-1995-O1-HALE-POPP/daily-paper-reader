@@ -1,0 +1,938 @@
+Title: Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers
+
+URL Source: https://arxiv.org/pdf/2607.24419v1
+
+Published Time: Tue, 28 Jul 2026 02:00:26 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers 
+
+## Jinliang Deng 1, Yiming Niu 1, Yibo Pan 2, Zhiqi Shao 3, Qin Luo 4, Yongxin Tong 1
+
+> 1
+
+School of Computer Science and Engineering, Beihang University, Beijing, China 
+
+> 2
+
+School of Artificial Intelligence, Beihang University, Beijing, China 
+
+> 3
+
+School of Economics and Business Administration, Chongqing University, Chongqing, China 
+
+> 4
+
+Department of Cardiology, Fuwai Hospital, Beijing, China dengjinliang@buaa.edu.cn; yimingniu@buaa.edu.cn; pysoible@buaa.edu.cn; zsha2911@uni.sydney.edu.au; luoqin2009@163.com; yxtong@buaa.edu.cn 
+
+## ABSTRACT 
+
+Deep models have substantially advanced 12-lead ECG classifica-tion, yet their refinement still relies heavily on human experts to inspect failures and iteratively revise classifier designs. Recent LLM-based agents have demonstrated the potential for automated model design, but when guided only by aggregate performance metrics, they lack insight into why individual cases fail and how the classifier should be revised. We present RecursiveECG, an evidence-driven LLM-as-Designer framework in which an LLM serves as an offline model designer that refines ECG classifiers based on concrete fail-ures and objective ECG evidence. To ground failure diagnosis in executable evidence, Criteria-to-Measurement Compilation converts curated ECG criteria into validated deterministic functions that pro-duce reproducible, reference-backed measurements for individual ECGs. Building on these measurements, Evidence-Grounded Failure Review analyzes failed and comparator cases by jointly considering raw waveforms, measurements, and model outputs, enabling the LLM to diagnose classifier limitations and formulate targeted re-visions. Candidate revisions are executed and re-evaluated under a fixed problem contract, and only evidence-supported updates are retained. The resulting predictor is frozen after refinement and requires no LLM inference during deployment, while an audit trail links each accepted revision to its supporting evidence. Across PTB-XL, Georgia, and CPSC2018, RecursiveECG consistently outper-forms strong baselines, achieving an average relative improvement of 10.0%. Extensive ablation and transfer studies further validate the effectiveness of its evidence-grounded refinement process. 
+
+## CCS CONCEPTS 
+
+• Computing methodologies → Learning paradigms .
+
+## KEYWORDS 
+
+ECG Analysis, Time-Series Classification, Large Language Models, Autonomous Model Refinement, Evidence Grounding  
+
+> Permission to make digital or hard copies of all or part of this work for personal or classroom use is granted without fee provided that copies are not made or distributed for profit or commercial advantage and that copies bear this notice and the full citation on the first page. Copyrights for components of this work owned by others than the author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or republish, to post on servers or to redistribute to lists, requires prior specific permission and/or a fee. Request permissions from permissions@acm.org.
+> Conference acronym ’XX, June 03–05, 2018, Woodstock, NY
+> ©2026 Copyright held by the owner/author(s). Publication rights licensed to ACM. ACM ISBN 978-x-xxxx-xxxx-x/YY/MM. . . $15.00 https://doi.org/10.1145/nnnnnnn.nnnnnnn
+
+ACM Reference Format: 
+
+Jinliang Deng, Yiming Niu, Yibo Pan, Zhiqi Shao, Qin Luo, and Yongxin Tong. 2026. Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers. In Proceedings of Make sure to enter the correct conference title from your rights confirmation email (Conference acronym ’XX). ACM, New York, NY, USA, 23 pages. https://doi.org/10.1145/ nnnnnnn.nnnnnnn 
+
+## 1 INTRODUCTION 
+
+Electrocardiography remains a core examination for cardiovascular diagnosis because a standard 12-lead recording can characterize cardiac activation and repolarization from multiple electrical per-spectives while remaining inexpensive and widely accessible [ 18 ]. However, ECG diagnosis is challenging because it requires models to capture subtle local waveform morphologies and their complex interactions across time, waveform components, and leads [23]. The development of deep learning models, together with the construction of large-scale benchmark datasets, has substantially advanced ECG classification [ 16 , 19 , 23 , 37 , 41 , 44 , 51 ]. However, further progress still heavily relies on human-led model refinement, which requires expertise in both medicine and deep learning and often involves substantial time and effort. To improve upon ex-isting model designs, developers usually need to inspect failure patterns, diagnose model limitations, formulate revision hypothe-ses, implement corresponding changes, and evaluate them in a closed loop. This process suggests that advancing ECG classifica-tion is not merely a matter of training a stronger classifier, but also a failure-driven model design problem: one must understand where the current classifier fails and how its design should be revised. A natural question is whether large language models can reduce this refinement burden. Many existing LLM-based studies on time-series analysis, however, use LLMs in a direct LLM-as-Classifier 
+
+manner, where each time-series sample is fed into an LLM for instance-level prediction or judgment [ 15 ]. Although flexible, this paradigm requires per-record LLM inference, incurs high computa-tional cost, and is difficult to reproduce reliably due to hallucination and signal-to-text information loss. Inspired by recent agentic discovery frameworks such as Al-phaEvolve [ 25 ] and LLM-SR [ 35 ], we adopt an LLM-as-Designer 
+
+paradigm for ECG classification, where the LLM serves as an offline model-design controller rather than an online diagnostic classifier as in the LLM-as-Classifier paradigm. Driven by feedback from iterative evaluation, the agent reasons about the limitations of the current classifier, proposes executable revisions, and validates the effectiveness of these revisions under a fixed protocol. The final arXiv:2607.24419v1 [cs.AI] 27 Jul 2026 Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 1) Failed WPW case 2) Label is not enough 3) Find evidence from data   
+
+> Pseudo-Q/QS Pseudo-Q ST-T Change
+
+Misleading MI-like Evidence Missed WPW/CD Evidence     
+
+> Slurred δWave Wide QRS Short PR Ground Truth Model Prediction
+
+WPW MI 
+
+Know it is wrong Don’t know why 
+
+Limited guidance from label 
+
+Should look into the failed case itself 
+
+Figure 1: Motivation example illustrating how ECG model failures can be analyzed using evidence for refinement. 
+
+output is a frozen ECG classifier that can be deployed without LLM inference, making deployment-time prediction more reproducible and traceable. The key question, however, is what feedback should drive this design process. In general agentic discovery settings, candidate ar-tifacts are often revised and selected based on aggregate validation metrics, such as accuracy or task-level rewards [ 13 , 21 , 25 ]. While such metric-driven feedback is effective for judging whether a gen-erated solution performs better overall, it is insufficient for ECG model refinement. Specifically, aggregate metrics provide limited guidance on why a particular ECG case fails, which signal charac-teristics or model limitations caused the error, or which diagnostic criteria or modeling mechanisms should be incorporated into the next revision. This limitation is especially critical for ECG classifi-cation, where many errors arise from subtle diagnostic criteria. As shown in Fig. 1, a CNN-based classifier mistakes a Wolff– Parkinson–White (WPW) case under the conduction disturbance (CD) superclass as myocardial infarction (MI). This error is clinically plausible because WPW-related pre-excitation can distort the QRS complex and ST–T segment, producing patterns resembling ECG manifestations of MI. Yet the same ECG contains conduction-related evidence supporting the CD label, including a short PR interval, a slurred delta wave, and a widened QRS complex. The label mismatch exposes the error but not why the classifier favored misleading MI-like cues or how to correct this error. A useful repair signal must ground failures in measurable, reference-backed ECG evidence and translate attribution into concrete classifier revisions. Building on this insight, we introduce RecursiveECG, an evidence-driven LLM-as-Designer framework in which the LLM serves as an offline controller for ECG classifier refinement. RecursiveECG first establishes a problem contract that specifies the label space, data split, evaluation protocol, and leakage constraints and holds them fixed throughout the refinement process. It then applies Criteria-to-Measurement Compilation to convert curated ECG criteria into validated deterministic measurement functions with explicit com-putation rules, which are executed on raw ECG signals to extract structured, clinically interpretable features for failure analysis. Sub-sequently, it recursively proposes and evaluates candidate classi-fiers. The evaluation results are used to select informative failure cases for Evidence-Grounded Failure Review , which integrates raw waveforms, reference-backed measurements, model outputs, and 1) LLM-as-Classifier 2) LLM-as-Designer  
+
+> Update Solution
+> Existing Our Contribution
+> Evidence-driven Feedback Metric-driven Feedback
+
+Figure 2: Comparison of agentic paradigms for ECG analysis. 
+
+comparator cases to identify the underlying classifier weakness and formulate a targeted revision. Each revision is then executed and re-evaluated, and only updates supported by case-level evidence are retained. The process produces a frozen ECG classifier together with an audit trail linking each revision to the failure evidence that motivated it. 
+
+Contributions. In summary, we make the following contributions: 
+
+• We formulate ECG model development as an evidence-driven LLM-as-Designer, where an LLM acts as an offline controller that uses failure evidence to recursively refine a deployable and traceable classifier. 
+
+• We introduce Criteria-to-Measurement Compilation , which converts curated ECG criteria into validated deterministic functions that produce reproducible, reference-backed mea-surements on individual ECGs. 
+
+• We introduce Evidence-Grounded Failure Review , which com-bines failed and comparator cases, waveform measurements, and model outputs to attribute errors and derive targeted, evidence-supported revisions. 
+
+• Across PTB-XL, Georgia, and CPSC2018, RecursiveECG con-sistently outperforms the strongest baselines, achieving an average relative macro-F1 improvement of 10.0%, while ab-lation and transfer studies validate its core mechanisms. Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+## 2 RELATED WORK 
+
+ECG diagnostic classification. Public ECG benchmarks have pro-vided the empirical foundation for modern diagnostic classification. PTB-XL offers large-scale 12-lead ECG waveforms with structured multi-label annotations [ 41 ], and subsequent studies established strong baselines for diagnostic prediction [ 1 , 5 , 6 , 11 , 31 , 37 , 53 ]. Re-cent studies improve ECG representations through spatio-temporal masked or contrastive modeling [ 17 , 23 ], parameter-efficient adapta-tion of pre-trained ECG models [ 51 ], and specialized sequence archi-tectures such as xLSTM-ECG [ 16 ]. ECG-language and foundation-model studies further extend ECG analysis to question answering, report generation, and multimodal pretraining [ 19 , 26 , 42 , 44 ], while clinically guided localization improves interpretability. Whereas these studies primarily focus on prediction and representation learn-ing, RecursiveECG focuses on auditable revision of an ECG clas-sifier based on deterministic measurements and case-level failure evidence. 
+
+Agents for time-series reasoning. Existing LLM-based time-series methods can be categorized by the role assigned to the lan-guage model. First, direct-inference methods convert numerical ob-servations into LLM-compatible inputs and then use an LLM for reasoning [ 8 , 15 , 43 , 46 , 52 ]. This paradigm offers flexibility at in-ference time, but its performance depends strongly on the chosen input representation and prompting strategy [ 27 ]. Second, agentic orchestration methods use LLMs to generate executable detection rules or iteratively invoke statistical tools [ 9, 33 , 34 , 39 , 48 , 49 ]. These systems coordinate reasoning with tools, but their adaptabil-ity is largely bounded by the capabilities of the available tools and predefined workflows. This limits their ability to adapt when the existing toolkit does not adequately capture the domain criteria or failure modes required by the task. RecursiveECG addresses this ECG model-revision setting by using an agent to review predictor failures with knowledge-grounded tools, while ensuring that the deployed pipeline requires no LLM inference. 
+
+Agents for scientific discovery. Recent work increasingly uses LLM agents to generate, evaluate, and iteratively revise scientific artifacts [ 2, 7 , 21 , 36 , 47 ]. MLAgentBench studies whether agents can inspect experimental results and modify machine-learning code to improve model performance, while Scientific Generative Agent combines LLM-generated scientific structures with differentiable simulation and numerical optimization [ 13 , 20 ]. LLM-SR applies a related closed-loop paradigm to symbolic regression, using an LLM to propose executable equations and refining them through data-driven evaluation and evolutionary search [ 35 ]. AlphaEvolve generalizes this approach to algorithm discovery by combining LLM-based program mutation, automated evaluators, and evolu-tionary selection [ 25 , 32 ]. Beyond candidate optimization, POPPER emphasizes hypothesis falsification by translating scientific hy-potheses into measurable implications and testing them through sequential experiments [ 12 ], whereas DiscoveryWorld evaluates whether agents can complete scientific cycles involving hypothesis formation, experimentation, and explanatory inference [ 14 ]. These systems typically guide revision using aggregate objectives and hypothesis-level test results. RecursiveECG instead uses case-level waveform evidence, clinical measurements, comparator cases, and predictor outputs to guide revisions of an ECG analysis pipeline. 
+
+## 3 PROBLEM FORMULATION 3.1 ECG Classification 
+
+Given a collection of ECG recordings, the goal of ECG classification is to learn a classifier that maps raw ECG signals to diagnostic labels. Formally, the 𝑖 -th ECG recording is represented as 𝑋 𝑖 ∈ R𝐶 ×𝑇 ,
+
+where 𝐶 denotes the number of ECG leads and 𝑇 denotes the number of temporal samples. Because multiple diagnostic conditions may coexist in a single recording, its label is represented as a multi-hot vector y𝑖 ∈ Y = {0, 1}𝐿 , where 𝐿 denotes the number of diagnostic labels. An ECG classifier parameterized by 𝜃 is defined as 
+
+𝑓 𝜃 : X → [ 0, 1]𝐿 .
+
+Given a recording 𝑋 𝑖 , the classifier outputs label-wise probabilities 
+
+bp𝑖 = 𝑓 𝜃 (𝑋 𝑖 ),
+
+where b𝑝 𝑖,𝑙 indicates the predicted probability that the 𝑙 -th diagnostic condition is present. The corresponding binary predictions are obtained using a fixed decision rule: 
+
+by𝑖 = Decide (bp𝑖 ; 𝝂 ) ,
+
+where 𝝂 denotes the predefined label-wise decision thresholds. The dataset is divided into pairwise disjoint training, validation, and held-out test sets: D = Dtr ¤∪ D val ¤∪ D te . The training set is used to optimize model parameters, whereas the validation set provides feedback during classifier development and refinement. The held-out test set remains inaccessible throughout refinement and is used only once for final evaluation. 
+
+## 3.2 ECG Classifier Refinement 
+
+Conventional ECG classification focuses on learning model param-eters from training data. In contrast, we consider the problem of automatically refining an existing ECG classifier through executable modifications to its design and implementation. Given a trained classifier 𝑓 𝜃 , a revision operation 𝑟 ∈ R produces an updated classifier 
+
+𝑓 𝜃 ′ = 𝑟 (𝑓 𝜃 ),
+
+where R denotes the space of admissible executable revisions. The goal of classifier refinement is to identify a revision that addresses limitations of the current classifier while improving predictive per-formance: 
+
+𝑟 ∗ = arg max   
+
+> 𝑟 ∈ R
+
+𝑀 (𝑟 (𝑓 𝜃 ), Dval ) ,
+
+where 𝑀 (·) denotes the predefined evaluation metric. While validation performance provides a necessary criterion for comparing candidate revisions, it does not explain why the current classifier fails or what should be modified. Therefore, unlike con-ventional search that explores predefined model spaces primarily guided by validation metrics, RecursiveECG generates revision hy-potheses from case-level failure evidence. Validation performance is used to verify and select evidence-supported revisions, while the held-out test set remains inaccessible throughout refinement and is used exclusively for final evaluation. Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 2) Criteria-to-Measurement Compilation 3) Evidence-Grounded Failure Review                 
+
+> �The model applies an incorrect threshold when evaluating the PR interval.
+> �The model has limited sensitivity to delta waves.
+> �The model is overly sensitive to QRS duration.
+> �…
+> Criteria Formalization Function Compilation Function Validation Case Selection Evidence Construction Evidence Check
+> Confirm short PR
+> PR interval 90ms
+> Slurred upstroke
+> Delta wave Slurred upstroke
+> Wide complex
+> QRS duration 130ms
+> 21
+> Extractor
+> 123
+> Ground Truth
+> WPW
+> Model Prediction
+> MI
+> �Short PR interval
+> �Delta wave
+> �Wide QRS complex
+> �Secondary STTC
+> �Cross-lead evidence
+> �Pre-excitation pattern
+> �... Reference Corpus Criteria for WPW
+> Match Output Expected
+> 90 ms PR interval None Delta wave
+> 130 ms QRS duration
+> 2nd STTC
+> Lead pattern Representative Subsets
+> PR Interval Delta Wave QRS Duration Lead Pattern
+> Measurement Functions
+
+…   
+
+> Label WPW
+> Revise if mismatch
+> Contrastive Diagnosis 3
+> Correctly Classified Cases Misclassified Cases
+> Compare the evidence Failure Patterns and Limitations 1) Overview
+> 1. Inputs Evaluation Protocol 2. Diagnostic Classifier Proposal
+> 3. Criteria-to-Measurement Compilation
+> 5. Diagnostic Classifier Revision Iter.1 Iter.2 Iter.3
+> 4. Evidence-Grounded Failure Review
+> 6. Output
+> Revision Log Final Classifier
+
+Figure 3: Overview of RecursiveECG. It compiles ECG criteria into validated measurement functions, selects influential failure cases, constructs evidence, diagnoses classifier limitations through contrastive review, and performs classifier revision. 
+
+## 4 METHOD 4.1 Overview of RecursiveECG 
+
+RecursiveECG is an agentic framework for automatically refining existing ECG classifiers. Rather than using an LLM for sample-level ECG prediction, RecursiveECG adopts an LLM-as-Designer 
+
+paradigm, in which an offline LLM agent analyzes classifier fail-ures, directly modifies the classifier implementation, and validates candidate revisions under a fixed evaluation protocol. Given an initial ECG classifier, RecursiveECG performs refine-ment through three stages. First, Criteria-to-Measurement Com-pilation transforms expert-defined ECG diagnostic criteria into functionally validated executable measurement functions, which provide clinically grounded signal measurements. Second, Evidence-Grounded Failure Review selects informative failures, constructs case-level evidence, and contrastively analyzes them against cor-rectly classified reference cases to identify limitations of the current classifier. Finally, Diagnostic Classifier Revision translates the iden-tified limitations into executable modifications and retains only revisions that improve validation performance. The accepted clas-sifier then enters the next refinement iteration, while the held-out test set remains inaccessible until final evaluation. 
+
+## 4.2 Criteria-to-Measurement Compilation 
+
+Aggregate performance metrics provide limited insight into the ECG characteristics associated with prediction failures. To construct clinically grounded evidence, RecursiveECG introduces Criteria-to-Measurement Compilation , which converts expert-defined ECG diag-nostic criteria into functionally validated executable measurement functions. The resulting measurement inventory and validation contract are summarized in Tab. 5 and Sec. A.5. 
+
+Clinical Criterion Formalization. Let C = {𝑐 𝑞 }𝑄 𝑞 =1 denote the collection of curated ECG diagnostic criteria. Each criterion is for-malized as a structured specification 
+
+𝑐 = (𝑑, 𝑚, 𝜏 ),
+
+where 𝑑 denotes the diagnostic concept, 𝑚 denotes the target ECG measurement, and 𝜏 denotes the condition used to interpret the measurement. For example, the criterion “a prolonged PR interval indicates first-degree atrioventricular block” can be formalized as 
+
+𝑐 = (first-degree AV block , PR interval , PR > 200 ms ) .
+
+This formalization specifies which clinically meaningful property should be extracted and how its value should be interpreted, provid-ing a computable specification for subsequent function compilation. 
+
+Measurement Function Compilation and Validation. Given a formalized criterion 𝑐 , the LLM agent generates an executable measurement function under the compilation instruction 𝜌 cmp :
+
+𝑔 (0)
+
+𝑐 = A𝜙 
+
+ 𝑐 ; 𝜌 cmp 
+
+ .
+
+The key compilation prompt excerpt corresponding to 𝜌 cmp is re-ported in Sec. A.2. 
+
+𝑔 𝑐 : X → R𝑘 𝑐 ,
+
+where z𝑖,𝑐 = 𝑔 𝑐 (𝑋 𝑖 ) denotes the structured measurements extracted from ECG recording 𝑋 𝑖 , and 𝑘 𝑐 is the number of values produced for criterion 𝑐 .Although the function is generated by an LLM, its execution is de-terministic: the same ECG input produces the same measurements. The compiled function therefore operationalizes the clinical crite-rion as an explicit and reproducible computational procedure rather than an implicit latent representation. RecursiveECG validates each function on a representative validation subset V𝑐 covering relevant Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+labels and criterion conditions. The validation process examines execution correctness and the reliability of the extracted ECG mea-surements. At iteration 𝑡 , the resulting feedback is represented as 
+
+𝜂 (𝑡 ) 
+
+> 𝑐
+
+. When a function fails the predefined tests, the feedback is returned to the agent for correction: 
+
+𝑔 (𝑡 +1) 
+
+> 𝑐
+
+= A𝜙 
+
+
+
+𝑔 (𝑡 ) 
+
+> 𝑐
+
+, 𝑐, 𝜂 (𝑡 ) 
+
+> 𝑐
+
+; 𝜌 cmp 
+
+
+
+.
+
+This process continues until the generated function satisfies the validation requirements. The functionally validated measurements form a reusable measurement library G = {𝑔 𝑐 | 𝑐 ∈ C} , which provides the clinically grounded measurements used in subsequent failure review. 
+
+## 4.3 Evidence-Grounded Failure Review 
+
+RecursiveECG introduces Evidence-Grounded Failure Review , which transforms failures into actionable evidence through case selec-tion, evidence construction, and batch-level contrastive diagnosis. Selection and retrieval details are provided in Sec. A.4. 
+
+Failure-driven Case Selection. Although evaluation may reveal diverse errors, not all failure cases provide equally useful feedback for model refinement. The agent should therefore prioritize cases that are most likely to expose limitations of the current classifier. Let the validation failure set of classifier 𝑓 𝜃 be 
+
+D− 
+
+> val ,𝜃
+
+= {( 𝑋 𝑖 , y𝑖 ) ∈ D val | by𝑖 ≠ y𝑖 } .
+
+Rather than uniformly reviewing all cases in D− 
+
+> val ,𝜃
+
+, the agent con-structs a targeted failure batch: 
+
+B− 
+
+> 𝜃
+
+⊆ D − 
+
+> val ,𝜃
+
+.
+
+The selection process prioritizes diagnostic labels and error modes that exert substantial influence on validation performance, thereby defining a focused set of failures for further review. 
+
+Failure Evidence Construction. For each recording in the se-lected failure batch, RecursiveECG constructs an evidence repre-sentation that connects classifier behavior with clinically inter-pretable ECG characteristics. For an ECG recording 𝑋 𝑖 , the clinically grounded measurements are: 
+
+𝑍 𝑖 = z𝑖,𝑐 = 𝑔 𝑐 (𝑋 𝑖 ) 𝑐 ∈ C .
+
+The corresponding case-level evidence is defined as: 
+
+𝐸 𝑖 = (𝑋 𝑖 , y𝑖 , bp𝑖 , by𝑖 , 𝑍 𝑖 ) ,
+
+which contains the raw ECG waveform, ground-truth labels, label-wise prediction probabilities, and criterion-grounded measurements. For a batch B, its evidence representation is: 
+
+𝐸 (B) = {𝐸 𝑖 | ( 𝑋 𝑖 , y𝑖 ) ∈ B} .
+
+In particular, 𝐸 (B − 
+
+> 𝜃
+
+) provides the signal-level and decision-level context required to diagnose recurring failures in the selected batch. 
+
+Contrastive Failure Diagnosis. A characteristic observed in the failure batch is not necessarily specific to prediction errors, as it may also occur in correctly classified cases. To identify system-atic limitations of the current classifier, RecursiveECG contrasts the selected failure batch with correctly classified reference cases exhibiting comparable clinical evidence profiles. Let D+ 
+
+> val ,𝜃
+
+= (𝑋 𝑗 , y𝑗 ) ∈ D val by𝑗 = y𝑗 denote the set of valida-tion samples correctly classified by the current classifier. Given the selected failure batch B− 
+
+> 𝜃
+
+, a reference retrieval procedure constructs 
+
+B+ 
+
+> 𝜃
+
+= R
+
+
+
+B− 
+
+> 𝜃
+
+, D+
+
+> val ,𝜃
+
+
+
+,
+
+where R (·) retrieves correctly classified cases whose clinical evi-dence profiles are comparable to those of the failure batch. Given the evidence representations of the failure and reference batches, the agent performs batch-level contrastive diagnosis: 
+
+ℓ = A𝜙 
+
+ 𝐸 (B − 
+
+> 𝜃
+
+), 𝐸 (B + 
+
+> 𝜃
+
+); 𝜌 diag 
+
+ ,
+
+where ℓ denotes the identified failure pattern together with the corresponding limitation of the current classifier. The key failure-review prompt excerpt corresponding to 𝜌 diag is reported in Sec. A.2. By comparing failed and successful cases, the agent identifies signal characteristics or diagnostic patterns that are insufficiently captured by the current classifier. The diagnosed limitation ℓ is then passed to the subsequent classifier revision stage. 
+
+## 4.4 Diagnostic Classifier Revision 
+
+Given the diagnosed limitation ℓ, RecursiveECG uses the LLM agent to revise the ECG classifier implementation and evaluate the result-ing candidate model under a fixed protocol. 
+
+Code-level Revision Generation. Let 𝑃 𝜃 denote the executable implementation of the current classifier 𝑓 𝜃 , including its model architecture and associated training procedure. Conditioned on the diagnosed limitation ℓ and the revision instruction 𝜌 rev , the LLM agent generates a code-level revision: 
+
+𝑟 = A𝜙 (𝑃 𝜃 , ℓ ; 𝜌 rev ) .
+
+Here, 𝑟 denotes an executable modification to the current imple-mentation rather than a natural-language recommendation. The key prompt excerpt corresponding to 𝜌 rev is reported in Sec. A.2. Applying the generated revision produces an updated program: 
+
+𝑃 𝜃 ′ = Apply (𝑃 𝜃 , 𝑟 ) .
+
+The revised program is then instantiated and trained on the fixed training set to obtain the candidate predictor 𝑓 𝜃 ′ .
+
+Revision Execution and Selection. LLM-generated code may fail to execute or reduce classifier performance. Each candidate revision is therefore executed and evaluated under the same training and validation protocol as the current classifier. A revision is admissible only when its program executes success-fully and the resulting classifier satisfies the predefined constraints. Among admissible revisions, a candidate is retained when it im-proves validation performance: 
+
+𝑀 (𝑓 𝜃 ′ , Dval ) > 𝑀 (𝑓 𝜃 , Dval ) .
+
+An accepted revision replaces the current implementation and initi-ates the next iteration. Refinement terminates when no admissible improvement is found or when the refinement budget is exhausted. Because each generated revision is conditioned on the evidence-derived limitation ℓ, RecursiveECG records the provenance of every accepted update in a refinement history: 
+
+H ← H ∪ {( ℓ, 𝑟, 𝑀 before , 𝑀 after )} .
+
+This history links each accepted code modification to its motivating model limitation and observed validation outcome. Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 
+
+Table 1: Classification results on PTB-XL, Georgia, and CPSC2018. Values are reported as mean ± standard deviation over five runs. The best overall results are in bold, and the second-best results are underlined. The final column reports the relative improvement of the best-performing RecursiveECG variant over the strongest non-RecursiveECG baseline.              
+
+> Dataset Metric Deep Models Pretrained Models Agentic Models Impr (%) PatchTST TimesNet TS2Vec xLSTM-ECG UniTS MERL Argos RecursiveECG
+> (Qwen3.5-27B)
+> RecursiveECG
+> (DeepSeek-V4-Pro)
+> PTB-XL AUC
+
+0.8271 ±0.0020 0.8710 ±0.0020 0.8683 ±0.0015 0.9130 ±0.0019 0.8465 ±0.0030 0.8964 ±0.0007 0.8511 ±0.0056 0.9166 ±0.0187 0.9373 ±0.0066 +2.66% Macro F1 0.5899 ±0.0057 0.6557 ±0.0051 0.6566 ±0.0022 0.7250 ±0.0036 0.6202 ±0.0033 0.6912 ±0.0019 0.6055 ±0.1196 0.7338 ±0.0415 0.7653 ±0.0088 +5.56% Micro F1 0.6424 ±0.0026 0.6975 ±0.0054 0.6903 ±0.0017 0.7614 ±0.0062 0.6783 ±0.0059 0.7394 ±0.0045 0.6281 ±0.0071 0.7821 ±0.0326 0.7930 ±0.0039 +4.15% Hamming Acc. 0.7941 ±0.0056 0.8279 ±0.0044 0.8229 ±0.0017 0.8705 ±0.0058 0.8160 ±0.0082 0.8561 ±0.0096 0.7498 ±0.0047 0.9118 ±0.0149 0.8929 ±0.0177 +4.74% Georgia AUC 0.8459 ±0.0054 0.8522 ±0.0047 0.9163 ±0.0026 0.9233 ±0.0034 0.7149 ±0.0029 0.9693 ±0.0018 0.8849 ±0.0086 0.9698 ±0.0124 0.9814 ±0.0052 +1.25% Macro F1 0.5574 ±0.0087 0.5579 ±0.0091 0.6216 ±0.0064 0.6827 ±0.0068 0.5511 ±0.0075 0.8130 ±0.0046 0.5911 ±0.0064 0.8021 ±0.0368 0.8826 ±0.0069 +8.56% Micro F1 0.5720 ±0.0061 0.6325 ±0.0073 0.6961 ±0.0041 0.7469 ±0.0057 0.7567 ±0.0052 0.8426 ±0.0038 0.6483 ±0.0085 0.8662 ±0.0297 0.9170 ±0.0043 +8.83% Hamming Acc. 0.8544 ±0.0078 0.8750 ±0.0060 0.8979 ±0.0032 0.9178 ±0.0039 0.9199 ±0.0048 0.9486 ±0.0027 0.8699 ±0.0094 0.9587 ±0.0116 0.9735 ±0.0021 +2.62% CPSC2018 AUC 0.7840 ±0.0049 0.7285 ±0.0068 0.8390 ±0.0031 0.9016 ±0.0042 0.8668 ±0.0037 0.8047 ±0.0029 0.8708 ±0.0067 0.9437 ±0.0169 0.9746 ±0.0036 +8.10% Macro F1 0.4375 ±0.0102 0.4089 ±0.0115 0.4935 ±0.0076 0.5775 ±0.0096 0.5470 ±0.0089 0.6931 ±0.0063 0.5332 ±0.0065 0.6988 ±0.0442 0.8027 ±0.0078 +15.81% Micro F1 0.4953 ±0.0066 0.4683 ±0.0094 0.5988 ±0.0059 0.6030 ±0.0074 0.5915 ±0.0071 0.7459 ±0.0051 0.6007 ±0.0086 0.7204 ±0.0395 0.8352 ±0.0056 +11.97% Hamming Acc. 0.8835 ±0.0042 0.8802 ±0.0057 0.9051 ±0.0028 0.8691 ±0.0069 0.8848 ±0.0065 0.9363 ±0.0034 0.9054 ±0.0068 0.9199 ±0.0173 0.9613 ±0.0030 +2.67% 10 1 10 0 10 1
+
+> Computational cost (GFLOPs per sample)
+> 0.60
+> 0.65
+> 0.70
+> 0.75
+> Macro F1
+> TS2Vec
+> TimesNet
+> PatchTST
+> UniTS
+> xLSTM-ECG
+> MERL
+> RecursiveECG
+> Better performance
+> with lower cost
+> Bubble diameter = parameters (M)
+
+Figure 4: The effectiveness–efficiency tradeoff on PTB-XL. 
+
+## 5 EXPERIMENTS 
+
+In the following section, we conduct a series of experiments to comprehensively evaluate RecursiveECG and demonstrate its effec-tiveness. We have made our implementation publicly available at https://github.com/neumyor/RecursiveECG. 
+
+## 5.1 Experimental Setup 
+
+Datasets. We use three public 12-lead ECG multi-label diagnostic datasets. PTB-XL [ 41 ] provides a large-scale diagnostic benchmark with official splits and hierarchical superclass/subclass annotations. Georgia, drawn from the PhysioNet/Computing in Cardiology Chal-lenge 2020 corpus [ 28 ], evaluates the method on a scored multi-label setting used by prior ECG baselines [ 16 ]. CPSC2018 provides an additional multi-label arrhythmia benchmark, for which we use a fixed train/validation/test split. Detailed label definitions and dataset-specific preprocessing choices are provided in Sec. A.1. 
+
+Baselines and Protocols. We compare RecursiveECG with both general time-series baselines and ECG-specific baselines, covering diverse paradigms such as deep learning models, pretrained models, and agentic solutions. Following the order used in the results ta-bles, the deep learning baselines are PatchTST [ 24 ], TimesNet [ 45 ], TS2Vec [ 50 ], and xLSTM-ECG [ 16 ]; the pretrained or agentic base-lines are UniTS [ 4 ], MERL [ 19 ], and Argos [ 9 ]. For a fair comparison, all methods use the same data splits and label mapping, with key hyperparameters independently tuned on the validation set of each 0.90 0.92 0.94 0.96 0.98 
+
+> Macro AUC
+> PTB-XL
+> Georgia
+> CPSC2018
+> 0.9373
+> 0.9814
+> 0.9746
+> 0.9149
+> 0.9788
+> 0.9728
+> 0.9235
+> 0.9765
+> 0.9735
+> 0.9273
+> 0.9808
+> 0.9652
+> 0.9060
+> 0.9223
+> 0.9663
+> RecursiveECG
+> w/o EGFR (metric-driven)
+> w/o CMC
+> w/o Measurement Exec.
+> Direct LLM Design
+
+Figure 5: Mechanism ablation study across three datasets. 
+
+dataset and model selection performed based on validation perfor-mance. The default implementations of RecursiveECG and Argos use DeepSeek-V4-Pro [ 3] as the LLM agent backbone. For these agentic methods, each run re-executes the entire model design process, allowing different design trajectories, rather than fixing a single architecture and only varying training randomness. Re-sults are reported as mean ± standard deviation over five runs; implementation details are provided in Sec. A.1 and Tab. 4. 
+
+Evaluation Metrics. Since all three tasks are imbalanced multi-label classification problems, we use Macro F1, Macro AUC, Micro F1, and Hamming accuracy. For deployment efficiency, we evaluate FLOPs, GPU memory usage, and per-sample inference latency. 
+
+## 5.2 Main Results 
+
+We evaluate the classifiers discovered by RecursiveECG from two perspectives: predictive effectiveness and computational efficiency. 
+
+Overall Performance Improvement. Table 1 summarizes the performance comparison on PTB-XL, Georgia, and CPSC2018 under two backbone LLMs. RecursiveECG consistently achieves the best performance across all datasets and evaluation metrics compared with other non-RecursiveECG baselines, outperforming represen-tative deep models, pretrained models, and agentic approaches. For Macro F1, RecursiveECG improves by 5.56%, 8.56%, and 15.81% over Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 12-Lead ECG Conv1d Res Block Res Block Global Average Pooling Linear 12-Lead ECG Conv1d Res Block Global Average Pooling Conv1d Res Block Chest Leads Limb Leads concat Linear   
+
+> (Initial) Iteration 1: Unified 12-Lead ResNet (Intermediate) Iteration 3: Lead-wise Dual-Branch CNN
+> 12-Lead ECG Chest Leads Limb Leads concat Linear
+> (Final) Iteration 5: Lead-wise Dual-Branch Attention
+> ……
+> Global Average Pooling Temporal Attn Extract CLS Token Cross-Lead Attn Cross-Lead Attn Temporal Attn Extract CLS Token
+
+Figure 6: Model design evolution on PTB-XL. 0 10 20 30 40 50 60         
+
+> NST_
+> ISCA
+> PAC
+> STE
+> SB
+> AF
+> +55.1%
+> +46.7%
+> +32.6%
+> +24.1%
+> +14.6%
+> +9.1%
+> 0510 15 20 25
+> NST_
+> ISCA
+> PAC
+> STE
+> SB
+> AF
+> +7.6%
+> +5.3%
+> +20.2%
+> +7.6%
+> +1.4%
+> +1.2%
+> PTB-XL CPSC2018 Georgia
+> Absolute F1 gain Absolute AUC gain
+> Absolute improvement over the strongest baseline (percentage points)
+
+Figure 7: Representative gains on fine-grained labels. Val-ues indicate the absolute gains of RecursiveECG over the strongest baseline for Macro F1 and AUC in percentage. 
+
+the strongest baselines on PTB-XL, Georgia, and CPSC2018, respec-tively. Moreover, RecursiveECG exhibits well-controlled variance across independent runs, demonstrating that it can reliably evolve high-performing architectures. Using Qwen3.5-27B [ 29 ] as an al-ternative LLM backbone also achieves competitive performance, indicating that the proposed evidence-grounded refinement para-digm remains effective across different backbone LLMs. 
+
+Effectiveness–Efficiency Trade-off. We evaluate whether the classifiers discovered by RecursiveECG achieve a favorable effectiveness– efficiency trade-off. Figure 4 compares representative classifiers in terms of predictive performance and computational cost. Recur-siveECG achieves superior predictive effectiveness with 10.6% fewer parameters than xLSTM-ECG and 90.5% fewer FLOPs than UniTS, while reducing peak memory by 65.8% relative to MERL. These advantages indicate that its performance gains do not arise from increased model complexity. 
+
+## 5.3 Ablation Study 
+
+To determine whether the gains of RecursiveECG arise from LLM-based model design or from its refinement mechanisms, we conduct ablation studies to assess the roles of all components in Recur-siveECG. We evaluate variants without Evidence-Grounded Failure Review (w/o EGFR), Criteria-to-Measurement Compilation (w/o CMC), or measurement execution (w/o Measurement Exec.), to-gether with a Direct LLM Design variant that removes evidence-grounded failure review and iterative refinement. Detailed defini-tions are provided in Sec. C.1. As shown in Fig. 5, the complete framework provides the best performance, although the contribution of each mechanism varies across datasets. Interestingly, Direct LLM Design remains competi-tive and even outperforms several existing baselines, demonstrating 0.0 0.2 0.4 0.6 0.8 1.0   
+
+> Macro F1
+> Georgia
+> CPSC2018
+> 0.8368 0.8826
+> Gap +0.0458
+> 94.8% retained
+> 0.7011 0.8027
+> Gap +0.1016
+> 87.3% retained
+> Additional gain from target-specific evolution PTB-XL-evolved architecture
+
+Figure 8: Dataset-adaptive architecture evolution. 
+
+the capability of LLMs for initial model design. However, its gap with RecursiveECG shows that LLM knowledge alone is insufficient without evidence-grounded diagnosis and iterative refinement. Removing EGFR causes notable degradation on PTB-XL, indicat-ing that metric-driven refinement cannot provide sufficient guid-ance for identifying model limitations and generating targeted revisions. Disabling measurement execution causes a measurable but relatively small drop on CPSC2018, while its effect varies across datasets. CMC further provides complementary benefits by translat-ing clinical criteria into structured measurements. Their effects are complementary rather than interchangeable within the iterative evolution loop. These results show that effective ECG classifier evolution de-pends not only on LLM-based design or metric optimization, but on a structured, evidence-grounded process of failure diagnosis, executable validation, and iterative refinement across datasets. 
+
+## 5.4 Model Design Evolution 
+
+To understand whether RecursiveECG discovers meaningful model designs, we analyze the evolution trajectory of the ECG classifier on PTB-XL. As shown in Fig. 6, RecursiveECG progressively evolves a generic multi-lead architecture into an ECG-specific design by introducing lead-aware representation learning and dependency modeling across leads and temporal patterns. Starting from a unified 12-lead ResNet, RecursiveECG first separates chest and limb leads to capture heterogeneous lead information, and then incorporates cross-lead and temporal attention to enhance feature interaction. This evolution trajectory demonstrates that RecursiveECG per-forms targeted architecture refinement rather than arbitrary model modifications, progressively discovering ECG-specific inductive biases through evidence-driven evolution. 
+
+## 5.5 Fine-Grained Label Behavior 
+
+While aggregate metrics demonstrate the effectiveness of Recur-siveECG, they do not show how gains are distributed across diag-nostic categories. We therefore conduct a fine-grained label-level analysis. Fig. 7 highlights representative categories with notable Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. WPW Example Compiled Measurement Functions Evidence-Grounded Failure Review Ground Truth Model Prediction 
+
+WPW MI 
+
+> def extract_delta_wave(signal): # detect and quantify delta wave def compute_pr_interval(signal): # compute PR interval def compute_qrs_duration(signal): # compute QRS duration from onset to offset Delta wave measurement PR interval measurement QRS duration measurement reference-backed measurements Delta wave Slurred upstroke Axis deviation
+> Left axis: -35 °
+> QRS duration Duration: 130ms
+> 123
+> Enhance delta wave detection
+> better capture slurred upstrokes and early pre-excitation patterns
+> Reduce MI/ST-T confusion
+> Penalize false MI predictions when delta-wave evidence is present.
+> Strengthen integration
+> Combine PR interval, QRS duration, axis deviation ，and morphology MI?
+
+Figure 9: Evidence-Grounded Failure Review of a WPW pseudo-infarction case. 
+
+improvements, while complete label-wise and negative-label results are provided in Sec. B.3 and Sec. B.4. The gains are most pronounced in diagnoses with explicit, clini-cally interpretable ECG patterns. On PTB-XL, RecursiveECG im-proves substantially on NST_ and ISCA, which depend on local waveform morphology and ST-T characteristics. It also achieves notable gains on PAC in CPSC2018 and on rhythm-based diagnoses such as SB and AF in Georgia. These results suggest that diagnoses with well-defined ECG characteristics are particularly suitable for evidence-grounded model evolution, as their failure modes can be described using clinical measurements and case-level evidence. 
+
+## 5.6 Dataset-Adaptive Architecture Evolution 
+
+An important capability of an autonomous model designer is to adapt its design strategy according to the characteristics of different datasets. To investigate this capability, we perform dataset-adaptive architecture evolution experiments. Specifically, we first evolve an ECG classifier on PTB-XL and apply the discovered architecture to other datasets, where model parameters are retrained using the corresponding target dataset. We then further evolve the architec-ture with RecursiveECG on each target dataset and evaluate the additional improvements obtained from dataset-specific evolution. As shown in Fig. 8, the architecture evolved on PTB-XL already provides a strong architectural prior for other datasets, achieving Macro F1 scores of 0.8368 and 0.7011 on Georgia and CPSC2018, respectively; the complete transfer results are reported in Tab. 10. After target-specific evolution, RecursiveECG further improves Macro F1 by 0.0458 and 0.1016 on Georgia and CPSC2018, reaching 0.8826 and 0.8027. These results demonstrate that RecursiveECG discovers reusable ECG modeling patterns while adapting designs to dataset-specific characteristics, rather than relying on a fixed architecture. 
+
+## 5.7 Case Study 
+
+We use a WPW pseudo-infarction case from PTB-XL to show how evidence-grounded review converts a failed prediction into an iden-tified model limitation. The case analysis is shown in Fig. 9, with the full audit trace in Tab. 21. The initial unified 12-lead ResNet jointly encoded all leads but did not explicitly distinguish their spatial and diagnostic roles. In this case, WPW-related pre-excitation produced infarction-like initial deflections, causing the model to overemphasize local morphology and incorrectly predict myocardial infarction. The review identified a short PR interval, slurred QRS onset, and QRS widening, all consistent with WPW. Moreover, the apparent infarction pattern conflicted with the overall electrical axis and ven-tricular activation pattern. The failure therefore revealed a model limitation: insufficient use of complementary cross-lead evidence to reconcile local morphology with global activation patterns. 
+
+## 6 CONCLUSION 
+
+Metric-driven feedback can evaluate whether a model improves, but provides limited guidance for understanding failures and re-fining model designs. In this work, we introduce RecursiveECG, an evidence-driven LLM-as-Designer paradigm that transforms prediction failures into actionable evidence and executable revi-sions for recursive ECG classifier refinement. Experiments on three ECG benchmarks demonstrate that RecursiveECG achieves consis-tent performance improvements, efficient deployment, and dataset-adaptive evolution by discovering ECG-specific inductive biases. Future work will explore extending this paradigm toward a general-purpose medical time-series model refinement agent, ca-pable of leveraging task-specific failures and domain evidence to autonomously improve predictive models across diverse physiolog-ical signals and healthcare applications. 
+
+## 7 LIMITATIONS AND ETHICAL CONSIDERATIONS 
+
+Our experiments use publicly released, de-identified ECG bench-marks under their respective licenses. RecursiveECG may inherit errors or biases from the underlying LLM and curated clinical crite-ria. The system has only been evaluated retrospectively and is not intended for autonomous diagnosis or clinical deployment without external clinician oversight. 
+
+## 8 GENERATIVE AI USAGE 
+
+DeepSeek-V4-Pro served as the default backbone LLM for the of-fline RecursiveECG workflow. Qwen3.5-27B was used in the LLM-backbone sensitivity experiments, and ChatGPT was used to assist with language polishing and graphical icon editing in the manu-script. The authors verified all outputs and accept responsibility. Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+## REFERENCES 
+
+[1] Zachi I. Attia, Suraj Kapa, Francisco Lopez-Jimenez, Paul M. McKie, Dorothy J. Ladewig, Gaurav Satam, Patricia A. Pellikka, Maurice Enriquez-Sarano, Peter A. Noseworthy, Thomas M. Munger, Samuel J. Asirvatham, Christopher G. Scott, Rickey E. Carter, and Paul A. Friedman. 2019. Screening for Cardiac Contractile Dysfunction Using an Artificial Intelligence-Enabled Electrocardiogram. Nature Medicine 25, 1 (2019), 70–74. https://doi.org/10.1038/s41591-018-0240-2 [2] Andres M. Bran, Sam Cox, Oliver Schilter, Carlo Baldassari, Andrew D. White, and Philippe Schwaller. 2024. Augmenting Large Language Models with Chemistry Tools. Nature Machine Intelligence 6 (2024), 525–535. https://doi.org/10.1038/ s42256-024-00832-8 [3] DeepSeek-AI. 2026. DeepSeek-V4: Towards Highly Efficient Million-Token Con-text Intelligence. [4] Shanghua Gao, Teddy Koker, Owen Queen, Thomas Hartvigsen, Theodoros Tsiligkaridis, and Marinka Zitnik. 2024. UniTS: A Unified Multi-Task Time Series Model. In Advances in Neural Information Processing Systems , Vol. 37. [5] Tomer Golany, Gal Lavee, Shai Tejman Yarden, and Kira Radinsky. 2020. Im-proving ECG Classification Using Generative Adversarial Networks. In Pro-ceedings of the AAAI Conference on Artificial Intelligence , Vol. 34. 13280–13285. https://doi.org/10.1609/aaai.v34i08.7037 [6] Tomer Golany and Kira Radinsky. 2019. PGANs: Personalized Generative Ad-versarial Networks for ECG Synthesis to Improve Patient-Specific Deep ECG Classification. In Proceedings of the AAAI Conference on Artificial Intelligence ,Vol. 33. 557–564. https://doi.org/10.1609/aaai.v33i01.3301557 [7] Juraj Gottweis, Wei-Hung Weng, Alexander Daryin, Tao Tu, Petar Sirkovic, Artiom Myaskovsky, Grzegorz Glowaty, Felix Weissenberger, Alessio Orlandi, Dan Popovici, et al . 2026. Accelerating scientific discovery with Co-Scientist. 
+
+Nature 655, 8122 (2026), 487–496. https://doi.org/10.1038/s41586-026-10644-y [8] Nate Gruver, Marc Finzi, Shikai Qiu, and Andrew G Wilson. 2023. Large language models are zero-shot time series forecasters. Advances in neural information processing systems 36 (2023), 19622–19635. [9] Yile Gu, Yifan Xiong, Jonathan Mace, Yuting Jiang, Yigong Hu, Baris Kasikci, and Peng Cheng. 2025. Argos: Agentic Time-Series Anomaly Detection with Autonomous Rule Generation via Large Language Models. arXiv preprint arXiv:2501.14170 (2025). [10] E. William Hancock, Barbara J. Deal, David M. Mirvis, Peter Okin, Paul Kligfield, Leonard S. Gettes, James J. Bailey, Rory Childers, Anton Gorgels, Mark Josephson, Jan A. Kors, Peter Macfarlane, Jay W. Mason, Olle Pahlm, Pentti M. Rautaharju, Borys Surawicz, Gerard van Herpen, Galen S. Wagner, and Hein Wellens. 2009. AHA/ACCF/HRS Recommendations for the Standardization and Interpretation of the Electrocardiogram: Part V: Electrocardiogram Changes Associated With Cardiac Chamber Hypertrophy: A Scientific Statement From the American Heart Association Electrocardiography and Arrhythmias Committee, Council on Clini-cal Cardiology; the American College of Cardiology Foundation; and the Heart Rhythm Society: Endorsed by the International Society for Computerized Electro-cardiology. Journal of the American College of Cardiology 53, 11 (2009), 992–1002. https://doi.org/10.1016/j.jacc.2008.12.015 [11] Awni Y. Hannun, Pranav Rajpurkar, Masoumeh Haghpanahi, Geoffrey H. Tison, Codie Bourn, Mintu P. Turakhia, and Andrew Y. Ng. 2019. Cardiologist-Level Arrhythmia Detection and Classification in Ambulatory Electrocardiograms Using a Deep Neural Network. Nature Medicine 25, 1 (2019), 65–69. https: //doi.org/10.1038/s41591-018-0268-3 [12] Kexin Huang, Ying Jin, Ryan Li, Michael Y. Li, Emmanuel Candes, and Jure Leskovec. 2025. Automated Hypothesis Validation with Agentic Sequential Falsifications. In Proceedings of the 42nd International Conference on Machine Learning (Proceedings of Machine Learning Research, Vol. 267) . PMLR, 25372– 25437. https://proceedings.mlr.press/v267/huang25n.html [13] Qian Huang, Jian Vora, Percy Liang, and Jure Leskovec. 2024. MLAgent-Bench: Evaluating Language Agents on Machine Learning Experimentation. In Proceedings of the 41st International Conference on Machine Learning (Pro-ceedings of Machine Learning Research, Vol. 235) . PMLR, 20271–20309. https: //proceedings.mlr.press/v235/huang24y.html [14] Peter A. Jansen, Marc-Alexandre Côté, Tushar Khot, Erin Bransom, Bhavana Dalvi Mishra, Bodhisattwa Prasad Majumder, Oyvind Tafjord, and Peter Clark. 2024. DiscoveryWorld: A Virtual Environment for Developing and Evaluating Auto-mated Scientific Discovery Agents. In Advances in Neural Information Processing Systems , Vol. 37. Curran Associates, Inc., 10088–10116. https://doi.org/10.52202/ 079017-0324 [15] Ming Jin, Shiyu Wang, Lintao Ma, Zhixuan Chu, James Y. Zhang, Xiaoming Shi, Pin-Yu Chen, Yuxuan Liang, Yuan-Fang Li, Shirui Pan, and Qingsong Wen. 2024. Time-LLM: Time Series Forecasting by Reprogramming Large Language Models. In The Twelfth International Conference on Learning Representations .https://openreview.net/forum?id=Unb5CVPtae [16] Lei Kang, Xuanshuo Fu, Javier Vazquez-Corral, Ernest Valveny, and Dimosthenis Karatzas. 2025. xLSTM-ECG: Multi-label ECG Classification via Feature Fusion with xLSTM. arXiv preprint arXiv:2504.16101 (2025). [17] Dani Kiyasseh, Tingting Zhu, and David A. Clifton. 2021. CLOCS: Contrastive Learning of Cardiac Signals Across Space, Time, and Patients. In Proceedings of the 38th International Conference on Machine Learning (Proceedings of Machine Learning Research, Vol. 139) . PMLR, 5606–5615. https://proceedings.mlr.press/ v139/kiyasseh21a.html [18] Paul Kligfield, Leonard S. Gettes, James J. Bailey, Rory Childers, Barbara J. Deal, E. William Hancock, Gerard van Herpen, Jan A. Kors, Peter Macfarlane, David M. Mirvis, Olle Pahlm, Pentti Rautaharju, Galen S. Wagner, Mark Josephson, Jay W. Mason, Peter Okin, Borys Surawicz, Hein Wellens, American Heart Association Electrocardiography and Arrhythmias Committee, Council on Clinical Cardiol-ogy, American College of Cardiology Foundation, and Heart Rhythm Society. 2007. Recommendations for the Standardization and Interpretation of the Electrocardio-gram: Part I: The Electrocardiogram and Its Technology: A Scientific Statement from the American Heart Association Electrocardiography and Arrhythmias Committee, Council on Clinical Cardiology; the American College of Cardiology Foundation; and the Heart Rhythm Society Endorsed by the International Society for Computerized Electrocardiology. Journal of the American College of Cardiology 
+
+49, 10 (March 2007), 1109–1127. https://doi.org/10.1016/j.jacc.2007.01.024 [19] Che Liu, Zhongwei Wan, Cheng Ouyang, Anand Shah, Wenjia Bai, and Rossella Arcucci. 2024. Zero-Shot ECG Classification with Multimodal Learning and Test-time Clinical Knowledge Enhancement. In International Conference on Machine Learning . PMLR, 31949–31963. [20] Pingchuan Ma, Tsun-Hsuan Wang, Minghao Guo, Zhiqing Sun, Joshua B. Tenen-baum, Daniela Rus, Chuang Gan, and Wojciech Matusik. 2024. LLM and Sim-ulation as Bilevel Optimizers: A New Paradigm to Advance Physical Scientific Discovery. In Proceedings of the 41st International Conference on Machine Learn-ing (Proceedings of Machine Learning Research, Vol. 235) . PMLR, 33940–33962. https://proceedings.mlr.press/v235/ma24m.html [21] Yecheng Jason Ma, William Liang, Guanzhi Wang, De-An Huang, Osbert Bastani, Dinesh Jayaraman, Yuke Zhu, Linxi Fan, and Anima Anandkumar. 2024. Eureka: Human-Level Reward Design via Coding Large Language Models. In The Twelfth International Conference on Learning Representations . https://openreview.net/ forum?id=IEduRUO55F [22] Jay W. Mason, E. William Hancock, Leonard S. Gettes, James J. Bailey, Rory Childers, Barbara J. Deal, Mark Josephson, Paul Kligfield, Jan A. Kors, Peter Mac-farlane, Olle Pahlm, David M. Mirvis, Peter Okin, Pentti M. Rautaharju, Borys Surawicz, Gerard van Herpen, Galen S. Wagner, and Hein Wellens. 2007. Recom-mendations for the Standardization and Interpretation of the Electrocardiogram: Part II: Electrocardiography Diagnostic Statement List: A Scientific Statement From the American Heart Association Electrocardiography and Arrhythmias Committee, Council on Clinical Cardiology; the American College of Cardiol-ogy Foundation; and the Heart Rhythm Society: Endorsed by the International Society for Computerized Electrocardiology. Journal of the American College of Cardiology 49, 10 (2007), 1128–1135. https://doi.org/10.1016/j.jacc.2007.01.025 [23] Yeongyeon Na, Minje Park, Yunwon Tae, and Sunghoon Joo. 2024. Guiding Masked Representation Learning to Capture Spatio-Temporal Relationship of Electrocardiogram. In The Twelfth International Conference on Learning Represen-tations .[24] Yuqi Nie, Nam H. Nguyen, Phanwadee Sinthong, and Jayant Kalagnanam. 2023. A Time Series is Worth 64 Words: Long-term Forecasting with Transformers. In 
+
+The Eleventh International Conference on Learning Representations .[25] Alexander Novikov, Ngân V ˜u, Marvin Eisenberger, Emilien Dupont, Po-Sen Huang, Adam Zsolt Wagner, Sergey Shirobokov, Borislav Kozlovskii, Francisco J. R. Ruiz, Abbas Mehrabian, M. Pawan Kumar, Abigail See, Swarat Chaudhuri, George Holland, Alex Davies, Sebastian Nowozin, Pushmeet Kohli, and Matej Ba-log. 2025. AlphaEvolve: A Coding Agent for Scientific and Algorithmic Discovery. 
+
+arXiv preprint arXiv:2506.13131 (2025). https://doi.org/10.48550/arXiv.2506.13131 [26] Jungwoo Oh, Gyubok Lee, Seongsu Bae, Joon-myoung Kwon, and Edward Choi. 2023. ECG-QA: A Comprehensive Question Answering Dataset Combined With Electrocardiogram. In Advances in Neural Information Processing Systems, Datasets and Benchmarks Track , Vol. 36. 66277–66288. [27] Junwoo Park, Kyudan Jung, Dohyun Lee, Hyuck Lee, Daehoon Gwak, ChaeHun Park, Jaegul Choo, and Jaewoong Cho. 2025. Delving into Large Language Models for Effective Time-Series Anomaly Detection. In Advances in Neural Information Processing Systems , Vol. 38. https://proceedings.neurips.cc/paper_files/paper/ 2025/hash/950a34c7b107111570077078e1b5b8ef-Abstract-Conference.html [28] Erick A. Perez Alday, Annie Gu, Amit J. Shah, Chad Robichaux, An-Kwok Ian Wong, Chengyu Liu, Feifei Liu, Ali Bahrami Rad, Andoni Elola, Salman Seyedi, Qiao Li, Ashish Sharma, Gari D. Clifford, and Matthew A. Reyna. 2020. Classifi-cation of 12-lead ecgs: the physionet/computing in cardiology challenge 2020. 41, 12 (2020), 124003. [29] Qwen Team. 2026. Qwen3.5: Towards Native Multimodal Agents. https: //qwen.ai/blog?id=qwen3.5 [30] Pentti M. Rautaharju, Borys Surawicz, Leonard S. Gettes, James J. Bailey, Rory Childers, Barbara J. Deal, Anton Gorgels, E. William Hancock, Mark Josephson, Paul Kligfield, Jan A. Kors, Peter Macfarlane, Jay W. Mason, David M. Mirvis, Peter Okin, Olle Pahlm, Gerard van Herpen, Galen S. Wagner, and Hein Wellens. 2009. AHA/ACCF/HRS Recommendations for the Standardization and Interpre-tation of the Electrocardiogram: Part IV: The ST Segment, T and U Waves, and the QT Interval: A Scientific Statement From the American Heart Association Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 
+
+Electrocardiography and Arrhythmias Committee, Council on Clinical Cardiol-ogy; the American College of Cardiology Foundation; and the Heart Rhythm Society: Endorsed by the International Society for Computerized Electrocar-diology. Journal of the American College of Cardiology 53, 11 (2009), 982–991. https://doi.org/10.1016/j.jacc.2008.12.014 [31] Antônio H. Ribeiro, Manoel Horta Ribeiro, Gabriela M. M. Paixão, Derick M. Oliveira, Paulo R. Gomes, Jéssica A. Canazart, Milton P. S. Ferreira, Carl R. Anders-son, Peter W. Macfarlane, Wagner Meira Jr., Thomas B. Schön, and Antonio Luiz P. Ribeiro. 2020. Automatic Diagnosis of the 12-Lead ECG Using a Deep Neural Network. Nature Communications 11 (2020), 1760. https://doi.org/10.1038/s41467-020-15432-4 [32] Bernardino Romera-Paredes, Mohammadamin Barekatain, Alexander Novikov, Matej Balog, M. Pawan Kumar, Emilien Dupont, Francisco J. R. Ruiz, Jordan S. Ellenberg, Pengming Wang, Omar Fawzi, Pushmeet Kohli, and Alhussein Fawzi. 2024. Mathematical Discoveries from Program Search with Large Language Models. Nature 625 (2024), 468–475. https://doi.org/10.1038/s41586-023-06924-6 [33] Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, Roberta Raileanu, Maria Lomeli, Eric Hambro, Luke Zettlemoyer, Nicola Cancedda, and Thomas Scialom. 2023. Toolformer: Language models can teach themselves to use tools. Advances in neural information processing systems 36 (2023), 68539–68551. [34] Noah Shinn, Federico Cassano, Ashwin Gopinath, Karthik Narasimhan, and Shunyu Yao. 2023. Reflexion: Language Agents with Verbal Reinforcement Learning. In Advances in Neural Information Processing Systems , Vol. 36. [35] Parshin Shojaee, Kazem Meidani, Shashank Gupta, Amir Barati Farimani, and Chandan K. Reddy. 2025. LLM-SR: Scientific Equation Discovery via Program-ming with Large Language Models. In The Thirteenth International Conference on Learning Representations . https://proceedings.iclr.cc/paper_files/paper/2025/ hash/28df8e730c054c5331855fd4d5403ba9-Abstract-Conference.html [36] Henry W. Sprueill, Carl Edwards, Khushbu Agarwal, Mariefel V. Olarte, Udishnu Sanyal, Conrad Johnston, Hongbin Liu, Heng Ji, and Sutanay Choudhury. 2024. CHEMREASONER: Heuristic Search over a Large Language Model’s Knowledge Space Using Quantum-Chemical Feedback. In Proceedings of the 41st Interna-tional Conference on Machine Learning (Proceedings of Machine Learning Research, Vol. 235) . PMLR, 46351–46374. [37] Nils Strodthoff, Patrick Wagner, Tobias Schaeffter, and Wojciech Samek. 2021. Deep Learning for ECG Analysis: Benchmarks and Insights from PTB-XL. IEEE Journal of Biomedical and Health Informatics 25, 5 (2021), 1519–1528. https: //doi.org/10.1109/JBHI.2020.3022989 [38] Borys Surawicz, Rory Childers, Barbara J. Deal, Leonard S. Gettes, James J. Bailey, Anton Gorgels, E. William Hancock, Mark Josephson, Paul Kligfield, Jan A. Kors, Peter Macfarlane, Jay W. Mason, David M. Mirvis, Peter Okin, Olle Pahlm, Pentti M. Rautaharju, Gerard van Herpen, Galen S. Wagner, and Hein Wellens. 2009. AHA/ACCF/HRS Recommendations for the Standardization and Interpretation of the Electrocardiogram: Part III: Intraventricular Conduction Disturbances: A Scientific Statement From the American Heart Association Electrocardiography and Arrhythmias Committee, Council on Clinical Cardiol-ogy; the American College of Cardiology Foundation; and the Heart Rhythm Society: Endorsed by the International Society for Computerized Electrocar-diology. Journal of the American College of Cardiology 53, 11 (2009), 976–981. https://doi.org/10.1016/j.jacc.2008.12.013 [39] Xiaoyu Tao, Yuchong Wu, Mingyue Cheng, Ze Guo, and Tian Gao. 2026. Anoma-Mind: Agentic Time Series Anomaly Detection with Tool-Augmented Reasoning. 
+
+arXiv preprint arXiv:2602.13807 (2026). https://doi.org/10.48550/arXiv.2602.13807 [40] Galen S. Wagner, Peter Macfarlane, Hein Wellens, Mark Josephson, Anton Gorgels, David M. Mirvis, Olle Pahlm, Borys Surawicz, Paul Kligfield, Rory Childers, Leonard S. Gettes, James J. Bailey, Barbara J. Deal, E. William Hancock, Jan A. Kors, Jay W. Mason, Peter Okin, Pentti M. Rautaharju, and Gerard van Herpen. 2009. AHA/ACCF/HRS Recommendations for the Standardization and Interpretation of the Electrocardiogram: Part VI: Acute Ischemia/Infarction: A Scientific Statement From the American Heart Association Electrocardiogra-phy and Arrhythmias Committee, Council on Clinical Cardiology; the Amer-ican College of Cardiology Foundation; and the Heart Rhythm Society: En-dorsed by the International Society for Computerized Electrocardiology. Jour-nal of the American College of Cardiology 53, 11 (2009), 1003–1011. https: //doi.org/10.1016/j.jacc.2008.12.016 [41] Patrick Wagner, Nils Strodthoff, Ralf-Dieter Bousseljot, Dieter Kreiseler, Fatima I Lunze, Wojciech Samek, and Tobias Schaeffter. 2020. PTB-XL, a large publicly available electrocardiography dataset. Scientific data 7, 1 (2020), 154. [42] Zhongwei Wan, Che Liu, Xin Wang, Chaofan Tao, Hui Shen, Jing Xiong, Rossella Arcucci, Huaxiu Yao, and Mi Zhang. 2025. MEIT: Multimodal electrocar-diogram instruction tuning on large language models for report generation. In Findings of the association for computational linguistics: ACL 2025 . Associ-ation for Computational Linguistics, Vienna, Austria, 14510–14527. https: //doi.org/10.18653/v1/2025.findings-acl.749 [43] Chengsen Wang, Qi Qi, Jingyu Wang, Haifeng Sun, Zirui Zhuang, Jinming Wu, Lei Zhang, and Jianxin Liao. 2025. ChatTime: A Unified Multimodal Time Series Foundation Model Bridging Numerical and Textual Data. In Proceedings of the AAAI Conference on Artificial Intelligence , Vol. 39. 12694–12702. https://doi.org/ 10.1609/aaai.v39i12.33384 [44] Fuying Wang, Jiacheng Xu, and Lequan Yu. 2025. From Token to Rhythm: A Multi-Scale Approach for ECG-Language Pretraining. In International Conference on Machine Learning . PMLR, 65059–65074. [45] Haixu Wu, Tengge Hu, Yong Liu, Hang Zhou, Jianmin Wang, and Mingsheng Long. 2023. TimesNet: Temporal 2D-Variation Modeling for General Time Series Analysis. In The Eleventh International Conference on Learning Representations .[46] Xiongxiao Xu, Haoran Wang, Yueqing Liang, Philip S. Yu, Yue Zhao, and Kai Shu. 2026. Can Multimodal LLMs Perform Time Series Anomaly Detection?. In 
+
+Proceedings of the ACM Web Conference 2026 . 5392–5403. https://doi.org/10.1145/ 3774904.3792376 [47] Chengrun Yang, Xuezhi Wang, Yifeng Lu, Hanxiao Liu, Quoc V. Le, Denny Zhou, and Xinyun Chen. 2024. Large Language Models as Optimizers. In The Twelfth International Conference on Learning Representations .[48] Tiankai Yang, Junjun Liu, Michael Siu, Jiahang Wang, Zhuangzhuang Qian, Chanjuan Song, Cheng Cheng, Xiyang Hu, and Yue Zhao. 2025. AD-AGENT: A Multi-agent Framework for End-to-end Anomaly Detection. In Proceedings of the 14th International Joint Conference on Natural Language Processing and the 4th Conference of the Asia-Pacific Chapter of the Association for Compu-tational Linguistics . The Asian Federation of Natural Language Processing and The Association for Computational Linguistics, Mumbai, India, 191–205. https://doi.org/10.18653/v1/2025.findings-ijcnlp.11 [49] Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, and Yuan Cao. 2023. ReAct: Synergizing Reasoning and Acting in Language Models. In The Eleventh International Conference on Learning Representations .https://openreview.net/forum?id=WE_vluYUL-X [50] Zhihan Yue, Yujing Wang, Juanyong Duan, Tianmeng Yang, Congrui Huang, Yunhai Tong, and Bixiong Xu. 2022. TS2Vec: Towards Universal Representation of Time Series. Proceedings of the AAAI Conference on Artificial Intelligence 36, 8 (2022), 8980–8987. https://doi.org/10.1609/aaai.v36i8.20881 [51] Rushuang Zhou, Yuanting Zhang, and Yining Dong. 2025. H-Tuning: Toward Low-Cost and Efficient ECG-based Cardiovascular Disease Detection with Pre-Trained Models. In International Conference on Machine Learning . PMLR, 79548–79569. [52] Tian Zhou, Peisong Niu, Liang Sun, Rong Jin, et al . 2023. One fits all: Power general time series analysis by pretrained lm. Advances in neural information processing systems 36 (2023), 43322–43355. [53] Hongling Zhu, Cheng Cheng, Hang Yin, Xingyi Li, Ping Zuo, Jia Ding, Fan Lin, Jingyi Wang, Beitong Zhou, Yonge Li, Shouxing Hu, Yulong Xiong, Binran Wang, Guohua Wan, Xiaoyun Yang, and Ye Yuan. 2020. Automatic Multilabel Electrocardiogram Diagnosis of Heart Rhythm or Conduction Abnormalities with Deep Learning: A Cohort Study. The Lancet Digital Health 2, 7 (2020), e348–e357. https://doi.org/10.1016/S2589-7500(20)30107-2 Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+## A EXPERIMENTAL PROTOCOL AND EVIDENCE INTERFACES 
+
+RecursiveECG denotes the complete workflow with candidate search, Criteria-to-Measurement Compilation, Evidence-Grounded Failure Review, independent subagent execution, regression checks, governed candidate promotion, and a frozen final predictor. 
+
+## A.1 Evaluation Protocol and Data Splits 
+
+All experiments evaluate multi-label diagnosis from 12-lead ECGs. Methods use the same label mapping, lead order, preprocessing, validation-based model selection, and validation-based threshold selection within each dataset. Test sets are used only for final report-ing. Unless otherwise stated, RecursiveECG uses DeepSeek-V4-Pro, candidate count 𝑘 = 3, maximum iteration count 5. This subsection expands the compact experimental setup in Sec. 5.1: Tab. 2 gives the evaluation scale, and Tab. 3 specifies the full label sets and preprocessing choices that define the fixed problem contracts. The three datasets cover different label organizations. PTB-XL provides a superclass/subclass diagnostic hierarchy, Georgia uses a seven-label scored setting, and CPSC2018 is treated as a nine-label arrhythmia task under a fixed 60/20/20 split. This makes Macro F1 the primary metric because the label supports are highly im-balanced and several clinically meaningful labels are rare. All re-ported standard deviation is computed with a denominator of 𝑁 
+
+(i.e., ddof=0 ). Tab. 4 summarizes the default configuration used to instantiate the workflow in Fig. 3. These settings are held fixed for the main comparison unless a later appendix table explicitly studies a sensi-tivity setting, such as the candidate budget or LLM backbone. Tab. 5 lists the measurement interface produced by one representative CMC run. The table is not a new diagnostic rule set; it is an inven-tory of the deterministic evidence channels available to EGFR. The WPW example in Fig. 9 and Tab. 21 shows how several of these functions are used in an individual failure review. Tab. 5 is intentionally reported at the function-family level rather than as source code. The validation procedure, artifact requirements, and deterministic execution contract for these functions are detailed next in Sec. A.3 and Sec. A.5. 
+
+## A.2 Prompt Templates and Control Instructions 
+
+Tab. 6 reports the key prompt excerpts used by the agent calls in Sec. 4.2, Sec. 4.3, and Sec. 4.4. We report only the operationally important parts of each prompt, because the full runtime prompt also includes workspace paths, current iteration state, available tools, and task-specific attachments. 
+
+## A.3 Reference Corpus and Evidence Binding 
+
+The reference corpus K is a fixed development-time artifact rather than a source that is searched during deployment-time inference. For each dataset, it contains the task contract, dataset label defini-tions, and ECG interpretation references relevant to the target label space. For the ECG criteria used to construct the reference-backed measurement functions and support Evidence-Grounded Failure Review, we use standard ECG interpretation material covering ECG acquisition and intervals, diagnostic statement terminology, intra-ventricular conduction, ST-segment and repolarization patterns, chamber- and axis-related changes, and acute ischemia/infarction morphology [ 10 , 18 , 22 , 30 , 38 , 40 ]. These references support the construction of auditable measurement functions; they are not used to claim clinical guideline validation of the final predictor. Reference selection follows three constraints. First, the corpus is frozen before iterative solving starts, and the test split is never used to select or modify reference criteria. Second, a candidate mea-surement must be linked to the current problem contract, label set, or a concrete need identified during Evidence-Grounded Failure Review; generic ECG knowledge that cannot affect the task is not compiled into the measurement interface. Third, every compiled measurement function must carry an evidence record containing a reference path, section or page pointer, and a concise description of the operationalized rule. If the reference material or waveform qual-ity does not support a reliable judgment for an input condition, the measurement function remains available but emits an unsupported or indeterminate status rather than a speculative normal/abnormal judgment. This evidence-binding mechanism is designed to prevent knowledge drift across iterations. During candidate generation and Evidence-Grounded Failure Review, the agent may inspect the emitted measurement records and their linked evidence, but it does not repeatedly reinterpret unconstrained clinical text. The same reference-backed computation is therefore reused across candidate testing, failure attribution, case replay, and final audit reporting. 
+
+## A.4 Failure Selection and Comparator Retrieval 
+
+The failure-review stage is executed only on the validation split and is never allowed to inspect test labels. We make the selection and retrieval contract explicit here because aggregate validation loss alone is not a sufficient description of the cases used to formulate a revision. For a record 𝑖 and label 𝑘 , let 𝑦 𝑖𝑘 be the ground-truth label, 
+
+𝑝 𝑖𝑘 the predicted probability, and b𝑦 𝑖𝑘 the thresholded decision. The per-label binary cross-entropy contribution is 
+
+ℓ𝑖𝑘 = −𝑦 𝑖𝑘 log (𝑝 𝑖𝑘 + 𝜖 ) − ( 1 − 𝑦 𝑖𝑘 ) log (1 − 𝑝 𝑖𝑘 + 𝜖 ),
+
+and the per-record error score is 
+
+𝑢 𝑖 = 1
+
+𝐿 
+
+> 𝐿
+
+∑︁ 
+
+> 𝑘 =1
+
+ℓ𝑖𝑘 .
+
+We quantify the influence of label 𝑘 on the current failure pool by 
+
+𝐼 𝑘 =
+
+Í𝑖 ∈ D val 1[b𝑦 𝑖𝑘 ≠ 𝑦 𝑖𝑘 ]ℓ𝑖𝑘 
+
+Í𝐿 𝑗 =1
+
+Í𝑖 ∈ D val 1[b𝑦 𝑖 𝑗 ≠ 𝑦 𝑖 𝑗 ]ℓ𝑖 𝑗 + 𝜖 .
+
+Thus, failure influence is not a subjective label importance score: it is the fraction of error-weighted validation loss attributable to a label. The reported error-mode taxonomy is the Cartesian product of the affected label set and the decision error type: false negative, false positive, or mixed error. We additionally mark a case as persistent when it recurs for the incumbent across consecutive iterations, and as borderline when the decision margin is within the pre-specified review band around the label threshold. The selection procedure has two stages. First, it forms a failure pool D− 
+
+> val ,𝜃
+
+and assigns each case its 𝑢 𝑖 , affected-label set, error type, persistence flag, and measurement-quality status. Second, it samples within error-mode strata, prioritizing the largest 𝑢 𝑖 cases Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 
+
+Table 2: Dataset and evaluation scope. 
+
+Dataset Train Validation Test Evaluated labels PTB-XL 17,441 2,193 2,203 5 diagnostic superclasses; 23 diagnostic subclasses for fine-grained analysis Georgia 4,946 581 599 NSR, AF, IAVB, LBBB, RBBB, SB, STach CPSC2018 4,126 1,375 1,376 Normal/NSR, AF, IAVB, LBBB, RBBB, PAC, PVC, STD, STE 
+
+Table 3: Dataset-specific labels and preprocessing used in the experiments. 
+
+Dataset Complete evaluated label set Split protocol Preprocessing PTB-XL Main task: NORM, MI, STTC, CD, HYP. Fine-grained analysis: NORM, IMI, AMI, LMI, PMI, STTC, NST_, ISC_, ISCA, ISCI, LAFB/LPFB, IRBBB, _AVB, IVCD, CRBBB, CLBBB, WPW, ILBBB, LVH, LAO/LAE, RVH, RAO/RAE, SEHYP. Official folds: 1–8 for training, 9 for validation, and 10 for testing. Official 100 Hz 12-lead waveforms are used in canonical lead order. Signals are loaded as float32, non-finite values are set to zero, and each lead is normalized with training-set statistics before model fitting and evaluation. Records keep the official 10 s duration. Georgia NSR, AF, IAVB, LBBB, RBBB, SB, STach. Record groups 3–11 for training, group 2 for validation, and group 1 for testing. Header metadata and SNOMED codes are mapped to the seven scored labels used by the baseline protocol. Signals are converted to physical units, reordered to canonical 12-lead order, resampled to 100 Hz, padded or cropped to 10 s, cleaned for missing or non-finite values, and normalized using training-set statistics. CPSC2018 Normal/NSR, AF, IAVB, LBBB, RBBB, PAC, PVC, STD, STE. Fixed record-level 60/20/20 train/validation/test split with primary-label stratification. SNOMED codes are mapped to the nine target labels. Signals are converted to physical units, reordered to canonical 12-lead order, resampled to 250 Hz, padded or cropped to 10 s, cleaned for missing or non-finite values, and normalized with statistics computed from the training split. 
+
+Table 4: Default RecursiveECG configuration used for the main experiments. 
+
+Component Setting Offline controller DeepSeek-V4-Pro for development-time planning, evidence review, and candidate proposal; no LLM calls at test time. Candidate budget 𝑘 = 3 executable candidate revisions per iteration. Iteration budget Maximum of five refinement iterations, unless explicitly changed in a sensitivity study. Data access Train for fitting, validation for model/threshold selection and promotion, and test only for final reporting. Promotion objective Promote only when validation score improves over the incumbent and execution, reproducibility, and regression checks pass. Thresholds and runs Label-wise validation thresholds; metrics reported as mean ± standard deviation over five runs. Audit artifacts Problem contract, measurement interface, selected and comparator cases, candidate logs, promotion decisions, and final outputs. 
+
+and retaining at least one case for each targeted failure mode when-ever that mode is present. If a stratum contains fewer cases than its quota, the unused quota is assigned to the next highest influence stratum. Correctly classified cases are sampled as controls and are never mixed into the failure pool. The concrete audit traces use a small, fixed review budget. PTB-XL reviews use five bad cases and two correctly classified controls per iteration in the final case-review trace; CPSC2018 uses stratified samples of 12–15 bad cases when the validation failure pool is large; and the Georgia audit uses 15 stratified cases from the 86-case error pool in its available case-review trace. These counts describe review artifacts, not the number of cases used to train or evaluate the classifier. For comparator retrieval, the candidate pool is 
+
+D+ 
+
+> val ,𝜃
+
+= {( 𝑋 𝑗 , y𝑗 ) : by𝑗 = y𝑗 },
+
+restricted to the same dataset and split and excluding the failure record itself. A comparator is ranked by the following deterministic evidence key, in descending lexicographic order: (1) label-profile agreement, measured by Jaccard overlap of the ground-truth label sets and agreement on the relevant error-mode labels; Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+Table 5: Measurement-function inventory from a representative RecursiveECG run. Each function emits a numeric value or structured status together with its source evidence pointer and applicability flag. 
+
+Measurement function Emitted evidence and review use Signal quality and lead availability Missing leads, non-finite values, flat segments, and usable waveform length; used to mark unreliable evidence. R-peak and beat localization Detected beat times, representative beat, and confidence; used by rhythm and interval measurements. Heart-rate summary Mean heart rate and RR statistics; used for bradycardia, tachycardia, and rhythm plausibility. Rhythm regularity RR variability and irregularity status; used for AF, premature-beat patterns, and comparator selection. PR interval PR duration and short/long PR status; used for IAVB and pre-excitation evidence. QRS duration QRS width and wide-QRS status; used for bundle-branch block and ventricular-conduction evidence. QT and corrected QT QT/QTc estimates with unsupported flags when landmarks are unreliable; used for repolarization review. Frontal QRS axis Limb-lead polarity and axis-quadrant summary; used for conduction and hypertrophy evidence. ST-segment deviation Lead-wise ST elevation/depression summaries; used for STTC, STD, STE, ischemia, and infarction-like failures. T-wave morphology T-wave polarity and repolarization cues; used for ST–T subclasses and comparator evidence. Pathological Q-wave screen Initial deflection and Q-wave-like morphology by lead group; used for MI, pseudo-infarction, and WPW review. R-wave progression Precordial R/S progression and transition pattern; used for MI, conduction, and hypertrophy-related failures. Bundle-branch morphology V1–V2 and lateral-lead terminal-force patterns; used for LBBB/RBBB failure review. AV-conduction screen PR prolongation and conduction-delay status; used for IAVB and AV-block-related errors. Pre-excitation screen Short PR, slurred QRS onset, widened QRS, and axis consistency; used for WPW and pseudo-infarction cases. Voltage hypertrophy screen Limb/precordial voltage summaries and cross-lead high-voltage pattern; used for LVH/RVH and HYP errors. Premature-beat evidence Early-beat and compensatory-pause cues when detectable; used for PAC, PVC, and rhythm-label failures. Cross-lead consistency summary Agreement or conflict among local morphology, rhythm, and axis evidence; used by EGFR for comparator construction and revision hypotheses. 
+
+(2) measurement-profile agreement, using exact agreement for categorical statuses and robustly normalized distance for numeric measurements that are available for both cases; (3) waveform-profile agreement, using lead-wise normalized morphology summaries derived from the same 12-lead input, including rhythm, QRS, ST–T, axis, and voltage summaries; and (4) deterministic record-ID order as a tie-breaker. Only correctly classified cases are eligible. We retain at most two comparators per failure stratum to prevent a large class from dom-inating the diagnosis. A missing measurement is not treated as a match: it is excluded from the numeric distance and retained as an explicit indeterminate status. If no eligible comparator satisfies the label and evidence filters, the case is retained with the status 
+
+no-comparator ; EGFR may use its raw waveform and measure-ment records, but it must not infer a contrastive mechanism from an absent reference case. This fallback is reported as an evidence limi-tation rather than silently replacing retrieval with unconstrained LLM judgment. The resulting provenance is summarized in Tab. 7. It makes the split, incumbent, failure-pool size, reviewed-case budget, and stratification rule explicit for each available case-review trace, so that the subsequent evidence-grounded analysis can be interpreted as a development-time audit rather than as an additional evaluation protocol. The evaluation-record counts follow the official dataset split sizes reported in the experimental setup. The failure-pool and reviewed-case counts are the corresponding case-review trace statistics after the trace-specific filtering and sampling procedure. The Georgia row is a validation-set case-review trace: it analyzes the 581-record validation split used by the development protocol. It therefore be-longs to the development-time refinement evidence and is distinct from the held-out test split, which remains reserved for final report-ing. The row is included to document the provenance and limits of the validation case-review artifact. 
+
+## A.5 Measurement Function Construction and Validation 
+
+The Criteria-to-Measurement Compilation stage builds the deter-ministic measurement interface as a set of validated executable artifacts under a fixed input-output contract. The implementation requires an evidence map, measurement plan, Python measurement extractor, manifest, reference-rule file, README, test cases, and evaluation report before the interface can be used downstream. The backend validator then checks that these artifacts are complete, mutually consistent, deterministic, executable, and grounded in the cited reference evidence. The validator checks are listed in Tab. 8. They define the minimum artifact, evidence-binding, determinism, execution, and control-case requirements that must be satisfied before emitted measurements are used by Evidence-Grounded Failure Review. The resulting dataset-level status counts are reported separately in Tab. 9. Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 
+
+Table 6: Key prompt excerpts used by the main RecursiveECG agent calls. 
+
+Symbol / prompt Role Key prompt excerpt 
+
+p_cmp Criteria-to-Measurement Compilation Generate a deterministic and auditable reference feature extractor from the current task definition and fixed ECG references. Read the problem contract, data specification, and listed references first. Do not add thresholds, diagnostic rules, or feature definitions from model common sense. Every feature, computation method, threshold, and judgment must be traceable to reference text; unsupported or unobservable conditions must return 
+
+indeterminate . Write an evidence map and measurement plan before implementing the extractor, then validate the Python API and CLI on at least one real workspace ECG sample. 
+
+p_diag Evidence-Grounded Failure Review Use validation feedback, selected failed cases, correctly classified comparator cases, model outputs, raw ECG waveforms, and reference-backed measurements to diagnose why the current predictor fails. Compare failed cases with clinically similar successful cases. Base each important judgment on data observations, tool outputs, or reference-backed evidence. If the bad case cannot be explained by numerical or clinical evidence, explicitly state that the evidence is insufficient rather than forcing a domain explanation. Output a concise, evidence-supported classifier limitation for the next revision. 
+
+p_rev Diagnostic Classifier Revision Given the current predictor implementation and the diagnosed limitation, generate executable code-level revisions rather than natural-language suggestions. Preserve the fixed label space, data split, decision rule, evaluation metric, leakage constraints, and validation protocol. Execute and evaluate each candidate under the same training and validation protocol. Reject candidates that fail to run, violate the contract, leak test information, or degrade validation performance. Retain a revision only when executable validation evidence supports promotion. Main orchestrator Node routing and workflow control Use the backend-provided workspace progress as the source of truth for routing. Enter the recommended node only when the workflow should continue; do not perform substantive node work in the main session. Query the knowledge graph, reference QA, or extractor-source QA only when the corresponding tool is explicitly available. Do not start a second node while another node is active. Node execution and finish control Reproducible node execution Complete only the current node’s responsibility and cite background knowledge, data observations, or tool outputs for important judgments. Use only node-native tools and injected Harness tools. Avoid broad process-killing commands. At completion, call the finish-control tool with success status, a short summary, key artifact paths, and, for iterative solving, an explicit continue-or-exit decision. 
+
+Table 7: Failure-selection audit traces from the available case-review workspaces. The table reports the split and incumbent used by each trace; it is not a cross-dataset performance comparison. 
+
+Dataset / trace Evaluation records Failure pool Bad cases reviewed Controls Sampling rule PTB-XL / final review trace 2,193 validation 862 5 2 Stratified by HYP false negatives, persistent failures, borderline cases, and multi-label confusion. Georgia / validation case-review trace 581 validation 86 15 6 Stratified across AF false negatives, NSR/IAVB false positives, multi-label errors, and diverse edge cases; extractor unavailable in this trace. CPSC2018 / final review trace 1,375 validation 300 15 5 Stratified by error type and severity, with coverage of PAC, RBBB, PVC, STD, and STE failure modes. 
+
+The validation reports provide three distinct kinds of evidence. First, the extractor is executable and deterministic: each dataset report is generated from fixed JSON cases and the extractor contract forbids network access, randomness, hidden mutable state, and model-dependent computation. Second, the status counts expose uncertainty instead of converting failed landmark detection into a normal or abnormal decision. Third, the control cases reveal dataset- and sampling-specific failure modes. In particular, the PTB-XL report attributes three control abnormalities to 100 Hz time-resolution limitations, the Georgia report identifies P-wave and axis weaknesses, and the CPSC2018 report records indeterminate QRS/PR measurements together with non-judgmental descriptive features. These results support the claim that the functions are executable, traceable, and useful for model-development evidence; they do not establish expert-level clinical measurement accuracy. Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+Table 8: Validation checks for deterministic measurement functions.          
+
+> Check Requirement Schema completeness The manifest must declare the entrypoint, Python API, input and output schemas, and non-empty measurement definitions. Evidence binding Each manifest measurement, evidence-map entry, and reference rule must contain reference evidence with a path and section or page pointer. Rule consistency Measurement names must match across the manifest, measurement plan, evidence map, and reference-rule file. Deterministic source The measurement extractor cannot use network calls, random number generators, system time, external processes, or hidden mutable state. Execution consistency The importable Python API and command-line wrapper must return the same JSON object on the same input. Repeatability Repeated execution on the same JSON input must produce identical output. Real-sample behavior At least one test case must be extracted from a real workspace sample following the data specification. Control behavior The evaluation report must include control or reference cases and record abnormal burden, warnings, unsupported conditions, and indeterminate measurements.
+
+Table 9: Quantitative validation report for the reference-backed measurement extractors. Counts are aggregated over emitted feature records; descriptive denotes a non-judgmental signal summary and is therefore excluded from the nor-mal/abnormal/indeterminate denominator.                         
+
+> Dataset Cases Control cases Normal Abnormal Indeterminate Observed limitation PTB-XL 2116 16 03/16 abnormal judgments on the NORM control; QTc, T-wave discordance, and pathological-Q detection are sensitive to 100 Hz resolution. Georgia 7127 13 9The NSR control has 1 abnormal and 3 indeterminate judgments out of 7; P-wave and area-based axis heuristics are unreliable. CPSC2018 28 2144 196 24 The report additionally contains 84 descriptive summaries; all judgments are deterministic heuristics rather than clinical diagnoses.
+
+The construction workflow is intentionally conservative. The agent first writes an evidence map and measurement plan before writing executable code. The evidence map binds each proposed measurement to its source reference, while the measurement plan records its unit, computation procedure, judgment rules, control expectation, uncertainty conditions, and expected failure modes. Only after these planning artifacts exist does the agent implement the measurement extractor. The extractor receives all waveform data through explicit JSON input and is not allowed to read raw data files, reference files, network resources, or model state during execution. Validation uses both artifact checks and real-sample execution checks. For each test case, the backend executes the measurement extractor twice and compares the complete JSON outputs. When command-line execution is enabled, it also compares the Python module API against the command-line interface. A real sample is required so that validation is not limited to synthetic smoke tests. The evaluation report summarizes measurement-status counts for real and control cases, including warnings, unsupported states, and indeterminate outputs. If a control case produces an unexpectedly high abnormal burden, the corresponding measurement function must be debugged, weakened to an advisory cue, or marked with an explicit limitation before Evidence-Grounded Failure Review can use its output as case-level evidence. Thus, the measurement interface is validated as a reproducible evidence interface rather than as an independent clinical diagnostic system. 
+
+## A.6 Reference-Backed Measurement Interface Example 
+
+Algorithm 1 gives a compact description of the deterministic reference-backed measurement interface used during Evidence-Grounded Failure Review. The example omits low-level signal-processing details but shows the auditable output contract: each measurement function emits a measured value, unit, judgment, operational rule, and reference evidence pointer. The interface is deterministic and receives all waveform data as explicit JSON input; it does not call an LLM, train a model, or read external state during either development-time replay or deployment-time inference. 
+
+## B ADDITIONAL DIAGNOSTIC RESULTS B.1 Aggregate Diagnostic Performance 
+
+The primary aggregate result is that RecursiveECG improves macro F1 over the strongest baseline on all three datasets. The abso-lute gain is 0.0403 on PTB-XL, 0.0696 on Georgia, and 0.1096 on CPSC2018. The aggregate results support a focused but important claim. RecursiveECG does not improve only one benchmark or one la-bel organization. It improves the primary metric under the PTB-XL diagnostic hierarchy, the Georgia scored-label setting, and the CPSC2018 arrhythmia label set. The largest absolute gain occurs Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 
+
+Algorithm 1: Reference-backed deterministic measure-ment emission 
+
+Input: ECG case 𝑋 with 12-lead waveform and sampling rate; fixed measurement-rule registry R
+
+Output: Measurement report 𝐸 (𝑋 ) with measured values, judgments, and evidence pointers  
+
+> 1
+
+Initialize 𝐸 (𝑋 ) ← ∅ ; 
+
+> 2
+
+foreach registered measurement criterion 𝑟 ∈ R do  
+
+> 3
+
+Select the required leads, fiducial points, and measurement window specified by 𝑟 ; 
+
+> 4
+
+Compute the numeric measurement 𝑣 𝑟 using deterministic signal-processing routines;  
+
+> 5
+
+if 𝑣 𝑟 is unavailable or the required waveform support is invalid then  
+
+> 6
+
+Set judgment 𝑞 𝑟 ← indeterminate;  
+
+> 7
+
+else  
+
+> 8
+
+Compare 𝑣 𝑟 with the threshold or predicate encoded in 𝑟 and set 𝑞 𝑟 ← normal or abnormal;  
+
+> 9
+
+Append the measurement record 
+
+{𝑛𝑎𝑚𝑒 : 𝑟 .𝑛𝑎𝑚𝑒, 𝑣𝑎𝑙𝑢𝑒 : 𝑣 𝑟 , 𝑢𝑛𝑖𝑡 : 𝑟 .𝑢𝑛𝑖𝑡, 𝑗𝑢𝑑𝑔𝑚𝑒𝑛𝑡 :
+
+𝑞 𝑟 , 𝑟𝑢𝑙𝑒 : 𝑟 .𝑡𝑒𝑥𝑡, 𝑒𝑣𝑖𝑑𝑒𝑛𝑐𝑒 : 𝑟 .𝑟𝑒 𝑓 𝑒𝑟𝑒𝑛𝑐𝑒𝑠 } to 𝐸 (𝑋 ); 
+
+> 10
+
+return 𝐸 (𝑋 );on CPSC2018. However, this dataset also contains the strongest label-level F1 exception, RBBB, which is examined below. Thus, the aggregate improvement should be interpreted together with the fine-grained positive and negative results rather than as uniform per-label dominance. 
+
+## B.2 Dataset-Adaptive Architecture Evolution 
+
+The architecture-transfer experiment asks whether the architecture and governed toolchain structure discovered on PTB-XL can be reused on new ECG datasets. This setting transfers architecture and toolchain design rather than trained weights or zero-shot pre-dictions. The target output layer is replaced and retrained, but the agent workflow is not rerun on the target dataset. The transferred architecture remains competitive, but it does not match the corresponding target-specific rerun under the transfer protocol. This result indicates that RecursiveECG discovers reusable ECG model structures, but that architecture reuse alone does not recover the complete benefit observed under target-specific refine-ment. In particular, target-dataset Evidence-Grounded Failure Review (EGFR), the execution and use of reference-backed measurements produced through Criteria-to-Measurement Compilation (CMC), and governed toolchain revision expose label-set-specific and distribution-specific failure patterns that the PTB-XL-derived architecture alone cannot repair. The transfer result therefore separates reusable architecture discovery from target-specific evidence-grounded refinement under this protocol. 
+
+## B.3 Fine-Grained Label Behavior 
+
+Fine-grained analysis shows that the aggregate gains are not uniform, and that F1 and AUC provide complementary views of model behavior. In terms of F1, RecursiveECG improves many morphology-sensitive and rhythm-sensitive labels, particularly the PTB-XL ST–T and conduction subclasses and the CPSC2018 PAC, STE, STD, NSR, and AF labels. The principal F1 exceptions are PTB-XL RVH and SEHYP and CPSC2018 RBBB. The complete per-label F1 results are reported in Tab. 11, Tab. 12, and Tab. 13; the corresponding AUC results are reported in Tab. 14, Tab. 15, and Tab. 16. These tables provide the numerical breakdown behind the aggregate and exception patterns described above, with deltas computed against the strongest baseline for each label. It is worth noting that, since PTB-XL provides an explicit 23-subclass classification setting, the PTB-XL results here are obtained by re-placing the classification head with a 23-class classification head and recomputing the metrics. The AUC results show a broader improvement in ranking quality. RecursiveECG improves over the strongest baseline on 17 of the 23 PTB-XL subclasses, ties on ISC_ and CLBBB, improves on 6 of the 7 Georgia labels, and improves on 8 of the 9 CPSC2018 labels. The re-maining AUC regressions are PTB-XL CRBBB, ILBBB, LAFB/LPFB, and SEHYP, together with Georgia RBBB and CPSC2018 RBBB. The label-level evidence clarifies the aggregate result. Re-cursiveECG is strongest on labels for which failures analyzed through Evidence-Grounded Failure Review can be grounded in reproducible morphology, rhythm, or cross-lead measurements. EGFR does not infer the cause of an error from the label mismatch alone; it jointly considers raw waveforms, reference-backed measurements, model outputs, and comparator cases. The complementary metrics also reveal different failure modes. PTB-XL RVH trails the strongest baseline in F1 but exceeds it in AUC, suggesting that its remaining weakness may be related to the operating point, threshold selection, or calibration rather than a complete loss of discriminative ranking. Conversely, the AUC regressions on PTB-XL CRBBB, ILBBB, LAFB/LPFB, and SEHYP, Georgia RBBB, and CPSC2018 RBBB show that RecursiveECG is not uniformly dominant in ranking quality. Several of these labels have very low support, so their estimates should be interpreted cautiously. We report all labels and both metrics to make these exceptions explicit rather than excluding unfavorable cases post hoc. 
+
+## B.4 Failure Modes and Negative-Label Analysis 
+
+The negative label-level deltas identify where the current work-flow still leaves label-specific errors, rather than where the overall method fails. Across the three datasets, the principal F1 exceptions are CPSC2018 RBBB and the low-support PTB-XL hypertrophy subclasses RVH and SEHYP. These labels are harder than the high-gain cases because their evidence is either sparsely represented, heterogeneous across cases, or less directly captured by the retained measurement and revision path. 
+
+CPSC2018 RBBB. RBBB is the clearest negative case in the label-level comparison. RecursiveECG reaches an F1 of 0.5556, whereas MERL reaches 0.9084 on the same evaluation split. This excep-tion does not overturn the aggregate CPSC2018 gain, where Recur-siveECG improves macro F1 from 0.6931 to 0.8027 and improves eight of the nine evaluated labels, but it shows that the learned decision rule is not uniformly reliable across all labels. Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+Table 10: Architecture transfer from PTB-XL to target datasets under the transfer-control protocol. 
+
+Architecture Target Target workflow rerun Macro F1 Gap PTB-XL-derived Georgia No 0.8368 0.0458 Target-specific RecursiveECG Georgia Yes 0.8826 0.0000 PTB-XL-derived CPSC2018 No 0.7011 0.1016 Target-specific RecursiveECG CPSC2018 Yes 0.8027 0.0000 −0.2         
+
+> 0.0
+> 0.2
+> 0.4
+> 0.6
+> 0.8
+> 1.0
+> Δ F1
+> F1 improvement
+> NORM MI STTC CD HYP
+> F1 Δ AUC Δ Both improve At least one improves Negative delta
+> −0.025
+> 0.000
+> 0.050
+> 0.100
+> 0.150
+> Δ AUC
+> AUC improvement
+> NORM
+> AMI
+> IMI
+> LMI
+> PMI
+> ISCA
+> ISCI
+> ISC_
+> NST_
+> STTC
+> _AVB
+> CLBBB
+> CRBBB
+> ILBBB
+> IRBBB
+> IVCD
+> LAFB/LPFB
+> WPW
+> LAO/LAE
+> LVH
+> RAO/RAE
+> RVH
+> SEHYP
+> PTB-XL diagnostic subclass
+
+Figure 10: Fine-grained F1 and AUC changes of RecursiveECG relative to the strongest baseline on PTB-XL. Table 11: PTB-XL diagnostic subclass F1 results reported as mean ± standard deviation over five runs. Delta is computed from mean values. 
+
+Superclass Subclass Support PatchTST TimesNet TS2Vec xLSTM UniTS MERL Argos RecursiveECG Best baseline Delta NORM NORM 957 0.7104 ±0.0049 0.7106 ±0.0076 0.7592 ±0.0052 0.8301 ±0.0057 0.8037 ±0.0068 0.7931 ±0.0104 0.6818 ±0.0002 0.8757 ±0.0048 xLSTM 0.0456 MI AMI 307 0.5907 ±0.0078 0.5385 ±0.0120 0.7568 ±0.0063 0.6182 ±0.0047 0.6783 ±0.0065 0.6967 ±0.0052 0.4286 ±0.0026 0.8502 ±0.0051 TS2Vec 0.0934 MI IMI 330 0.5025 ±0.0036 0.4214 ±0.0086 0.6762 ±0.0087 0.6529 ±0.0116 0.6078 ±0.0059 0.6478 ±0.0095 0.4035 ±0.0027 0.7606 ±0.0079 TS2Vec 0.0844 MI LMI 20 0.0625 ±0.0182 0.0000 ±0.0000 0.1395 ±0.0140 0.0800 ±0.0107 0.1875 ±0.0097 0.1026 ±0.0089 0.0000 ±0.0000 0.2500 ±0.0208 UniTS 0.0625 MI PMI 2 0.0000 ±0.0000 0.0000 ±0.0000 0.0000 ±0.0000 0.0000 ±0.0000 0.0000 ±0.0000 0.0000 ±0.0000 0.0000 ±0.0000 0.9200 ±0.0980 None 0.9200 STTC ISCA 92 0.1151 ±0.0125 0.1505 ±0.0100 0.3704 ±0.0045 0.2930 ±0.0115 0.3065 ±0.0111 0.3581 ±0.0097 0.1821 ±0.0097 0.8370 ±0.0059 TS2Vec 0.4666 STTC ISCI 40 0.0882 ±0.0110 0.1667 ±0.0100 0.4190 ±0.0176 0.2407 ±0.0107 0.3377 ±0.0102 0.3433 ±0.0169 0.1483 ±0.0381 0.7500 ±0.0164 TS2Vec 0.3310 STTC ISC_ 127 0.3049 ±0.0098 0.4843 ±0.0055 0.6806 ±0.0117 0.5579 ±0.0100 0.5570 ±0.0033 0.6139 ±0.0074 0.4316 ±0.0019 0.9449 ±0.0058 TS2Vec 0.2643 STTC NST_ 77 0.0727 ±0.0118 0.0449 ±0.0077 0.2660 ±0.0151 0.1707 ±0.0156 0.2929 ±0.0109 0.1935 ±0.0114 0.0746 ±0.0192 0.8442 ±0.0058 UniTS 0.5513 STTC STTC 226 0.2615 ±0.0111 0.3978 ±0.0056 0.4794 ±0.0116 0.4625 ±0.0105 0.4510 ±0.0037 0.4325 ±0.0105 0.3399 ±0.0067 0.7920 ±0.0065 TS2Vec 0.3126 CD _AVB 83 0.0796 ±0.0114 0.1606 ±0.0153 0.4662 ±0.0145 0.2364 ±0.0148 0.4701 ±0.0127 0.1648 ±0.0108 0.1397 ±0.0066 0.6265 ±0.0100 UniTS 0.1564 CD CLBBB 54 0.7172 ±0.0059 0.5854 ±0.0136 0.8947 ±0.0141 0.8205 ±0.0119 0.8430 ±0.0137 0.8785 ±0.0147 0.6869 ±0.0052 0.9630 ±0.0137 TS2Vec 0.0683 CD CRBBB 55 0.6541 ±0.0121 0.7321 ±0.0058 0.8525 ±0.0140 0.7737 ±0.0080 0.8293 ±0.0103 0.7597 ±0.0133 0.7369 ±0.0080 0.9091 ±0.0112 TS2Vec 0.0566 CD ILBBB 7 0.0000 ±0.0000 0.0000 ±0.0000 0.1250 ±0.0169 0.0000 ±0.0000 0.3750 ±0.0203 0.2857 ±0.0229 0.0000 ±0.0000 0.8571 ±0.0199 UniTS 0.4821 CD IRBBB 112 0.5201 ±0.0125 0.3486 ±0.0138 0.5687 ±0.0115 0.5918 ±0.0044 0.5950 ±0.0120 0.5077 ±0.0136 0.3380 ±0.0087 0.8036 ±0.0128 UniTS 0.2086 CD IVCD 79 0.1387 ±0.0115 0.1101 ±0.0145 0.2420 ±0.0110 0.1299 ±0.0169 0.1769 ±0.0064 0.1808 ±0.0072 0.1933 ±0.0134 0.5190 ±0.0081 TS2Vec 0.2770 CD LAFB/LPFB 181 0.6511 ±0.0026 0.5646 ±0.0067 0.7420 ±0.0031 0.6530 ±0.0091 0.6536 ±0.0047 0.7019 ±0.0038 0.5206 ±0.0013 0.9282 ±0.0041 TS2Vec 0.1862 CD WPW 8 0.1333 ±0.0233 0.0000 ±0.0000 0.2000 ±0.0250 0.0000 ±0.0000 0.4000 ±0.0179 0.2000 ±0.0177 0.0000 ±0.0000 0.7500 ±0.0149 UniTS 0.3500 HYP LAO/LAE 43 0.0155 ±0.0161 0.0000 ±0.0000 0.2029 ±0.0117 0.0213 ±0.0112 0.1644 ±0.0120 0.0959 ±0.0119 0.0085 ±0.0148 0.2791 ±0.0076 TS2Vec 0.0762 HYP LVH 213 0.3461 ±0.0109 0.4935 ±0.0061 0.6748 ±0.0034 0.5806 ±0.0067 0.4799 ±0.0112 0.6497 ±0.0064 0.4904 ±0.0024 0.7559 ±0.0028 TS2Vec 0.0811 HYP RAO/RAE 10 0.0000 ±0.0000 0.0000 ±0.0000 0.2381 ±0.0194 0.0000 ±0.0000 0.2105 ±0.0219 0.2222 ±0.0264 0.1465 ±0.0063 0.3000 ±0.0165 TS2Vec 0.0619 HYP RVH 12 0.1875 ±0.0175 0.2295 ±0.0177 0.2500 ±0.0168 0.1702 ±0.0130 0.1818 ±0.0076 0.3226 ±0.0171 0.3531 ±0.0091 0.2500 ±0.0178 Argos -0.1031 HYP SEHYP 3 0.0000 ±0.0000 0.0000 ±0.0000 0.5714 ±0.0000 0.0000 ±0.0000 0.0000 ±0.0000 0.0000 ±0.0000 0.5000 ±0.0000 0.3333 ±0.0242 TS2Vec -0.2381 
+
+Reliable bundle-branch-block characterization depends on QRS duration, terminal forces, and lead-specific morphology in V1–V2 and lateral leads. Although RecursiveECG improves several arrhyth-mia and ST-segment labels, the RBBB drop appears in both F1 and AUC. This suggests a label-specific ranking and calibration problem, not only an unfavorable threshold. The ablation results show the same local weakness. For RBBB, each ablated variant obtains higher F1 than the full system, even though the full system gives the best aggregate CPSC2018 result. This pattern suggests a trade-off between aggregate optimization and some label-wise decision boundaries. RBBB should therefore be treated as a target for more specialized conduction-block measurement functions, stronger label-wise re-gression checks, and separate failure-selection quotas within EGFR. Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 
+
+Table 12: Georgia label F1 results reported as mean ± standard deviation over five runs. Delta is computed from mean values. 
+
+Label Support PatchTST TimesNet TS2Vec xLSTM UniTS MERL Argos RecursiveECG Best baseline Delta NSR 192 0.6069 ±0.0055 0.6129 ±0.0083 0.7789 ±0.0021 0.8413 ±0.0062 0.6720 ±0.0036 0.8751 ±0.0065 0.6662 ±0.0060 0.9514 ±0.0108 MERL 0.0763 AF 70 0.2150 ±0.0164 0.2687 ±0.0121 0.3864 ±0.0137 0.5306 ±0.0092 0.2295 ±0.0075 0.6854 ±0.0101 0.2622 ±0.0114 0.7761 ±0.0096 MERL 0.0907 IAVB 61 0.2426 ±0.0109 0.3751 ±0.0110 0.3110 ±0.0098 0.3504 ±0.0142 0.4047 ±0.0101 0.7968 ±0.0151 0.3090 ±0.0253 0.8387 ±0.0134 MERL 0.0419 LBBB 18 0.7701 ±0.0143 0.5092 ±0.0124 0.6639 ±0.0184 0.5947 ±0.0181 0.6236 ±0.0139 0.7833 ±0.0120 0.6784 ±0.0103 0.8571 ±0.0153 MERL 0.0738 RBBB 41 0.7490 ±0.0123 0.6173 ±0.0109 0.6607 ±0.0101 0.7738 ±0.0113 0.5660 ±0.0184 0.7981 ±0.0126 0.7751 ±0.0097 0.8395 ±0.0192 MERL 0.0414 SB 146 0.6079 ±0.0049 0.7354 ±0.0057 0.7511 ±0.0079 0.8203 ±0.0096 0.6467 ±0.0067 0.8187 ±0.0090 0.6557 ±0.0000 0.9667 ±0.0070 xLSTM 0.1464 STach 137 0.7105 ±0.0090 0.7866 ±0.0096 0.7991 ±0.0114 0.8676 ±0.0097 0.7152 ±0.0097 0.9333 ±0.0033 0.7912 ±0.0050 0.9485 ±0.0053 MERL 0.0152 
+
+Table 13: CPSC2018 label F1 results reported as mean ± standard deviation over five runs. Delta is computed from mean values. 
+
+Label Support PatchTST TimesNet TS2Vec xLSTM UniTS MERL Argos RecursiveECG Best baseline Delta NSR 184 0.3419 ±0.0112 0.4109 ±0.0021 0.5596 ±0.0080 0.5662 ±0.0082 0.4963 ±0.0032 0.6779 ±0.0028 0.5431 ±0.0084 0.9112 ±0.0046 MERL 0.2333 AF 237 0.4841 ±0.0104 0.4171 ±0.0078 0.5923 ±0.0032 0.7869 ±0.0093 0.6715 ±0.0081 0.8718 ±0.0066 0.5636 ±0.0147 0.9494 ±0.0021 MERL 0.0776 IAVB 144 0.2308 ±0.0078 0.2115 ±0.0089 0.2624 ±0.0028 0.4075 ±0.0059 0.4304 ±0.0112 0.8291 ±0.0060 0.3232 ±0.0385 0.8529 ±0.0068 MERL 0.0238 LBBB 372 0.7500 ±0.0071 0.7333 ±0.0044 0.7387 ±0.0068 0.7636 ±0.0075 0.8431 ±0.0047 0.8723 ±0.0100 0.8629 ±0.0050 0.9667 ±0.0106 MERL 0.0944 RBBB 45 0.8152 ±0.0164 0.7658 ±0.0140 0.8254 ±0.0144 0.8667 ±0.0132 0.8184 ±0.0126 0.9084 ±0.0127 0.7964 ±0.0111 0.5556 ±0.0206 MERL -0.3528 PAC 121 0.1951 ±0.0097 0.1860 ±0.0109 0.0448 ±0.0083 0.2633 ±0.0051 0.1709 ±0.0109 0.3333 ±0.0067 0.1635 ±0.0071 0.6593 ±0.0093 MERL 0.3260 PVC 142 0.5415 ±0.0104 0.4120 ±0.0035 0.6731 ±0.0072 0.7101 ±0.0059 0.6190 ±0.0101 0.5414 ±0.0090 0.6815 ±0.0099 0.8021 ±0.0066 xLSTM 0.0920 STD 43 0.3608 ±0.0112 0.3508 ±0.0176 0.5030 ±0.0188 0.6114 ±0.0159 0.5265 ±0.0108 0.6907 ±0.0132 0.5601 ±0.0115 0.7737 ±0.0067 MERL 0.0830 STE 180 0.2182 ±0.0106 0.1923 ±0.0030 0.2424 ±0.0086 0.2222 ±0.0108 0.3469 ±0.0069 0.5128 ±0.0075 0.3042 ±0.0211 0.7534 ±0.0039 MERL 0.2406 
+
+Table 14: PTB-XL diagnostic subclass AUC results reported as mean ± standard deviation over five runs. Delta is computed from mean values. 
+
+Superclass Subclass Support PatchTST TimesNet TS2Vec xLSTM UniTS MERL Argos RecursiveECG Best baseline Delta NORM NORM 957 0.8632 ±0.0045 0.8865 ±0.0036 0.9055 ±0.0048 0.9328 ±0.0034 0.9225 ±0.0017 0.9308 ±0.0019 0.8777 ±0.0110 0.9540 ±0.0017 xLSTM 0.0212 MI AMI 307 0.8865 ±0.0043 0.8630 ±0.0033 0.8617 ±0.0018 0.9495 ±0.0044 0.9431 ±0.0047 0.9392 ±0.0021 0.8659 ±0.0086 0.9591 ±0.0015 xLSTM 0.0096 MI IMI 330 0.8567 ±0.0015 0.8354 ±0.0052 0.8452 ±0.0050 0.9188 ±0.0022 0.9074 ±0.0043 0.9245 ±0.0053 0.8272 ±0.0067 0.9337 ±0.0023 MERL 0.0092 MI LMI 20 0.7278 ±0.0022 0.7192 ±0.0046 0.7677 ±0.0034 0.8834 ±0.0054 0.8812 ±0.0014 0.8809 ±0.0040 0.7975 ±0.0214 0.9191 ±0.0017 xLSTM 0.0357 MI PMI 2 0.6872 ±0.0037 0.6596 ±0.0051 0.7783 ±0.0021 0.6541 ±0.0063 0.9137 ±0.0034 0.8579 ±0.0029 0.7789 ±0.1101 0.9263 ±0.0026 UniTS 0.0126 STTC ISCA 92 0.7714 ±0.0023 0.8387 ±0.0029 0.8269 ±0.0014 0.8905 ±0.0026 0.9012 ±0.0031 0.9052 ±0.0018 0.7966 ±0.0048 0.9581 ±0.0012 MERL 0.0529 STTC ISCI 40 0.7484 ±0.0055 0.7789 ±0.0039 0.8499 ±0.0016 0.8772 ±0.0040 0.8971 ±0.0019 0.8820 ±0.0012 0.8050 ±0.0151 0.9205 ±0.0012 UniTS 0.0234 STTC ISC_ 127 0.8709 ±0.0010 0.9196 ±0.0029 0.8639 ±0.0010 0.9587 ±0.0050 0.9459 ±0.0012 0.9465 ±0.0033 0.9135 ±0.0119 0.9587 ±0.0047 xLSTM 0.0000 STTC NST_ 77 0.6682 ±0.0017 0.7828 ±0.0033 0.7473 ±0.0069 0.7861 ±0.0023 0.8361 ±0.0033 0.8297 ±0.0052 0.7009 ±0.0055 0.9124 ±0.0026 UniTS 0.0763 STTC STTC 226 0.7335 ±0.0052 0.8141 ±0.0047 0.7963 ±0.0050 0.8821 ±0.0053 0.8672 ±0.0028 0.8709 ±0.0020 0.8236 ±0.0006 0.9454 ±0.0049 xLSTM 0.0633 CD _AVB 83 0.6786 ±0.0051 0.7115 ±0.0043 0.8655 ±0.0048 0.7790 ±0.0047 0.9495 ±0.0023 0.7694 ±0.0059 0.6962 ±0.0065 0.9515 ±0.0012 UniTS 0.0020 CD CLBBB 54 0.9952 ±0.0037 0.9884 ±0.0012 0.8971 ±0.0041 0.9964 ±0.0022 0.9983 ±0.0025 0.9983 ±0.0025 0.9970 ±0.0002 0.9983 ±0.0019 UniTS/MERL 0.0000 CD CRBBB 55 0.9952 ±0.0027 0.9914 ±0.0030 0.8974 ±0.0058 0.9972 ±0.0033 0.9970 ±0.0010 0.9965 ±0.0017 0.9933 ±0.0004 0.9718 ±0.0041 xLSTM -0.0254 CD ILBBB 7 0.8198 ±0.0021 0.8695 ±0.0015 0.8268 ±0.0023 0.8869 ±0.0046 0.9110 ±0.0045 0.8567 ±0.0047 0.9117 ±0.0333 0.8933 ±0.0015 Argos -0.0184 CD IRBBB 112 0.9273 ±0.0057 0.8483 ±0.0051 0.8520 ±0.0051 0.9515 ±0.0039 0.9588 ±0.0042 0.9484 ±0.0018 0.8683 ±0.0041 0.9704 ±0.0032 UniTS 0.0116 CD IVCD 79 0.6496 ±0.0032 0.6495 ±0.0044 0.6281 ±0.0061 0.6487 ±0.0054 0.7018 ±0.0021 0.7401 ±0.0042 0.6627 ±0.0043 0.8828 ±0.0046 MERL 0.1427 CD LAFB/LPFB 181 0.9513 ±0.0026 0.9432 ±0.0048 0.8640 ±0.0042 0.9519 ±0.0017 0.9665 ±0.0015 0.9455 ±0.0037 0.9609 ±0.0231 0.9516 ±0.0040 UniTS -0.0149 CD WPW 8 0.7547 ±0.0056 0.5929 ±0.0056 0.7537 ±0.0044 0.7831 ±0.0039 0.9181 ±0.0033 0.8386 ±0.0038 0.7831 ±0.0641 0.9672 ±0.0015 UniTS 0.0491 HYP LAO/LAE 43 0.6961 ±0.0055 0.7273 ±0.0026 0.7059 ±0.0045 0.7258 ±0.0043 0.8092 ±0.0031 0.7653 ±0.0054 0.7043 ±0.0123 0.8247 ±0.0021 UniTS 0.0155 HYP LVH 213 0.7981 ±0.0054 0.8881 ±0.0033 0.8473 ±0.0031 0.9254 ±0.0024 0.8778 ±0.0039 0.9417 ±0.0037 0.9318 ±0.0009 0.9419 ±0.0028 MERL 0.0002 HYP RAO/RAE 10 0.7090 ±0.0042 0.6974 ±0.0027 0.8700 ±0.0016 0.7632 ±0.0016 0.8980 ±0.0029 0.9018 ±0.0037 0.8818 ±0.0426 0.9381 ±0.0055 MERL 0.0363 HYP RVH 12 0.9264 ±0.0015 0.8711 ±0.0051 0.8516 ±0.0049 0.8602 ±0.0031 0.9689 ±0.0013 0.9195 ±0.0053 0.9143 ±0.0084 0.9885 ±0.0031 UniTS 0.0196 HYP SEHYP 3 0.8031 ±0.0048 0.7017 ±0.0058 0.8890 ±0.0054 0.8083 ±0.0033 0.9340 ±0.0043 0.9238 ±0.0050 0.9961 ±0.0013 0.9613 ±0.0057 Argos -0.0348 
+
+Table 15: Georgia label AUC results reported as mean ± standard deviation over five runs. Delta is computed from mean values. 
+
+Label Support PatchTST TimesNet TS2Vec xLSTM UniTS MERL Argos RecursiveECG Best baseline Delta NSR 192 0.7716 ±0.0038 0.8007 ±0.0022 0.9247 ±0.0030 0.9702 ±0.0026 0.7277 ±0.0058 0.9756 ±0.0010 0.8427 ±0.0012 0.9934 ±0.0012 MERL 0.0178 AF 70 0.6760 ±0.0057 0.6908 ±0.0062 0.8646 ±0.0050 0.8671 ±0.0050 0.5445 ±0.0016 0.9331 ±0.0026 0.7840 ±0.0077 0.9455 ±0.0011 MERL 0.0124 IAVB 61 0.7235 ±0.0021 0.7928 ±0.0069 0.7647 ±0.0019 0.7717 ±0.0061 0.4937 ±0.0051 0.9773 ±0.0024 0.7765 ±0.0060 0.9775 ±0.0035 MERL 0.0002 LBBB 18 0.9920 ±0.0025 0.8912 ±0.0029 0.9890 ±0.0021 0.9341 ±0.0035 0.8382 ±0.0046 0.9637 ±0.0040 0.9746 ±0.0016 0.9988 ±0.0014 PatchTST 0.0068 RBBB 41 0.9447 ±0.0018 0.9199 ±0.0040 0.9625 ±0.0028 0.9643 ±0.0051 0.8414 ±0.0027 0.9607 ±0.0047 0.9440 ±0.0032 0.9592 ±0.0013 xLSTM -0.0051 SB 146 0.8946 ±0.0038 0.9194 ±0.0027 0.9547 ±0.0013 0.9745 ±0.0027 0.7131 ±0.0039 0.9843 ±0.0012 0.9164 ±0.0016 0.9981 ±0.0017 MERL 0.0138 STach 137 0.9189 ±0.0025 0.9503 ±0.0038 0.9536 ±0.0045 0.9814 ±0.0010 0.8460 ±0.0021 0.9902 ±0.0046 0.9558 ±0.0010 0.9976 ±0.0028 MERL 0.0074 
+
+PTB-XL RVH and SEHYP. The PTB-XL negative labels differ from CPSC2018 RBBB because their results are dominated by support constraints. RVH has 12 test cases and SEHYP has 3 test cases in the diagnostic-subclass evaluation. At this scale, changing the pre-diction of a single case can cause a large F1 movement. These rows are therefore useful as audit signals but should not be interpreted as stable estimates of diagnostic superiority. The negative deltas do not imply that the framework cannot model hypertrophy. The related LVH label has a support of 213 and improves from the strongest-baseline F1 of 0.6748 to 0.7559. The case-level evidence suggests a more specific limitation. Hy-pertrophy subtyping requires the joint interpretation of amplitude criteria, axis deviation, chamber-specific patterns, and secondary repolarization changes. The current compiled measurement set cap-tures voltage and cross-lead evidence sufficiently to improve LVH, Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+Table 16: CPSC2018 label AUC results reported as mean ± standard deviation over five runs. Delta is computed from mean values.                                                                                                               
+
+> Label Support PatchTST TimesNet TS2Vec xLSTM UniTS MERL Argos RecursiveECG Best baseline Delta NSR 184 0.7533 ±0.0053 0.7617 ±0.0050 0.8693 ±0.0026 0.9368 ±0.0014 0.8762 ±0.0046 0.8190 ±0.0010 0.8755 ±0.0021 0.9880 ±0.0024 xLSTM 0.0512 AF 237 0.7869 ±0.0065 0.6933 ±0.0056 0.8722 ±0.0019 0.9673 ±0.0025 0.9067 ±0.0035 0.7953 ±0.0041 0.8476 ±0.0020 0.9944 ±0.0009 xLSTM 0.0271 IAVB 144 0.6987 ±0.0049 0.6304 ±0.0042 0.7641 ±0.0013 0.8924 ±0.0041 0.8054 ±0.0022 0.7467 ±0.0057 0.7964 ±0.0011 0.9825 ±0.0034 xLSTM 0.0901 LBBB 372 0.9818 ±0.0042 0.9190 ±0.0038 0.9740 ±0.0045 0.9790 ±0.0028 0.9772 ±0.0022 0.9615 ±0.0032 0.9857 ±0.0020 0.9995 ±0.0010 Argos 0.0138 RBBB 45 0.9401 ±0.0046 0.9045 ±0.0053 0.9622 ±0.0024 0.9846 ±0.0023 0.9612 ±0.0025 0.9050 ±0.0042 0.9495 ±0.0006 0.9721 ±0.0022 xLSTM -0.0125 PAC 121 0.5698 ±0.0026 0.6143 ±0.0046 0.6511 ±0.0034 0.7477 ±0.0023 0.6848 ±0.0065 0.6358 ±0.0054 0.7374 ±0.0073 0.9502 ±0.0039 xLSTM 0.2025 PVC 142 0.8617 ±0.0052 0.7092 ±0.0043 0.8869 ±0.0043 0.9025 ±0.0028 0.8726 ±0.0018 0.8068 ±0.0032 0.8981 ±0.0029 0.9611 ±0.0045 xLSTM 0.0586 STD 43 0.7191 ±0.0042 0.6771 ±0.0019 0.8293 ±0.0032 0.8928 ±0.0018 0.8534 ±0.0033 0.7342 ±0.0035 0.8651 ±0.0013 0.9665 ±0.0030 xLSTM 0.0737 STE 180 0.7445 ±0.0042 0.6469 ±0.0026 0.7420 ±0.0029 0.8114 ±0.0037 0.8638 ±0.0041 0.8384 ±0.0038 0.8819 ±0.0076 0.9575 ±0.0016 Argos 0.0756
+
+but the rare right-ventricular and severe-hypertrophy subclasses provide too few informative failures for stable subtype-specific re-vision. This is primarily a data-efficiency boundary of the present evaluation rather than direct evidence that the self-iteration mech-anism fails. 
+
+Effect of imbalance. Failure-case selection within EGFR could in principle overemphasize frequent error patterns. RecursiveECG mitigates this risk by selecting false positives, false negatives, low-margin predictions, calibration errors, and label-specific failures rather than simply reviewing the most numerous aggregate errors. The label-level results are consistent with this design. Large gains occur on several minority- or moderate-support labels, including PTB-XL NST_, ISCA, and WPW and CPSC2018 PAC and STE. The remaining negative labels show that imbalance is not fully resolved, but the observed failure pattern is localized rather than systemic. These observations refine the claim of RecursiveECG. The method is most effective when failed cases expose reproducible morphology, rhythm, or cross-lead evidence that can be compiled into measurements and replayed during review. When a label has extremely low support or depends on unstable, baseline-sensitive morphology, the workflow records the evidence boundary rather than converting an inconclusive case into a speculative rule. Ad-ditional label-specific measurement functions or failure-selection quotas may nevertheless be required. This behavior is consistent with the intended role of RecursiveECG as an auditable model-development workflow rather than a claim of uniform per-label dominance. 
+
+## C MECHANISM ABLATIONS AND ITERATIVE REFINEMENT PROCESS C.1 Mechanism Ablations 
+
+The ablation study reports the full mechanism-sensitivity evalua-tion used in the main text. RecursiveECG is the complete workflow used for the main results and serves as the reference configura-tion. We evaluate four controlled workflow variants that remove one design choice at a time. The comparisons hold the candidate budget, iteration budget, data splits, evaluation protocol, and fi-nal predictor interface fixed. The two core evidence-grounding mechanisms are Criteria-to-Measurement Compilation (CMC) and Evidence-Grounded Failure Review (EGFR). 
+
+• w/o EGFR removes informative failure-case selection and the structured Evidence-Grounded Failure Review procedure. The agent retains access to the validated measurement func-tions produced by CMC, but it cannot jointly inspect selected failures, comparator cases, raw waveforms, reference-backed measurements, and model behavior to formulate revision hy-potheses. Candidate revisions must therefore be selected pri-marily from aggregate validation metrics and candidate-level evaluation summaries. This variant isolates the contribution of failure-evidence-grounded revision. 
+
+• w/o CMC removes Criteria-to-Measurement Compilation, including the compilation and validation of curated ECG criteria as deterministic measurement functions. Domain knowledge remains accessible through a direct reference-reading interface, but EGFR receives no reproducible, reference-backed measurement records emitted from in-dividual ECGs. It can still inspect raw waveforms, model outputs, and comparator cases. This variant isolates the contribution of operationalizing textual clinical criteria as validated deterministic measurements. 
+
+• w/o Measurement Execution retains the measurement specifications, validated function implementations, compu-tation rules, and evidence back-pointers produced by CMC, but prevents these functions from being executed on indi-vidual review cases. EGFR therefore has access to the static measurement definitions but not to their emitted case-level measurement records. It must reason from raw waveforms, model outputs, comparator cases, and static rule descriptions. This variant distinguishes the availability of compiled mea-surement knowledge from the use of executed measurement evidence during failure review. 
+
+• Direct LLM Design replaces the governed workflow with a single coding-agent session. It removes the explicit problem-contract gate, CMC, independent candidate exploration, structured EGFR, promotion ledger, and adaptive stopping procedure. Candidate changes are not organized through the same separation between evidence collection, revision formulation, execution, re-evaluation, and promotion. This configuration serves as a simplified workflow baseline and isolates the contribution of the governed multi-stage organization. Together, these five configurations provide the controlled com-parison used in the main text. The w/o EGFR and w/o CMC variants isolate the two core evidence-grounding mechanisms. The w/o Measurement Execution variant separates compiled-measurement availability from case-level measurement usage. The Direct LLM Design variant evaluates the contribution of the governed workflow organization. Backbone sensitivity is reported separately in the capability-gradient table below, while RecursiveECG anchors the Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 
+
+mechanism comparison. The rightmost column of Tab. 17 reports the Macro F1 difference between RecursiveECG and each variant. Positive values indicate degradation after ablation, whereas nega-tive values indicate that the ablated run exceeds the reference run on that dataset. The dominant ablation effect differs across datasets. On PTB-XL, removing EGFR reduces Macro F1 by 0.0613, while replacing the governed workflow with Direct LLM reduces it by 0.0606. This indicates that both structured failure review and workflow orga-nization contribute substantially in this setting. On Georgia, the largest degradation is produced by Direct LLM Design (0.2524), followed by the CMC ablation (0.0423), whereas disabling per-case measurement execution is effectively neutral in this run. CPSC2018 shows lower aggregate sensitivity than Georgia but still degrades under the workflow variants: Direct LLM Design reduces Macro F1 by 0.0467, removing EGFR by 0.0411, removing CMC by 0.0226, and disabling per-case measurement execution by 0.0099. These results support an aggregate mechanism claim rather than requiring every workflow mechanism to improve every dataset or label. Backbone sensitivity is summarized separately in Tab. 18. The aggregate mechanism effects are not attributable to a single label. PTB-XL is most consistently sensitive to removing EGFR, while Georgia shows the clearest dependence on the governed workflow. CPSC2018 has a more heterogeneous profile, with some labels neutral or improved under individual ablations. The intended conclusion is robustness at the aggregate and mechanism levels, rather than uniform per-label dominance by every component. 
+
+## C.2 Search Width, Backbone, and Iterative Refinement Process 
+
+Search-width sensitivity indicates that 𝑘 = 3 provides the best accuracy–cost operating point among the evaluated PTB-XL set-tings. Increasing the search width to 𝑘 = 5 increases the number of candidates that pass the execution and regression checks but does not improve the final Macro F1, whereas the single-candidate setting 𝑘 = 1 produces a weaker final predictor. The pass/fail counts in Tab. 19 summarize candidate-level checks and should not be read as the number of promoted revisions in the main iterative chain. The resulting trajectory across the five refinement rounds is reported in Tab. 20. It separates the evidence or update source used at each round from the final performance change, making clear how the frozen predictor was selected rather than presenting only the final endpoint. The trajectory shows that the final predictor was not selected from a single isolated trial. The largest improvement occurs after the regression-aware revision in Round 4. This is consistent with the method definition: EGFR formulates targeted revision hypotheses from failure evidence, but a hypothesis does not become an update solely because it is supported by an individual case. It must first be implemented, executed under the fixed problem contract, re-evaluated on the prescribed validation protocol, and accepted by the regression and promotion gates before it enters the frozen toolchain. 
+
+## D CASE AUDITS AND DEPLOYMENT D.1 WPW Pseudo-Infarction Failure Audit 
+
+The audit trace in Tab. 21 records the case-specific evidence retained from Evidence-Grounded Failure Review (EGFR). It is intentionally presented as a development-time model-design trace rather than as a clinical diagnostic explanation. The claim is that RecursiveECG uses reproducible measurements produced through Criteria-to-Measurement Compilation (CMC) to formulate a testable revision hypothesis, execute it under the fixed problem contract, and retain it only after replay and regression evaluation; the trace supports the specific revision on this reviewed case, not a general guarantee about all WPW cases or all future revisions. 
+
+## D.2 Evidence-Grounded Failure Review Example 
+
+For completeness, Tab. 22 gives a second, audited PTB-XL failure-review trace. Unlike the WPW example above, this trace focuses on a cross-lead hypertrophy error and shows the initial model scores, measured waveform evidence, candidate revision, replay outcome, and promotion decision in one development-time record. This case illustrates the intended role of Evidence-Grounded Failure Review. The review begins with a concrete model failure and jointly examines the raw ECG, reference-backed measurements produced by CMC, model outputs, and the relevant cross-lead evi-dence. It then formulates a targeted revision hypothesis and admits that hypothesis to executable candidate testing. The revision is promoted only after case replay and regression evaluation support its retention. The LLM is therefore used as an offline model-design controller, not as an online diagnostic judge. 
+
+## D.3 Deployment Efficiency 
+
+Efficiency is reported for the frozen predictor produced by the gov-erned refinement process, rather than for the offline agent search. The PTB-XL efficiency evaluation shows that RecursiveECG is not the fastest model in raw inference latency, but it uses few parame-ters and FLOPs while achieving higher macro F1 than the strongest compared baselines. The deployed predictor has higher latency than TS2Vec but lower latency than most of the compared neural baselines. It also has low FLOPs and peak memory usage, and it requires no LLM query at inference time. Under the default offline development setting, the candidate budget is 𝑘 = 3 and the workflow runs for five iterations. This produces 15 candidate proposals, of which five pass the candidate-level checks and 10 fail the checks or are rejected. The average agent time is 44.9 minutes per iteration. These quantities characterize one-time model development cost and should not be interpreted as per-record diagnostic cost. Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+Table 17: Overall mechanism-ablation results reported as mean ± standard deviation over five runs. Delta is RecursiveECG minus the variant Macro F1 mean; positive values indicate degradation. Backbone sensitivity is reported separately in the capability-gradient table. 
+
+Dataset Variant Macro AUC Macro F1 Micro F1 Hamming Acc. Delta Macro F1 PTB-XL RecursiveECG 0.9373 ±0.0066 0.7653 ±0.0088 0.7930 ±0.0039 0.8929 ±0.0177 0.0000 PTB-XL w/o EGFR 0.9149 ±0.0048 0.7040 ±0.0093 0.7546 ±0.0061 0.8783 ±0.0084 0.0613 PTB-XL w/o CMC 0.9235 ±0.0037 0.7354 ±0.0071 0.7682 ±0.0054 0.8789 ±0.0068 0.0299 PTB-XL w/o Measurement Execution 0.9273 ±0.0042 0.7430 ±0.0066 0.7761 ±0.0047 0.8892 ±0.0059 0.0223 PTB-XL Direct LLM Design 0.9060 ±0.0055 0.7047 ±0.0108 0.7392 ±0.0070 0.8505 ±0.0091 0.0606 Georgia RecursiveECG 0.9814 ±0.0052 0.8826 ±0.0069 0.9170 ±0.0043 0.9735 ±0.0021 0.0000 Georgia w/o EGFR 0.9788 ±0.0016 0.8735 ±0.0057 0.9220 ±0.0038 0.9757 ±0.0025 0.0091 Georgia w/o CMC 0.9765 ±0.0024 0.8403 ±0.0082 0.8951 ±0.0049 0.9675 ±0.0031 0.0423 Georgia w/o Measurement Execution 0.9808 ±0.0015 0.8829 ±0.0064 0.9148 ±0.0035 0.9731 ±0.0022 -0.0003 Georgia Direct LLM Design 0.9223 ±0.0049 0.6302 ±0.0116 0.7918 ±0.0067 0.9376 ±0.0055 0.2524 CPSC2018 RecursiveECG 0.9746 ±0.0036 0.8027 ±0.0078 0.8352 ±0.0056 0.9613 ±0.0030 0.0000 CPSC2018 w/o EGFR 0.9728 ±0.0020 0.7616 ±0.0089 0.7987 ±0.0063 0.9444 ±0.0046 0.0411 CPSC2018 w/o CMC 0.9735 ±0.0018 0.7801 ±0.0073 0.8105 ±0.0058 0.9517 ±0.0039 0.0226 CPSC2018 w/o Measurement Execution 0.9652 ±0.0031 0.7928 ±0.0061 0.8329 ±0.0045 0.9609 ±0.0032 0.0099 CPSC2018 Direct LLM Design 0.9663 ±0.0027 0.7560 ±0.0096 0.8182 ±0.0069 0.9588 ±0.0036 0.0467 
+
+Table 18: LLM-backbone sensitivity across three datasets. All metrics are reported as mean ± standard deviation over five runs. The candidate budget and maximum iteration count are fixed at 𝑘 = 3 and 5, respectively. 
+
+Dataset Backbone Capability tier 𝑘 Max iter. Macro AUC Macro F1 Micro F1 Hamming Acc. PTB-XL DeepSeek-V4-Pro Advanced reasoning 3 5 0.9373 ±0.0066 0.7653 ±0.0088 0.7930 ±0.0039 0.8929 ±0.0177 
+
+Georgia DeepSeek-V4-Pro Advanced reasoning 3 5 0.9814 ±0.0052 0.8826 ±0.0069 0.9170 ±0.0043 0.9735 ±0.0021 
+
+CPSC2018 DeepSeek-V4-Pro Advanced reasoning 3 5 0.9746 ±0.0036 0.8027 ±0.0078 0.8352 ±0.0056 0.9613 ±0.0030 
+
+PTB-XL Qwen3.5-27B Lightweight reasoning 3 5 0.9166 ±0.0187 0.7338 ±0.0415 0.7821 ±0.0326 0.9118 ±0.0149 
+
+Georgia Qwen3.5-27B Lightweight reasoning 3 5 0.9698 ±0.0124 0.8021 ±0.0368 0.8662 ±0.0297 0.9587 ±0.0116 
+
+CPSC2018 Qwen3.5-27B Lightweight reasoning 3 5 0.9437 ±0.0169 0.6988 ±0.0442 0.7204 ±0.0395 0.9199 ±0.0173 
+
+Table 19: PTB-XL candidate-count sensitivity. 
+
+𝑘 Max iter. AUC Macro F1 Micro F1 Hamming Acc. Passed / failed checks Note 1 5 0.9231 0.7265 0.7638 0.8822 3 / 2 greedy single-candidate update 3 5 0.9373 0.7653 0.7930 0.8929 5 / 10 default setting 5 5 0.9325 0.7584 0.7869 0.8927 12 / 13 wider search without a final Macro-F1 gain 
+
+Table 20: PTB-XL iterative refinement trajectory. 
+
+Round Main evidence or update source Macro AUC Macro F1 Micro F1 Hamming Acc. Gain over Round 0 0 initial model and default threshold 0.9259 0.7183 0.7641 0.8811 0.0000 1 informative validation failures and initial EGFR 0.9286 0.7270 0.7723 0.8871 0.0087 2 reference-backed ECG measurements and label-wise error analysis 0.9286 0.7287 0.7723 0.8871 0.0104 3 minority-label and false-negative failure review 0.9304 0.7345 0.7700 0.8865 0.0162 4 regression-aware candidate evaluation 0.9373 0.7653 0.7930 0.8929 0.0470 5 final frozen RecursiveECG 0.9373 0.7653 0.7930 0.8929 0.0470 Conference acronym ’XX, June 03–05, 2018, Woodstock, NY Deng et al. 0 1 2 3 4 5
+
+Iteration round 
+
+0.70 
+
+0.72 
+
+0.74 
+
+0.76 
+
+0.78 
+
+> Macro F1
+> Macro F1
+> Macro AUC
+
+0.920 
+
+0.925 
+
+0.930 
+
+0.935 
+
+0.940 
+
+> Macro AUC
+
+Figure 11: PTB-XL iterative refinement trajectory. Table 21: Complete retained audit trace for WPW case 461. The reference-backed measurements are computed from the supplied 12-lead ECG array around the reviewed QRS complex. 
+
+Audit item Evidence Sample Case 461, represented as a 12-lead ECG array with shape 12 × 1000 , sampled at 100 Hz and stored in mV. Ground-truth condition WPW / ventricular pre-excitation. The case is reviewed because WPW can produce pseudo-infarction morphology that resembles myocardial infarction in individual leads. Failure selected for Evidence-Grounded Failure Review The evaluation stage selected the record as an informative MI-like error. Its local morphology contains Q-like initial negative deflections, whereas the ground-truth condition is ventricular pre-excitation. Raw waveform evidence The reviewed record contains WPW-compatible pre-excitation evidence, including a short PR interval, a slurred QRS onset consistent with a delta wave, and a widened QRS complex. At the same time, several leads show local pseudo-infarction morphology, which provides plausible evidence for the initial MI-like prediction. Reference-backed measurements The replayed measurements match the evidence shown in Fig. 9: the PR interval is below the clinical short-PR threshold of 120 ms, the QRS duration is 130 ms, and the frontal-plane axis is approximately −35 ◦,pointing toward the left-superior/aVL sector. The QRS onset is slurred, supporting a delta-wave interpretation rather than a purely infarction-driven explanation. Identified pipeline weakness The current predictor overweights lead-local pseudo-infarction morphology and does not adequately evaluate whether the activation pattern is consistent across limb and precordial leads. Evidence-grounded interpretation The review links the apparent infarction cues to WPW physiology: activation through an accessory pathway changes the initial ventricular activation vector and can generate Q-wave-like pseudo-infarction patterns without requiring an MI explanation. Revision hypothesis Introduce a multi-lead mechanism that replaces purely lead-local morphology reasoning with cross-lead attention, allowing the predictor to evaluate axis-level and morphology-level consistency across limb and precordial leads. Execution and re-evaluation The proposed cross-lead revision is implemented as an executable candidate and evaluated under the fixed data split, metric, threshold-selection, and leakage constraints. Its behavior is then replayed on the reviewed case and checked for validation-set regressions. Replay result After replay, the revised predictor suppresses the MI interpretation and recovers the WPW label. Promotion decision The revision is retained only after the executable candidate passes case replay and regression checks. The resulting trace therefore connects a concrete failure, raw waveform evidence, reference-backed measurements, model behavior, and a promoted model-design update. Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers Conference acronym ’XX, June 03–05, 2018, Woodstock, NY 
+
+Table 22: Audited PTB-XL Evidence-Grounded Failure Review example. 
+
+Item Evidence Sample PTB-XL validation sample 1103. Ground truth HYP = 1, with all other diagnostic superclasses equal to 0. Initial error NORM false positive and HYP false negative. Initial model outputs NORM score = 0.859 and HYP score = 0.151 .Raw ECG evidence High R-wave amplitude in leads II, aVF, and V4–V6; a deep S wave in aVR; and an LVH-like cross-lead voltage pattern. Reference-backed measurements Lead II maximum = 10 .96 , aVF maximum = 10 .57 , aVR minimum = −9.14 , V4 maximum = 10 .34 , V5 maximum 
+
+= 8.49 , and V6 maximum = 7.81 .Identified pipeline weakness The independent-channel CNN fails to combine the distributed high-voltage evidence across leads and therefore misses the cross-lead pattern associated with HYP. Revision hypothesis Introduce multi-head cross-lead attention so that the predictor can jointly evaluate voltage relationships across limb and precordial leads. Candidate execution The proposed revision is implemented and evaluated as an executable candidate in Iteration 004 under the fixed problem contract. Replay result The revised candidate corrects HYP to 1 and suppresses NORM to 0. Score change The HYP score increases from 0.151 to 0.755 , while the NORM score decreases from 0.859 to 0.357 .Promotion decision The candidate passes the replay and regression checks and is therefore retained in the final Round 5. 
+
+Table 23: Frozen-predictor deployment efficiency on PTB-XL. 
+
+Method Type Params FLOPs/sample ms/sample Throughput Peak mem. MB PatchTST patch Transformer 1.368M 1.478G 0.461 2,169 1,309.7 TimesNet frequency-temporal 2.505M 15.620G 0.573 1,746 170.0 TS2Vec temporal representation 0.640M 1.274G 0.081 12,376 188.0 xLSTM-ECG ECG-specific xLSTM 0.545M 2.860G 1.548 646 4,890.5 UniTS unified time-series 1.066M 0.903G 0.236 4,244 181.8 MERL medical ECG representation 5.382M 1.155G 0.194 5,149 56.1 RecursiveECG final model offline-agent-designed frozen predictor 0.487M 0.086G 0.116 8,601 19.2

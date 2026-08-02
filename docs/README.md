@@ -6,28 +6,46 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-01
-- 运行时间：2026-08-01 21:06:09 UTC
+- 最新运行日期：2026-08-02
+- 运行时间：2026-08-02 20:06:26 UTC
 - 运行状态：成功
-- 本次总论文数：1
+- 本次总论文数：7
 - 精读区：0
-- 速读区：1
+- 速读区：7
 
 ### 今日简报（AI）
-今日仅速读1篇论文，聚焦自主认知脑电分析框架。
+今日共速读7篇论文，聚焦医疗AI与LLM智能体安全，无精读。
 
-值得关注的方向：将“落地执行”与“选择性验证”引入脑电分析，以提升大模型任务的自主性与可靠性。
+最值得关注两个方向：ECG分类器的失败驱动迭代优化，以及医疗世界模型的可信临床转化挑战。
 
-建议普通读者先了解脑电数据与大模型结合的应用场景，再评估该框架的实际收益。
-- 详情：[/202608/01/README](/202608/01/README)
+建议优先精读两篇7.0分论文，并留意AgentS4D中LLM工作区智能体的运行时风险。
+- 详情：[/202608/02/README](/202608/02/README)
 
 ### 精读区论文标签
 - 本次无精读推荐。
 
 ### 速读区论文标签
-1. [CogEEGAgent: Toward Autonomous Cognitive EEG Analysis with Grounded Execution and Selection-Aware Verification](/202608/01/2607.25045v1-cogeegagent-toward-autonomous-cognitive-eeg-analysis-with-grounded-execution-and-selection-aware-verification)  
+1. [Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers](/202608/02/2607.24419v1-failures-reveal-what-metrics-miss-an-evidence-driven-agent-for-recursive-refinement-of-ecg-classifiers)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：基于证据的LLM-as-Designer智能体利用临床证据优化ECG分类器，与医疗AI评估相关
+2. [Medical world models in healthcare: foundations, applications, and challenges for trustworthy clinical translation](/202608/02/2607.25242v1-medical-world-models-in-healthcare-foundations-applications-and-challenges-for-trustworthy-clinical-translation)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：医疗世界模型支持患者状态动态与干预建模，与RL医疗智能体评估相关
+3. [AgentS4D: Benchmarking Runtime Risks across the Execution Lifecycle of LLM-Based Workspace Agents](/202608/02/2607.27294v1-agents4d-benchmarking-runtime-risks-across-the-execution-lifecycle-of-llm-based-workspace-agents)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：面向EEG分析的医学LLM智能体，具备可执行性与选择感知验证
+   evidence：面向LLM智能体全生命周期运行时安全的沙盒基准，可迁移至医疗智能体基准测试
+4. [Skill Use or Skill Theater? Evaluating the Reasoning Backroom in Skill-Augmented Language Agents](/202608/02/2607.27484v1-skill-use-or-skill-theater-evaluating-the-reasoning-backroom-in-skill-augmented-language-agents)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：面向技能增强语言智能体的反事实评估框架，可应用于医疗智能体的技能使用评估，但不涉及EHR
+5. [Evaluating Agentic Bioinformatics through Function, Evidence, and Validation](/202608/02/2607.27556v1-evaluating-agentic-bioinformatics-through-function-evidence-and-validation)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：面向智能体生物信息学的FEV评估框架，可迁移至基于证据的EHR智能体评估
+6. [DataClawEval: A Benchmark for Data Engineering Agents in Real Industrial Harness](/202608/02/2607.28033v1-dataclaweval-a-benchmark-for-data-engineering-agents-in-real-industrial-harness)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：面向数据工程智能体的基准测试，其基准构建方法可迁移至医疗智能体性能评估
+7. [How Benchmarks Mis-Score Computer-Use Agents](/202608/02/2607.28367v1-how-benchmarks-mis-score-computer-use-agents)  
+   标签：评分：6.0/10、query:ehr-agent
+   evidence：审计基准评分可靠性并给出错误失败检测框架，可用于基于EHR的医疗智能体评估
 
 
 <div class="dpr-home-promo-card">

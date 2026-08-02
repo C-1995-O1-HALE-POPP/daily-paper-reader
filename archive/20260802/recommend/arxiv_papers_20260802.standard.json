@@ -1,0 +1,302 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-02T20:00:13.781612+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 7,
+    "quick_skim_target": 11,
+    "quick_selected": 7
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2607.24419v1",
+      "source": "arxiv",
+      "title": "Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers",
+      "abstract": "Deep models have substantially advanced 12-lead ECG classification, yet their refinement still relies heavily on human experts to inspect failures and iteratively revise classifier designs. Recent LLM-based agents have demonstrated the potential for automated model design, but when guided only by aggregate performance metrics, they lack insight into why individual cases fail and how the classifier should be revised. We present RecursiveECG, an evidence-driven LLM-as-Designer framework in which an LLM serves as an offline model designer that refines ECG classifiers based on concrete failures and objective ECG evidence. To ground failure diagnosis in executable evidence, Criteria-to-Measurement Compilation converts curated ECG criteria into validated deterministic functions that produce reproducible, reference-backed measurements for individual ECGs. Building on these measurements, Evidence-Grounded Failure Review analyzes failed and comparator cases by jointly considering raw waveforms, measurements, and model outputs, enabling the LLM to diagnose classifier limitations and formulate targeted revisions. Candidate revisions are executed and re-evaluated under a fixed problem contract, and only evidence-supported updates are retained. The resulting predictor is frozen after refinement and requires no LLM inference during deployment, while an audit trail links each accepted revision to its supporting evidence. Across PTB-XL, Georgia, and CPSC2018, RecursiveECG consistently outperforms strong baselines, achieving an average relative improvement of 10.0%. Extensive ablation and transfer studies further validate the effectiveness of its evidence-grounded refinement process.",
+      "authors": [
+        "Jinliang Deng",
+        "Yiming Niu",
+        "Yibo Pan",
+        "Zhiqi Shao",
+        "Qin Luo",
+        "Yongxin Tong"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-27T13:31:24+00:00",
+      "link": "https://arxiv.org/pdf/2607.24419v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Evidence-driven LLM-as-Designer agent refines ECG classifiers using clinical evidence, related to medical AI evaluation",
+      "llm_evidence_cn": "基于证据的LLM-as-Designer智能体利用临床证据优化ECG分类器，与医疗AI评估相关",
+      "llm_evidence": "基于证据的LLM-as-Designer智能体利用临床证据优化ECG分类器，与医疗AI评估相关",
+      "canonical_evidence": "基于证据的LLM-as-Designer智能体利用临床证据优化ECG分类器，与医疗AI评估相关",
+      "llm_tldr_en": "Presents RecursiveECG, an evidence-driven LLM-as-Designer framework where an LLM agent recursively refines ECG classifiers based on concrete failures and objective ECG evidence.",
+      "llm_tldr_cn": "深度ECG分类器的优化仍依赖人工检查失败并迭代修改设计，而聚合性能指标无法解释个案失败原因。RecursiveECG将LLM作为离线模型设计者，把失败诊断转化为可执行测量，基于具体失败与客观ECG证据递归优化分类器。实验表明，证据驱动的自动设计能有效改进分类器性能，为医疗AI模型评估与优化提供新范式。",
+      "llm_tldr": "深度ECG分类器的优化仍依赖人工检查失败并迭代修改设计，而聚合性能指标无法解释个案失败原因。RecursiveECG将LLM作为离线模型设计者，把失败诊断转化为可执行测量，基于具体失败与客观ECG证据递归优化分类器。实验表明，证据驱动的自动设计能有效改进分类器性能，为医疗AI模型评估与优化提供新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.27294v1",
+      "source": "arxiv",
+      "title": "AgentS4D: Benchmarking Runtime Risks across the Execution Lifecycle of LLM-Based Workspace Agents",
+      "abstract": "Large language model (LLM)-based workspace agents execute stateful, multi-step workflows across heterogeneous resources, external tools, and persistent state. Their safety must therefore be assessed from actions, side effects, and state changes throughout execution. Although recent benchmarks have advanced executable safety testing and trajectory-aware verification, they rarely provide a unified account of where risks enter, how they elicit unsafe behavior, which harms they target, and where supporting evidence appears during execution. We introduce AgentS4D, a sandboxed benchmark for lifecycle-wide runtime safety evaluation. Its four-dimensional runtime-safety framework uses six risk-entry sources, six induction strategies, and nine target harms to guide case construction, while seven lifecycle checkpoints organize post-run evidence. AgentS4D contains 328 risk-injected cases. We evaluate all 20 combinations of four harnesses (Hermes, OpenClaw, Claude Code, and Codex) and five LLM backends (GPT-5.5, Gemini 3.1 Pro, DeepSeek-V4-Pro, MiniMax-M3, and Qwen3.7-Plus) on these cases, yielding 6,560 runs. Overall, 4,461 runs (68.0%) trigger prespecified unsafe signals. Across the 20 configurations, the observed safety of an agent system varies with both its harness-LLM pairing and how risk is introduced. Agent systems exhibit markedly different safety behavior when the same induction strategy reaches them through different risk carriers. They also respond differently to the same target harm when it is realized through different carriers and strategies. Moreover, 4,344 runs (66.22% overall) are unsafe yet complete. Thus, task completion cannot establish runtime safety, and testing only one form of a risk can conceal important weaknesses. Evaluations should examine complete agent configurations across diverse risk conditions and retain evidence throughout execution.",
+      "authors": [
+        "Jiajun Zhou",
+        "Zhaoxuan Ke",
+        "Jihang Ye",
+        "Xuanze Chen",
+        "Shanqing Yu",
+        "Qi Xuan"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-07-29T15:55:45+00:00",
+      "link": "https://arxiv.org/pdf/2607.27294v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Sandboxed benchmark for LLM agent runtime safety, transferable to medical agent benchmarking",
+      "llm_evidence_cn": "面向LLM智能体全生命周期运行时安全的沙盒基准，可迁移至医疗智能体基准测试",
+      "llm_evidence": "面向LLM智能体全生命周期运行时安全的沙盒基准，可迁移至医疗智能体基准测试",
+      "canonical_evidence": "面向LLM智能体全生命周期运行时安全的沙盒基准，可迁移至医疗智能体基准测试",
+      "llm_tldr_en": "Presents AgentS4D, a sandboxed benchmark for lifecycle-wide runtime safety evaluation of LLM-based workspace agents, using a four-dimensional framework covering risk sources, induction strategies, harms, and evidence.",
+      "llm_tldr_cn": "LLM工作区智能体在执行状态化、多步工作流时存在跨生命周期运行时风险，现有基准缺乏对风险来源、触发、危害和证据的统一刻画。AgentS4D提出四维运行时安全框架，从六个风险来源与六个诱导策略构建沙盒基准，实现可执行的智能体安全评估。该基准的构建思路可直接迁移至医疗智能体的运行时安全评估与性能基准测试。",
+      "llm_tldr": "LLM工作区智能体在执行状态化、多步工作流时存在跨生命周期运行时风险，现有基准缺乏对风险来源、触发、危害和证据的统一刻画。AgentS4D提出四维运行时安全框架，从六个风险来源与六个诱导策略构建沙盒基准，实现可执行的智能体安全评估。该基准的构建思路可直接迁移至医疗智能体的运行时安全评估与性能基准测试。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.25242v1",
+      "source": "arxiv",
+      "title": "Medical world models in healthcare: foundations, applications, and challenges for trustworthy clinical translation",
+      "abstract": "Medical world models offer a framework for extending medical artificial intelligence beyond static prediction by representing evolving patient states and modelling how they change over time and in response to clinical interventions. This Review defines the conceptual boundaries, technical foundations, application domains, and evidence requirements of the field through a structured narrative synthesis with reproducible evidence mapping.We screened 1,455 unique records and assembled a corpus of 98 sources, including 14 studies that met a strict empirical definition of a medical world model. The field is organised around four capabilities: patient state representation, temporal dynamics modelling, intervention-conditioned simulation, and clinician-supervised planning. Evidence spans medical imaging, longitudinal electronic health records, treatment response modelling, physiological and multimodal state modelling, ultrasound and surgical interaction, and population and health-system simulation; clinical digital twins are treated as a cross-cutting integration framework.Current studies provide early evidence of technical feasibility for trajectory forecasting and comparison of candidate interventions, but most remain retrospective, task-specific, or preclinical. The evidence base is further limited by incomplete longitudinal intervention data, inconsistent action semantics, limited causal identifiability, long-horizon error accumulation, inadequate uncertainty estimation, and limited external validation. Clinical translation will therefore depend on precise intervention representations, robust causal and mechanistic grounding, calibrated trajectory-level uncertainty, safety-constrained planning, and prospective multicentre validation against clinically meaningful endpoints.",
+      "authors": [
+        "Zhaoyan Chen",
+        "Zhongxiu Cong",
+        "Zhuanfeng Jin",
+        "Wanshu Fan",
+        "Dongsheng Zhou",
+        "Qi Ai",
+        "Haifan Gong",
+        "Congyu Liao",
+        "Xiaofeng Liu",
+        "Cong Wang"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV"
+      ],
+      "published": "2026-07-28T03:35:47+00:00",
+      "link": "https://arxiv.org/pdf/2607.25242v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "medical world models enable patient state dynamics and intervention modeling, relevant to RL-based healthcare agent evaluation",
+      "llm_evidence_cn": "医疗世界模型支持患者状态动态与干预建模，与RL医疗智能体评估相关",
+      "llm_evidence": "医疗世界模型支持患者状态动态与干预建模，与RL医疗智能体评估相关",
+      "canonical_evidence": "医疗世界模型支持患者状态动态与干预建模，与RL医疗智能体评估相关",
+      "llm_tldr_en": "A structured review of medical world models, defining four capabilities: patient state representation, temporal dynamics, intervention modeling, and evidence requirements. It provides a foundation for building and evaluating EHR-based medical agents in RL settings.",
+      "llm_tldr_cn": "医疗AI往往局限于静态预测，难以刻画患者随时间和干预的演变。本综述通过结构化叙述和可复现证据图谱，筛选98篇文献，界定医疗世界模型的概念、技术基础与应用场景。该领域围绕患者状态表征、时间动态建模、干预建模和证据要求四类能力展开。这对基于EHR的医疗智能体构建与评估提供了重要的理论框架和方法支撑。",
+      "llm_tldr": "医疗AI往往局限于静态预测，难以刻画患者随时间和干预的演变。本综述通过结构化叙述和可复现证据图谱，筛选98篇文献，界定医疗世界模型的概念、技术基础与应用场景。该领域围绕患者状态表征、时间动态建模、干预建模和证据要求四类能力展开。这对基于EHR的医疗智能体构建与评估提供了重要的理论框架和方法支撑。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.27484v1",
+      "source": "arxiv",
+      "title": "Skill Use or Skill Theater? Evaluating the Reasoning Backroom in Skill-Augmented Language Agents",
+      "abstract": "Reusable skills are becoming a standard interface for extending language agents with task procedures. Yet evaluators usually infer skill use from visible reasoning or the agent's own attribution. These signals show what the agent appears to use, not whether the skill changed its decision. We ask whether skill-augmented agents exhibit a \\textbf{Reasoning Backroom}, a systematic gap between stated skill use and intervention-measured influence. We introduce BACKTRACE, an evaluation framework that pairs each skill-conditioned answer with a matched no-skill counterfactual, intervenes on skill meaning, wording, identity, content, and assignment, and elicits attribution only after the answer is committed. We instantiate the framework as BACKROOMBench, a verified testbed spanning controlled logic and competition mathematics, multiple skill conditions, single-agent and multi-agent settings, and diverse model families. Our evaluation reveals a pervasive provenance failure. Across models and domains, stated skill use often remains stable while causal reliance and signed utility vary, producing both silent uptake and performative use. Behavioral effects follow procedural content more reliably than displayed skill identity, whereas stated attributions respond strongly to artifact availability. Observational detectors based on direct skill-use claims, text mentions, trace similarity, and an LLM judge do not identify which decisions actually depend on the skill. In multi-agent systems, skill influence can survive communication even after its source is lost, while no-skill teams still name skills and sources that were never supplied. These findings establish the Reasoning Backroom as a general AI provenance problem whose audit requires intervention.",
+      "authors": [
+        "Jinwei Hu",
+        "Yi Qi",
+        "Xinmiao Huang",
+        "Youcheng Sun",
+        "Yi Dong",
+        "Xiaowei Huang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA"
+      ],
+      "published": "2026-07-29T21:59:20+00:00",
+      "link": "https://arxiv.org/pdf/2607.27484v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "General evaluation framework for skill-augmented language agents using counterfactual interventions; applicable to evaluating medical agents' actual skill usage, though no EHR",
+      "llm_evidence_cn": "面向技能增强语言智能体的反事实评估框架，可应用于医疗智能体的技能使用评估，但不涉及EHR",
+      "llm_evidence": "面向技能增强语言智能体的反事实评估框架，可应用于医疗智能体的技能使用评估，但不涉及EHR",
+      "canonical_evidence": "面向技能增强语言智能体的反事实评估框架，可应用于医疗智能体的技能使用评估，但不涉及EHR",
+      "llm_tldr_en": "BACKTRACE is an evaluation framework for skill-augmented agents that pairs skill-conditioned answers with no-skill counterfactuals and intervenes on skill meaning, wording, identity, content, and assignment to reveal whether skills actually change decisions.",
+      "llm_tldr_cn": "评估技能增强智能体时，仅看可见推理或智能体自述无法判断技能是否真正改变了决策。为此提出BACKTRACE框架，为每个技能条件答案配对无技能反事实，并对技能的意义、措辞、身份、内容和指派进行干预，答案给出后再收集归因。该方法能揭示推理后室中的差距，可用于医疗智能体评估中判断技能是否真实影响临床决策。",
+      "llm_tldr": "评估技能增强智能体时，仅看可见推理或智能体自述无法判断技能是否真正改变了决策。为此提出BACKTRACE框架，为每个技能条件答案配对无技能反事实，并对技能的意义、措辞、身份、内容和指派进行干预，答案给出后再收集归因。该方法能揭示推理后室中的差距，可用于医疗智能体评估中判断技能是否真实影响临床决策。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.27556v1",
+      "source": "arxiv",
+      "title": "Evaluating Agentic Bioinformatics through Function, Evidence, and Validation",
+      "abstract": "Large language model agents increasingly plan, execute, and interpret biological analyses, yet fluent responses, successful tool calls, and benchmark performance alone do not establish scientific credibility. Existing reviews primarily organize biological agents by application, architecture, and agentic capability, but do not jointly operationalize the accountability of agent-generated workflows. We address this gap by treating the inspectable workflow trajectory, rather than architecture or final output alone, as the primary unit of analysis. We introduce the Function--Evidence--Validation (FEV) framework, which separates demonstrated workflow operations, traceable support for actions and claims, and use-case-specific validation. Using FEV, we map 109 agentic or agent-adjacent systems and 28 benchmark or evaluation resources, representing 128 unique publications across genomics, single-cell and spatial omics, protein science, drug discovery, computational pathology, and general bioinformatics automation. Across domains, planning and tool-mediated execution have advanced more rapidly than replayability, provenance, robust scientific assessment, external validation, and prospective empirical testing. We therefore argue that agentic bioinformatics should be assessed through workflow correctness rather than final-answer correctness alone. FEV provides a practical basis for comparing systems and designing transparent, auditable, and scientifically accountable bioinformatics workflows.",
+      "authors": [
+        "Phuc Pham",
+        "Truong-Son Hy"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA"
+      ],
+      "published": "2026-07-30T01:00:36+00:00",
+      "link": "https://arxiv.org/pdf/2607.27556v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "FEV evaluation framework for agentic bioinformatics workflows, transferable to evidence-based EHR agent evaluation",
+      "llm_evidence_cn": "面向智能体生物信息学的FEV评估框架，可迁移至基于证据的EHR智能体评估",
+      "llm_evidence": "面向智能体生物信息学的FEV评估框架，可迁移至基于证据的EHR智能体评估",
+      "canonical_evidence": "面向智能体生物信息学的FEV评估框架，可迁移至基于证据的EHR智能体评估",
+      "llm_tldr_en": "The paper introduces the Function-Evidence-Validation (FEV) framework, evaluating agentic bioinformatics through inspectable workflow trajectories rather than final outputs, separating operations, traceable support, and use-case validation.",
+      "llm_tldr_cn": "大语言模型智能体越来越多地规划并执行生物分析，但流畅回答与成功工具调用并不能保证科学可信度。作者提出以可检查的工作流轨迹为分析单元，构建功能-证据-验证（FEV）框架，分别刻画已展示的操作、行为与主张的可追溯支持以及用例特定验证。该框架为智能体生物信息学的可信评估提供了新视角。",
+      "llm_tldr": "大语言模型智能体越来越多地规划并执行生物分析，但流畅回答与成功工具调用并不能保证科学可信度。作者提出以可检查的工作流轨迹为分析单元，构建功能-证据-验证（FEV）框架，分别刻画已展示的操作、行为与主张的可追溯支持以及用例特定验证。该框架为智能体生物信息学的可信评估提供了新视角。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.28033v1",
+      "source": "arxiv",
+      "title": "DataClawEval: A Benchmark for Data Engineering Agents in Real Industrial Harness",
+      "abstract": "Large language models (LLMs) and LLM-based agents are increasingly being deployed to automate complex workflows, promising to revolutionize data management and processing. However, existing benchmarks predominantly focus on simplified Text-to-SQL translation or data analysis, leaving the critical and complex domain of end-to-end data engineering largely unexplored. To bridge this gap, we introduce DataClawEval, the first comprehensive benchmark designed specifically to evaluate the end-to-end task completion capabilities of autonomous agents in real-world data engineering scenarios. Built upon production-grade code authored by professional enterprise data engineers, it comprises 100 rigorous, end-to-end tasks spanning five execution engines: PySpark, MySQL, HiveSQL, PrestoSQL/Trino, and FlinkSQL. Rather than non-deterministic LLM-as-a-judge scoring, each task is executed within a case-specific, isolated sandbox and graded by deterministic, rule-based scripts. Evaluating 16 frontier agents exposes critical limitations: The strongest model attains only 74.9 overall, and no single model dominates, as each excels on a different engine, revealing strict domain specialization rather than omnipotent proficiency. Thus, autonomous data engineering remains a formidable, unresolved challenge. We release our dataset, containerized environments, and deterministic evaluation scripts at https://github.com/Dicemy/DataClawEval/tree/master",
+      "authors": [
+        "Debin Meng",
+        "Jiaming Yang",
+        "Zefang Zong",
+        "Tengyue Xu",
+        "Haining Xie",
+        "Yang Li",
+        "Peng Chen"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-30T11:17:27+00:00",
+      "link": "https://arxiv.org/pdf/2607.28033v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark for autonomous data engineering agents; benchmarking methodology transferable to medical agent performance evaluation",
+      "llm_evidence_cn": "面向数据工程智能体的基准测试，其基准构建方法可迁移至医疗智能体性能评估",
+      "llm_evidence": "面向数据工程智能体的基准测试，其基准构建方法可迁移至医疗智能体性能评估",
+      "canonical_evidence": "面向数据工程智能体的基准测试，其基准构建方法可迁移至医疗智能体性能评估",
+      "llm_tldr_en": "DataClawEval presents the first benchmark for end-to-end evaluation of autonomous agents in production-grade data engineering, comprising 100 tasks across five execution engines, moving beyond Text-to-SQL and data analysis.",
+      "llm_tldr_cn": "现有智能体基准多聚焦于简化的Text-to-SQL或数据分析，缺乏端到端数据工程评估。DataClawEval构建了首个真实工业场景下的数据工程智能体基准，基于生产级代码设计100个端到端任务，覆盖五个执行引擎。该基准可有效度量智能体在复杂工作流中的任务完成能力，其构建思路可借鉴到医疗智能体评估中。",
+      "llm_tldr": "现有智能体基准多聚焦于简化的Text-to-SQL或数据分析，缺乏端到端数据工程评估。DataClawEval构建了首个真实工业场景下的数据工程智能体基准，基于生产级代码设计100个端到端任务，覆盖五个执行引擎。该基准可有效度量智能体在复杂工作流中的任务完成能力，其构建思路可借鉴到医疗智能体评估中。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.28367v1",
+      "source": "arxiv",
+      "title": "How Benchmarks Mis-Score Computer-Use Agents",
+      "abstract": "Computer-use agents (CUA) are being deployed to browse the web and operate desktop software, yet their benchmark scores are still commonly produced by brittle scripted oracles. A score is the output of a pipeline in which tasks can be stale, trajectories can omit decisive visual evidence, evaluators can reject valid alternatives, and aggregate reports can hide the cause of failure. We organize these problems into a reliability framework spanning task construction, trajectory observation, scoring, and reporting. We then audit 150 public failure-scored trajectories from five web, enterprise-workflow, and desktop-control benchmarks, find that 15.3\\% of FAIL verdicts are wrong: 10.7\\% are evaluator false negatives and 4.7\\% are broken tasks. For genuine failures, a three-tier diagnostic taxonomy shows that verification/feedback and planning failures dominate execution/grounding errors, while a single scalar success rate can not explain. We connect these findings to newer long-horizon CUA benchmarks and derive stage-specific design rules for CUA evaluation.",
+      "authors": [
+        "Zihan Dong",
+        "Zhiyuan Ma",
+        "Zekun Wang",
+        "Yunqing Li",
+        "Zirou Liu",
+        "Ruixuan Deng",
+        "Qishi Zhan",
+        "Rui Qian"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-30T15:29:42+00:00",
+      "link": "https://arxiv.org/pdf/2607.28367v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "audits benchmark scoring reliability and provides a framework for detecting false failures, applicable to EHR-based medical agent evaluation",
+      "llm_evidence_cn": "审计基准评分可靠性并给出错误失败检测框架，可用于基于EHR的医疗智能体评估",
+      "llm_evidence": "审计基准评分可靠性并给出错误失败检测框架，可用于基于EHR的医疗智能体评估",
+      "canonical_evidence": "审计基准评分可靠性并给出错误失败检测框架，可用于基于EHR的医疗智能体评估",
+      "llm_tldr_en": "This paper audits 150 failure-scored trajectories across five computer-use benchmarks, finds 15.3% of FAIL verdicts are wrong, and proposes a reliability framework covering task construction, trajectory observation, scoring, and reporting.",
+      "llm_tldr_cn": "计算机使用智能体基准评分常依赖脆弱的脚本裁判，导致任务过时、轨迹缺少视觉证据、有效替代方案被误判。作者系统梳理了任务构建、轨迹观测、评分和报告环节的可靠性问题，并审计五个基准的150条失败轨迹，发现15.3%的FAIL判定是错误的。该可靠性框架可用于改进基于EHR的医疗智能体评测中的评分与诊断。",
+      "llm_tldr": "计算机使用智能体基准评分常依赖脆弱的脚本裁判，导致任务过时、轨迹缺少视觉证据、有效替代方案被误判。作者系统梳理了任务构建、轨迹观测、评分和报告环节的可靠性问题，并审计五个基准的150条失败轨迹，发现15.3%的FAIL判定是错误的。该可靠性框架可用于改进基于EHR的医疗智能体评测中的评分与诊断。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
