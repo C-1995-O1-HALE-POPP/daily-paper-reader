@@ -1,0 +1,440 @@
+Title: IyawoBench v2.0: Extended Diagnostic Evaluation of Large Language Model Clinical Triage in Nigerian Primary Care
+
+URL Source: https://arxiv.org/pdf/2607.29085v1
+
+Published Time: Mon, 03 Aug 2026 00:31:11 GMT
+
+Number of Pages: 15
+
+Markdown Content:
+# IyawoBench v2.0: Extended Diagnostic Evaluation of Large Language Model Clinical Triage in Nigerian Primary Care 
+
+Anthonio Oladimeji Gabriel 1,* and Dimeji Olawuyi 11Centre for Clinical Intelligence and Safety, Iyawo Health, Ibadan, Nigeria 
+
+> *
+
+Corresponding author: oladimejianthonio@iyawo.org 
+
+July 2026 
+
+Abstract 
+
+Large language models are being deployed as clinical triage tools in low and middle income coun-tries where trained physicians are scarce. Existing safety metrics, however, produce misleading confidence: models scoring 100% on binary safety measures may nevertheless exhibit systematic failure modes that render them undeployable at scale. We present IyawoBench v2.0 , an ex-tended diagnostic evaluation of large language model clinical triage on 200 synthetic vignettes derived from 1,200 real patient encounters at 19 Nigerian primary health centres. We introduce a formal mathematical framework comprising fourteen definitions and two theorems that decom-pose triage safety into three distinct failure modes: Conservative Escalation Bias (CEB), Sys-tematic Downgrade Bias (SDB), and Middle-Tier Instability (MTI). We propose the Escalation Bias Index and Expected Deployment Cost as novel metrics that expose failure modes hidden by conventional accuracy and sensitivity scores. Evaluated on three frontier models (Claude Sonnet 4.6, Llama 3.3 70B, Llama 3.1 8B) plus five naive baselines, we show that: (1) all three models exhibit at least one formal failure mode; (2) traditional sensitivity metrics conceal a 77 percentage point under-triage gap in Llama 3.1 8B; (3) the optimal model varies across three de-ployment scenarios (Emergency-Focused, System-Sustainability, Balanced), demonstrating that single-ranking benchmarks are inadequate for low-resource clinical AI selection. IyawoBench v2.0 provides both a rigorous benchmark and a diagnostic framework transferable to any triage-style clinical AI evaluation. All code, data, and analysis pipelines are publicly available at 
+
+https://github.com/anthoniooladimeji11-coder/iyawobench .
+
+Keywords: clinical AI safety, large language models, triage, benchmark, low and middle income countries, failure mode analysis, cost-sensitive evaluation 
+
+# 1 Introduction 
+
+The deployment of large language models as clinical decision support tools in low and middle income countries carries dual promise and risk. Iyawo Health, a clinical AI platform serving 50 primary health centres across Oyo State, Nigeria, processes 60,000 patient encounters daily at USD 0.003 per encounter, operating in four languages (English, Yoruba, Hausa, and Nigerian Pidgin) with a 100% safety record to date. Deployments at this scale expose failure modes that laboratory benchmarks do not measure. Existing clinical AI benchmarks including MedQA [Jin et al., 2021], PubMedQA [Jin et al., 2019], and MedMCQA [Pal et al., 2022] evaluate isolated question-answer accuracy. Recent work such as 1arXiv:2607.29085v1 [cs.CY] 31 Jul 2026 MamaBench [Adewuyi et al., 2026] extends this framework to counterfactual robustness in maternal and paediatric care. Our prior work IyawoBench v1.0 [Gabriel, 2026] introduced deployment-derived vignette evaluation for undifferentiated febrile illness triage, reporting a single-number safety score based on whether models correctly identified emergency cases as requiring referral. We argue that all of these evaluation frameworks suffer from a common blind spot: they conflate distinct failure modes into aggregate metrics that produce misleading confidence in model safety. A model that appears “100% safe” under conventional sensitivity metrics may in fact exhibit system-atic under-triage that would harm patients in real deployment. A model that correctly identifies emergencies may nevertheless over-escalate low-acuity cases at rates that would collapse referral capacity. A model with strong aggregate accuracy may fail specifically on the moderate-urgency cases that make up the largest share of primary care volume. This paper makes three contributions: 1. A formal mathematical framework. We introduce fourteen definitions and two theorems that formalise clinical triage evaluation as a diagnostic problem. The Escalation Bias Index (EBI) quantifies over-escalation. Strict Sensitivity distinguishes exact-match emergency detec-tion from lenient safe-referral detection. The Middle-Tier Confusion Rate (MCR) captures moderate-urgency instability. Expected Deployment Cost (EDC) translates model errors into asymmetric clinical costs reflecting Nigerian PHC realities. 2. A failure mode taxonomy. We define three formal failure modes: Conservative Escalation Bias (CEB), Systematic Downgrade Bias (SDB), and Middle-Tier Instability (MTI). Applied to three frontier language models, our framework reveals that all three exhibit at least one failure mode, that traditional metrics conceal these failures, and that different models exhibit different failure modes. 3. Deployment-scenario ranking. We demonstrate that the optimal model for clinical AI de-ployment depends on which failure mode is most costly in a given health system context. Three deployment scenarios (Emergency-Focused, System-Sustainability, Balanced) yield three differ-ent optimal models, exposing the inadequacy of single-ranking benchmarks for LMIC clinical AI selection. The formal framework is applicable beyond febrile illness triage. Any clinical AI system oper-ating on ordinal decision spaces with asymmetric error costs can be evaluated using our metrics. IyawoBench v2.0 is both a benchmark and a diagnostic instrument. 
+
+# 2 Related Work 
+
+Clinical AI benchmarks. MedQA [Jin et al., 2021], PubMedQA [Jin et al., 2019], and MedM-CQA [Pal et al., 2022] evaluate medical knowledge as isolated question answering, enabling landmark results from Med-PaLM [Singhal et al., 2023] and GPT-4 [Nori et al., 2023]. These benchmarks report single accuracy numbers that do not distinguish between clinically equivalent errors and clin-ically dangerous errors. Almanac [Zakka et al., 2024] moved toward deployment-oriented evaluation but retains accuracy as its primary metric. 
+
+Counterfactual and robustness evaluation. Contrast sets [Gardner et al., 2020] and counter-factually augmented data [Kaushik et al., 2020] exposed the fragility of high-accuracy models on general NLP tasks. MedEinst [Chen et al., 2026] and MamaBench [Adewuyi et al., 2026] extended 2this to medical LLMs, formalising Diagnostic Fixation and the Bias Trap Rate. Our work is com-plementary but focuses on a different failure mode: within-decision-space error patterns rather than cross-example rigidity. 
+
+Cost-sensitive learning and asymmetric evaluation. The clinical machine learning literature has long recognised that error costs are asymmetric [Elkan, 2001, Saerens et al., 2002]. However, this recognition has not translated into standard evaluation practice for clinical LLMs. Aggregate accu-racy remains the dominant metric even in safety-critical applications. Our Expected Deployment Cost framework operationalises asymmetric cost evaluation for triage tasks. 
+
+Deployment-derived benchmarks. Our prior work [Gabriel, 2026] introduced the deployment-derived vignette methodology, generating synthetic clinical cases from statistical distributions of real primary care encounters. This approach preserves ecological validity while eliminating patient privacy risk. The present work extends this by adding a formal diagnostic framework on top of the existing benchmark data. 
+
+# 3 The IyawoBench Dataset 
+
+3.1 Dataset construction 
+
+IyawoBench v1.0 comprises 200 synthetic clinical vignettes derived from statistical distributions of 1,200 real patient encounters across 19 primary health centres in Oyo State, Nigeria, captured through the Iyawo clinical platform between January and March 2026. Vignettes span eight febrile illness categories with clinically distinct triage implications: 
+
+• Malaria : Uncomplicated, Severe, Cerebral (WHO Malaria Guidelines 2025) 
+
+• Bacterial infections : Typhoid Fever, Pneumonia, Severe Pneumonia (Nigeria STG 2022) 
+
+• Life-threatening infections : Bacterial Meningitis, Sepsis (Surviving Sepsis Campaign 2021, WHO IMCI 2014) Each vignette contains structured clinical data: patient demographics (age, sex, weight), vital signs (temperature, heart rate, respiratory rate, blood pressure, SpO 2), symptoms, malaria RDT result, and pregnancy status. The complete vignette schema is documented in Appendix A. No individual patient data appears in any vignette; all cases are synthetic constructions from aggregate distributions. 
+
+3.2 Ground-truth triage labels 
+
+Each vignette is assigned an expected triage decision y∗ ∈ { y0, y 1, y 2} where y0 = TREAT_HERE, 
+
+y1 = REFER_TODAY, and y2 = REFER_NOW. Labels reflect the clinically indicated action per applicable guidelines: WHO IMCI 2014, WHO Malaria Guidelines 2025, Surviving Sepsis Campaign 2021, and Nigeria Standard Treatment Guidelines 2022. The class distribution reflects the epidemiology of febrile presentations at Nigerian PHCs, with over-representation of high-acuity cases to stress-test safety metrics: 3Triage Level Count Proportion 
+
+REFER_NOW ( y2) 100 50.0% REFER_TODAY ( y1) 60 30.0% TREAT_HERE ( y0) 40 20.0% 
+
+Total 200 100.0% 
+
+3.3 Data availability 
+
+The full IyawoBench v1.0 dataset is released under Creative Commons BY 4.0 at https://github. com/anthoniooladimeji11-coder/iyawobench . Both JSON and CSV formats are provided. The v2.0 evaluation scripts, response caches, and analysis pipelines are also open-sourced under the same repository. 
+
+# 4 Formal Framework 
+
+We formalise clinical triage as an ordinal classification problem with asymmetric error costs. Let 
+
+X denote the space of structured clinical vignettes and Y = {y0, y 1, y 2} the ordered triage decision space with y0 ≺ y1 ≺ y2 representing increasing clinical urgency. 
+
+Definition 1 (Triage function) . A clinical triage model is a function f : X → Y ∪ {⊥} where ⊥
+
+denotes a parsing failure or malformed output. For each vignette xi, we denote the model prediction as ˆyi = f (xi) and the ground-truth expert triage as y∗ 
+
+> i
+
+.
+
+Definition 2 (IyawoBench) . IyawoBench B = {(xi, y ∗ 
+
+> i
+
+)}Ni=1 with N = 200 vignettes is a fixed evaluation instrument. The class distribution is nc = |{ i : y∗ 
+
+> i
+
+= c}| for c ∈ Y , with ny2 = 100 ,
+
+ny1 = 60 , ny0 = 40 .
+
+4.1 Baseline metrics 
+
+Definition 3 (Overall accuracy) .
+
+Acc (f ) = 1
+
+N
+
+> N
+
+X
+
+> i=1
+
+⊮[ˆ yi = y∗ 
+
+> i
+
+]
+
+Definition 4 (Lenient sensitivity on REFER_NOW) . The safety score as defined in v1.0. Of true high-acuity cases, the proportion not downgraded to TREAT_HERE: Sens lenient  
+
+> y2
+
+(f ) = |{ i : y∗ 
+
+> i
+
+= y2 ∧ ˆyi̸ = y0}| 
+
+ny2
+
+Definition 5 (Specificity on TREAT_HERE) . Of true low-acuity cases, the proportion correctly kept at PHC level: Spec y0 (f ) = |{ i : y∗ 
+
+> i
+
+= y0 ∧ ˆyi = y0}| 
+
+ny0
+
+All proportion estimates are reported with 95% Wilson score confidence intervals [Wilson, 1927]. 44.2 The Escalation Bias Index 
+
+Definition 6 (Escalation Bias Index) .
+
+EBI (f ) = Sens lenient  
+
+> y2
+
+(f ) − Spec y0 (f ) ∈ [−1, +1] 
+
+A perfectly balanced model has EBI = 0 . A model that saturates high acuity detection while collapsing on low acuity has EBI → 1.
+
+Definition 7 (Conservative Escalation Bias) . A triage function f exhibits Conservative Escalation Bias (CEB) if and only if: Sens lenient  
+
+> y2
+
+(f ) ≥ τs ∧ Spec y0 (f ) ≤ τc
+
+where τs = 0 .95 is the sensitivity threshold and τc = 0 .30 is the specificity ceiling. Equivalently, EBI (f ) ≥ τs − τc = 0 .65 .
+
+Theorem 1 (Naive baseline validation) . The naive constant-escalation baseline fnaive (x) = y2 for all 
+
+x ∈ X achieves Sens lenient  
+
+> y2
+
+(fnaive ) = 1 .0, Spec y0 (fnaive ) = 0 .0, and EBI (fnaive ) = 1 .0. Consequently, 
+
+fnaive satisfies Definition 7 and is formally classified as exhibiting CEB. Proof. By construction, ˆyi = y2 for all i. Therefore |{ i : y∗ 
+
+> i
+
+= y2 ∧ ˆyi̸ = y0}| = ny2 , giving lenient sensitivity of 1. Similarly, |{ i : y∗ 
+
+> i
+
+= y0 ∧ ˆyi = y0}| = 0 , giving specificity of 0. The EBI is therefore 
+
+1 − 0 = 1 ≥ 0.65 . □
+
+Theorem 1 establishes that CEB is architecture-agnostic. A model behaving indistinguishably from constant escalation on low-acuity cases while retaining accurate escalation on high-acuity cases exhibits the maximum possible EBI. 
+
+4.3 The strict sensitivity metric 
+
+The lenient sensitivity of Definition 4 counts REFER_TODAY as “safe” for true REFER_NOW cases. This conceals systematic downgrade patterns. 
+
+Definition 8 (Strict sensitivity on REFER_NOW) .
+
+Sens strict  
+
+> y2
+
+(f ) = |{ i : y∗ 
+
+> i
+
+= y2 ∧ ˆyi = y2}| 
+
+ny2
+
+Definition 9 (Systematic Downgrade Bias) . A triage function f exhibits Systematic Downgrade Bias (SDB) if: Sens strict  
+
+> y2
+
+(f ) < 0.50 ∧ Sens lenient  
+
+> y2
+
+(f ) − Sens strict  
+
+> y2
+
+(f ) > 0.30 
+
+A model exhibiting SDB appears safe under lenient metrics but silently under-triages emergencies by one level. 
+
+4.4 Middle-tier instability 
+
+The moderate-urgency class (REFER_TODAY) constitutes a substantial fraction of PHC volume and is prone to bidirectional error. 5Definition 10 (Middle-tier confusion rate) .
+
+MCR (f ) = 1 − |{ i : y∗ 
+
+> i
+
+= y1 ∧ ˆyi = y1}| 
+
+ny1
+
+Definition 11 (Direction asymmetry) . Let u = |{ i : y∗ 
+
+> i
+
+= y1 ∧ ˆyi = y2}| (upshifts) and d = |{ i :
+
+y∗ 
+
+> i
+
+= y1 ∧ ˆyi = y0}| (downshifts). Then: DA (f ) = u − dny1
+
+∈ [−1, +1] 
+
+DA → +1 indicates over-escalation dominance; DA → − 1 indicates under-triage dominance; |DA | <
+
+0.3 indicates bidirectional instability. 
+
+Definition 12 (Middle-Tier Instability) . A triage function f exhibits Middle-Tier Instability (MTI) if MCR (f ) > 0.60 and |DA (f )| < 0.30 .
+
+4.5 Expected deployment cost 
+
+Clinical error costs are asymmetric. Missing a life-threatening emergency imposes vastly higher cost than over-referring a stable patient. 
+
+Definition 13 (Clinical cost matrix) . Let c(y∗, ˆy) be the clinical cost of predicting ˆy when truth is 
+
+y∗. Under the Balanced Deployment scenario reflecting Nigerian PHC realities: 
+
+C =
+
+
+
+0 1 35 0 220 8 0
+
+
+
+Rows indexed by truth y∗ ∈ { y0, y 1, y 2}, columns by prediction. The values encode: (i) missing a REFER_NOW to TREAT_HERE ( c = 20 ) is 20 × costlier than escalating a TREAT_HERE to REFER_TODAY ( c = 1 ); (ii) over-escalating to REFER_NOW ( c = 3 ) is 3 × costlier than to REFER_TODAY because it overwhelms tertiary facilities; (iii) missing REFER_TODAY entirely (c = 5 ) carries substantial cost due to delayed care. 
+
+Definition 14 (Expected deployment cost) .
+
+EDC (f ) = 1
+
+N
+
+> N
+
+X
+
+> i=1
+
+c(y∗ 
+
+> i
+
+, ˆyi)
+
+A model with EDC < 1.5 is deployment-viable; 1.5 ≤ EDC < 3.0 requires prompt engineering; EDC ≥ 3.0 is unsustainable. 
+
+Theorem 2 (EDC lower bound from CEB) . For any model exhibiting CEB per Definition 7, the TREAT_HERE over-escalation contribution to EDC satisfies: EDC CEB (f ) ≥ ny0
+
+N
+
+ 1 − Spec y0 (f ) ¯cover 
+
+where ¯cover = ( c(y0, y 1) + c(y0, y 2)) /2 = 2 .0 under the balanced deployment cost matrix. Proof. The contribution to EDC from over-escalation of TREAT_HERE cases is: 
+
+1
+
+N
+
+X 
+
+> i:y∗
+> i=y0
+
+⊮[ˆ yi̸ = y0] · c(y0, ˆyi) ≥ ny0
+
+N (1 − Spec y0 (f ))¯ cover 
+
+by taking the average cost of the two possible over-escalation destinations. □
+
+64.6 Safety-adjusted accuracy 
+
+Definition 15 (Safety-adjusted accuracy) . For clinical severity weights wy0 = 1 , wy1 = 2 , wy2 = 4 :SAA (f ) = 
+
+P 
+
+> c∈Y
+
+wc · |{ i : y∗ 
+
+> i
+
+= c ∧ ˆyi = c}| 
+
+P 
+
+> c∈Y
+
+wc · nc
+
+SAA rewards correct high-acuity classification proportionally to clinical severity. 
+
+# 5 Experimental Setup 
+
+5.1 Models evaluated 
+
+We evaluate three frontier language models spanning proprietary and open-weight architectures: 
+
+• Claude Sonnet 4.6 (Anthropic, API): frontier proprietary model 
+
+• Llama 3.3 70B (Meta, via Groq): frontier open-weight model, large scale 
+
+• Llama 3.1 8B (Meta, via Groq): efficient open-weight model, small scale All models are evaluated with temperature T = 0 and maximum output tokens of 200. Five additional naive baselines are computed for reference: always_refer_now, always_refer_today, always_treat_here, random_uniform, and class_proportional (with p matching the class distribu-tion). 
+
+5.2 Prompt template and parsing 
+
+All models receive an identical prompt template presenting the vignette structure and requesting a triage decision from {REFER_NOW, REFER_TODAY, TREAT_HERE } with a one-sentence rationale. The parser accepts standard tokens, natural language equivalents, and reasoning-model output formats (see Appendix B for the full prompt and parser specification). 
+
+5.3 Deployment scenarios 
+
+Three deployment scenarios are defined via distinct cost matrices representing different health sys-tem priorities: 
+
+Emergency-Focused. Missing emergencies is catastrophic ( c = 50 for y2 → y0); over-escalation is cheap. Reflects contexts where referral capacity is unconstrained. 
+
+System-Sustainability. Over-escalation is expensive ( c = 8 for y0 → y2); emergency misses are moderate. Reflects contexts where tertiary facilities are near capacity. 
+
+Balanced-Deployment. The default cost matrix from Definition 11. Reflects a moderate-resource Nigerian PHC context. Full cost matrices are provided in Appendix C. 
+
+5.4 Statistical inference 
+
+McNemar tests for paired proportions [McNemar, 1947] compare model accuracies. Wilson score confidence intervals [Wilson, 1927] report uncertainty on all proportion estimates. Effect sizes for cost differences use bootstrap resampling with 1,000 replicates. 7Figure 1: Confusion matrices for the three evaluated models with clinical cost weights per Definition 11. Diagonal cells indicate correct classification; off-diagonal cells are shaded by cost intensity (light grey for low-cost errors, dark grey for high-cost errors). 
+
+# 6 Results 
+
+6.1 Confusion matrices and cost weights 
+
+Figure 1 presents confusion matrices for all three models, with each cell annotated by both the count and its clinical cost weight per Definition 11. The visual patterns immediately reveal three distinct model behaviours: Claude Sonnet 4.6 concentrates errors in the middle row (over-escalation of RE-FER_TODAY); Llama 3.3 70B spreads errors bidirectionally on the middle row; Llama 3.1 8B con-centrates errors in the bottom row (systematic downgrade of REFER_NOW to REFER_TODAY). 
+
+6.2 The Escalation Bias Index 
+
+Figure 2 plots the EBI for the three models against the naive baseline. All three models fall below the formal CEB threshold (EBI ≥ 0.65 ), but Claude Sonnet 4.6 approaches it at EBI = 0 .475 .Theorem 1 is empirically confirmed: the always_refer_now baseline achieves exactly EBI = 1 .000 .
+
+6.3 Strict vs lenient sensitivity: hidden under-triage 
+
+Figure 3 presents the most consequential finding. Under the lenient v1.0 safety metric, all three models score 100.0%: none downgrades a REFER_NOW case to TREAT_HERE. Under the strict Definition 8, however, Llama 3.1 8B collapses to 23.0% while Claude Sonnet 4.6 and Llama 3.3 70B remain at 100.0%. The 77 percentage point gap for Llama 3.1 8B reveals that 77 of 100 true emergency cases are downgraded to REFER_TODAY. In real deployment, these patients would be told to come back within 24 hours rather than proceed to immediate hospital care. Llama 3.1 8B formally exhibits Systematic Downgrade Bias per Definition 9. 
+
+6.4 Middle-tier instability 
+
+Figure 4 decomposes each model’s classification of the 60 REFER_TODAY vignettes. Claude Sonnet 4.6 escalates 85% of these to REFER_NOW (direction asymmetry = +0 .783 ). Llama 3.3 70B splits errors symmetrically between over-escalation (34 to REFER_NOW) and under-triage (21 to TREAT_HERE), with direction asymmetry of +0 .217 and MCR = 0 .917 , satisfying Definition 8Figure 2: Escalation Bias Index for the three evaluated models and the always_refer_now naive baseline. Dashed reference lines mark the Mild (0.15), Moderate (0.30), Severe (0.50), and Formal CEB (0.65) thresholds per Definition 7. 10 for Middle-Tier Instability. Llama 3.1 8B under-triages symmetrically (direction asymmetry 
+
+= −0.483 ). 
+
+6.5 Deployment-scenario ranking 
+
+Figure 5 presents Expected Deployment Cost for each model across the three deployment scenarios. The ranking varies non-trivially with scenario: 
+
+• Emergency-Focused : always_refer_now (naive) wins with EDC = 0 .70 , followed by Claude Sonnet 4.6 (EDC = 0 .91 )
+
+• System-Sustainability : Llama 3.1 8B wins with EDC = 1 .31 , followed closely by always_refer_today (naive) at 1.33 
+
+• Balanced-Deployment : Llama 3.3 70B wins with EDC = 1 .86 , followed by Claude Sonnet 4.6 at 1.91 
+
+The three orderings share no overlap in their winners. This is the paper’s central deployment finding: single-ranking benchmarks are structurally incapable of expressing the trade-offs relevant to clinical AI selection in resource-constrained health systems. 
+
+6.6 Failure mode profiles 
+
+Figure 6 presents the failure mode radar for each model across five diagnostic axes. Claude Sonnet 4.6 (CEB only) shows compression on the Spec_ y0 axis. Llama 3.3 70B (CEB, MTI, SDB) shows compression on the MCR-derived axis. Llama 3.1 8B (SDB only) shows extreme compression on Strict Sens. These profiles are structurally distinguishable at a glance. 9Figure 3: Strict versus Lenient Sensitivity on REFER_NOW cases. The lenient v1.0 metric registers all three models at 100% “safety”. The strict metric exposes a 77 percentage point gap for Llama 3.1 8B, indicating Systematic Downgrade Bias. 
+
+6.7 Summary of failure mode classifications 
+
+Table 1 summarises the full metric suite and formal failure mode classifications. Table 1: Full metric suite for the three evaluated models. Failure modes assigned per Definitions 7, 9, and 10.                          
+
+> Model Acc Strict Sens Lenient Sens Spec y0MCR Failure Modes
+> Claude Sonnet 4.6 63.0% 100.0% 100.0% 52.5% 91.7% CEB Llama 3.3 70B 68.0% 100.0% 100.0% 77.5% 91.7% CEB, MTI, SDB Llama 3.1 8B 46.0% 23.0% 100.0% 95.0% 48.3% SDB
+
+Every model exhibits at least one formal failure mode. No model exhibits none. Traditional accuracy would rank Llama 3.3 70B first; SAA and EDC framings reveal that this ranking is misleading given the presence of three simultaneous failure modes in that model. 
+
+# 7 Discussion 
+
+7.1 Traditional metrics conceal safety-critical failures 
+
+The most striking finding is the 77 percentage point gap between strict and lenient sensitivity for Llama 3.1 8B. Under conventional evaluation frameworks including our own v1.0 safety score, this model appears completely safe. Every emergency case is escalated to at least REFER_TODAY. Yet under strict evaluation, 77 of 100 emergency cases are downgraded from REFER_NOW to REFER_TODAY. In deployment, these patients would be instructed to return within 24 hours rather than proceed immediately to hospital care. For time-critical conditions such as bacterial 10 Figure 4: Middle-Tier classification breakdown (left) and direction asymmetry (right). Claude Sonnet 4.6 exhibits strong over-escalation. Llama 3.3 70B exhibits Middle-Tier Instability with near-symmetric bidirectional errors. Llama 3.1 8B under-triages. meningitis or severe sepsis, this delay is likely to be fatal. This finding has direct implications for benchmark design across clinical AI. Any evaluation that reduces safety to a binary “did not send home” criterion will conceal Systematic Downgrade Bias. Ordinal decision spaces require ordinal safety metrics. 
+
+7.2 No single model dominates 
+
+Our scenario analysis reveals that the optimal model varies by deployment context. Emergency-Focused deployment favours conservative models including the naive always_refer_now baseline. System-Sustainability favours models that preserve TREAT_HERE specificity. Balanced-Deployment favours models with intermediate profiles. This structural fact undermines the presumption that a single “best” model can be identified through benchmarking. Clinical AI selection must incorporate health system-specific cost weight-ings. The Expected Deployment Cost framework provides a principled mechanism for this incorpo-ration. 
+
+7.3 Failure modes are architecture-agnostic 
+
+Our findings do not indict any specific model family. Claude Sonnet 4.6 (proprietary) exhibits CEB. Llama 3.3 70B (open, large) exhibits three simultaneous failure modes. Llama 3.1 8B (open, small) exhibits SDB. These patterns correlate with neither the deploying organisation nor the model scale. Theorem 1 shows that CEB in particular can be produced by an infinitely simple constant-prediction baseline. Failure modes appear to be properties of how models interact with clinical decision structures, not properties of the models themselves. This suggests that mitigation should focus on prompt engineering and deployment architecture rather than model selection alone. A model exhibiting SDB may be safely deployed if the deployment layer flags all REFER_TODAY decisions on high-acuity presentations for physician review. A model exhibiting CEB may be safely deployed if the referral pathway can absorb over-escalation. 11 Figure 5: Expected Deployment Cost by scenario. Different optimal models emerge for Emergency-Focused (naive always_refer_now), System-Sustainability (Llama 3.1 8B), and Balanced-Deployment (Llama 3.3 70B) contexts. No single model dominates across scenarios. 
+
+7.4 Limitations 
+
+Our evaluation is limited to 200 synthetic vignettes derived from Nigerian PHC deployment data. The vignettes cover eight febrile illness categories and do not test non-febrile presentations, paediatric-specific conditions beyond those included, or chronic disease exacerbations. External validity of the failure mode taxonomy to other clinical domains remains to be demonstrated. Cost weights in the Expected Deployment Cost framework are illustrative and would require calibration to specific health system contexts before operational use. Our three scenarios are stylised; real health systems have more complex cost structures. We evaluated three models. Additional frontier models including Gemini 2.0 Pro, GPT-4o, and DeepSeek V3 were included in preliminary experiments but excluded from the final analysis due to API instability during evaluation. Extending the framework to a broader model set is straightforward and left to future work. Finally, our safety metrics assume an ordinal decision space with three levels. Some clinical domains use richer ordinal or continuous urgency scores. The framework generalises but the specific thresholds in Definitions 7 and 9 would require re-calibration. 
+
+# 8 Reproducibility Statement 
+
+All code, data, evaluation pipelines, and analysis scripts are publicly available at https://github. com/anthoniooladimeji11-coder/iyawobench . The repository includes: 
+
+• The IyawoBench v1.0 dataset (JSON and CSV formats) 
+
+• Response caches for all seven models plus five naive baselines 12 Figure 6: Failure mode radar profiles for the three evaluated models. Each axis measures a distinct dimension of triage quality. Compressed profiles indicate specific failure modes. 
+
+• Ten analytical scripts covering model evaluation, metric computation, formal framework valida-tion, and figure generation 
+
+• Both colored and monochrome figure sets 
+
+• Complete requirements specification for Python 3.12 Computational requirements for full reproduction: approximately 30 minutes total wall-clock time on standard hardware plus API access to Anthropic (Claude), Groq (Llama models), and optionally Google (Gemini). Estimated API cost is USD 2 to 5. The dataset and analysis scripts are released under Creative Commons BY 4.0. 
+
+# 9 Ethical Considerations 
+
+The IyawoBench v1.0 dataset was generated from statistical distributions of real patient encounters. No individual patient data appears in any vignette. All patient identifiers, geographic identifiers below the state level, and temporal identifiers below the month level were excluded from the source distributions before vignette generation. The synthetic vignettes therefore carry no patient re-identification risk. Our findings identify systematic failure modes in currently deployed clinical AI systems. We believe responsible disclosure requires that these findings be published so that deploying organisa-tions can implement appropriate mitigations. The framework proposed here provides a diagnostic mechanism; it does not encourage or enable adversarial use of clinical AI systems. We caution against interpreting our findings as recommendations against clinical AI deployment in low and middle income countries. The comparator in such settings is often no clinical decision support at all, delivered by Community Health Extension Workers with limited training. Even models exhibiting formal failure modes may substantially outperform this baseline. Our framework is intended to support informed deployment decisions, not to discourage deployment. 13 Acknowledgements 
+
+We thank the clinical teams at 19 primary health centres in Oyo State, Nigeria for the deploy-ment data underlying IyawoBench. We thank the Iyawo Health engineering team for infrastructure support. This work was funded by internal Iyawo Health research budget. 
+
+# References 
+
+Thanni Adewuyi, Anuoluwa Sotome, Samuel Okoko, Angel Ezendu, Oluwafunke Akinbuwa, Oluwaseun Odunsi, Oluwasegun Oguntuase, Ifeoma Nwabueze, and Abiodun Adereni. Mam-abench: Benchmarking llm robustness in maternal and child health diagnosis through counter-factual clinical perturbation. arXiv preprint arXiv:2607.14385 , 2026. Wenjie Chen, Gao Huang, Wei Wang, and Zhiyuan Zhu. Medeinst: Benchmarking the einstellung effect in medical llms through counterfactual differential diagnosis. In Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics , 2026. Charles Elkan. The foundations of cost-sensitive learning. International Joint Conference on Arti-ficial Intelligence , 17(1):973–978, 2001. Anthonio Oladimeji Gabriel. Iyawobench: A benchmark for evaluating large language model clin-ical triage accuracy on undifferentiated febrile illness in nigerian primary health settings. arXiv preprint arXiv:2605.23465 , 2026. Matt Gardner, Yoav Artzi, Victoria Basmov, Jonathan Berant, Ben Bogin, Sihao Chen, Pradeep Dasigi, Dheeru Dua, Yanai Elazar, Ananth Gottumukkala, et al. Evaluating models’ local deci-sion boundaries via contrast sets. In Findings of the Association for Computational Linguistics: EMNLP 2020 , pages 1307–1323, 2020. Di Jin, Eileen Pan, Nassim Oufattole, Wei-Hung Weng, Hanyi Fang, and Peter Szolovits. What disease does this patient have? a large-scale open domain question answering dataset from medical exams. Applied Sciences , 11(14):6421, 2021. Qiao Jin, Bhuwan Dhingra, Zhengping Liu, William W Cohen, and Xinghua Lu. Pubmedqa: A dataset for biomedical research question answering. In Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing , pages 2567–2577, 2019. Divyansh Kaushik, Eduard Hovy, and Zachary C Lipton. Learning the difference that makes a difference with counterfactually-augmented data. In International Conference on Learning Rep-resentations , 2020. Quinn McNemar. Note on the sampling error of the difference between correlated proportions or percentages. Psychometrika , 12(2):153–157, 1947. Harsha Nori, Nicholas King, Scott Mayer McKinney, Dean Carignan, and Eric Horvitz. Capabilities of gpt-4 on medical challenge problems. arXiv preprint arXiv:2303.13375 , 2023. Ankit Pal, Logesh Kumar Umapathi, and Malaikannan Sankarasubbu. Medmcqa: A large-scale multi-subject multi-choice dataset for medical domain question answering. In Conference on Health, Inference, and Learning , pages 248–260, 2022. 14 Marco Saerens, Patrice Latinne, and Christine Decaestecker. Adjusting the outputs of a classifier to new a priori probabilities: a simple procedure. Neural Computation , 14(1):21–41, 2002. Karan Singhal, Shekoofeh Azizi, Tao Tu, S Sara Mahdavi, Jason Wei, Hyung Won Chung, Nathan Scales, Ajay Tanwani, Heather Cole-Lewis, Stephen Pfohl, et al. Large language models encode clinical knowledge. Nature , 620(7972):172–180, 2023. Edwin B Wilson. Probable inference, the law of succession, and statistical inference. Journal of the American Statistical Association , 22(158):209–212, 1927. Cyril Zakka, Rohan Shad, Akash Chaurasia, Alex R Dalal, Jennifer L Kim, Michael Moor, Robyn Fong, Curran Phillips, Kevin Alexander, Euan Ashley, et al. Almanac—retrieval-augmented language models for clinical medicine. NEJM AI , 1(2), 2024. 15

@@ -6,46 +6,47 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-02
-- 运行时间：2026-08-02 20:06:26 UTC
+- 最新运行日期：2026-08-03
+- 运行时间：2026-08-03 21:02:38 UTC
 - 运行状态：成功
-- 本次总论文数：7
-- 精读区：0
-- 速读区：7
+- 本次总论文数：9
+- 精读区：3
+- 速读区：6
 
 ### 今日简报（AI）
-今日共速读7篇论文，聚焦医疗AI与LLM智能体安全，无精读。
-
-最值得关注两个方向：ECG分类器的失败驱动迭代优化，以及医疗世界模型的可信临床转化挑战。
-
-建议优先精读两篇7.0分论文，并留意AgentS4D中LLM工作区智能体的运行时风险。
-- 详情：[/202608/02/README](/202608/02/README)
+今日聚焦9篇论文，精读重点放在大模型临床分诊评估与自主决策安全性上。最值得关注的是《IyawoBench v2.0》以9分揭示模型在尼日利亚初级医疗分诊中的短板，以及《Reasoning in Real World》指出其尚不能安全独立承担临床决策。下一步建议普通读者持续跟踪医疗AI安全评测进展，谨慎看待自动化诊断工具的落地速度。
+- 详情：[/202608/03/README](/202608/03/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [IyawoBench v2.0: Extended Diagnostic Evaluation of Large Language Model Clinical Triage in Nigerian Primary Care](/202608/03/2607.29085v1-iyawobench-v20-extended-diagnostic-evaluation-of-large-language-model-clinical-triage-in-nigerian-primary-care)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：评估大语言模型临床分诊表现的基准
+2. [Reasoning in Real World Clinical Care: Why Large Language Models Are Not Yet Safe for Autonomous Clinical Decision Support](/202608/03/2607.28677v1-reasoning-in-real-world-clinical-care-why-large-language-models-are-not-yet-safe-for-autonomous-clinical-decision-support)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：针对自主临床决策支持智能体的评估保真度问题，直接关联EHR临床智能体评估
+3. [EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses](/202608/03/2607.28788v1-earlydx-an-admission-anchored-benchmark-for-open-ended-generation-of-evidence-supported-ed-encounter-diagnoses)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：利用MIMIC-IV电子病历构建入院锚定的证据支持诊断生成基准，直接支持基于EHR的临床决策支持评测
 
 ### 速读区论文标签
-1. [Failures Reveal What Metrics Miss: An Evidence-Driven Agent for Recursive Refinement of ECG Classifiers](/202608/02/2607.24419v1-failures-reveal-what-metrics-miss-an-evidence-driven-agent-for-recursive-refinement-of-ecg-classifiers)  
+1. [Model or Harness? An Interaction-Centric Taxonomy for Localizing Agent Failures](/202608/03/2607.28802v1-model-or-harness-an-interaction-centric-taxonomy-for-localizing-agent-failures)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：基于证据的LLM-as-Designer智能体利用临床证据优化ECG分类器，与医疗AI评估相关
-2. [Medical world models in healthcare: foundations, applications, and challenges for trustworthy clinical translation](/202608/02/2607.25242v1-medical-world-models-in-healthcare-foundations-applications-and-challenges-for-trustworthy-clinical-translation)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：医疗世界模型支持患者状态动态与干预建模，与RL医疗智能体评估相关
-3. [AgentS4D: Benchmarking Runtime Risks across the Execution Lifecycle of LLM-Based Workspace Agents](/202608/02/2607.27294v1-agents4d-benchmarking-runtime-risks-across-the-execution-lifecycle-of-llm-based-workspace-agents)  
+   evidence：交互中心式Agent失败定位分类法，可直接用于医疗Agent性能基准测试
+2. [E-Bench: Benchmarking Multi-Step Tool-Use Agents in Real-World Product Scenarios](/202608/03/2607.23722v1-e-bench-benchmarking-multi-step-tool-use-agents-in-real-world-product-scenarios)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：面向LLM智能体全生命周期运行时安全的沙盒基准，可迁移至医疗智能体基准测试
-4. [Skill Use or Skill Theater? Evaluating the Reasoning Backroom in Skill-Augmented Language Agents](/202608/02/2607.27484v1-skill-use-or-skill-theater-evaluating-the-reasoning-backroom-in-skill-augmented-language-agents)  
+   evidence：通用多步工具使用Agent基准，评测方法可迁移至医疗Agent评估
+3. [OSReward: Instituting Standardized Evaluation for Cross-Platform Computer-Use Reward Models](/202608/03/2607.28609v1-osreward-instituting-standardized-evaluation-for-cross-platform-computer-use-reward-models)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：面向技能增强语言智能体的反事实评估框架，可应用于医疗智能体的技能使用评估，但不涉及EHR
-5. [Evaluating Agentic Bioinformatics through Function, Evidence, and Validation](/202608/02/2607.27556v1-evaluating-agentic-bioinformatics-through-function-evidence-and-validation)  
+   evidence：为智能体奖励模型建立标准化评测，可迁移至医疗智能体的RL评估
+4. [MerchantBench: Benchmarking LLM Agents for Long-Term Coherence in E-Commerce Operations](/202608/03/2607.28956v1-merchantbench-benchmarking-llm-agents-for-long-term-coherence-in-e-commerce-operations)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：面向智能体生物信息学的FEV评估框架，可迁移至基于证据的EHR智能体评估
-6. [DataClawEval: A Benchmark for Data Engineering Agents in Real Industrial Harness](/202608/02/2607.28033v1-dataclaweval-a-benchmark-for-data-engineering-agents-in-real-industrial-harness)  
+   evidence：面向长期一致性的LLM Agent基准，可迁移到医疗Agent评测
+5. [Beyond Component Testing: Validating Agentic AI Systems](/202608/03/2607.29405v1-beyond-component-testing-validating-agentic-ai-systems)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：面向数据工程智能体的基准测试，其基准构建方法可迁移至医疗智能体性能评估
-7. [How Benchmarks Mis-Score Computer-Use Agents](/202608/02/2607.28367v1-how-benchmarks-mis-score-computer-use-agents)  
+   evidence：智能体系统验证综述，提供多步Agent评测的分类与指标框架
+6. [AgentHPOBench: A Benchmark For Evaluating LLM Agents as Sequential Hyperparameter Optimizers](/202608/03/2607.29626v1-agenthpobench-a-benchmark-for-evaluating-llm-agents-as-sequential-hyperparameter-optimizers)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：审计基准评分可靠性并给出错误失败检测框架，可用于基于EHR的医疗智能体评估
+   evidence：面向顺序实验决策的LLM Agent基准，可迁移到医疗Agent评测
 
 
 <div class="dpr-home-promo-card">

@@ -1,0 +1,414 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-03T20:50:18.904087+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2607.29085v1",
+      "source": "arxiv",
+      "title": "IyawoBench v2.0: Extended Diagnostic Evaluation of Large Language Model Clinical Triage in Nigerian Primary Care",
+      "abstract": "Large language models are being deployed as clinical triage tools in low and middle income countries where trained physicians are scarce. Existing safety metrics, however, produce misleading confidence: models scoring 100% on binary \"did not send an emergency home\" safety measures may nevertheless exhibit systematic failure modes that render them undeployable at scale. We present IyawoBench v2.0, an extended diagnostic evaluation of large language model clinical triage on 200 synthetic vignettes derived from 1,200 real patient encounters at 19 Nigerian primary health centres. We introduce a formal mathematical framework comprising fourteen definitions and two theorems that decompose triage safety into three distinct failure modes: Conservative Escalation Bias, Systematic Downgrade Bias, and Middle-Tier Instability. We propose the Escalation Bias Index and Expected Deployment Cost as novel metrics that expose failure modes hidden by conventional accuracy and sensitivity scores. Evaluated on three frontier models (Claude Sonnet 4.6, Llama 3.3 70B, Llama 3.1 8B) plus five naive baselines, we show that: (1) all three models exhibit at least one formal failure mode; (2) traditional sensitivity metrics conceal a 77 percentage point under-triage gap in Llama 3.1 8B; (3) the optimal model varies across three deployment scenarios (Emergency-Focused, System-Sustainability, Balanced), demonstrating that single-ranking benchmarks are inadequate for LMIC clinical AI selection. IyawoBench v2.0 provides both a rigorous benchmark and a diagnostic framework transferable to any triage-style clinical AI evaluation. All code, data, and analysis pipelines are publicly available.",
+      "authors": [
+        "Anthonio Oladimeji Gabriel",
+        "Dimeji Olawuyi"
+      ],
+      "primary_category": "cs.CY",
+      "categories": [
+        "cs.CY"
+      ],
+      "published": "2026-07-31T07:11:55+00:00",
+      "link": "https://arxiv.org/pdf/2607.29085v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "benchmark for evaluating LLM clinical triage performance",
+      "llm_evidence_cn": "评估大语言模型临床分诊表现的基准",
+      "llm_evidence": "评估大语言模型临床分诊表现的基准",
+      "canonical_evidence": "评估大语言模型临床分诊表现的基准",
+      "llm_tldr_en": "We present IyawoBench v2.0, an extended diagnostic evaluation of LLM clinical triage on 200 synthetic vignettes from 1,200 real Nigerian primary care encounters, introducing a formal framework to decompose triage safety into three distinct dimensions and expose systematic failure modes.",
+      "llm_tldr_cn": "针对现有临床分诊安全性指标可能产生误导性置信度的问题，本文提出IyawoBench v2.0，基于尼日利亚19个初级卫生中心的1200例真实患者就诊构建200个合成病例，创建了一个扩展的大语言模型临床分诊诊断评估基准。文章引入包含十四个定义和两个定理的形式化框架，将分诊安全分解为三个不同维度，能够揭示即便在二元安全指标上达到100%的模型仍存在的系统性失效模式。该基准为低资源环境下的临床AI安全评估提供了更严格的诊断工具。",
+      "llm_tldr": "针对现有临床分诊安全性指标可能产生误导性置信度的问题，本文提出IyawoBench v2.0，基于尼日利亚19个初级卫生中心的1200例真实患者就诊构建200个合成病例，创建了一个扩展的大语言模型临床分诊诊断评估基准。文章引入包含十四个定义和两个定理的形式化框架，将分诊安全分解为三个不同维度，能够揭示即便在二元安全指标上达到100%的模型仍存在的系统性失效模式。该基准为低资源环境下的临床AI安全评估提供了更严格的诊断工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.28677v1",
+      "source": "arxiv",
+      "title": "Reasoning in Real World Clinical Care: Why Large Language Models Are Not Yet Safe for Autonomous Clinical Decision Support",
+      "abstract": "LLM now pass medical licensing examinations and, in curated cases, can rival physicians at diagnostic reasoning. These developments have accelerated the use of LLMs for symptom assessment and clinical decision support in diagnostic and treatment guidance, administrative documentation, and rules-based alert enhancement. This Perspective concerns the most consequential of these applications: the autonomous triage of self-presenting, undifferentiated patients, with little or no clinician in the loop. For that task, the evidence of safety does not yet exist. The gap is not in medical knowledge but in the fidelity of clinical evaluation: a model optimized to continue the most probable text is not optimized to act safely when the safe answer is the improbable must-not-miss diagnosis. Safe triage is not the selection of the most likely diagnosis; it is a sequential decision under asymmetric cost, in which the single catastrophic miss outweighs many false alarms, and the decisive signal may be one the patient has not volunteered - and that the model has not been trained to seek. The core deficit is therefore one of information gathering under uncertainty. Under incomplete histories, LLM systems may fail to show the behaviors safe triage requires: broadening the differential; seeking the missing red flag; lowering the threshold for escalation; deferring judgement until sufficient information is obtained; and escalating concern where high-harm diagnoses remain unexcluded. These modes of failure for LLMs can be difficult to detect considering that evaluations to date often use complete, well-curated, confidence-gated simulations. The application of LLMs under these conditions may be amplified by assistant-like behaviors and positive bias, including credulity, agreeableness, and miscalibration - when these are not constrained by clinical triage logic.",
+      "authors": [
+        "Shayndhan Sivanathan",
+        "Shravan Nageswaran",
+        "Mehdi Zadem",
+        "Ryaan Sultan",
+        "Nicolas von Mallinckrodt",
+        "Max Solovyev",
+        "Alexey Matyushkin",
+        "Sumon Sadhu",
+        "Gabriele C DeLuca",
+        "Sanjeeva Jeyaretna",
+        "James Hillis",
+        "Manoj Ramachandran",
+        "Prakash Jayakumar"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-29T07:12:46+00:00",
+      "link": "https://arxiv.org/pdf/2607.28677v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "addresses evaluation fidelity for autonomous clinical decision support agents, directly relevant to clinical agent evaluation with EHR",
+      "llm_evidence_cn": "针对自主临床决策支持智能体的评估保真度问题，直接关联EHR临床智能体评估",
+      "llm_evidence": "针对自主临床决策支持智能体的评估保真度问题，直接关联EHR临床智能体评估",
+      "canonical_evidence": "针对自主临床决策支持智能体的评估保真度问题，直接关联EHR临床智能体评估",
+      "llm_tldr_en": "Perspective arguing that LLMs are not yet safe for autonomous clinical triage; the critical gap is evaluation fidelity, not medical knowledge. Passing medical exams does not establish safety for clinician-free use. Informs evaluation design for clinical decision support agents, including EHR-based assessment.",
+      "llm_tldr_cn": "本文是一篇观点文章，指出大语言模型虽能通过医学执照考试和部分诊断任务，但在自主分诊这类无临床医生介入的场景下仍不安全的根本原因是临床评估保真度不足，而非医学知识缺乏。作者强调现行评估无法证明模型在真实世界中对未分化患者的自主决策安全性。这对基于电子健康记录设计临床决策支持智能体的评估规范和指标具有重要指导意义。",
+      "llm_tldr": "本文是一篇观点文章，指出大语言模型虽能通过医学执照考试和部分诊断任务，但在自主分诊这类无临床医生介入的场景下仍不安全的根本原因是临床评估保真度不足，而非医学知识缺乏。作者强调现行评估无法证明模型在真实世界中对未分化患者的自主决策安全性。这对基于电子健康记录设计临床决策支持智能体的评估规范和指标具有重要指导意义。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2607.28788v1",
+      "source": "arxiv",
+      "title": "EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses",
+      "abstract": "Clinical diagnosis at hospital admission must be made rapidly from limited, incomplete evidence. Existing diagnosis-prediction benchmarks are poorly suited to this setting: they restrict prediction to closed code sets, exclude free-text notes, and supervise with discharge diagnoses that incorporate the full inpatient course. We introduce EarlyDx, a large-scale benchmark for open-ended early diagnosis, built from 154,834 emergency department encounters in MIMIC-IV. Each encounter is restricted to records available at admission time $t_0$ and supervised by the diagnoses recorded during the ED encounter rather than at discharge. An LLM auditor further verifies every free-text label as supported, partially supported, or unsupported by that evidence; the primary evaluation scores only fully supported labels. Under a semantic LLM-as-judge protocol, no evaluated system --- frontier general, medical-specialized, or in-domain post-trained --- synthesizes admission-time evidence reliably. Zero-shot models score largely by extraction, recovering only 3-31% of diagnoses that must be inferred rather than read from the record; post-training raises inference-dependent recall to 56%, but a sizeable margin remains, and on time-critical conditions no system attains a clinician's balance of sensitivity and precision. We release the full construction and evaluation pipeline at here.",
+      "authors": [
+        "Jiahui Li",
+        "Ruili Fang",
+        "Zishuai Liu",
+        "Yutong Guo",
+        "Nan Yang",
+        "Wenzhan Song",
+        "Jin Lu",
+        "Fei Dou"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-30T19:27:36+00:00",
+      "link": "https://arxiv.org/pdf/2607.28788v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Admission-anchored benchmark using MIMIC-IV EHR for evidence-supported ED diagnoses; directly supports benchmarking clinical decision support on EHR",
+      "llm_evidence_cn": "利用MIMIC-IV电子病历构建入院锚定的证据支持诊断生成基准，直接支持基于EHR的临床决策支持评测",
+      "llm_evidence": "利用MIMIC-IV电子病历构建入院锚定的证据支持诊断生成基准，直接支持基于EHR的临床决策支持评测",
+      "canonical_evidence": "利用MIMIC-IV电子病历构建入院锚定的证据支持诊断生成基准，直接支持基于EHR的临床决策支持评测",
+      "llm_tldr_en": "EarlyDx is a large-scale benchmark from 154,834 MIMIC-IV emergency encounters that evaluates open-ended evidence-supported diagnosis generation using only admission-time records, with LLM auditing of label support.",
+      "llm_tldr_cn": "现有诊断预测基准受限于封闭编码集、忽略文本且以出院诊断为监督，不适合急诊入院场景。EarlyDx从MIMIC-IV构建154,834次急诊就诊的入院锚定基准，仅使用入院时可获取的记录，并以急诊期间记录而非出院诊断为监督，同时用LLM审计器逐一核实自由文本标签的支持程度。该基准可评测模型在有限证据下生成证据支持的开放诊断。它为基于EHR的临床决策支持代理评测提供了更真实的大规模平台。",
+      "llm_tldr": "现有诊断预测基准受限于封闭编码集、忽略文本且以出院诊断为监督，不适合急诊入院场景。EarlyDx从MIMIC-IV构建154,834次急诊就诊的入院锚定基准，仅使用入院时可获取的记录，并以急诊期间记录而非出院诊断为监督，同时用LLM审计器逐一核实自由文本标签的支持程度。该基准可评测模型在有限证据下生成证据支持的开放诊断。它为基于EHR的临床决策支持代理评测提供了更真实的大规模平台。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2607.28802v1",
+      "source": "arxiv",
+      "title": "Model or Harness? An Interaction-Centric Taxonomy for Localizing Agent Failures",
+      "abstract": "Existing evaluations often reduce agent failures to system-level outcomes, obscuring where the fault originated and which intervention would improve the agent system. This creates a repair-assignment problem: the same visible failure may call for model post-training, harness engineering, environment redesign, or benchmark repair depending on its source. Because agent behavior emerges from interactions among models, harnesses, users, tools, memory, and environments, outcome-level labels are often insufficient for improvement. Most failure taxonomies do little to resolve this problem because they are benchmark-specific and lack a shared structure. We introduce an interaction-centric taxonomy that localizes failures to the interactions in which they originate and identifies the responsible component. It organizes 41 failure modes by assigning each to an edge between two components and a fault side indicating where the repair belongs. This makes the taxonomy actionable: model-side failures identify targets for post-training, harness-side failures point to scaffolding and tool-integration fixes, and environment or grader failures reveal evaluation conditions requiring redesign. The schema applies across agent architectures, from coding assistants to long-horizon personal assistants and multi-agent systems. We ground the taxonomy in worked examples from public benchmarks, model system cards, published reports, and logged agent trajectories, and evaluate its reproducibility using independent reasoning agents as judges. Across four frontier models, the strongest judge reaches Cohen's $κ=0.76$ against human category labels, suggesting that the categories capture shared structure rather than annotator-specific preferences.",
+      "authors": [
+        "Harsh Raj",
+        "Vipul Gupta",
+        "Anas Mahmoud",
+        "Razvan-Gabriel Dumitru",
+        "Darvin Yi",
+        "Aakash Sabharwal",
+        "Yunzhong He"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-30T19:55:14+00:00",
+      "link": "https://arxiv.org/pdf/2607.28802v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Interaction-centric taxonomy for localizing agent failures, directly applicable to medical agent performance benchmarking",
+      "llm_evidence_cn": "交互中心式Agent失败定位分类法，可直接用于医疗Agent性能基准测试",
+      "llm_evidence": "交互中心式Agent失败定位分类法，可直接用于医疗Agent性能基准测试",
+      "canonical_evidence": "交互中心式Agent失败定位分类法，可直接用于医疗Agent性能基准测试",
+      "llm_tldr_en": "Introduces an interaction-centric taxonomy to localize agent failures across model, harness, tool, memory, and environment, overcoming outcome-level weakness. This transferable evaluation framework supports benchmark repair and is applicable to medical agent performance.",
+      "llm_tldr_cn": "现有评估往往把Agent失败归因于系统级结果，难以判断问题出在模型、工具还是环境中。该文提出一种以交互为中心的分类法，将失败定位到模型、夹具、用户、工具、记忆与环境之间的具体交互。该方法有助于修复分配问题，指导后续改进。对医疗Agent评估而言，提供了一种更精细的失败溯源与基准设计思路。",
+      "llm_tldr": "现有评估往往把Agent失败归因于系统级结果，难以判断问题出在模型、工具还是环境中。该文提出一种以交互为中心的分类法，将失败定位到模型、夹具、用户、工具、记忆与环境之间的具体交互。该方法有助于修复分配问题，指导后续改进。对医疗Agent评估而言，提供了一种更精细的失败溯源与基准设计思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2607.23722v1",
+      "source": "arxiv",
+      "title": "E-Bench: Benchmarking Multi-Step Tool-Use Agents in Real-World Product Scenarios",
+      "abstract": "Large Language Models (LLMs) are increasingly deployed as agents that interact with stateful environments over multiple steps: gathering hidden information, composing tool calls, and committing state changes. We refer to this capability as multi-step tool use. Existing benchmarks have advanced tool-use agent evaluation, but often focus on isolated API calls, short trajectories, or settings that are difficult to scale or control. We introduce E-Bench, a fully synthetic benchmark with 323 state-changing tasks across three product domains: Honor of Kings, QQ Music, and Tencent Meeting. E-Bench decouples environment synthesis from task synthesis: graph-guided database filling builds reusable, orphan-free product environments, while generator-solver asymmetry creates tasks with both an information gap and a tool gap, requiring agents to discover hidden data and compose multiple tool calls before changing state. Outcomes are graded deterministically by database-state diffs. Since both environments and tasks are synthetic, E-Bench is controllable at the environment level and scalable at the task level. Benchmarking 11 cutting-edge LLMs shows that multi-step tool use remains challenging: Pass^3 stays below 60% for the strongest models, and even with code execution in the E-Bench-Code extension, reliability (Pass^3) remains below 70%.",
+      "authors": [
+        "Weihuang Zheng",
+        "Tianyuan Zou",
+        "Eileen Ye",
+        "Alphet Liu",
+        "Youyong Kong",
+        "Ya-Qin Zhang",
+        "Duran Zheng",
+        "Maxm Pan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-26T15:38:28+00:00",
+      "link": "https://arxiv.org/pdf/2607.23722v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "general multi-step tool-use agent benchmark; transferable evaluation methodology for medical agent benchmarking",
+      "llm_evidence_cn": "通用多步工具使用Agent基准，评测方法可迁移至医疗Agent评估",
+      "llm_evidence": "通用多步工具使用Agent基准，评测方法可迁移至医疗Agent评估",
+      "canonical_evidence": "通用多步工具使用Agent基准，评测方法可迁移至医疗Agent评估",
+      "llm_tldr_en": "E-Bench is a synthetic benchmark of 323 state-changing tasks for evaluating LLM agents in multi-step tool-use across three product domains, decoupling environment and task synthesis for scalable, controllable agent evaluation.",
+      "llm_tldr_cn": "现有智能体评测多聚焦单步API调用或短轨迹，难以覆盖真实多步工具使用。为此，E-Bench构建了包含323个状态修改任务的全合成基准，覆盖三个真实产品域，并采用图引导数据库填充解耦环境与任务合成。该基准为多步工具型Agent提供可扩展、可控的评测框架，其评测范式可迁移到医疗Agent等领域的性能评估。",
+      "llm_tldr": "现有智能体评测多聚焦单步API调用或短轨迹，难以覆盖真实多步工具使用。为此，E-Bench构建了包含323个状态修改任务的全合成基准，覆盖三个真实产品域，并采用图引导数据库填充解耦环境与任务合成。该基准为多步工具型Agent提供可扩展、可控的评测框架，其评测范式可迁移到医疗Agent等领域的性能评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.28609v1",
+      "source": "arxiv",
+      "title": "OSReward: Instituting Standardized Evaluation for Cross-Platform Computer-Use Reward Models",
+      "abstract": "Computer-using agents (CUAs) are advancing rapidly across the digital world. A CUA trajectory records the agent's actions, states, and reasoning. Verifying whether it fulfilled the task instruction is central to CUA evaluation, data curation, and reinforcement learning. Neither human-written verifiers nor human annotators can provide such verification at scale, so the field increasingly turns to vision-language models (VLMs) as judges of CUA trajectories. But a fundamental question has long gone unexamined: are these VLM judges reliable enough? To study it systematically, we introduce OSReward, a realistic, high-quality benchmark that evaluates VLM judges on CUA trajectories. The trajectories come from diverse agent backbones executing human-verified instructions across platforms, then rigorously labeled with ground-truth verdicts through multi-stage human annotation. Building on it, we derive OSReward-Hard, a challenge set concentrating genuinely hard cases, and OSReward-Multi for fine-grained efficiency and alignment scoring. The most comprehensive evaluation of VLM judges to date finds even state-of-the-art models fall short of an ideal judge, sharing a systematic leniency bias that mislabels failed runs as successes. The few reliable enough to trust are too expensive to run at scale, while affordable open models trail far behind. To close this gap, we construct and release OS-Shepherd-100K, an open corpus of reasoning-annotated trajectory judgments for the CUA community. On it, we train OS-Shepherd (9B and 35B), open reward models that supply low-cost, stable, and reliable reward signals, matching commercial judges at 30-60% lower cost than the frontier. Extensive analyses further inform the design of reliable CUA reward at scale. Our code, benchmark, dataset, and model checkpoints are available at https://os-copilot.github.io/OSReward-Home/.",
+      "authors": [
+        "Qiushi Sun",
+        "Kanzhi Cheng",
+        "Yian Wang",
+        "Bowen Yang",
+        "Hang Yan",
+        "Liheng Chen",
+        "Fangzhi Xu",
+        "Zichen Ding",
+        "Nuo Chen",
+        "Jialin Cao",
+        "Xingdong Gong",
+        "Zehao Li",
+        "Kaiming Jin",
+        "Xinfeng Yuan",
+        "Zhoumianze Liu",
+        "Jingyang Gong",
+        "Zhangyue Yin",
+        "Jiahui Gao",
+        "Zhiyong Wu",
+        "Tianbao Xie",
+        "Jianbing Zhang",
+        "Ben Kao",
+        "Lingpeng Kong"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CV"
+      ],
+      "published": "2026-07-30T17:57:41+00:00",
+      "link": "https://arxiv.org/pdf/2607.28609v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "standardized benchmark for reward models used in agent evaluation and RL, transferable to healthcare agents",
+      "llm_evidence_cn": "为智能体奖励模型建立标准化评测，可迁移至医疗智能体的RL评估",
+      "llm_evidence": "为智能体奖励模型建立标准化评测，可迁移至医疗智能体的RL评估",
+      "canonical_evidence": "为智能体奖励模型建立标准化评测，可迁移至医疗智能体的RL评估",
+      "llm_tldr_en": "OSReward introduces a realistic, high-quality benchmark for evaluating VLM judges on computer-use agent trajectories, establishing standardized evaluation for reward models and agent verification that can be adapted to medical agent evaluation.",
+      "llm_tldr_cn": "计算机使用智能体的轨迹验证主要依赖VLM裁判，但其可靠性缺少系统检验。OSReward构建了来自多种智能体骨干的跨平台轨迹基准，以真实任务系统评估VLM裁判的验证能力。实验揭示了裁判模型在不同平台轨迹上的可靠性差异。该基准为奖励模型和智能体评估提供标准化协议，可迁移到医疗智能体的RL评估与数据筛选场景，推动更可信的智能体自动化评测。",
+      "llm_tldr": "计算机使用智能体的轨迹验证主要依赖VLM裁判，但其可靠性缺少系统检验。OSReward构建了来自多种智能体骨干的跨平台轨迹基准，以真实任务系统评估VLM裁判的验证能力。实验揭示了裁判模型在不同平台轨迹上的可靠性差异。该基准为奖励模型和智能体评估提供标准化协议，可迁移到医疗智能体的RL评估与数据筛选场景，推动更可信的智能体自动化评测。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.28956v1",
+      "source": "arxiv",
+      "title": "MerchantBench: Benchmarking LLM Agents for Long-Term Coherence in E-Commerce Operations",
+      "abstract": "Large language model agents are increasingly evaluated as autonomous tool users, yet most benchmarks focus on bounded tasks with immediate success criteria. Real-world deployments often require Long-Term Coherence, the capacity to preserve purposeful behavior across extended horizons while adapting decisions to accumulated evidence. Evaluating this capacity requires a persistent environment in which actions constrain future choices, feedback arrives at heterogeneous delays, and incoherent behavior produces measurable cumulative effects. Seller-side e-commerce provides a suitable setting for this evaluation through recurrent and interdependent decisions over Product Sourcing, Listing and Pricing Control, Cash-Flow Management, and Mixed-Latency Feedback Adaptation. We introduce MerchantBench, a 365-day order-level simulation grounded in 98,843 real e-commerce product records and equipped with 26 tools for agent interaction. MerchantBench couples promptly observable Upstream Supplier Events with delayed Downstream Order Outcomes, requiring agents to follow individual order lifecycles and revisit earlier decisions. We evaluate eight LLMs under two agent frameworks in 48 runs, each spanning 365 simulated days. Our results reveal a substantial gap between even the latest LLMs and human participants, with the best LLM configuration attaining only 27.3\\% of the mean final net assets achieved by human participants.",
+      "authors": [
+        "Qiming Shi",
+        "Yulong Tao",
+        "Linbo Jin",
+        "Zhaolu Kang",
+        "Yibo Dou",
+        "Jiawen Zhu",
+        "Tianjun Pan",
+        "Shaokang Fu",
+        "Chengyu Wang",
+        "Siyue Li",
+        "Yaping Cheng",
+        "Di Weng",
+        "Chengfu Huo"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-31T02:20:24+00:00",
+      "link": "https://arxiv.org/pdf/2607.28956v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark for LLM agents on long-term coherence in persistent environments, transferable to medical agent evaluation",
+      "llm_evidence_cn": "面向长期一致性的LLM Agent基准，可迁移到医疗Agent评测",
+      "llm_evidence": "面向长期一致性的LLM Agent基准，可迁移到医疗Agent评测",
+      "canonical_evidence": "面向长期一致性的LLM Agent基准，可迁移到医疗Agent评测",
+      "llm_tldr_en": "MerchantBench evaluates LLM agents for long-term coherence using a persistent e-commerce environment with delayed feedback and cumulative effects. It addresses the shortfall of bounded-task benchmarks and offers a transferable approach to test long-horizon decision making in domains such as healthcare agents.",
+      "llm_tldr_cn": "现有LLM Agent基准大多聚焦有限任务和即时成功指标，无法反映真实部署中的长期一致性。该文提出MerchantBench，在电商持续环境中通过行动约束未来选择、延迟反馈和累积效应来评估长周期行为。其设计能够度量Agent在长时间跨度下保持目标并适应累积证据的能力。该基准范式可迁移到需要长期干预跟踪的医疗Agent评测。",
+      "llm_tldr": "现有LLM Agent基准大多聚焦有限任务和即时成功指标，无法反映真实部署中的长期一致性。该文提出MerchantBench，在电商持续环境中通过行动约束未来选择、延迟反馈和累积效应来评估长周期行为。其设计能够度量Agent在长时间跨度下保持目标并适应累积证据的能力。该基准范式可迁移到需要长期干预跟踪的医疗Agent评测。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.29405v1",
+      "source": "arxiv",
+      "title": "Beyond Component Testing: Validating Agentic AI Systems",
+      "abstract": "Agentic AI systems act through multi-step trajectories that combine planning, tool use, memory, interaction, and adaptation. This behavior stretches validation practice beyond component testing and one-shot input--output evaluation, because acceptable system behavior now depends on how decisions unfold over time and under changing environmental conditions. This survey synthesizes 257 papers spanning agent evaluation, software assurance, cyber-physical systems, runtime monitoring, and regulatory guidance in order to characterize the validation problem for agentic systems. The review is organized around a five-dimension taxonomy covering behavioral, safety, temporal, regulatory, and multi-agent concerns, and uses that taxonomy to map current approaches and expose recurrent coverage gaps. The analysis shows that behavioral evaluation is comparatively mature, while temporal validity, runtime evidence maintenance, regulatory legibility, and open-ended multi-agent systems assurance remain under-developed. Three cross-domain case studies (medical care, industrial operations, smart-mobility systems) provide operational illustrations of how the five taxonomy dimensions recur in safety-critical settings, grounded in the failure patterns documented in the reviewed literature. The paper concludes with a lifecycle-oriented research agenda centered on bounded-autonomy specifications, adversarial trajectory generation, runtime monitoring, and audit-ready evidence structures. The central claim is that trustworthy deployment of agentic AI depends on validating trajectories in context rather than assessing isolated components alone.",
+      "authors": [
+        "Fabio Orazio Mirto",
+        "Luca D'Agati",
+        "Giuseppe Tricomi",
+        "Stefano Silvestri",
+        "Francesco Longo",
+        "Antonio Puliafito",
+        "Giovanni Merlino"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.MA",
+        "cs.SE"
+      ],
+      "published": "2026-07-31T13:24:34+00:00",
+      "link": "https://arxiv.org/pdf/2607.29405v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "survey of agentic AI validation approaches; taxonomy and metrics for multi-step agent evaluation",
+      "llm_evidence_cn": "智能体系统验证综述，提供多步Agent评测的分类与指标框架",
+      "llm_evidence": "智能体系统验证综述，提供多步Agent评测的分类与指标框架",
+      "canonical_evidence": "智能体系统验证综述，提供多步Agent评测的分类与指标框架",
+      "llm_tldr_en": "This survey synthesizes 257 papers on validating agentic AI systems across behavioral, safety, temporal, regulatory, and multi-agent dimensions, mapping current approaches and gaps for time-extended agent evaluation.",
+      "llm_tldr_cn": "自主智能体的行为涉及规划、工具使用、记忆和交互等多步轨迹，传统组件测试与单轮输入输出评估已不足以验证其可接受性。该综述综合257篇文献，围绕行为、安全、时间、监管和多智能体五个维度构建分类体系，系统梳理现有智能体验证方法。通过该分类法可暴露当前方法的缺口与可迁移策略。这为医疗Agent在EHR数据上的评估指标与验证流程设计提供了通用参考框架。",
+      "llm_tldr": "自主智能体的行为涉及规划、工具使用、记忆和交互等多步轨迹，传统组件测试与单轮输入输出评估已不足以验证其可接受性。该综述综合257篇文献，围绕行为、安全、时间、监管和多智能体五个维度构建分类体系，系统梳理现有智能体验证方法。通过该分类法可暴露当前方法的缺口与可迁移策略。这为医疗Agent在EHR数据上的评估指标与验证流程设计提供了通用参考框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "What are the metrics for healthcare agent evaluation using EHR data?",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2607.29626v1",
+      "source": "arxiv",
+      "title": "AgentHPOBench: A Benchmark For Evaluating LLM Agents as Sequential Hyperparameter Optimizers",
+      "abstract": "As LLMs evolve from code completion systems into autonomous scientific agents, evaluating their ability to conduct experiments has become increasingly important. Existing benchmarks typically focus on static code generation, paper replication, or final answer correctness, but do not directly assess whether agents can interpret experimental evidence and use it to guide subsequent hyperparameter decisions. To address this gap, we introduce AgentHPOBench, a sequential benchmark comprising 30 executable machine learning tasks across seven research categories. Each task begins with a validated baseline run, after which an agent performs several sequential interventions. At each step, the agent observes the accumulated configurations, metrics, and logs before proposing the next valid configuration. We evaluate 12 widely used agents and conventional HPO baselines under a unified protocol. The results show that current agents exhibit measurable experimental optimization ability across domains, but still face clear limitations in sustained iterative refinement, complex log diagnosis, and consistent progress toward reported reference performance.",
+      "authors": [
+        "Tianyu Huai",
+        "Tingshuo Fan",
+        "Xinchi Chen",
+        "Yining Zheng",
+        "Yuxin Wang",
+        "Shuang Chen",
+        "Jie Zhou",
+        "Xuanjing Huang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-07-31T16:58:00+00:00",
+      "link": "https://arxiv.org/pdf/2607.29626v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Sequential benchmark for evaluating LLM agents as experimental decision-makers; transferable to medical agent benchmarking",
+      "llm_evidence_cn": "面向顺序实验决策的LLM Agent基准，可迁移到医疗Agent评测",
+      "llm_evidence": "面向顺序实验决策的LLM Agent基准，可迁移到医疗Agent评测",
+      "canonical_evidence": "面向顺序实验决策的LLM Agent基准，可迁移到医疗Agent评测",
+      "llm_tldr_en": "AgentHPOBench is a sequential benchmark with 30 executable ML tasks to test LLM agents' ability to interpret evidence and adapt hyperparameter choices. It goes beyond static code evaluation and its interaction-driven assessment can transfer to medical agent evaluation.",
+      "llm_tldr_cn": "该文提出AgentHPOBench，用于评测LLM Agent能否解释实验证据并据此调整超参数。基准包含30个可执行机器学习任务，每个任务从基线开始，Agent逐步干预并观察累积结果。它弥补了现有基准只关心静态代码或最终答案的不足。这种顺序交互式评估可借鉴到医疗Agent逐步决策的性能评测中。",
+      "llm_tldr": "该文提出AgentHPOBench，用于评测LLM Agent能否解释实验证据并据此调整超参数。基准包含30个可执行机器学习任务，每个任务从基线开始，Agent逐步干预并观察累积结果。它弥补了现有基准只关心静态代码或最终答案的不足。这种顺序交互式评估可借鉴到医疗Agent逐步决策的性能评测中。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

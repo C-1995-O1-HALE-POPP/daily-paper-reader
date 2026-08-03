@@ -1,0 +1,683 @@
+Title: EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses
+
+URL Source: https://arxiv.org/pdf/2607.28788v1
+
+Published Time: Mon, 03 Aug 2026 00:12:51 GMT
+
+Number of Pages: 19
+
+Markdown Content:
+# EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses 
+
+# Jiahui Li 
+
+University of Georgia Athens, USA jl57095@uga.edu 
+
+# Ruili Fang 
+
+University of Georgia Athens, USA ruili.fang@uga.edu 
+
+# Zishuai Liu 
+
+University of Georgia Athens, USA zishuai.liu@uga.edu 
+
+# Yutong Guo 
+
+University of Georgia Athens, USA yutong.guo@uga.edu 
+
+# Nan Yang 
+
+Beijing Luhe Hospital Beijing, China yangnan@mail.ccmu.edu.cn 
+
+# Wenzhan Song 
+
+University of Georgia Athens, USA wsong@uga.edu 
+
+# Jin Lu 
+
+University of Georgia Athens, USA jin.lu@uga.edu 
+
+# Fei Dou ✉
+
+University of Georgia Athens, USA fei.dou@uga.edu 
+
+## Abstract 
+
+Clinical diagnosis at hospital admission must be made rapidly from limited, incomplete evidence. Existing diagnosis-prediction bench-marks are poorly suited to this setting: they restrict prediction to closed code sets, exclude free-text notes, and supervise with dis-charge diagnoses that incorporate the full inpatient course. We introduce EarlyDx , a large-scale benchmark for open-ended early diagnosis, built from 154 ,834 emergency department encounters in MIMIC-IV. Each encounter is restricted to records available at admission time 𝑡 0 and supervised by the diagnoses recorded during the ED encounter rather than at discharge. An LLM auditor further verifies every free-text label as supported , partially supported , or 
+
+unsupported by that evidence; the primary evaluation scores only fully supported labels. Under a semantic LLM-as-judge protocol, no evaluated system—frontier general, medical-specialized, or in-domain post-trained—synthesizes admission-time evidence reliably. Zero-shot models score largely by extraction, recovering only 3–
+
+31% of diagnoses that must be inferred rather than read from the record; post-training raise inference-dependent recall to 56% , but a sizeable margin remains, and on time-critical conditions no system attains a clinician’s balance of sensitivity and precision. We release the full construction and evaluation pipeline at here. 
+
+## CCS Concepts 
+
+• Computing methodologies → Natural language processing ;
+
+Machine learning ; • Applied computing → Health informatics ; •
+
+Information systems → Data mining. 
+
+## 1 Introduction 
+
+When a patient is admitted through the emergency department, clinicians must commit to an early, working diagnosis under uncer-tainty: one formed from only the evidence available at the point of admission—vitals, laboratory results, imaging, and prior history— to justify admission and guide the immediate “next action” in care [ 19 , 25 , 35 ]. This early assessment differs fundamentally from a final or discharge diagnosis, which is established retrospectively 
+
+(a) Granularity lost to closed-set ICD conversion. 
+
+(b) One category (S62) absorbs 210 distinct diagnoses. 
+
+Figure 1: Information lost when free-text diagnoses are con-verted to a closed ICD code set. (a) The 13 ,172 distinct ED diag-nosis titles collapse to 2,152 three-digit categories ( 6.1×) and to MDS-ED’s 1,428 codes ( 9.2×). (b) S62 conflates 210 clinically distinct diagnoses, discarding laterality, bone, and displace-ment that open-ended free-text labels preserve. 
+
+after the full hospital course; it is instead a synthesis of partially observed signals under substantial clinical uncertainty [19]. Large language models (LLMs) have shown strong capabilities across diverse medical tasks [ 16 , 29 , 30 ] and are natural candidates for this synthesis-under-uncertainty problem. However, existing benchmarks for early diagnosis are designed for non-LLM, closed-set classifiers [ 1 , 5, 26 ] and suffer from three limitations that make them ill-suited for evaluating modern LLMs. (i) Closed, converted labels: diagnoses are mapped to a fixed ICD code set, discard-ing clinical nuance and information lost during text-to-code con-version [ 20 ], as shown in Figure 1. (ii) Restricted, non-textual modalities: rich free-text signals such as chief complaints, radi-ology findings, and prior history are excluded in favor of tabu-lar features. (iii) Temporal inconsistency: models receive early, admission-time inputs but are supervised with discharge diagnoses that are coded over the entire hospital course. These labels depend on information unavailable at admission. arXiv:2607.28788v1 [cs.AI] 30 Jul 2026 KDD ’26, August 2026, Location Li et al. 
+
+Table 1: EarlyDx versus existing medical-LLM benchmarks. Task : Gen. = generation of free-text diagnoses, Cls. = classification. 
+
+Label time : when the label is set (early/admission vs. discharge). “Multi-source text”: labs, imaging/ECG interpretations, vitals, and history rendered as text. Evid. verif. : evidence-grounded label verification.                                                                                
+
+> Med-PaLM 2 Med-PaLM M Wang et al. AgentClinic MIRA MedTVT MDS-ED MC-BEC EarlyDx
+> [24] [29] [31] [21] [9] [34] [2] [5] (ours)
+> Task QA Mixed QA Agent Agent Cls. Cls. Cls. Gen.
+> CoT ✗✗✗✗✗✗✗✗✓
+> Labels Closed Closed Open Closed Closed Closed Closed Closed Open
+> Evid. verif. ✗✗✗✗✗✗✗✗✓
+> Modalities Text Text+Img+Omics Text Text+Img Text/FHIR ECG+CXR+Lab Tab+ECG Multimodal Multi-src text
+> Label time –––Interact. Discharge Discharge Discharge Discharge Early
+> Scale ∼10k Q 14 tasks –534 574 8.7k 129k 103k 155k
+
+To address these gaps, we introduce EarlyDx , a large-scale (𝑁 =154 ,834 encounters), admission-anchored benchmark for open-ended early diagnosis. Its central design choice is that recorded diagnoses are not taken as ground truth uncritically: an LLM au-ditor verifies each free-text label as supported , partially supported ,or unsupported by the admission-time evidence, so the benchmark can score models only on diagnoses the early record actually sub-stantiates. This evidence grounding is what makes the benchmark diagnostic rather than merely predictive—it lets us separate diag-noses a model extracts from text from those it must infer .Our contributions are: 
+
+• An admission-anchored benchmark for open-ended early diagnosis. 154,834 ED encounters supervised with 
+
+ED-encounter rather than discharge diagnoses, all evidence clipped to admission ( 𝑊 =0), labels kept as free text, scored by a semantic judge (89.7% agreement with a second judge, 94% with manual matching). 
+
+• Labels grounded in the evidence available at admission. 
+
+Each label is verified against the early record; the primary track scores the 32.7% fully supported, the 37.0% partially supported form a secondary track. Systems separate sharply across this boundary (0.51 vs. 0.27 F1), confirming it is mean-ingful. 
+
+• Current LLMs extract diagnoses rather than infer them. 
+
+Only 43% of supported diagnoses appear verbatim in the in-put; zero-shot LLMs recover 37–65% of these but 3–31% of the implicit majority. Post-training lifts implicit recall to 56% without closing the gap, and no system, ours included, reaches a clinician’s operating point on time-critical condi-tions. 
+
+## 2 Related Work 2.1 LLMs for Diagnosis 
+
+Large language models achieve expert-level accuracy on medical question answering [ 24 ], but QA is typically multiple-choice or short-answer and does not capture the evidence synthesis and uncertainty of real practice. Later work moves to open-ended clin-ical scenarios, where domain-specific medical LLMs show con-sistent advantages over general-purpose models [ 31 ], and to au-tonomous agents that navigate a clinical action space to reach a diagnosis [ 9, 21 , 29 ]. Because the underlying datasets contain no doctor–patient dialogue, these agentic settings rely on rule-based or LLM-driven patient simulators to synthesize the missing interaction, yielding trajectories that depart from authentic clin-ical documentation. We instead evaluate models directly on real admission-time records, isolating diagnostic capability from the artifacts of simulated interaction. 
+
+## 2.2 Early Diagnosis Benchmarks 
+
+Existing emergency-medicine benchmarks observe the patient over a short window measured from ED arrival : MC-BEC predicts de-compensation, disposition, and revisit from the first 15 minutes after rooming [ 5 ], and MDS-ED predicts deterioration and a fixed set of 
+
+1,428 ICD-10-CM discharge diagnoses from the first 90 minutes [ 2]. Such windows precede much of the diagnostic workup—labs and imaging are typically not yet back—while the supervision comes from discharge codes assigned retrospectively over the whole inpa-tient stay, and therefore includes conditions unknowable at admis-sion. EarlyDx differs on all three axes (Table 1): it anchors at the 
+
+admission decision (𝑡 0=admittime ), where the complete ED workup is observable but no post-admission record is; it supervises with 
+
+ED-encounter diagnoses as open-ended text rather than closed-set codes; and it is the only benchmark to verify each label against the evidence actually available at 𝑡 0.
+
+## 3 Method 3.1 Cohort and Task Formulation 
+
+Figure 2 summarizes the construction and evaluation pipeline. Ear-lyDx is derived from MIMIC-IV [ 15 ], combining the ED, hospital, and note modules. We include every emergency-department stay that results in a hospital admission, yielding 𝑁 =154 ,834 encounters. We formulate early diagnosis as an open-ended, multi-label task: given the information available at admission 𝑥 , a model produces a set of free-text diagnoses ˆ𝑌 ={ ˆ𝑦 1, . . . , ˆ𝑦 𝑘 }, evaluated against the reference set 𝑌 of ED-encounter documented diagnoses. 
+
+## 3.2 Admission-Anchored Early Workup Input Construction 
+
+We set 𝑡 0 to the hospital admission time ( admittime ) and retain only records charted at or before 𝑡 0+𝑊 . Each encounter is serialized into a single text prompt comprising: (i) demographics and arrival mode; (ii) chief complaint and triage vitals; (iii) ED serial vitals; (iv) home EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses KDD ’26, August 2026, Location 
+
+Figure 2: Overview of the EarlyDx framework. From MIMIC-IV emergency-department encounters, we build an admission-anchored early-workup input (cutoff at 𝑡 0+𝑊 ; the main benchmark uses 𝑊 =0, i.e., the cutoff coincides with the admission time 
+
+𝑡 0), verify free-text diagnosis labels into evidence-grounded support categories, generate gold-conditioned chain-of-thought supervision for supported and partially supported cases, split the evidence-supported set, and evaluate zero-shot and post-trained LLMs via semantic LLM-as-judge matching. 
+
+medications ( medrecon ); (v) baseline measurements ( OMR ); (vi) lab-oratory results; (vii) ECG interpretation ( machine_measurements ); (viii) echocardiography; (ix) radiology findings; and (x) prior history (past ED diagnoses and prior discharge problem lists). Imaging and physiological signals are rendered as report findings and structured measurements rather than raw pixels or waveforms; fields with no qualifying record are marked None . Appendix I shows a complete serialized encounter. Coverage is uneven (Figure 3): chief complaint and triage vitals are universal, ECG and radiology reach 74% and 
+
+65% , echocardiography 34% , and in-window laboratory results only 
+
+16% —admitted-patient results are typically timestamped at or after 
+
+𝑡 0. This heterogeneity is intrinsic to real admission data and is what makes the task one of reasoning over partially observed evidence. 
+
+Temporal cutoff. Because the ED diagnosis table records no times-tamp for when a diagnosis was formulated, 𝑡 0 is an observable an-chor for the early diagnostic context rather than the true decision time; any window beyond it may therefore expose post-decision evidence. We treat 𝑊 as a parameter and study its effect directly (Table 9). The main benchmark uses the most conservative setting, 
+
+𝑊 =0. Since 𝑡 0 falls at the end of the ED workup (median ED stay 
+
+≈4.6 h), this still admits the full pre-admission evaluation, minimiz-ing known leakage without leaving the input evidence-poor; wider windows ( 𝑊 ∈ { 6, 24 } h) are reported in Appendix L. 
+
+Timestamp semantics. Evidence is filtered on event time: charttime 
+
+for laboratory results, vital signs, and radiology reports; ecg_time 
+
+for ECG interpretations; and chartdate for outpatient measure-ments. Event time precedes the time at which a result becomes 
+
+Figure 3: Modality coverage in EarlyDx at 𝑊 =0: fraction of the 154 ,834 encounters for which each input field is present. Presentation and triage vitals are universal; ECG and radi-ology cover 74% and 65% ; in-window laboratory results only 
+
+16% , since admitted-patient results are timestamped at or after 𝑡 0. Colors group modalities by type. 
+
+readable in the record ( storetime ) by a median of 1.2 h for labora-tory results and 1.8 h for radiology reports, so event-time filtering is the more inclusive of the two conventions and our figures should be read as an upper bound on what was strictly available at 𝑡 0; Appen-dix D reports a sensitivity analysis under storetime filtering. Prior KDD ’26, August 2026, Location Li et al. 
+
+history is drawn only from earlier admissions whose admittime 
+
+precedes 𝑡 0.
+
+## 3.3 Diagnosis Labels and Evidence-Grounded Verification 
+
+Reference diagnoses are the ICD [ 10 ] titles from the MIMIC-IV-ED diagnosis table for the corresponding stay, taken as open-vocabulary text. This table records the diagnoses billed for the emergency encounter (ordered by seq_num , without a per-diagnosis timestamp) and is therefore scoped to the early presentation rather than the full hospitalization. We filter administrative and symptom codes (ICD-10 chapters R, V–Z; ICD-9 E/V, 780–799) and over-generic Not Otherwise Specified (NOS) / Not Elsewhere Classified (NEC) entries, retaining genuine diagnoses. Because these labels are coded administratively and retrospectively, some cannot be inferred at admission. We therefore apply an LLM auditor (Mini-Max M3 [ 18 ]) that, given the admission-time input 𝑥 and a reference label 𝑦 , assigns one of three categories. A label is supported when a specific admission-time finding—in the labs, imaging report, ECG interpretation, or vitals—directly substantiates it. It is partially supported when the evidence is only indirect or circumstantial (a relevant comorbidity in the past history, a corresponding home medication, a suggestive but non-confirmatory sign), so that no admission-time finding establishes it definitively. It is unsupported 
+
+when it cannot be derived from 𝑥 at all, because it depends on in-formation unavailable at admission: results arriving later in the stay such as microbiology cultures, the post-admission workup, or outside-hospital records (e.g. a transfer patient whose confirmatory imaging was performed externally). These categories account for 
+
+32 .7% , 37 .0% , and 30 .4% of the 242 ,729 labels. Appendix B reports an independent re-audit of this assignment by four clinicians and shows that system rankings are invariant under a stricter, human-confirmed gold standard; Appendix O gives the review protocol. We define three evaluation tracks. The primary track scores against supported labels only; the secondary track adds partially sup-ported labels; and a historical-comorbidity track isolates the partially supported labels alone. Unsupported labels are excluded throughout, and headline numbers use the primary track unless noted. Appendix C shows that rankings are unchanged if predic-tions matching partially supported labels are withheld from the precision denominator rather than counted as false positives. 
+
+## 3.4 Evidence Availability Across Patient Subgroups 
+
+Because the evidence class determines which labels enter the pri-mary track, a systematic difference in evidence availability across patient groups would bias the benchmark itself. Appendix F reports the class distribution by subgroup alongside the cohort’s compo-sition. The cohort is adult and skewed toward higher acuity— 57% 
+
+of encounters are triaged ESI 1–2 and 53% arrive by ambulance— as expected of ED visits ending in admission; race and language distributions reflect the source institution’s catchment and are not nationally representative. We find no difference of consequence. Supported rates vary by at most 5 percentage points across any grouping and not at all by sex ( 𝑝 =0.32 ). What residual variation there is follows clinical rather 
+
+Figure 4: Agreement between two independent LLM judges on the matched-pair count over all 6,975 test predictions. 
+
+Figure 5: Agreement between the LLM judge and manual gold-matching review on 100 test predictions. 
+
+than demographic axes—ESI 1 presentations have the highest sup-ported rate, consistent with a more extensive workup—so evidence availability varies more with how long one observes than with who the patient is. Model performance, by contrast, is not flat across subgroups: Appendix F reports a monotone decline with patient age that appears in every system, including models never trained on EarlyDx. 
+
+## 3.5 Evaluation Protocol 
+
+Because diagnoses are free text, exact string matching is unreliable (e.g. “CAD” vs. “coronary artery disease”). We therefore adopt an LLM-as-judge protocol: for each encounter the judge computes a one-to-one matching between ˆ𝑌 and 𝑌 and returns the number of matched pairs 𝑚 . We report micro- and example-based Preci-sion, Recall, and F1, with 𝑃 =𝑚 /| ˆ𝑌 | and 𝑅 =𝑚 /| 𝑌 |. The judge is fixed (qwen3.5-27B [ 28 ]) and its decisions are cached for reproducibility. Two checks establish that the resulting scores are neither an artifact of a single model nor merely self-consistent. Re-scoring all 
+
+6,975 non-empty (gold, prediction) pairs with a second, independent judge yields exact agreement on the matched-pair count in 89 .7% 
+
+of cases and agreement within one pair in 99 .9% , at a per-example F1 correlation of 𝑟 =0.81 (Figure 4). A manual gold-matching review EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses KDD ’26, August 2026, Location 
+
+Figure 6: The EarlyDx fine-tuning framework. For each en-counter, an ED-encounter diagnosis label (MIMIC-IV-ED) and the admission-time evidence are passed to an LLM audi-tor that produces a gold-conditioned chain-of-thought (CoT) rationale. The evidence (input), label (target), and CoT (ra-tionale) together fine-tune a pretrained LLM to predict diag-noses with an inspectable rationale. 
+
+of 100 sampled pairs matches the judge’s count in 94% of cases, all within one pair (Figure 5). 
+
+## 4 Experiment 4.1 Dataset Split 
+
+Discarding unsupported labels leaves 120 ,789 of the 154 ,834 admit-ted ED encounters with at least one supported or partially sup-ported label. We split these by patient—all encounters of a subject fall entirely in train or test—giving 113 ,814 training and 6,975 test encounters. 
+
+## 4.2 Models 
+
+As zero-shot baselines we prompt state-of-the-art LLMs to pro-duce diagnoses directly, spanning general-purpose models— GPT-5.5 [ 23 ], Claude Opus 4.8 [ 3 ], Nemotron-550B [4], GLM-5.2 [33 ]— and medical-specialized ones: MedGemma-4B [22 ], OpenBioLLM-8B [ 6], and HuatuoGPT-o1-8B [7 ]. Appendix E probes these models for verbatim memorization of MIMIC-derived text. To control for output-format priors, a few-shot variant prompts the two strongest general models with 5 EarlyDx-style exemplars demonstrating sparse, evidence-supported output. To ask whether the task re-quires a generative formulation, a supervised baseline fine-tunes 
+
+ClinicalBERT [ 13 ] on the same split as a multi-label classifier over the open-vocabulary titles, emitting its two highest-scoring titles per encounter. We further evaluate our post-trained model on inputs stripped of all evidence except demographics and the chief complaint, separating evidence use from label-prior fitting. Two non-learning baselines bound what is attainable without diagnostic inference: a frequency prior predicting the three most common training diagnoses for every encounter, and a retrieval 
+
+baseline that embeds each test encounter with a biomedical re-triever [ 14 ] and copies its nearest training encounter’s diagnoses verbatim—performing no reasoning over the evidence, it upper-bounds what fitting the site’s coding distribution alone can achieve. As post-trained models we fine-tune Qwen3.5-4B on the EarlyDx training set (Figure 6), supervised with the gold-conditioned ratio-nale layer of Appendix G; hyperparameters are given in Appendix K and all four pipeline prompts in Appendix J. As a human refer-ence a clinician independently diagnoses 1,000 random encounters from the same admission-time inputs. 
+
+## 5 Results 5.1 Main Comparison 
+
+Table 2 reports diagnosis performance by label evidence category. Most zero-shot models—general and medical alike—fall below 0.40 
+
+F1, underscoring the difficulty of early diagnosis. Post-training yields substantial gains: our fine-tuned model reaches a supported 
+
+(primary-track) F1 of 0.51 , exceeding the strongest zero-shot base-line by +0.11 . The bottleneck is thus not medical knowledge but the capacity to translate it into a calibrated diagnosis under uncertainty. An input ablation is consistent with this reflecting evidence use rather than dataset fitting: withholding all admission-time evidence at inference and retaining only demographics and the chief com-plaint lowers supported F1 to 0.34 —the level a frontier model attains on the complete record. Precision and recall decline in step, so the model is not merely becoming more conservative, and what remains is what the chief complaint alone supports; as an inference-time ablation, this figure lower-bounds what retraining on the reduced input would achieve. The gap widens under exact set match, where post-trained models recover the full reference set in 32–36% of encounters against under 4% for any zero-shot system (Figure 7). Finally, because micro-F1 penalises every prediction beyond the reference set, we also report recall at a matched prediction budget (R@ 𝑘 ): frontier models lead at generous budgets while the post-trained model is competitive at 𝑘 =1, the two metrics rewarding coverage and restraint respectively (Appendix A). 
+
+Figure 7: Complete-match rate—the fraction of encounters where the predicted diagnosis set exactly matches the refer-ence. Post-trained models achieve 32–36%, an order of mag-nitude higher than any zero-shot model ( <4%). The Clinician 
+
+bar is a human reference on 1000 cases. 
+
+Three controls rule out simpler explanations. A frequency prior 
+
+that always predicts the three most common training diagnoses attains 0.10 F1 overall and 0.05 on supported labels, so the target is patient-specific rather than recoverable from the marginal label distribution. A retrieval baseline that copies the nearest training encounter’s diagnoses reaches 0.13 on supported labels: fitting the institution’s coding distribution recovers barely a quarter of the KDD ’26, August 2026, Location Li et al. 
+
+Table 2: Diagnosis performance on EarlyDx by label evidence category. All metrics are micro-averaged over encounters. The Supported block is the primary track; Partial and Secondary are reported separately, and unsupported labels are excluded from all tracks. Bold: best; underline : second best (per column), among zero-shot, few-shot, and post-trained systems. All pairwise gains of post-trained over zero-shot models are statistically significant ( 𝑝 < 0.001 , patient-level paired bootstrap). Rows marked 
+
+† are evaluated on a subsample rather than the full test split and are not directly comparable. demo +CC: input restricted to demographics and chief complaint. Supported Partial Secondary (S+P)                                                                                                                                                 
+
+> Model Precision Recall F1 Precision Recall F1 Precision Recall F1
+> Non-learning baselines
+> Frequency prior (top-3) 0.03 0.08 0.05 0.10 0.21 0.14 0.07 0.15 0.10 kNN retrieval 0.12 0.15 0.13 0.16 0.16 0.16 0.17 0.16 0.16
+> Supervised classifier
+> ClinicalBERT 0.22 0.25 0.23 0.20 0.21 0.21 0.25 0.23 0.24
+> Zero-shot, general
+> GPT-5.5 0.27 0.77 0.40 0.16 0.32 0.22 0.27 0.55 0.36 Claude Opus 4.8 0.17 0.83 0.28 0.17 0.57 0.27 0.20 0.70 0.31 GLM-5.2 0.26 0.69 0.37 0.11 0.24 0.15 0.23 0.47 0.31 Nemotron-550B 0.16 0.54 0.25 0.09 0.22 0.12 0.15 0.37 0.21
+> Zero-shot, medical
+> MedGemma-4B 0.26 0.40 0.32 0.07 0.09 0.08 0.21 0.25 0.23 OpenBioLLM-8B 0.10 0.53 0.17 0.08 0.34 0.13 0.11 0.43 0.17 HuatuoGPT-o1-8B 0.19 0.53 0.28 0.09 0.21 0.12 0.17 0.36 0.23
+> Few-shot, general
+> GPT-5.5 0.30 0.59 0.40 0.08 0.09 0.08 0.24 0.32 0.27 Claude Opus 4.8 0.28 0.68 0.40 0.15 0.23 0.18 0.26 0.43 0.32
+> Post-trained (ours)
+> Qwen3.5-4B (CoT) 0.48 0.54 0.51 0.27 0.26 0.27 0.49 0.39 0.43
+> Qwen3.5-4B (demo +CC only) 0.35 0.33 0.34 0.19 0.14 0.16 0.32 0.24 0.27
+> Human reference
+> Clinician †0.20 0.68 0.31 0.07 0.27 0.11 0.27 0.49 0.35
+
+post-trained model’s performance. A few-shot control sharply curbs over-prediction—predictions per encounter fall from 3.43 to 2.21 
+
+for GPT-5.5 and 5.78 to 2.76 for Claude—yet all-labels F1 stays at 
+
+0.27 –0.32 , so the sparse output format is not what post-training supplies either. Truncating zero-shot output to its top-1 or top-2 diagnoses does not close the gap either (Figure 8), so the advantage is not merely one of predicting fewer diagnoses. A discriminative baseline, given a fair configuration, proves competitive with mid-tier zero-shot LLMs without closing the gap. ClinicalBERT attains a supported F1 of 0.23 : substantially above the frequency prior ( 0.05 ) and kNN retrieval ( 0.13 ), comparable to Nemotron-550B ( 0.25 ), and closest to the zero-shot models on the partial track ( 0.21 against 0.27 for the best of them), yet well short of the post-trained generative model ( 0.51 ). Finally, the human clinician attains the highest supported recall ( 0.68 ) but an all-labels F1 comparable to GPT-5.5: an experienced clinician also enumerates a broad differential that the sparse reference penalizes, so over-prediction is not an LLM-specific artifact. That a human expert working from serialized results alone—rather than a live encounter with history-taking and examination—scores in this range further suggests our text-rendered inputs bound the achievable ceiling. 
+
+Figure 8: Cardinality-controlled zero-shot baselines (all-labels micro-F1). Each model’s output is truncated to top-1 / top-2 / full. Even at their best truncation, all general and med-ical zero-shot models stay far below the post-trained models (dotted lines), confirming the advantage is not merely from predicting fewer diagnoses. EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses KDD ’26, August 2026, Location 
+
+## 5.2 Extraction versus Inference 
+
+Any benchmark built over clinical notes faces a construct-validity threat: if reference diagnoses are frequently named outright in the input, high scores may reflect text extraction rather than diagnostic inference. We test this by partitioning gold labels on recoverability by string matching alone. A supported diagnosis is explicit if its full title, or every content word, occurs verbatim in the input, and 
+
+implicit otherwise. Under this operationalization 43% of supported labels are explicit; the remaining 57% are never stated and must be inferred. Figure 9 reports recall on each subset. 1 Every system performs worse on implicit labels, confirming the partition isolates genuinely harder instances. The informative result is a dissociation between families: zero-shot models are competitive on explicit labels ( 37 –
+
+65% ) yet collapse on implicit ones, recovering 9–31% (general) and 3–
+
+6% (medical), so their apparent competence is largely attributable to extraction. Post-training reverses this profile—Qwen3.5-4B attains comparable explicit recall ( 74% ) while recovering 56% of implicit labels. One alternative explanation requires exclusion. Implicit labels are unstated but need not require reasoning: they may be pre-dictable from coding regularities, as when a comorbidity is habitu-ally coded alongside a presenting condition. The retrieval baseline isolates this, encoding nothing but the dataset prior, and recovers 
+
+22% of explicit but only 8% of implicit labels—below every zero-shot system on the implicit subset. Dataset priors are thus least informative exactly where inference is required. The human reference breaks the pattern entirely: the clinician exhibits no explicit–implicit gap ( 45% vs. 48% ). Whether a diagnosis is spelled out is a property of the documentation , not of the diagnos-tic problem, and an expert reasoning from the underlying findings is indifferent to it. The gap exhibited by every automated system measures residual reliance on surface cues. Together these results attribute the effect of post-training to inference over evidence the record leaves unstated, rather than to more effective copying or distributional fitting—and domain-specific pre-training alone does not confer it. They also bound the extraction confound for the benchmark: because implicit labels form the majority and determine rankings, EarlyDx measures synthesis under uncertainty rather than retrieval of stated text. 
+
+## 5.3 Direct Evidence Yields More Accurate Diagnosis 
+
+Performance separates sharply across the evidence boundary (Ta-ble 2): for our best model, F1 falls from 0.51 on supported to 0.27 
+
+on partially supported labels, and the pattern holds for every base-line. Supported diagnoses can be traced to a specific early finding, whereas partially supported ones rest on indirect cues with no con-firmatory evidence at admission; the latter therefore govern the   
+
+> 1Recall is reported because the partition is defined over gold labels, whereas precision is defined over predictions and admits no corresponding split. Explicitness is detected lexically, so paraphrased mentions count as implicit and 43% is a lower bound on the extractable fraction.
+
+Figure 9: Recall on explicit (◦; the diagnosis appears verba-tim in the input) versus implicit (•; it must be inferred) sup-ported labels at 𝑊 =0; only 43% are explicit. Zero-shot models— medical ones most severely—collapse on the implicit major-ity, whereas post-training recovers inference at comparable explicit recall. 
+
+predictability ceiling of early diagnosis. Appendix M gives repre-sentative chain-of-thought traces for one case of each type. Appen-dices H and P localize which modality each diagnosis depends on, by rationale attribution and by input ablation respectively. 
+
+## 5.4 Output Cardinality and the Recorded Reference 
+
+Across systems the dominant discrepancy against the reference is one of cardinality: zero-shot models emit 1.76 –6.0 diagnoses per encounter against a reference of roughly 1.4 (Fig. 10), yielding high recall at low precision. Claude Opus 4.8 exemplifies the pattern, attaining the best recall in every scope ( 0.83 supported) at among the lowest precision ( 0.17 ). Our post-trained model predicts ∼1.2 di-agnoses, matching the reference distribution, and leads on precision and F1 throughout. The human reference indicates this is not a model deficit. Work-ing from the same record, an experienced clinician also over-lists relative to the reference ( 2.58 per encounter) and shows the zero-shot profile—high supported recall ( 0.68 ) at 0.20 precision. Breadth under incomplete information is thus a property of diagnostic rea-soning where the evidence does not yet determine a single answer and expert practice is to enumerate what must be excluded. Two limitations of the evaluation produce this mismatch. The reference records the diagnoses ultimately coded for billing, so a differential entertained at admission and subsequently excluded leaves no trace. And the evidence captures what was written rather than what was observed—the patient’s appearance, respiratory ef-fort, physical examination, and the course of the encounter are largely absent, yet these are what narrow a differential at the bed-side. A clinician reasoning from the record alone is deprived of them equally, attaining the highest supported recall at only 0.31 F1: the evidence suffices to identify the condition but not to exclude the KDD ’26, August 2026, Location Li et al. 
+
+Figure 10: Average number of predicted diagnoses per en-counter. Zero-shot models over-predict relative to the ref-erence ( ≈1.4, dashed line); post-trained models match it; a human clinician ( 2.6) lies in between, listing a broader differ-ential. 
+
+alternatives. We therefore report the cardinality gap as a property of the evaluation rather than as evidence that broader outputs are clinically unwarranted. 
+
+## 5.5 Risk-Weighted Evaluation: Time-Critical Diagnoses 
+
+The metrics so far treat all diagnoses as exchangeable, whereas the loss function of emergency care is asymmetric: omitting a myocar-dial infarction or sepsis at admission carries a cost that omitting a stable comorbidity does not. We therefore re-evaluate the same predictions over six time-critical conditions—myocardial infarction, sepsis, intracranial hemorrhage, pulmonary embolism, stroke, and gastrointestinal bleeding—computing encounter-level recall and precision for every system, the clinician included (Figure 11). The clinician provides a reference operating point— 78% recall at 44% precision, i.e. 1.8× over-flagging—reflecting an expert who widens the threshold for dangerous conditions, but selectively. Ev-ery automated system departs from it along one of two axes. Zero-shot models match or exceed the clinician’s sensitivity (Claude 85% ,GPT-5.5 75% , Nemotron-550B 70% ) at 25 –28% precision; Claude raises a critical-diagnosis alert in 46 of 200 random encounters in which 14 are recorded. Medical-specialized models are dominated on both axes. Our post-trained model shows the opposite profile: precision is highest by a wide margin ( 78% ), while 54% recall ap-pears to fall short of the clinician on the axis along which errors are least recoverable. These operating points suggest a frontier that no evaluated sys-tem appears to reach: within the precision range we observe, sensi-tivity adequate for time-critical conditions comes at precision well below clinical tolerance, and precision within that tolerance at the cost of sensitivity. Since the clinician and two zero-shot systems are scored on subsamples rather than the full test split, these compar-isons are indicative rather than definitive. The pattern is nonethe-less invisible to aggregate F1, where our model ranks 1st, indicating that a risk-weighted view carries information the headline metric does not. It also delimits present formulation: restricted to critical labels the verifier classes as supported , our model leads all systems 
+
+Figure 11: Operating points on six time-critical diagnoses at 𝑊 =0; grey curves are F1 isolines. The clinician ( 78% re-call, 44% precision) marks the conventional clinical trade-off. Zero-shot models match or exceed that sensitivity only at 
+
+25 –28% precision, medical-specialized models are dominated on both axes, and post-training attains the highest precision at reduced sensitivity—no system falls near the clinician’s operating region. 
+
+(85% recall against 78% for Nemotron-550B), which locates much of its aggregate shortfall in references whose confirmation is still pending at 𝑡 0. Supervision by recorded diagnoses rewards silence wherever confirmation is absent, while admission-time practice requires that unconfirmed dangers be raised. Extending EarlyDx to graded predictions—diagnoses marked as suspected pending con-firmation, and scored under a loss that credits them—would render this capability directly optimizable rather than merely observable. 
+
+## 6 Discussion and Conclusion 
+
+We introduced EarlyDx, a large-scale benchmark for open-ended early diagnosis built from MIMIC-IV admissions, in which every label is verified against the evidence actually available at admission and scoring uses an open-weight, version-pinned semantic judge. The central finding is negative but useful: zero-shot models mostly extract diagnoses the record already names, and collapse when one has to be inferred. Post-training narrows that gap without closing it, and on time-critical conditions no system reaches a clinician’s balance of sensitivity and precision. Two features of the evaluation limit what these results can show. The reference lists only the diag-noses finally coded, so a differential a clinician rightly considered and then ruled out counts as an error. And the record captures what was written, not what was seen—the patient’s appearance, the examination, how the encounter unfolded. Human and model alike work from less than the bedside offers, so reasoning faithfully under uncertainty is penalized, and agreement with this reference should not be read as clinical adequacy. Letting systems mark diagnoses as suspected pending confirmation would remove that confound, and we see it as the most valuable next step. Other limitations remain: single-center data, text-rendered signals, and a rationale layer we release only as an exploratory resource (Appendix N). Code, data access terms, ethics, and a datasheet are in Appendices Q–S. EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses KDD ’26, August 2026, Location 
+
+## References 
+
+[1] Juan Miguel Lopez Alcaraz, Hjalmar Bouma, and Nils Strodthoff. 2024. MDS-ED: Multimodal Decision Support in the Emergency Department–a Benchmark Dataset for Diagnoses and Deterioration Prediction in Emergency Medicine. 
+
+ArXiv Preprint (2024). [2] Juan Miguel Lopez Alcaraz, Hjalmar Bouma, and Nils Strodthoff. 2025. En-hancing clinical decision support with physiological waveforms—a multimodal benchmark in emergency care. Computers in biology and medicine 192 (2025), 110196. [3] Anthropic. 2025. Claude Opus 4.8. https://www.anthropic.com/claude. Large language model. Accessed via API, model ID claude-opus-4-8 .[4] Aaron Blakeman, Aaron Grattafiori, Aarti Basant, Abhibha Gupta, Abhinav Khat-tar, Adi Renduchintala, Aditya Vavre, Akanksha Shukla, Akhiad Bercovich, Alek-sander Ficek, et al . 2025. NVIDIA Nemotron 3: Efficient and Open Intelligence. 
+
+arXiv preprint arXiv:2512.20856 (2025). [5] Emma Chen, Aman Kansal, Julie Chen, Boyang Tom Jin, Julia Reisler, David E Kim, and Pranav Rajpurkar. 2023. Multimodal clinical benchmark for emergency care (mc-bec): A comprehensive benchmark for evaluating foundation models in emergency medicine. Advances in Neural Information Processing Systems 36 (2023), 45794–45811. [6] Haodong Chen, Guido Zuccon, and Teerapong Leelanupab. 2025. Beyond GeneGPT: A Multi-Agent Architecture with Open-Source LLMs for Enhanced Genomic Question Answering. In Proceedings of the 2025 Annual International ACM SIGIR Conference on Research and Development in Information Retrieval in the Asia Pacific Region . 143–152. [7] Junying Chen, Zhenyang Cai, Ke Ji, Xidong Wang, Wanlong Liu, Rongsheng Wang, Jianye Hou, and Benyou Wang. 2024. Huatuogpt-o1, towards medical complex reasoning with llms. arXiv preprint arXiv:2412.18925 (2024). [8] Arsene Fansi Tchango, Rishab Goel, Zhi Wen, Julien Martel, and Joumana Ghosn. 2022. Ddxplus: A new dataset for automatic medical diagnosis. Advances in neural information processing systems 35 (2022), 31306–31318. [9] Dyke Ferber, Lars Hilgers, Christiane Höper, Benedict Kinny-Köster, Jan-Niklas Eckardt, Katharina Egger-Heidrich, Marius Bill, Martin MK Schneider, Jan Clus-mann, Lejla Kadric, et al . 2026. Towards autonomous medical artificial intelligence agents. Nature (2026), 1–10. [10] JA Hirsch, G Nicola, G McGinty, RW Liu, RM Barr, MD Chittle, and L Manchikanti. 2016. ICD-10: history and context. American Journal of Neuroradiology 37, 4 (2016), 596–599. [11] Namgyu Ho, Laura Schmid, and Se-Young Yun. 2023. Large language models are reasoning teachers. In Proceedings of the 61st annual meeting of the association for computational linguistics (volume 1: long papers) . 14852–14882. [12] Cheng-Yu Hsieh, Chun-Liang Li, Chih-Kuan Yeh, Hootan Nakhost, Yasuhisa Fujii, Alex Ratner, Ranjay Krishna, Chen-Yu Lee, and Tomas Pfister. 2023. Distilling step-by-step! outperforming larger language models with less training data and smaller model sizes. In Findings of the Association for Computational Linguistics: ACL 2023 . 8003–8017. [13] Kexin Huang, Jaan Altosaar, and Rajesh Ranganath. 2019. Clinicalbert: Modeling clinical notes and predicting hospital readmission. arXiv preprint arXiv:1904.05342 
+
+(2019). [14] Qiao Jin, Won Kim, Qingyu Chen, Donald C Comeau, Lana Yeganova, W John Wilbur, and Zhiyong Lu. 2023. Medcpt: Contrastive pre-trained transformers with large-scale pubmed search logs for zero-shot biomedical information retrieval. 
+
+Bioinformatics 39, 11 (2023), btad651. [15] Alistair EW Johnson, Lucas Bulgarelli, Lu Shen, Alvin Gayles, Ayad Shammout, Steven Horng, Tom J Pollard, Sicheng Hao, Benjamin Moody, Brian Gow, et al .2023. MIMIC-IV, a freely accessible electronic health record dataset. Scientific data 10, 1 (2023), 1. [16] Suhyeon Lee, Won Jun Kim, Jinho Chang, and Jong Chul Ye. 2024. LLM-CXR: Instruction-finetuned LLM for CXR image understanding and generation. In 
+
+International Conference on Learning Representations , Vol. 2024. 29745–29765. [17] Lucie Charlotte Magister, Jonathan Mallinson, Jakub Adamek, Eric Malmi, and Aliaksei Severyn. 2023. Teaching small language models to reason. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers) . 1773–1781. [18] MiniMax, :, Aili Chen, Aonian Li, Bangwei Gong, Binyang Jiang, Bo Fei, Bo Yang, Boji Shan, Changqing Yu, Chao Wang, Cheng Zhu, Chengjun Xiao, Chengyu Du, Chi Zhang, Chu Qiao, Chunhao Zhang, Chunhui Du, Congchao Guo, Da Chen, Deming Ding, Dianjun Sun, Dong Li, Enwei Jiao, Haigang Zhou, Haimo Zhang, Han Ding, Haohai Sun, Haoyu Feng, Huaiguang Cai, Haichao Zhu, Jian Sun, Jiaqi Zhuang, Jiaren Cai, Jiayuan Song, Jin Zhu, Jingyang Li, Jinhao Tian, Jinli Liu, Junhao Xu, Junjie Yan, Junteng Liu, Junxian He, Kaiyi Feng, Ke Yang, Kecheng Xiao, Le Han, Leyang Wang, Lianfei Yu, Liheng Feng, Lin Li, Lin Zheng, Linge Du, Lingyu Yang, Lunbin Zeng, Minghui Yu, Mingliang Tao, Mingyuan Chi, Mozhi Zhang, Mujie Lin, Nan Hu, Nongyu Di, Peng Gao, Pengfei Li, Pengyu Zhao, Qibing Ren, Qidi Xu, Qile Li, Qin Wang, Rong Tian, Ruitao Leng, Shaoxiang Chen, Shaoyu Chen, Shengmin Shi, Shitong Weng, Shuchang Guan, Shuqi Yu, Sichen Li, Songquan Zhu, Tengfei Li, Tianchi Cai, Tianrun Liang, Weiyu Cheng, Weize Kong, Wenkai Li, Xiancai Chen, Xiangjun Song, Xiao Luo, Xiao Su, Xiaobo Li, Xiaodong Han, Xinzhu Hou, Xuan Lu, Xun Zou, Xuyang Shen, Yan Gong, Yan Ma, Yang Wang, Yiqi Shi, Yiran Zhong, Yonghong Duan, Yongxiang Fu, Yongyi Hu, Yu Gao, Yuanxiang Fan, Yufeng Yang, Yuhao Li, Yulin Hu, Yunan Huang, Yunji Li, Yunzhi Xu, Yuxin Mao, Yuxuan Shi, Yuze Wenren, Zehan Li, Zelin Li, Zhanxu Tian, Zhengmao Zhu, Zhenhua Fan, Zhenzhen Wu, Zhichao Xu, Zhihang Yu, Zhiheng Lyu, Zhuo Jiang, Zibo Gao, Zijia Wu, Zijian Song, and Zijun Sun. 2025. MiniMax-M1: Scaling Test-Time Compute Efficiently with Lightning Attention. arXiv:2506.13585 [cs.CL] https://arxiv.org/abs/2506.13585 [19] Aishik Nagar, Arun-Kumar Kaliya-Perumal, Yu-Hsuan Han, Andrew Sheng-Han Huang, Kristen Kee, Yushi Cao, Yiming Chen, and Hongchao Jiang. 2026. CLR-voyance: Reinforcing Open-Ended Reasoning for Inpatient Clinical Decision Support with Outcome-Aware Rubrics. arXiv preprint arXiv:2605.09584 (2026). [20] Kimberly J O’malley, Karon F Cook, Matt D Price, Kimberly Raiford Wildes, John F Hurdle, and Carol M Ashton. 2005. Measuring diagnoses: ICD code accuracy. 
+
+Health services research 40, 5p2 (2005), 1620–1639. [21] Samuel Schmidgall, Rojin Ziaei, Carl Harris, Eduardo Reis, Jeffrey Jopling, and Michael Moor. 2024. Agentclinic: a multimodal agent benchmark to evaluate ai in simulated clinical environments. arXiv preprint arXiv:2405.07960 (2024). [22] Andrew Sellergren, Sahar Kazemzadeh, Tiam Jaroensri, Atilla Kiraly, Madeleine Traverse, Timo Kohlberger, Shawn Xu, Fayaz Jamil, Cían Hughes, Charles Lau, et al . 2025. Medgemma technical report. arXiv preprint arXiv:2507.05201 (2025). [23] Aaditya Singh, Adam Fry, Adam Perelman, Adam Tart, Adi Ganesh, Ahmed El-Kishky, Aidan McLaughlin, Aiden Low, AJ Ostrow, Akhila Ananthram, et al .2025. Openai gpt-5 system card. arXiv preprint arXiv:2601.03267 (2025). [24] Karan Singhal, Tao Tu, Juraj Gottweis, Rory Sayres, Ellery Wulczyn, Mohamed Amin, Le Hou, Kevin Clark, Stephen R Pfohl, Heather Cole-Lewis, et al . 2025. Toward expert-level medical question answering with large language models. 
+
+Nature medicine 31, 3 (2025), 943–950. [25] Alex Stinard. 2026. ClinicalBench: Stress-Testing Assertion-Aware Retrieval for Cross-Admission Clinical QA on MIMIC-IV. arXiv preprint arXiv:2605.11143 
+
+(2026). [26] Sameer Sundrani, Julie Chen, Boyang Tom Jin, Zahra Shakeri Hossein Abad, Pranav Rajpurkar, and David Kim. 2023. Predicting patient decompensation from continuous physiologic monitoring in the emergency department. NPJ digital medicine 6, 1 (2023), 60. [27] Core Team, Bangjun Xiao, Bingquan Xia, Bo Yang, Bofei Gao, Bowen Shen, Chen Zhang, Chenhong He, Chiheng Lou, Fuli Luo, Gang Wang, Gang Xie, Hailin Zhang, Hanglong Lv, Hanyu Li, Heyu Chen, Hongshen Xu, Houbin Zhang, Huaqiu Liu, Jiangshan Duo, Jianyu Wei, Jiebao Xiao, Jinhao Dong, Jun Shi, Junhao Hu, Kainan Bao, Kang Zhou, Lei Li, Liang Zhao, Linghao Zhang, Peidian Li, Qianli Chen, Shaohui Liu, Shihua Yu, Shijie Cao, Shimao Chen, Shouqiu Yu, Shuo Liu, Tianling Zhou, Weijiang Su, Weikun Wang, Wenhan Ma, Xiangwei Deng, Bohan Mao, Bowen Ye, Can Cai, Chenghua Wang, Chengxuan Zhu, Chong Ma, Chun Chen, Chunan Li, Dawei Zhu, Deshan Xiao, Dong Zhang, Duo Zhang, Fangyue Liu, Feiyu Yang, Fengyuan Shi, Guoan Wang, Hao Tian, Hao Wu, Heng Qu, Hongfei Yi, Hongxu An, Hongyi Guan, Xing Zhang, Yifan Song, Yihan Yan, Yihao Zhao, Yingchun Lai, Yizhao Gao, Yu Cheng, Yuanyuan Tian, Yudong Wang, Zhen Tang, Zhengju Tang, Zhengtao Wen, Zhichao Song, Zhixian Zheng, Zihan Jiang, Jian Wen, Jiarui Sun, Jiawei Li, Jinlong Xue, Jun Xia, Kai Fang, Menghang Zhu, Nuo Chen, Qian Tu, Qihao Zhang, Qiying Wang, Rang Li, Rui Ma, Shaolei Zhang, Shengfan Wang, Shicheng Li, Shuhao Gu, Shuhuai Ren, Sirui Deng, Tao Guo, Tianyang Lu, Weiji Zhuang, Weikang Zhang, Weimin Xiong, Wenshan Huang, Wenyu Yang, Xin Zhang, Xing Yong, Xu Wang, Xueyang Xie, Yilin Jiang, Yixin Yang, Yongzhe He, Yu Tu, Yuanliang Dong, Yuchen Liu, Yue Ma, Yue Yu, Yuxing Xiang, Zhaojun Huang, Zhenru Lin, Zhipeng Xu, Zhiyang Chen, Zhonghua Deng, Zihan Zhang, and Zihao Yue. 2026. MiMo-V2-Flash Technical Report. arXiv:2601.02780 [cs.CL] https://arxiv.org/abs/2601.02780 [28] Qwen Team. 2026. Qwen3. 5-omni technical report. arXiv preprint arXiv:2604.15804 (2026). [29] Tao Tu, Shekoofeh Azizi, Danny Driess, Mike Schaekermann, Mohamed Amin, Pi-Chuan Chang, Andrew Carroll, Charles Lau, Ryutaro Tanno, Ira Ktena, et al .2024. Towards generalist biomedical AI. Nejm Ai 1, 3 (2024), AIoa2300138. [30] Dave Van Veen, Cara Van Uden, Maayane Attias, Anuj Pareek, Christian Blueth-gen, Malgorzata Polacin, Wah Chiu, Jean-Benoit Delbrouck, Juan Zambrano Chaves, Curtis Langlotz, et al . 2023. RadAdapt: Radiology report summariza-tion via lightweight domain adaptation of large language models. In The 22nd Workshop on Biomedical Natural Language Processing and BioNLP Shared Tasks .449–460. [31] Shirui Wang, Zhihui Tang, Huaxia Yang, Qiuhong Gong, Tiantian Gu, Hongyang Ma, Yongxin Wang, Wubin Sun, Zeliang Lian, Kehang Mao, et al . 2025. A novel evaluation benchmark for medical LLMs illuminating safety and effectiveness in clinical domains. npj Digital Medicine (2025). [32] Eric Zelikman, Yuhuai Wu, Jesse Mu, and Noah Goodman. 2022. Star: Boot-strapping reasoning with reasoning. Advances in Neural Information Processing Systems 35 (2022), 15476–15488. [33] Aohan Zeng, Xin Lv, Zhenyu Hou, Zhengxiao Du, Qinkai Zheng, Bin Chen, Da Yin, Chendi Ge, Chenghua Huang, Chengxing Xie, et al . 2026. Glm-5: from vibe KDD ’26, August 2026, Location Li et al.        
+
+> coding to agentic engineering. arXiv preprint arXiv:2602.15763 (2026). [34] Yuting Zhang, Kaishen Yuan, Hao Lu, Yutao Yue, Jintai Chen, and Kaishun Wu. 2026. Medtvt-r1: A multimodal llm empowering medical reasoning and diagnosis. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition . 35248–35259. [35] Dimitrios Zikos, Aashara Shrestha, and Leonidas Fegaras. 2019. Estimation of the mismatch between admission and discharge diagnosis for respiratory patients, and implications on the length of stay and hospital charges. AMIA Summits on Translational Science Proceedings 2019 (2019), 192.
+
+## A A cardinality-tolerant view: recall at a matched budget 
+
+Micro-F1 penalises every prediction beyond the reference set. With 
+
+1.43 reference diagnoses per encounter, a system emitting 5.78 of them—as Claude Opus 4.8 does—faces an arithmetic precision ceil-ing of 1.43 /5.78 ≈ 0.25 , so its F1 is governed by output cardinality rather than diagnostic quality. We therefore report a second pri-mary metric that is insensitive to how much a system chooses to say. 
+
+Metric. Following the top-𝑘 differential-diagnosis accuracy of DDxPlus [ 8] and the AMIE [ 29 ] line of work, we truncate each system to its first 𝑘 predictions and measure supported-label recall, R@ 𝑘 . The budget is identical across systems, so listing more confers no advantage. Since no system emits confidence scores, truncation follows the model’s own output order. 
+
+Result. The post-trained model does not lead under this metric 
+
+(Figure 12). At 𝑘 =5 the ordering tracks output cardinality: Claude Opus 4.8 attains 0.81 and GPT-5.5 0.77 , against 0.54 for our 4B model. The comparison inverts at 𝑘 =1, where each system may name a single diagnosis: our model reaches 0.51 , matching GLM-5.2 and exceeding Nemotron-550B by 0.10 even though both converge to 
+
+0.54 at 𝑘 =5. The post-trained curve is nearly flat ( 0.51 → 0.54 )—the model emits 1.2 diagnoses on average and cannot exploit a larger budget—whereas the frontier models gain 0.16 –0.20 from 𝑘 =1 to 
+
+𝑘 =5, indicating that their correct answers lie predominantly in later positions. 
+
+Interpretation. The two metrics disagree because they reward different behaviours: recall at a generous budget rewards enumerat-ing a broad differential, while micro-F1 and complete-match reward committing to a small, defensible set. Post-training does not expand what a model can eventually retrieve—its R@ ∞ equals Nemotron-550B’s—but relocates the correct diagnosis to the first position and suppresses the remainder. Neither behaviour dominates: a triage display surfacing one working diagnosis favours the former, a dif-ferential worksheet the latter. We therefore report both metrics rather than designating a single ranking, and treat their divergence as a substantive property of admission-time diagnosis rather than an evaluation artefact. 
+
+## B Robustness to the Evidence-Class Boundary 
+
+The primary track rests on a single LLM auditor decision—whether a label’s evidence is supported or merely partial —so we ask whether that decision, rather than model behaviour, determines the reported ranking. 
+
+Independent re-audit. Four experts independently re-rated a random sample of 1,000 test encounters. At least three of the four confirm the auditor’s assignment in 76% of cases (Table 3). 
+
+Figure 12: Supported-label recall at a matched prediction budget. Every system is truncated to its first 𝑘 predictions, so none benefits from listing more. Table 3: Re-audit of a random sample of 1,000 test encounters. Agreement is computed against the LLM auditor; the last column averages each expert’s 𝜅 with the other three. 
+
+Auditor agreement mean 𝜅 vs. peers Expert 1 75% 0.63 Expert 2 67% 0.51 Expert 3 76% 0.64 Expert 4 71% 0.57 
+
+Re-scoring under a stricter gold standard. Table 4 scores every system on these encounters twice: against the LLM auditor gold, and against gold restricted to supported labels confirmed by ≥3 of 
+
+4 human auditors. 
+
+Table 4: Micro-F1 on the 1,000 re-audited test encounters un-der the original and the auditor-confirmed gold standard. 
+
+Model verifier gold ≥3/4 confirmed Qwen3.5-4B (ours) 0.563 0.697 
+
+GPT-5.5 0.375 0.430 Nemotron-550B 0.334 0.342 GLM-5.2 0.253 0.297 Claude Opus 4.8 0.216 0.253 
+
+The ranking is invariant to the choice of gold standard, so it is not an artifact of where the verifier draws the supported/partial line; the margin of the post-trained model over the strongest zero-shot system in fact widens from +0.188 to +0.267 . The differential effect of filtering is itself informative: largest for the post-trained model (+0.134 ) and negligible for Nemotron-550B ( +0.008 ), it indicates that post-training concentrates predictions on labels whose evidence multiple independent auditors endorse, whereas a larger share of the zero-shot models’ matches falls on disputed labels. Inter-expert agreement is moderate ( 𝜅 =0.51 –0.64 ), reflecting genuine clinical ambiguity at the supported/partial boundary; the invariance of the ranking under both gold standards is what makes the primary track robust to it. EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses KDD ’26, August 2026, Location 
+
+## C Robustness to the Treatment of Partially Supported Labels 
+
+The primary track scores against supported labels alone, so a pre-diction matching a partially supported label is counted as a false positive despite appearing in the record. Because the evidence class is not observable to the model, this convention could disadvantage systems that emit broader differentials—precisely the dimension along which the compared systems differ most. We therefore recompute every system under an ignore variant, in which predictions matching partially supported labels are withheld from the precision denominator rather than penalized, following the treatment of unjudged documents in retrieval evaluation. Recall is invariant by construction, since neither the matched count nor the reference set is altered. Rankings are identical under both treatments and the shifts are uniformly small (Table 5), so the convention does not account for the observed ordering. Their direction runs contrary to the con-cern motivating the analysis: the largest gains accrue to the post-trained models and among the smallest to the zero-shot system with the highest recall and broadest output. Predictions from broadly predicting systems are, in the main, absent from the record alto-gether rather than classed as partially supported, so excusing partial matches does little to recover their precision. 
+
+Table 5: Change in primary-track precision and F1 under the 
+
+ignore variant, in which predictions matching partially sup-ported labels are withheld from the precision denominator. Recall is invariant by construction and is given for reference.                   
+
+> Model RΔPΔF1 Qwen3.5-4B (CoT) 0.575 +0.025 +0.013
+> GPT-5.5 0.761 +0.006 +0.007
+> Nemotron-550B 0.654 +0.004 +0.005
+> GLM-5.2 0.699 +0.003 +0.004
+> Claude Opus 4.8 0.832 +0.004 +0.006
+
+## D Sensitivity to Timestamp Semantics 
+
+Most MIMIC-IV modalities carry two timestamps: charttime , the time the event occurred or the specimen was drawn, and storetime ,the time the result became readable in the record. The main bench-mark filters on charttime , the more inclusive convention: a CT performed before 𝑡 0 is admitted even if its report was finalized af-terwards. Because this could admit information not yet clinically available at the admission decision, we repeat the 𝑊 =0 evalua-tion under storetime filtering for laboratory results and radiology reports. The stricter convention removes 19 .3% of radiology reports and 
+
+2.7% of laboratory results, altering the input for 25 .9% of encounters and the model’s predictions for 11 .7% . Primary-track F1 falls from 
+
+0.546 to 0.512 (−0.034 ; precision 0.519 → 0.487 , recall 0.575 → 0.538 ), leaving the post-trained model well above the strongest zero-shot baseline ( 0.385 ). Results filtered on event time should therefore be read as a modest upper bound on what was strictly readable at 
+
+𝑡 0—the convention bounds the reported figures without affecting the comparison. 
+
+Table 6: Sensitivity to timestamp semantics at 𝑊 =0 (primary track              
+
+> Filter Precision Recall F1
+> charttime (main) 0.519 0.575 0.546
+> storetime 0.487 0.538 0.512
+> Δ−0.032 −0.037 −0.034
+
+Table 7: Verbatim-continuation probe on 200 reports. True 
+
+scores the continuation against the withheld text, control 
+
+against a random report from the same corpus; only excess over control is evidence of recall. Longest run is averaged over reports.                  
+
+> Longest run (mean) Exact 10-gram Model True Ctrl True Ctrl Nemotron-550B (open) 2.91.60.0% 0.0%
+> GPT-5.5 3.21.36.3% 0.0%
+> Claude Opus 4.8 4.21.73.2% 0.0%
+
+## E Contamination 
+
+MIMIC-derived text circulates widely, so any evaluation of frontier LLMs on this corpus must establish whether the models have prior exposure to it. We probe for verbatim memorization: held-out radi-ology reports are truncated at the midpoint of their findings section and each model is prompted to continue them, with the continua-tion scored against both the withheld text and a randomly drawn report from the same corpus. The control absorbs the templated phrasing characteristic of radiology reporting, so only agreement in excess of it is evidence of recall. The open-weight baseline yields no exact 10 -gram match with the withheld continuation, its longest common run scarcely ex-ceeding control (Table 7). Both proprietary models show a weak but non-zero signal, matching a small fraction of 10 -grams exactly where the control matches none, with the longest single run ex-tending to twelve tokens. This is insufficient to establish memorization—a twelve-token run remains compatible with standard reporting templates, and the proprietary samples are small—but sufficient to establish that prior exposure cannot be excluded for those models; nor can any black-box probe exclude exposure that shaped model behaviour without inducing verbatim recall. Two observations nonetheless bound the practical concern. First, the model for which no signal is detected is not the weakest zero-shot system, so the observed rank-ing cannot be attributed to contamination. Second, memorization predicts recovery of diagnoses the record does not state, whereas zero-shot recall on implicit labels collapses (Section 5.2)—precisely the inverse of the predicted pattern. 
+
+## F Subgroup Performance 
+
+This appendix reports both the distribution of evidence classes across patient subgroups, referenced from Section 3.4, and the re-sulting performance by subgroup. KDD ’26, August 2026, Location Li et al. 
+
+Evidence-class distribution. Figure 13 gives each group’s label distribution over evidence classes alongside its share of encoun-ters. The cohort is adult and skewed toward higher acuity— 57% 
+
+of encounters are triaged ESI 1–2 and 53% arrive by ambulance— as expected of ED visits ending in admission; race and language distributions reflect the source institution’s catchment and are not nationally representative. Supported rates cluster tightly around the cohort mean of 32 .7% , spanning at most 5 percentage points across any grouping and none by sex ( 𝑝 =0.32 ). What residual vari-ation there is follows clinical rather than demographic axes—ESI 1 presentations have the highest supported rate, consistent with a more extensive workup—so evidence availability varies more with how long one observes than with who the patient is. 
+
+Performance. Table 8 reports primary-track (supported) F1 by sub-group for four systems spanning three families: our post-trained model, two frontier zero-shot models, and a medical-specialized model. Scores are computed on encounters with a cached judge decision ( 2,247 –2,822 per system), so estimates for the least repre-sented groups (Asian, Hispanic, non-English) rest on fewer than 
+
+150 encounters and are correspondingly noisy. Flat evidence availability does not imply flat performance. Two patterns hold across all four systems. Performance is approximately flat across race, sex, and language: the spread across racial groups is 0.067 F1 for our model and 0.020 for OpenBio, of the same order as the sampling noise implied by the smaller strata. Performance instead declines monotonically with patient age— 0.802 to 0.718 
+
+(ours), 0.492 to 0.346 (Nemotron), 0.246 to 0.157 (OpenBio)—with the Medicare stratum, largely coterminous with the oldest group, showing the same effect. Since the decline appears even in models never trained on EarlyDx, it is unlikely to originate in our supervi-sion; older patients carry more comorbidities and more labels per encounter ( 1.72 versus 1.42 for the youngest group), making exact set agreement harder. We report the trend rather than adjust for it, and recommend that age-stratified results accompany any use of this benchmark. 
+
+## G Optional Gold-Conditioned Rationale Annotations 
+
+Beyond the verified labels, EarlyDx provides an optional rationale layer whose purpose is clinical interpretability : a rationale that grounds each diagnosis in a specific admission-time finding—a lab value, an imaging finding, a vital sign—makes a prediction auditable rather than opaque, and is a prerequisite for clinical trust. Given the admission-time input 𝑥 and the retained reference diagnoses 
+
+𝑌 , a teacher LLM (MiMo-V2.5 [ 27 ]) produces a response of the form <think> reasoning </think> <answer> diagnoses </answer> .Because the reasoning is conditioned on the gold diagnoses, it is not a ground-truth reasoning trace but a post-hoc explanation of known labels, following the rationalization paradigm [ 11 , 12 ,17 , 32 ]. We generate rationales only for supported and partially supported labels, so the teacher is never asked to justify diagnoses the evidence does not substantiate. The layer lets us study a central trade-off for trustworthy deployment: whether equipping a model to emit evidence-grounded rationales aids or hinders its diagnostic accuracy. 
+
+Figure 13: Cohort composition and evidence availability by subgroup at 𝑊 =0. Bars give each group’s label distribution over evidence classes; the right-hand column gives its share of encounters. Supported rates cluster tightly around the cohort mean (dashed line), spanning at most 5 points across any grouping and none by sex ( 𝑝 =0.32 ). 
+
+## H Modality Contribution 
+
+As an exploratory analysis, we use the generated rationales to approximate which evidence source each retained diagnosis pri-marily relies on, classifying the reasoning into one of nine ev-idence types with the judge model (Figure 14). Imaging (CT/X-ray/ultrasound) is the largest single source ( 31 .9% ), followed by laboratory results ( 18 .9% ), so direct early-time test evidence under-lies roughly half of all diagnoses. Prior history and records form the second largest source ( 25 .9% ) and symptoms and chief complaint 
+
+14 .8% , while physiological signals contribute only marginally (ECG 
+
+2.3% , echocardiography 0.3% ), reflecting the relative prevalence of waveform-decidable conditions in the ED. The breakdown mirrors the supported–partial gap of Section 5.3: diagnoses grounded in direct test evidence coincide with the reliably predictable supported labels, whereas those resting on prior history align with the harder, partially supported ones. The critical modality is strongly disease-specific (Figure 15). Imaging is decisive for structural and traumatic conditions, un-derlying 94% of fracture and 92% of stroke/intracranial-hemorrhage diagnoses; laboratory results dominate metabolic and infectious ones, at 81% of sepsis and 64% of acute kidney injury. Electrocar-diography, a minor contributor overall, is the most decisive single EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses KDD ’26, August 2026, Location 
+
+Table 8: Primary-track (supported) F1 by subgroup at 𝑊 =0.Groups with fewer than 40 scored encounters are omitted. 
+
+Group Post-trained Zero-shot Medical Qwen3.5-4B Nemotron GLM-5.2 OpenBio Race White 0.757 0.385 0.347 0.176 
+
+Black 0.791 0.374 0.372 0.171 
+
+Hispanic 0.724 0.316 0.347 0.180 
+
+Asian 0.756 0.372 0.365 0.191 
+
+Other 0.753 0.424 0.403 0.186 
+
+Sex Male 0.778 0.389 0.357 0.182 
+
+Female 0.746 0.375 0.356 0.169 
+
+Age 18–40 0.802 0.492 0.476 0.246 
+
+41–60 0.785 0.375 0.374 0.176 
+
+61–75 0.741 0.355 0.314 0.154 
+
+76+ 0.718 0.346 0.295 0.157 
+
+Insurance Medicare 0.728 0.335 0.299 0.155 
+
+Private 0.762 0.454 0.426 0.202 
+
+Medicaid 0.826 0.401 0.393 0.184 
+
+Language English 0.766 0.384 0.360 0.176 
+
+Non-English 0.739 0.365 0.319 0.175 
+
+Acuity ESI 1 0.730 0.351 0.318 0.175 
+
+ESI 2 0.759 0.360 0.338 0.168 
+
+ESI 3 0.777 0.420 0.392 0.182 
+
+Figure 14: Exploratory primary supporting-evidence modal-ity across all diagnoses, approximated from the generated auxiliary rationales. Direct test evidence (imaging and labo-ratory) accounts for ∼51% , prior history and records for 26% .
+
+modality for atrial fibrillation ( 36% ) and a key adjunct for myocar-dial infarction ( 14% , alongside 46% laboratory). Chronic conditions such as diabetes and heart failure instead rely on prior history and records ( 48% and 23% ). These patterns are clinically coherent and suggest that no single modality suffices for admission diagnosis. 
+
+## I Example Record 
+
+A representative encounter (subarachnoid hemorrhage). The serial-ized input aggregates all admission-time modalities (absent fields marked None ); the assistant turn holds the chain-of-thought and the 
+
+Figure 15: Exploratory primary supporting-evidence modal-ity for sample diseases, approximated from the generated auxiliary rationales. The decisive modality shifts sharply from one condition to another. 
+
+free-text diagnosis; kept_verdicts records the evidence category. Long lines are truncated for display.                                                                                                                                                       
+
+> #INPUT ( user turn ) Demographics : M , 60 yo , WHITE . From EMERGENCY ROOM , arrival WALK IN .Chief complaint : SAH , Transfer Triage : T97 .8 HR52 .0 RR16 .0 SpO297 .0 BP162 .0/90.0 acuity2 .0 ED serial vitals : HR52 .0 SpO297 .0 |HR61 .0 SpO297 .0 Home meds : None Baseline ( OMR ): BP None , Wt None , Ht None , BMI None Baseline labs ( prior ): creatinine 1.0 , hemoglobin 15.2 Past medical history ( prior dx ): None Past ED diagnoses : None Past medical history ( from prior discharge note ): None ECG : Sinus bradycardia .; Inferior Twave changes are nonspecific ; Borderline ECG |HR54 PR180 QRS108 QT478ms Echocardiogram : None Radiology (3) : [ CTA HEAD WAND W/O C] F: CT HEAD WITHOUT CONTRAST : focal hyperdensity within the suprasellar , interpeduncular , and prepontine cisterns , consistent with subarachnoid hemorrhage ... Initial labs (26) : White Blood Cells 11.7*; Glucose 143*; RBC 4.45*; ... #ASSISTANT ( target ) < think > The patient presents with aconfirmed subarachnoid hemorrhage based on CT imaging : the non - contrast CT head demonstrates focal hyperdensity within the suprasellar , interpeduncular , and prepontine cisterns , consistent with SAH . The patient is hemodynamically stable with sinus bradycardia on ECG and unremarkable labs . </ think > < answer > SUBARACHNOID HEMORRHAGE </ answer > #kept_verdicts [{" dx ": " SUBARACHNOID HEMORRHAGE ", " verdict ": " supported "}]
+
+## J Prompts 
+
+We use four prompts in the pipeline: an evidence verifier (label verification), a teacher for chain-of-thought generation, a zero-shot inference prompt, and an LLM-as-judge for evaluation. Placeholders 
+
+{INPUT} , {DX} , {G} , {P} are filled per encounter. KDD ’26, August 2026, Location Li et al. 
+
+B.1 Evidence Verifier 
+
+You are a clinical evidence auditor for an admission-time diagnosis dataset. Given the admission-anchored early-workup INPUT and the RECORDED DIAGNOSES, judge for EACH diagnosis whether the INPUT contains evidence to support it within the specified evidence window. Verdict options: 
+
+• supported : clear/direct evidence in input (labs, imaging, vitals, exam, or clearly consistent presentation) 
+
+• partial : only indirect/suggestive, or supported only by past history / home medications (chronic comorbidity), not acute presentation 
+
+• unsupported : no evidence, or input clearly points to a different problem INPUT: {INPUT} RECORDED DIAGNOSES: {DXS} Output ONLY JSON: {"verdicts":[{"dx":..., "verdict":...,"reason":<=15 words}]} 
+
+B.2 Gold-Conditioned Rationale Generation (teacher) 
+
+You are an expert emergency physician reasoning through a patient at admission. FIRST work through the relevant findings (vitals, labs with values, imaging, history, medications), interpret them, then arrive at each diagnosis as a CONCLUSION at the end. Rules: do not start a sentence with the diagnosis name; use ONLY findings present in the input; if a diagnosis is a known chronic condition, say so; if imaging/labs are negative or equivocal, state the evidence is limited and the diagnosis is presumptive; be succinct. INPUT: {INPUT} CONFIRMED DIAGNOSES (reasoning must converge to these): {DX} Output: <think>[evidence-first reasoning]</think> <answer>{DX}</answer> 
+
+B.3 Zero-shot Inference 
+
+You are an expert emergency physician. Given ONLY the admission-anchored early-workup presentation, reason from the evidence and determine THIS encounter’s diagnoses. You are NOT given the answer. INPUT: {INPUT} Output: <think>[brief reasoning]</think> <answer>diagnosis1; diagnosis2</answer> 
+
+B.4 LLM-as-Judge 
+
+You are a clinical coding judge. GOLD diagnoses (truth) and PRED diagnoses (model) for one admission. Two diagnoses MATCH if they refer to the same clinical condition (synonyms/abbreviations/specificity differences count as a match). Compute a 1-to-1 matching between GOLD and PRED (each item used at most once). GOLD: {G} PRED: {P} Return ONLY JSON: {"matched_pairs": <number>} 
+
+## K Training and Inference Configuration 
+
+All models are fully fine-tuned for one epoch with a completion-only objective (prompt tokens masked): AdamW, peak learning rate 
+
+Figure 16: Training loss for the 2B and 4B rational-SFT mod-els (completion-only loss, one epoch, effective batch size 48). Both converge smoothly; the 4B model reaches a lower loss (0.40 vs. 0.57), consistent with its higher capacity. 
+
+1 × 10 −5, cosine schedule, 3% warmup, effective batch size 48 , maxi-mum sequence length 3072 , bfloat16 , and gradient checkpointing. The 2B models use distributed data parallelism over three GPUs; the 4B models use DeepSpeed ZeRO-2 with optimizer CPU offload. Inference uses greedy decoding with up to 2048 new tokens; teacher CoT traces are generated at temperature 0.3, and the verifier and judge run at temperature 0. Both model sizes converge within the single epoch (Figure 16), the 4B model reaching a lower final loss (0.40 vs. 0.57 ). 
+
+## L Evidence Window and the Cost of Rationales 
+
+To assess sensitivity to evidence accrued after the admission an-chor, we re-evaluate the post-trained models against the same evidence-supported gold set at three cutoffs 𝑊 ∈ { 0, 6, 24 } h (Ta-ble 9). Performance rises monotonically with 𝑊 (4B-CoT micro-F1 
+
+0.434 → 0.463 → 0.476 ), reflecting the gradual accumulation of the early workup. Crucially, even at 𝑊 =0—where the input contains only records time-stamped no later than hospital admission—the fine-tuned model reaches 0.434 , well above the strongest zero-shot baseline ( 0.36 ). Our central finding, that a small task-aligned model substantially outperforms much larger zero-shot LLMs, is therefore not an artifact of the chosen window. The two supervision formats expose a trade-off between au-ditability and accuracy. A faithful rationale is a harder learning target than the answer alone, and the direct format matches or exceeds CoT at every window. The cost is one of learnability rather than a limitation of reasoning: the CoT–direct F1 gap contracts sharply with capacity, from −0.046 at 2B to −0.008 at 4B ( 𝑊 =6). A sufficiently capable model thus recovers nearly all of the accuracy lost to producing a rationale while retaining the rationale itself, suggesting that interpretability of this kind is paid for by scale. 
+
+## M Chain-of-Thought Rationale Examples 
+
+We provide qualitative examples of the auxiliary gold-conditioned rationales introduced in Section G. These are gold-conditioned post-hoc explanations used only as an exploratory training signal—not validated clinical reasoning traces, and not part of the benchmark evaluation target. EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses KDD ’26, August 2026, Location 
+
+Table 9: Window-sensitivity of all post-trained mod-els, scored against the same evidence-supported (supported +partial) gold set. The 4B models dominate their 2B counterparts; the 2B-CoT model responds non-monotonically, reflecting the instability of long generated rationales at small scale.                                                         
+
+> Model Window micro-P micro-R micro-F1 2B-CoT
+> 𝑊 =0(≤admit) 0.331 0.253 0.287
+> 𝑊 =6h0.445 0.380 0.410
+> 𝑊 =24 h0.370 0.307 0.335 2B-direct
+> 𝑊 =0(≤admit) 0.469 0.404 0.434
+> 𝑊 =6h0.496 0.422 0.456
+> 𝑊 =24 h0.556 0.451 0.498 4B-CoT
+> 𝑊 =0(≤admit) 0.485 0.393 0.434
+> 𝑊 =6h0.502 0.429 0.463
+> 𝑊 =24 h0.523 0.437 0.476 4B-direct
+> 𝑊 =0(≤admit) 0.496 0.404 0.446
+> 𝑊 =6h0.529 0.424 0.471
+> 𝑊 =24 h0.573 0.447 0.502
+
+Table 10 shows a representative rationale at each quality level as rated by reviewer consensus: a correct rationale cites a specific early-time finding that substantiates the diagnosis; a partial one reaches the right label but leans on prior history without explaining the acute presentation; an incorrect one asserts a conclusion not grounded in the input. Figure 17 contrasts a supported and a partially supported di-agnosis in full. The supported case (subarachnoid hemorrhage) is grounded in direct early-time evidence—a CT finding the rationale points to explicitly—whereas the partially supported case (thyroid cancer) is inferable only from indirect cues such as prior history, illustrating the performance gap between the two categories in Table 2. Figure 18 contrasts a clinician’s rationale with our model’s chain-of-thought on the same case. Both reach the correct diagnosis, but the clinician reasons forward in far fewer words—comparing against baseline, raising a competing concern, recommending the next test—whereas the generated rationale is a confident post-hoc justification. 
+
+## N Clinical Review of Chain-of-Thought Rationales 
+
+A board-certified clinician reviewed the auxiliary rationales for 
+
+1,000 randomly sampled test encounters, presented with the admission-time input and the reference diagnosis. Because the rationales are gold-conditioned, the final diagnosis is correct by construction; the reviewer therefore assessed only whether the reasoning toward it was clinically sound and grounded in evidence present in the input, recording the specific fault otherwise. 76% were judged clinically acceptable, though fewer than a third fully sound (Figure 19a), and the faults recorded across the flagged rationales concentrate on a few recurring patterns (Figure 19b). 
+
+Background conditions displace the acute problem. A single mecha-nism underlies two of these faults: chronic conditions recur through-out the prior history, and the model promotes them to the leading diagnosis in place of the acute event that prompted the visit. For a patient with cirrhosis presenting with altered mental status, the en-counter concerns hepatic encephalopathy—cirrhosis is the standing background against which that event occurs—yet the model returns cirrhosis as the primary, at times sole, diagnosis. The pattern recurs where a patient with COPD develops pneumonia and the model reports COPD rather than pneumonia with an acute exacerbation. The failure is one of assignment rather than of knowledge: the model states the pathophysiology correctly but misidentifies which condition the encounter is about. Prior history enters the input as undifferentiated text, so a condition mentioned often acquires salience proportional to its frequency rather than its acuity. The remedy is therefore representational rather than a matter of prompt-ing: prior history should be demarcated as a distinct field, as demo-graphics already are, and consumed as risk context rather than as candidate diagnoses, so that the model reasons over what is new in the encounter conditioned on what is chronically true of the patient. We regard this as the review’s most actionable finding, since it iden-tifies a defect that improved rationale supervision cannot correct and that generalizes to any admission-time diagnosis system built over longitudinal records. 
+
+## O Human Review Protocol 
+
+Four expert reviewers independently rated 1,000 randomly sam-pled training instances along two axes. For each instance the re-viewer was shown the admission-time input, the generated chain-of-thought (CoT), the predicted diagnoses, and the assigned evidence verdict. 
+
+Axis 1: CoT reasoning quality. Whether the reasoning is clinically sound and faithful to the input: 
+
+• Correct — clinically valid reasoning in which every cited finding is actually present in the input and plausibly supports the stated diagnosis. 
+
+• Partial — largely sound but with a minor flaw, e.g. overstated certainty, a weak evidence link, or a small misreading of a value. 
+
+• Incorrect — the reasoning hallucinates or contradicts the input, or the conclusion does not follow from the cited evi-dence. 
+
+Axis 2: Evidence-class assignment. Whether the verifier’s label (supported / partially supported / unsupported) matches the evi-dence actually available at admission: 
+
+• Appropriate — the class correctly reflects the evidence, e.g. 
+
+supported when a direct finding confirms the diagnosis, par-tial when only history or home medications are suggestive. 
+
+• Borderline — defensible but on the supported/partial mar-gin (direct vs. indirect evidence), where reasonable raters could differ. 
+
+• Wrong — a clear mismatch, e.g. supported assigned with no admission-time finding, or partial despite a confirmatory image. KDD ’26, August 2026, Location Li et al. 
+
+Table 10: Representative (gold-conditioned) auxiliary rationales at each quality level, with the consensus reviewer assessment. 
+
+Correct rationales cite a specific early-time finding; partial ones reach the right label but lean on history without explaining the acute presentation; incorrect ones assert a conclusion not grounded in the input. 
+
+Level Diagnosis Rationale excerpt and reviewer assessment 
+
+Correct Dialysis-catheter infection “Chief complaint infection dialysis catheter ; prior catheter infections; triage hypotension (BP 80/40) acutely worse than baseline (88/50) with persistent tachycardia. . . ” 
+
+Assessment: the conclusion is anchored to specific present findings (catheter site, hypotension, sepsis physiology). Unanimously accepted. 
+
+Partial Thyroid carcinoma “45-year-old with dysphagia following radiation; history of thyroid malignancy. . . the presentation strongly suggests a treatment complication such as radiation esophagitis. . . ” 
+
+Assessment: the label (a known condition) is correct, but the reasoning restates history and does not explain the 
+
+acute complaint. Majority rated partial. 
+
+Incorrect CHF; anemia “74-year-old with dyspnea, COPD (FEV1 42%), transient desaturation. . . elevated BP. . . ” 
+
+Assessment: the rationale develops a COPD/respiratory picture but offers no admission-time evidence for heart failure or anemia (no BNP, echo, or hemoglobin cited). Unanimously rated incorrect. 
+
+Supported example: Subarachnoid Hemorrhage 
+
+Chief complaint: SAH, Transfer 
+
+<think> The patient presents with a confirmed sub-arachnoid hemorrhage based on CT imaging . The non-contrast CT head demonstrates focal hyperdensity within the suprasellar, interpeduncular, and prepontine cisterns, consistent with subarachnoid hemorrhage . . . </think> <answer> SUBARACHNOID HEMORRHAGE </answer> 
+
+> Diagnosis traced to direct admission-time evidence (CT).
+
+Partial example: Thyroid Cancer 
+
+Chief complaint: Dysphagia, s/p radiation 
+
+<think> A 45-year-old male presenting with dysphagia following radiation therapy. His past medical history in-cludes malignant neoplasm of the thyroid. The diagnosis CA THYROID refers to his known history of thyroid can-cer; the presentation is likely a sequela of prior treatment . . . </think> <answer> CA THYROID </answer> 
+
+> Diagnosis inferred from prior history, not a current finding.
+
+Figure 17: Chain-of-thought traces for a supported (left) and a partially supported (right) diagnosis. Supported diagnoses are grounded in direct early-time evidence (e.g., CT findings), whereas partially supported diagnoses are inferable only from indirect cues such as prior history—explaining the large performance gap between the two categories (Table 2). Human clinician — 70 words 
+
+Middle-aged woman with asthma and COPD. On arrival the respiratory rate is markedly elevated with falling SpO 2, and BP is clearly above her baseline ; the venous gas shows a high pCO 2. I favour an asthma exacerbation / AECOPD . The ECG changes, however, make myocardial ischaemia likely —I would obtain cardiac enzymes next. 
+
+> Forward, uncertainty-aware: commits to a diagnosis, raises a competing con-cern, and names the next test.
+
+Qwen3.5-4B (CoT) — 200 words 
+
+51-year-old with documented chronic obstructive asthma; home albuterol and budesonide–formoterol. On arrival tachypnoeic (RR 24), tachycardic (HR 125–130), hypoxic (SpO 2 93%) improv-ing with treatment. Chest X-ray shows no acute process (rules out pneumonia/pneumothorax); the blood gas shows respira-tory acidosis (pH 7.27, pCO 2 51). The picture aligns with an acute exacerbation of chronic obstructive asthma.  
+
+> Systematic and correctly calibrated to a single diagnosis, but a post-hoc justi-fication : no uncertainty, competing differential, or next-action.
+
+Figure 18: Human vs. our fine-tuned model’s chain-of-thought for the same admission (asthma/COPD exacerbation). Both reach the correct diagnosis, and the fine-tuned model is well calibrated—committing to a single diagnosis rather than over-listing. Yet the clinician additionally reasons forward : comparing against baseline, raising a competing concern (ischaemia), and recommending the next test, whereas the generated rationale is a confident post-hoc justification of one label. 
+
+## P Input-Modality Ablation 
+
+To test whether each diagnosis causally depends on the attrib-uted modality, we remove one modality at a time from the input EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses KDD ’26, August 2026, Location   
+
+> (a) Clinical verdict on the 1000 reviewed rationales.
+> (b) Faults across the flagged rationales; categories are not mutually exclusive and the two highlighted ones share a common cause.
+
+Figure 19: Clinical review of gold-conditioned rationales. 
+
+at inference (laboratory results, radiology, ECG, prior history, or echocardiography) and re-evaluate the 4B-CoT model on a 2,000 -encounter subset, measuring the per-disease change in F1 (Fig-ure 20). The effects are clinically coherent and mirror the attri-bution of Appendix H. Removing radiology collapses imaging-confirmed conditions—fracture ( −0.37 F1), stroke / intracranial hemorrhage ( −0.24 ), pneumonia ( −0.22 ); removing laboratory re-sults most degrades acute kidney injury ( −0.16 ) and myocardial infarction ( −0.08 ), which depend on creatinine and troponin; and ECG is the only modality whose removal hurts atrial fibrillation (−0.06 ), the canonical ECG diagnosis. In aggregate, radiology is the most load-bearing modality ( −0.09 overall), followed by laboratory results ( −0.05 ) and prior history ( −0.03 ), whereas ECG and echocar-diography have little average effect, consistent with their narrow indications and lower coverage (Figure 3). No single modality there-fore suffices: admission diagnosis requires integrating evidence whose relevance shifts from one disease to another. Two caveats apply: small disease buckets (e.g. sepsis, 𝑛 =15 ) give noisy estimates, and an inference-time ablation measures a fixed model’s reliance on each modality rather than its importance under retraining. 
+
+## Q Data and Code Availability 
+
+Code. The complete construction and evaluation pipeline (cohort extraction, input serialization, label filtering, evidence verification, chain-of-thought generation, training, inference, and LLM-judge evaluation), together with all prompts, the fixed patient-level split, and the cached verifier and judge outputs, is available at https: //github.com/jimmylihui/EarlyDx. The repository contains code only and no patient data. 
+
+Dataset and models. EarlyDx derives from MIMIC-IV, dis-tributed under the PhysioNet Credentialed Health Data License. In accordance with that Data Use Agreement we do not release the dataset or the fine-tuned weights publicly; both are made available 
+
+Figure 20: Per-disease input-modality ablation (4B-CoT) on a 2,000 -encounter subset: change in F1 when each modality is removed at inference. Red indicates a performance drop. Estimates for low-frequency conditions are unstable and should be read with caution. 
+
+through PhysioNet to researchers holding MIMIC-IV credentials, inheriting the access restrictions of the parent database. 
+
+Reproduction. Credentialed users can regenerate EarlyDx end-to-end from the released code given local access to the MIMIC-IV, MIMIC-IV-ED, and MIMIC-IV-Note modules; the fixed split and cached verifier/judge outputs make the benchmark and all reported numbers exactly reproducible. Identifiers and access dates of all evaluated API models, and versions of the open-source models, are listed in the repository. MIMIC-IV itself is available at https: //physionet.org/content/mimiciv/. 
+
+## R Ethical Considerations 
+
+Data handling. All components that process the full corpus—the evidence verifier, the teacher used for rationale generation, and the semantic judge—are open-weight models run on local infrastruc-ture; no MIMIC-derived text leaves our institutional environment for these stages. The two proprietary zero-shot systems were eval-uated on the 6,975 test encounters through Azure OpenAI with human review disabled (GPT-5.5) and the Anthropic API under a zero-retention agreement (Claude Opus 4.8), deployments for which we verified that inputs are not retained, not used for train-ing, and not subject to routine human review, as the PhysioNet credentialed data use agreement requires. Remaining open-weight baselines were likewise run locally, and the released pipeline is provider-agnostic: because verifier and judge outputs are cached, reproducing our numbers requires no further queries to any exter-nal service. 
+
+Provenance and scope. EarlyDx derives solely from MIMIC-IV, which is HIPAA-deidentified and released under IRB approval; we collected no new data and screened all generated text for residual KDD ’26, August 2026, Location Li et al. 
+
+identifiers. Per the MIMIC data use agreement, the dataset and fine-tuned weights are shared only with credentialed users through PhysioNet, while the data-free code is public. EarlyDx is a research benchmark, not a clinical tool: it is not validated for patient care, and any downstream use would require prospective validation and human oversight. 
+
+## S Datasheet for EarlyDx 
+
+Table 11 gives a datasheet for EarlyDx covering motivation, com-position, collection, preprocessing, intended and out-of-scope uses, distribution terms, versioning, and maintenance. Two entries war-rant emphasis: the auxiliary rationale layer is gold-conditioned and must not be repurposed as reasoning supervision, and the datasheet records which components are frozen at release and which must remain executable to score future submissions. EarlyDx: An Admission-Anchored Benchmark for Open-Ended Generation of Evidence-Supported ED-Encounter Diagnoses KDD ’26, August 2026, Location 
+
+Table 11: Datasheet for EarlyDx, following Gebru et al. 
+
+Motivation Created to evaluate open-ended diagnosis generation from evidence available at hospital admission. Existing benchmarks are unsuited to this setting: they use closed code sets and supervise with discharge diagnoses coded over the full inpatient stay. Created by the authors; no external body directed its design. 
+
+Composition One instance per ED encounter resulting in admission: a serialized text prompt of the admission-time record, plus free-text ED-encounter diagnoses each annotated with an evidence class (supported / partially supported / unsupported). Derived from MIMIC-IV v3.1, MIMIC-IV-ED v2.2, MIMIC-IV-Note v2.2, MIMIC-IV-ECG v1.0; contains no data external to MIMIC-IV. Cohort composition, modality coverage, and subgroup breakdowns. 
+
+Collection Programmatic selection of every ED stay with a linked hospital admission and at least one substantive ED diagnosis, excluding symptom and ill-defined codes. No sampling: the cohort is the complete set satisfying these criteria. Source records are de-identified by the MIMIC-IV providers; generated text is additionally screened for residual identifiers. 
+
+Preprocessing Records clipped to a configurable window around admission time and serialized in fixed field order; absent fields marked None .Evidence classes assigned by an LLM verifier; auxiliary rationales generated conditioned on the reference diagnosis. Raw MIMIC-IV tables remain available from PhysioNet, so preprocessing is reproducible from source. 
+
+Intended uses Benchmarking open-ended diagnosis generation from admission-time evidence; studying label noise and temporal leakage in MIMIC-derived prediction tasks; auditing models trained on discharge-coded labels. 
+
+Uses out of scope Not for clinical decision support, deployment, or training any model for clinical use. Not validated for patient care; single-institution; references are administrative billing codes, not adjudicated clinical diagnoses. Cannot be used to study the admit-versus-discharge decision: discharged encounters are excluded by construction. Two filters shape the population—no ED-discharged encounters, and no encounters whose diagnoses are all unsupported—biasing the retained set toward conditions with visible admission-time evidence. 
+
+Rationale layer The released chain-of-thought rationales are gold-conditioned : generated with the reference diagnosis in context, they are post-hoc justifications rather than the reasoning that produced the diagnosis, and multi-reviewer audit accepted only a minority as fully clinically sound. They must not be used as reasoning supervision, as clinical explanations, or as evidence of a model’s reasoning process. This statement is reproduced in the repository README and in per-file metadata. 
+
+Distribution Released through PhysioNet under credentialed access governed by the MIMIC-IV data use agreement. All derived layers— evidence classes, rationales, splits, and cached judge decisions—are distributed under the same credentialed-access terms as the source records and may not be redistributed to non-credentialed parties. Construction and evaluation code, the judge configuration, and documentation contain no MIMIC-derived text and are released publicly. Model-generated annotations are redistributed subject to the generating providers’ terms. 
+
+Versioning MAJOR.MINOR.PATCH : major for a change in cohort or label semantics, minor for added layers or splits, patch for corrections. Superseded versions remain retrievable, so a future citation to EarlyDx v1.2 resolves to a fixed artifact. Machine-readable metadata is provided in Croissant format. 
+
+Maintenance Maintained by Jiahui Li ( jl57095@uga.edu ) for at least three years following release. Errata are reported via the repository issue tracker; confirmed errors are corrected in a new patch version with a changelog entry. 
+
+Frozen vs. executable Evidence classes are computed once and released as a frozen, versioned artifact—users never re-run the verifier, so this layer is reproducible indefinitely. The judge must remain executable to score future submissions and is released as an open-weight model pinned by revision, with its prompt, decoding parameters, and hashes.
