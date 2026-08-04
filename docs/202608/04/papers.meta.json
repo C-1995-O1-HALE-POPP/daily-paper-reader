@@ -1,0 +1,69 @@
+{
+  "label": "2026-08-04",
+  "date": "2026-08-04",
+  "generated_at": "2026-08-04T21:52:03",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202608/04/2608.00817v1-large-language-models-improve-physician-accuracy-but-lead-to-false-reliance",
+      "section": "quick",
+      "title_en": "Large language models improve physician accuracy but lead to false reliance",
+      "authors": "Tirtha Chanda, Christoph Wies, Franziska Schramm, Carina Nogueira Garcia, Nicolas B. Merl, Martin J. Hetz, Jochen S. Utikal, Phillip Tschandl, Cristian Navarrete-Dechent, Alexander Thiem, Jakob N. Kather, Consortium, Titus J. Brinker",
+      "date": "2026-08-01",
+      "pdf": "https://arxiv.org/pdf/2608.00817v1",
+      "score": "7.0",
+      "evidence": "通过医生实验评估代理式检索增强LLM的临床支持效果与依赖行为",
+      "tldr": "检索增强大语言模型有望提供有据可查的临床决策支持，但其价值取决于显示证据是否引导而非误导医生。我们开发了智能体检索增强模型CORA，在46名医生实验中，辅助使准确率从70.8%提升至82.6%，且引用支持与正确答案正相关。然而，引用也造成不对称依赖：对错误但有引用支持的答案，医生的抵抗力从92%骤降至34.8%。这揭示了来源链接辅助在提升准确性的同时引入了接地相关的安全风险，提示需警惕对引用的过度信任。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Retrieval-augmented large language models (LLMs) promise source-linked clinical support, but their value depends on whether displayed evidence guides rather than distorts physician reliance. We developed CORA, an agentic retrieval-augmented LLM, to investigate how source-linked assistance affects physician decision-making. CORA maintained benchmark performance and achieved larger gains on cases published after the models' training-data cutoffs. In a study of 46 physicians, accuracy increased from 70.8% unaided to 82.6% with CORA. Supporting citations predicted correct answers (87.7% vs 65.5%), but citations created an important asymmetry: perceived support increased adoption of correct advice from 34% to 76.9% but when an incorrect LLM answer appeared citation-supported, physician resistance to it fell from 92% to 34.8%. These findings show that source-linked LLM assistance can improve physician accuracy while introducing a grounding-dependent safety risk.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/04/2608.01361v1-high-stakes-decisions-with-language-models-insights-from-emergency-triage",
+      "section": "quick",
+      "title_en": "High-Stakes Decisions with Language Models: Insights from Emergency Triage",
+      "authors": "Khurram Yamin, Christopher Kelly, Bryan Wilder, Eric Horvitz",
+      "date": "2026-08-02",
+      "pdf": "https://arxiv.org/pdf/2608.01361v1",
+      "score": "7.0",
+      "evidence": "提出概率决策框架，用于评估高风险急诊分诊中的临床决策语言模型",
+      "tldr": "医疗急救分诊等高风险决策要求预测之外还需明确权衡不同行动后果。本研究将语言模型的分诊推荐置于概率决策分析框架，通过临床小故事和自定义效用函数进行检验。研究发现，能力强的语言模型会依据效用陈述调整推荐，同一组预测可导出不同决策策略。这提示有效部署必须显式设定目标效用，并把语言模型当作概率决策系统来评估与使用。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "High-stakes decisions under uncertainty, such as medical emergency triage, require more than accurate predictions. They depend on estimating the likelihood of alternative outcomes while explicitly weighing the consequences of different actions, principles that have long formed the foundation of medical diagnosis and decision making. Yet language models are increasingly used for high-stakes clinical recommendations without explicit specification of the utilities governing these decisions. Here we show that emergency triage with language models can be understood within a probabilistic decision framework, providing a case study of a broader decision-analytic paradigm for steering, evaluating, and deploying language models in high-stakes settings. Using clinical vignettes from a structured evaluation of a consumer triage system, we analyze recommendations for treatment under alternative utility functions that specify the relative costs of missed emergencies and unnecessary escalation. We find that capable language models adjust recommendations in response to stated utilities, revealing that the same underlying predictions can support markedly different decision policies. These findings show that effective deployment depends not only on improving predictions but also on making decision objectives explicit. More broadly, they suggest that language models for high-stakes applications should be understood and evaluated as probabilistic decision systems whose recommendations depend jointly on predictive performance and explicit utilities.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/04/2608.02444v1-parevallayer-when-partial-llm-agent-evaluations-support-a-decision",
+      "section": "quick",
+      "title_en": "ParEvalLayer: When Partial LLM-Agent Evaluations Support a Decision",
+      "authors": "Wei-Jung Huang, Bonan Shen",
+      "date": "2026-08-03",
+      "pdf": "https://arxiv.org/pdf/2608.02444v1",
+      "score": "7.0",
+      "evidence": "面向部分LLM智能体评估的决策层，直接支持智能体系统的可靠基准评测。",
+      "tldr": "LLM智能体评估常产生部分结果，但早期任务可能偏差且廉价任务先跑导致样本失真，部分分数不足以代表完整结论。为此提出ParEvalLayer决策层，按预设比较策略从已观测配对结果中判断“更好”“未更好”“需更多证据”或“弃权”。在公开基准回放中，三个基准仅用15%-25%任务即达到与完整评估相同判定，而其余基准需要更多数据。这证明部分分数报告需附决策规则及未决比较数量，才能支撑可靠决策。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "LLM-agent evaluations often produce task outcomes long before the full benchmark run is complete. A partial score is tempting to report, but it does not show whether the observed tasks support the same conclusion as the completed evaluation. Early tasks can omit important parts of a benchmark, running cheaper tasks first can distort the observed sample, and a rule that decides only easy pairs can appear accurate while leaving many comparisons unresolved. We introduce ParEvalLayer, a decision layer that reads paired outcomes for two agent systems and a comparison policy chosen in advance. For each partial run, it records whether the tested agent system is better by the required amount, is not better by that amount, needs more evidence, or should abstain. We evaluate ParEvalLayer by replaying completed public benchmark data as if each evaluation had stopped earlier. At each point, ParEvalLayer applies the policy using only the outcomes observed so far; if it reaches one of the two comparison judgments, we check whether that judgment matches the completed data for the same system pair. With the main comparison rule, three of the public benchmarks reach the same decision as the completed evaluation after observing only 15% to 25% of task outcomes. Other benchmarks require more task outcomes. This variation shows why a partial score alone is not enough: reports should also state the decision rule and how many comparisons remain without a decision.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/04/2608.02372v1-predact-bench-benchmarking-tool-augmented-dialogue-under-controlled-tool-noise",
+      "section": "quick",
+      "title_en": "PredAct-Bench: Benchmarking Tool-Augmented Dialogue under Controlled Tool Noise",
+      "authors": "Abdulrahman AlRabah, Xiaocheng Yang, Dilek Hakkani-Tür, Abdussalam Alawini",
+      "date": "2026-08-03",
+      "pdf": "https://arxiv.org/pdf/2608.02372v1",
+      "score": "6.0",
+      "evidence": "针对工具增强对话代理的受控工具噪声基准，医疗是目标高风险领域之一",
+      "tldr": "现有任务型对话基准往往假设工具输出完美，忽略了真实部署中工具噪声与人类信任的不确定性。针对此，我们提出PREDACTBENCH基准，以教育干预为测试床，基于OULAD和PREDACT-CS数据集，引入RAIR与RSR指标系统评估13种开源及闭源LLM，并开展了教师人类研究。实验结果揭示：在工具噪声下，SOTA模型本应帮助教师识别不可靠建议、避免过度依赖，但当前模型均未能做到。该基准为构建可靠的AI决策支持系统提供了重要评测基础。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Large Language Models (LLMs) are increasingly deployed in task-oriented dialogue systems that support multi-step decision-making in high-stakes domains such as education, healthcare, and finance. However, existing benchmarks typically assume perfectly accurate tool outputs, overlooking the reality that deployed systems must operate with noisy tools and human decision-makers whose trust in the agent is itself uncertain. Such conditions are common in practice, for example, a clinician using a diagnostic prediction tool or an advisor relying on a model that forecasts student outcomes from historical records. We introduce PREDACTBENCH, a benchmark for evaluating dialogue agents paired with statistically imperfect tools, using education as a measurable testbed where ground truth outcomes and clear intervention decisions are available. First, we build a benchmark for AI-assisted human decision-making, where the AI uses noisy predictors to help guide a user. Second, we introduce episode-level Relative AI-Reliance (RAIR) and Relative self-reliance (RSR) metrics, extending prior trust calibration framework to multi-turn dialogue. Third, we evaluate 13 state-of-the-art closed and open source LLMs on two educational datasets, OULAD (real assessment trajectories from the UK Open University) and PREDACT-CS (60 courses with real final grade outcomes and synthetically generated weekly score trajectories), alongside a human study with instructors and teaching assistants. We find that when tools are noisy, SOTA models are supposed to provide visibility to teachers so that they do not over-rely on wrong suggestions or hallucinations, but current models fail to do that. We offer PREDACTBENCH to help build better LLMs as AI decision support systems to help teachers.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}

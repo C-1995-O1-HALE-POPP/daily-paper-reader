@@ -1,0 +1,607 @@
+Title: PredAct-Bench: Benchmarking Tool-Augmented Dialogue under Controlled Tool Noise
+
+URL Source: https://arxiv.org/pdf/2608.02372v1
+
+Published Time: Tue, 04 Aug 2026 02:51:50 GMT
+
+Number of Pages: 28
+
+Markdown Content:
+# PredAct-Bench: Benchmarking Tool-Augmented Dialogue under Controlled Tool Noise 
+
+Abdulrahman AlRabah ∗ Xiaocheng Yang Dilek Hakkani-Tür Abdussalam Alawini 
+
+University of Illinois Urbana-Champaign 
+
+## Abstract 
+
+Large Language Models (LLMs) are increasingly deployed in task-oriented dia-logue systems that support multi-step decision-making in high-stakes domains such as education, healthcare, and finance. However, existing benchmarks typically as-sume perfectly accurate tool outputs, overlooking the reality that deployed systems must operate with noisy tools and human decision-makers whose trust in the agent is itself uncertain. Such conditions are common in practice, for example, a clinician using a diagnostic prediction tool or an advisor relying on a model that forecasts student outcomes from historical records. We introduce P RED ACT BENCH , a benchmark for evaluating dialogue agents paired with statistically imperfect tools, using education as a measurable testbed where ground truth outcomes and clear intervention decisions are available. First, we build a benchmark for AI-assisted human decision-making, where the AI uses noisy predictors to help guide a user. Second, we introduce episode-level Relative AI-Reliance (RAIR) and Relative self-reliance (RSR) metrics, extending prior trust calibration framework to multi-turn dialogue. Third, we evaluate 13 state-of-the-art closed and open source LLMs on two educational datasets, OULAD (real assessment trajectories from the UK Open University) and P RED ACT -CS (60 courses with real final grade outcomes and synthetically generated weekly score trajectories), alongside a human study with instructors and teaching assistants. We find that when tools are noisy, SOTA models are supposed to provide visibility to teachers so that they do not over-rely on wrong suggestions or hallucinations, but current models fail to do that. We offer PRED ACT BENCH to help build better LLMs as AI decision support systems to help teachers. 
+
+## 1 Introduction 
+
+Every semester, instructors face a recurring challenge: students accumulate grades week by week, and some gradually fall behind through subtle patterns scattered across partial data. A missed homework, declining quiz average, or poor midterm may jointly signal serious risk, yet no single event is decisive. In large courses, instructors rarely have time to track every trajectory, identify who is struggling, determine why, and decide when intervention is still meaningful. By the time these patterns become obvious, the opportunity for effective support may have narrowed. Although this work is instantiated in college education, the underlying challenge is broader: many high-stakes decision-support settings require agents to reason over temporally evolving records, interact with domain experts, and use tools whose outputs are informative but imperfect. In medical care, clinicians interpret longitudinal patient histories, laboratory trends, and risk scores; in finance, analysts reason over market trajectories, forecasts, and noisy indicators. Across these domains, useful agents must do more than retrieve facts or call APIs: they must track evolving evidence, distinguish reliable observations from uncertain predictions, communicate confidence, and support human decision-making through conversation.  
+
+> ∗Corresponding author: alrabah2@illinois.edu
+> Preprint. arXiv:2608.02372v1 [cs.CL] 3 Aug 2026
+
+Our work lies at the intersection of task-oriented dialogue, agent benchmarking, temporal reasoning, and educational prediction. Existing dialogue benchmarks primarily evaluate state tracking and response generation under static user goals [ 4, 9, 43 , 14 , 42 , 33 ]; tool-use and agent benchmarks emphasize action correctness, policy adherence, or environment interaction [ 31 , 28 , 29 , 41 , 47 , 8]; and robustness benchmarks study noisy instructions and imperfect tool execution [ 17 , 37 ]. However, these lines of work largely separate three challenges that co-occur in real deployments: reasoning over partial longitudinal evidence, maintaining coherent state through multi-turn conversation, and making actionable decisions when tool outputs are uncertain. We introduce P RED ACT BENCH , an education-focused benchmark for evaluating predictive, interac-tive, and tool-augmented dialogue agents. Given partial student trajectories up to a temporal cutoff, an agent must predict final outcomes, identify at-risk students, and recommend interventions through multi-turn interaction with an instructor or teaching assistant. PRED ACT BENCH includes both system-initiated analysis, where agents autonomously inspect student progress, and user-initiated dialogue, where instructors query, filter, and challenge the agent’s analysis. To reflect realistic decision support, P RED ACT BENCH combines deterministic lookup and counterfactual tools with probabilistic prediction tools whose reliability varies across courses and semester stages. Our experiments analyze whether current LLM agents can remain reliable when temporal reasoning, noisy tools, and human decision-making are coupled. We evaluate models along multiple dimensions, including grade prediction accuracy, decision quality, tool calibration, and human trust calibration. This enables us to separate several failure modes that are conflated in standard task-success metrics: whether the model calls the right tools, whether it faithfully tracks tool outputs, whether it over-trusts uncertain predictions, and whether it helps human participants make better final decisions. Our contributions are threefold: • We introduce P RED ACT BENCH 2, a benchmark for evaluating tool-augmented LLM agents under controlled tool noise. P RED ACT BENCH injects calibrated noise into a k-nearest neighbor predictor over historical student records, varying tool accuracy from 40% to 80% as a controlled experimental parameter. We release the benchmark on two educational datasets: OULAD [ 19 ], with real assessment trajectories, and P RED ACT -CS, a 60-course CS corpus with real final grade outcomes and synthetically generated weekly score trajectories. • We evaluate decision quality using initial and final F1, and introduce episode-level RAIR and RSR to extend the trust-calibration framework of Schemmer et al. [34] from one-shot decisions to multi-turn dialogue. F1 measures whether instructors correctly identify at-risk students before and after dialogue, while RAIR and RSR diagnose whether they update appropriately under imperfect tool outputs: revising toward correct agent advice while resisting incorrect advice. • We evaluate 13 closed and open source LLMs across both datasets, alongside a human study with instructors and teaching assistants. Our results reveal that LLM instructors generally improve with tool accuracy, while humans exhibit better-calibrated reliance, revealing decision-making dynamics that LLM-only benchmarks would miss. 
+
+## 2 Related Work 
+
+Dialogue and Agent Benchmark Existing dialogue and agent benchmarks span task-oriented dialogue, tool use, web agents, and noisy agent environments. Task-oriented dialogue datasets such as MultiWOZ [ 4 , 9, 43 , 14 , 42 ] and Schema-Guided Dialogue (SGD) [ 33 ] standardize belief state tracking and response generation, but largely assume predefined schemas, static goals, and fixed ontologies. Tool-use benchmarks such as APIBench [ 28 ], ToolBench [ 31 ], and BFCL [ 29 ] evaluate API selection, argument construction, compositional planning, and multi-turn function calling, while environment-grounded benchmarks such as WebArena [ 47 ], MIND2WEB [ 8], τ -bench [ 41 ], and PrefIx [ 20 ] extend evaluation to long-horizon web tasks, simulated user–agent–API interaction, policy adherence, and user preference adaptation. More recent robustness benchmarks, including WILDAGTEVAL [ 17 ] and AgentNoiseBench [ 37 ], evaluate agents under realistic API complexity and controllable user- or tool-side noise. However, these lines of work do not jointly evaluate 
+
+> 2https://github.com/aalrabah/PredAct_bench.git
+
+2Resource PredAct Bench                                       
+
+> (ours)
+> MultiWOZ 2.4 [42]
+> (Ye et al.)
+> TIMER -Bench [6]
+> (Cui et al.)
+> τ2-bench [3]
+> (Barres et al.)
+> AgentNoise Bench [37]
+> (Wang et al.)
+> WildAGT Eval [17]
+> (Kim et al.) Tool Calls ✓✗✗✓✓✓
+> Multi-Turn Conversation ✓✓✗✓✓✓
+> Interactive Conversation ✓✗✗✓✓✓
+> Noise Injection ✓✗✗✗✓✓
+> Longitudinal Reasoning ✓✗✓✗✗✗
+> Human-in-the-Loop Evaluation ✓✗●✗✗✗
+> Task Domain Education Attraction, Hospital, Etc. Clinical EHR Airline, Retail, Telecom Airline, Retail, Telecom Time Notification, Communication, Etc.
+
+Table 1: Comparison between P RED ACT BENCH and representative benchmarks. P RED ACT BENCH 
+
+uniquely combines tool use, multiturn and interactive conversation, noise injection, longitudinal reasoning, and human-in-the-loop evaluation in an education-oriented task setting. ✓indicates the feature is present, ✗indicates it is absent, and ●indicates partial support. For Human Evaluation, 
+
+●denotes expert validation without live human-in-the-loop interaction. longitudinal prediction, belief tracking over evolving evidence, noisy probabilistic tools, and human decision support in high-stakes educational settings. 
+
+Robust Agents under Noise Robustness is crucial for LLM agents operating in realistic environ-ments, where user intents may be ambiguous, information may be incomplete, and tool outputs may be noisy, failed, or misleading. Prior work studies ambiguity clarification [ 45 ], incomplete tool-use conditions [ 40 ], tool hallucination and reliability failures [ 46 , 39 ], parameter-filling and toolchain er-rors [ 38 ], and adversarial tool injection [ 44 ]. Benchmark-level efforts such as WILDAGTEVAL [ 17 ]and AgentNoiseBench [ 37 ] systematically expose agents to API specification complexity, execution failures, incomplete responses, erroneous outputs, misleading signals, and irrelevant information, while PALADIN studies recovery from execution-level tool failures [ 36 ]. Together, these works show that robust tool use requires more than correct API selection: agents must recognize solvability, ground parameters reliably, recover from failures, and remain stable under both benign and adversarial perturbations. 
+
+LLM Temporal Reasoning LLMs remain limited in temporal reasoning, which requires integrating arithmetic, logical, and world knowledge across time [ 35 , 5 ]. Benchmarks such as TimeBench [ 5], TIMER-Bench [ 6 ], and ER-Reason [ 22 ] reveal gaps between state-of-the-art models and humans across symbolic, commonsense, clinical, and event-level temporal reasoning. Prior work improves temporal reasoning through prompting, consistency-based methods, parameter adaptation, temporal or mathematical training signals [ 35 , 18 , 24 ], and structure-aware integration of temporal knowledge graphs with text representations [ 15 ]. However, reasoning over longitudinal data remains challenging in real-world domains, where models exhibit chronological confusion, recency bias, and failures to integrate information across time steps [6, 30]. 
+
+Evaluation Metrics for Probabilistic and Human-AI Decision Support For evaluating proba-bilistic predictors, previous work proposed scoring and calibration metrics: Brier score measures the squared error of probabilistic forecasts [ 10 ], while Expected Calibration Error (ECE) summarizes the gap between predicted confidence and empirical accuracy [ 13 ]. We also relate our intervention setting to appropriate reliance on AI advice, where users should follow correct AI recommendations while rejecting incorrect ones [34]. This work will integrate them into our metrics. 
+
+## 3 PRED ACT BENCH 
+
+Task Definition. PRED ACT BENCH formulates academic risk prediction as a dialogue task over multiple turns between an LLM instructor , which simulates a course instructor, and an LLM Assistant ,which responds through tool calls. Both are released as part of the benchmark. Each episode is parameterized by a course, a cutoff week t, and a sample of N students. Given a partial grade trajectory x(t) 
+
+> i
+
+for each student i, the assistant predicts a final letter grade ˆyi with confidence ci, flags students it believes are at risk, and surfaces supporting evidence. The interaction proceeds in three 3Figure 1: Overview of the P RED ACT BENCH . The system-initiated dialogue (left) shows two LLM agents conversing over tool outputs to autonomously analyze student performance, predict risk, and plan interventions. The user-initiated dialogue (right) shows an instructor querying, filtering, and challenging the analysis, triggering additional tool calls. Red text indicates values produced by the tools listed alongside each dialogue. stages. In the first stage, the assistant presents its flagged students with confidence scores and brief rationales. In the second stage, the instructor records an initial decision dinit  
+
+> i
+
+∈ { flag , no_flag } based solely on this report. In the third stage, the instructor engages in further dialogue with the assistant, probing grade history, class comparisons, counterfactuals, and interventions, before committing to a final decision dfinal  
+
+> i
+
+. The instructor retains final authority, and the assistant acts as a collaborator augmented by tools rather than an autonomous agent. 
+
+3.1 Benchmark Overview 
+
+Figure 1 shows the P RED ACT BENCH pipeline. Each episode begins with a course dataset (1) containing student grades, course schema, and a temporal cutoff that splits the semester into a window before the cutoff fed to the predictor and a window after it containing the final grade. In the agent layer (2), an LLM instructor and an LLM assistant converse over the predictor outputs through a shared tool interface exposing deterministic lookups, counterfactual simulations, probabilistic prediction queries, and intervention checks. The LLM instructor produces an initial flag or no flag decision per student, queries the LLM assistant across multiple dialogue turns, and commits to a final decision. Both decisions are scored against ground truth at risk labels in the evaluation step (3), yielding F1, precision, recall, and the trust calibration metrics RAIR and RSR. 
+
+3.2 Datasets 
+
+Table 2: Dataset statistics for OULAD and P RED ACT -CS.             
+
+> Dataset Students Courses Final Grades Trajectories
+> OULAD 32,593 7 modules, 22 presentations Real Real PRED ACT -CS 53,401 60 CS courses Real Synthetic (calibrated)
+
+OULAD [ 19 ] provides real assessment scores and final results from the UK Open University, where final grades follow UK conventions with thresholds at 40, 50, 60, and 70 mapping to grades F through A. P RED ACT -CS draws from 60 undergraduate and graduate computer science courses at a large public research university. Each course provides a real syllabus with assignment names, weights, and a weekly schedule, paired with each student’s real final letter grade on an A through F scale. Because raw weekly trajectories cannot be released, per assignment scores are synthetically generated to produce realistic paths that terminate at each student’s real final grade. For both datasets, we partition 4Table 3: Tool inventory used by the P RED ACT BENCH dialogue agent, grouped by functional category.                
+
+> Category Count Type Example
+> Lookup 6Deterministic get_student_grades
+> Counterfactual 3Deterministic simulate_uniform_remaining
+> Prediction 2Probabilistic (k-NN) predict_final_grade_for_student
+> Intervention 1LLM-generated suggest_intervention_for_student
+
+students within each course into 80 percent training and 20 percent test using a fixed random seed, with the training partition serving as the historical record pool for the k nearest neighbor prediction tool. 
+
+Tools. PRED ACT BENCH provides the agent with 12 tools across four categories (Table 3), intention-ally mixing deterministic and probabilistic tools. Prior dialogue benchmarks place noise elsewhere. 
+
+τ -Bench assumes oracle tools that always return correct information, and AgentNoiseBench adds noise to user queries but keeps tools as oracles. P RED ACT BENCH instead places the noise inside the toolchain, asking whether the agent and its human collaborator can reason appropriately when some tools are accurate and others are not. The prediction tools use k nearest neighbors over historical student records and return a predicted grade with a confidence score. Appendix A lists all tools with signatures and descriptions. 
+
+3.3 k-NN Predictor and Noise Injection k-NN Predictor. The prediction tools used by the agent are implemented as a tolerance based weighted k-NN over historical student records. Given a student trajectory x(t) 
+
+> i
+
+at cutoff week t, we extract per component graded scores filtered to weeks ≤ t, optionally augmented with percentile normalized engagement features when available. For each historical student j in the training pool, we compute a Manhattan style averaged score distance over shared components: 
+
+d(i, j ) = 1
+
+|Sij |
+
+X
+
+> p∈Sij
+
+|x(t) 
+
+> i,p
+
+− xj,p | (1) where Sij is the set of components both students share. Rather than using a fixed k, we perform a radius search and retain all historical students j with d(i, j ) ≤ τij , where the adaptive tolerance is 
+
+τij = clip(0 .5 · ¯σS , 3, 10) · (0 .4 + 0 .6 · rij ) (2) with ¯σS the mean per component standard deviation across the training pool and rij =
+
+|Sij |/|components | the share of components covered by both students. The predicted grade ˆyi
+
+is computed by distance weighted voting, 
+
+ˆyi = arg max 
+
+> g
+
+X
+
+> j∈N i
+
+wij · 1[yj = g], wij = 11 + d(i, j ) (3) where Ni is the set of matched neighbors and yj is neighbor j’s known final grade. The confidence is the share of weighted votes assigned to the predicted grade, 
+
+ci =
+
+P 
+
+> j∈N i
+
+wij · 1[yj = ˆ yi]
+
+P 
+
+> j∈N i
+
+wij 
+
+. (4) When no historical students fall within the tolerance, the predictor falls back to a score conditional grade distribution estimated from the training pool. In our experiments, the fallback fires for 19% of OULAD predictions and 0% of P RED ACT -CS predictions. 
+
+Noise Injection. To evaluate dialogue agents under controlled tool unreliability, P RED ACT BENCH 
+
+introduces calibrated noise into the predictor outputs. Given a sample of N predictions with n0
+
+naturally correct, we calibrate to a target accuracy a∗ ∈ { 0.4, 0.5, 0.6, 0.7, 0.8} by flipping a fixed number of predictions: 
+
+nflip = |round( a∗ · N ) − n0| (5) If n0 > a ∗ · N , we shuffle the correct predictions and flip the first nflip to a uniformly random wrong grade chosen from the four remaining letter grades. If n0 < a ∗ · N , we shuffle the wrong predictions and flip the first nflip to the truth label. Only ˆyi is rewritten; ci is preserved, so confidence and predicted grade can be inconsistent after injection (a deliberate property mirroring the miscalibration of real predictors). Tool side functions (grade lookups, counterfactuals, minimum score queries) are unaffected and always return ground truth derived values, isolating noise to the prediction tool only. 54 Experimental Setup 
+
+Implementation Details. The LLM assistant is fixed at GPT-4o Mini across all conditions to isolate instructor side reasoning from assistant capability and to keep the 1,300 episode sweep tractable. The human study (Section 4.2) varies the assistant across three models. The instructor agent is varied across 13 closed and open source LLMs, accessed via OpenAI direct (3 models) and OpenRouter (10 models). Per model temperature settings, exact API identifiers, and special parameter handling are listed in Appendix A.2. Each episode allows up to 10 LLM instructors turns with max _tokens = 16 ,000 per call, and each cell uses a per episode seed derived from a hash of the (model, dataset, target accuracy, run index) tuple, ensuring deterministic reproducibility while preserving across condition independence. Total experiment volume is 1,300 episodes (13 instructors 
+
+× 10 cells × 10 runs). 
+
+4.1 Evaluation Metrics Decision quality. We measure decision quality against per student ground truth at risk labels using standard precision, recall, and F1. We report initial F1 (computed from dinit  
+
+> i
+
+) and final F1 (computed from dfinal  
+
+> i
+
+) to separate what the instructor decides before dialogue from what it decides after. The gap between them quantifies whether dialogue helps or hurts. 
+
+Tool calibration. To verify that the k-NN predictor produces meaningful confidence scores before noise injection, we report Expected Calibration Error (ECE) [ 13 ] and Brier score [ 10 ]. ECE measures the average gap between predicted confidence and empirical accuracy across binned predictions. Brier score reports the mean squared error between predicted probability and observed outcome on the binary at-risk classification. Lower values indicate better calibration. Both are computed on the natural (uncalibrated) predictor outputs. 
+
+Trust calibration. To capture whether decision makers rely on the agent appropriately given an imperfect tool, we extend the one-shot RAIR and RSR framework of Schemmer et al. [34] to the multi-turn dialogue setting. We compute episode-level RAIR and RSR using the instructor’s initial and final decisions per episode: RAIR = |{ i : dinit 
+
+> i
+
+̸ = yi, ˆyi = yi, d final  
+
+> i
+
+= yi}| |{ i : dinit 
+
+> i
+
+̸ = yi, ˆyi = yi}| (6) RSR = |{ i : dinit  
+
+> i
+
+= yi, ˆyi̸ = yi, d final  
+
+> i
+
+= yi}| |{ i : dinit  
+
+> i
+
+= yi, ˆyi̸ = yi}| (7) RAIR measures how often the instructor correctly updates toward the agent when the instructor was initially wrong and the agent was right. RSR measures how often the instructor correctly stays with their own answer when they were right and the agent was wrong. Together, they quantify appropriate reliance rather than raw agreement. 
+
+Override behavior. For finer-grained analysis, we partition agent flagged decisions into four ground-truth-aware buckets: correct follow (instructor kept a correct flag), bad follow (instructor kept a wrong flag), correct override (instructor dismissed a wrong flag), and bad override (instructor dismissed a correct flag, a dangerous miss). The four buckets exhaustively partition all agent-flagged decisions. 
+
+4.2 Experiments Agent-to-agent benchmark. The primary experiment evaluates how 13 LLM instructors perform across the full range of tool accuracies on both datasets. The instructor model is varied across 7 closed source models (GPT-5.5 [ 27 ], GPT-5.4 Mini [ 26 ], GPT-4o Mini [ 25 ], Claude Opus 4.7 [ 2], Claude Haiku 4.5 [ 1], Gemini 3.1 Pro [ 12 ], Gemini 3 Flash [ 11 ]) and 6 open source models (Qwen 3.5 35B [ 32 ], Qwen 3.5 9B [ 32 ], Mistral Small 24B [ 23 ], Ministral 3 14B [ 21 ], DeepSeek V4 Pro [ 7], DeepSeek V4 Flash [ 7 ]). The assistant agent is fixed at GPT-4o Mini in all conditions to isolate instructor effects. For each model, we run 5 target tool accuracies (40%, 50%, 60%, 70%, 80%) on each dataset, with 10 runs per cell. Each run samples 30 students per episode with 5 forced at-risk under the stratification rule from Section 3.3. This yields 1,300 total episodes (13 instructors × 10 cells × 10 runs) and lets us measure how instructor performance varies with both tool accuracy and model capacity. 6Figure 2: RAIR vs RSR for one human group and 13 LLM agents. The human (gold diamond) sits alone in the calibrated quadrant (RAIR 0.63 , RSR 
+
+0.88 ). Ten LLM agents cluster at RAIR < 0.2
+
+and RSR > 0.97 , indicating over reliance. Only GPT-5.5 and the Gemini variants approach human RAIR. 
+
+Human study. To test whether the agent to agent findings generalize to real decision mak-ers, we run a parallel study with n = 13 in-structors and teaching assistants from a large public university. Each participant completes 10 scenarios in randomized order, namely a no agent baseline followed by 9 agent conditions crossing three LLM assistants (GPT-4o Mini, Qwen 3.5 35B, Qwen 3.5 9B) with three target tool accuracies (40%, 60%, 80%). The three ac-curacies cover the low, peak, and high regimes from the agent to agent results. Each scenario displays 5 flagged students, and all sampling and calibration seeds are hardcoded per condi-tion (Appendix A.4) so every participant sees the same student set within a condition, yielding 650 human decisions. After each agent block, participants complete a Likert questionnaire (1 to 5) covering decision confidence, perceived usefulness, ability to detect wrong predictions, and willingness to deploy. 
+
+Ablations. Two robustness checks (Ap-pendix B) probe whether our findings are ar-tifacts of the experimental design. The held out generalization ablation re runs five representative models on OULAD courses unseen during pipeline calibration, with 2 runs per cell across the same 5 accuracy conditions. The uncalibrated predictor ablation removes noise injection and runs the same models on the predictor’s natural outputs, with 10 runs per cell. RSR stays near ceiling in both, and dialogue induced over trust appears in both, more pronounced without calibration. The mid accuracy peak reproduces in the held out ablation, with four of five models reaching F1 ≥ 0.73 at the 60% target. 
+
+## 5 Main Results 
+
+Humans and LLM instructors reach comparable F1 through different strategies. Thirteen participants (11 teaching assistants, 2 instructors) classified at-risk students on P RED ACT -CS paired with three LLM assistants at target tool accuracies of 40%, 60%, and 80%. Humans score 55–56 F1, comparable to mid-tier LLM Instructors, while the no agent human baseline reaches 89.0 F1 (Appendix D). However, the underlying reliance patterns diverge substantially (Figure 2). Human participants occupy the calibrated quadrant alone, achieving RAIR = 0 .63 and RSR = 0 .88 , whereas 11 of the 13 evaluated LLMs cluster in a narrow region characterized by RAIR < 0.20 and RSR 
+
+> 0.97 . The behavior profile (Table 4) explains the gap. Humans use fewer turns than LLMs (3.65 vs. 8.7 on average) but spend roughly twice as long per episode (302s vs. 160s), suggesting they group several questions into single messages and take time to interpret tool outputs between turns. LLMs do the opposite, issuing many short, single intent queries with little time between turns. The Q-type distribution (Appendix E) reinforces this pattern. 44% of human messages fall into the other 
+
+category (filtering, batch queries, aggregating over prior answers) and 32% into class_comparison ,whereas LLMs concentrate in grade_lookup and min_score , mirroring the templated tool surface defined by the system prompt. Expert evaluation of dialogue quality (Appendix C) confirms this gap, with humans scoring significantly higher on question quality ( 1.54 vs. 1.21 , p = 0 .026 ). Comparable F1 thus conceals a structural difference: LLM instructors inherit tool accuracy through wholesale acceptance and templated calls, whereas humans reach similar scores by selectively keeping correct flags, dismissing incorrect ones, and asking targeted questions that build on prior tool answers. 
+
+Tool accuracy improves instructor F1 on both datasets. As target tool accuracy increases from 40% to 80%, LLM instructor mean F1 across the 13 evaluated LLMs rises from 36 to 73 on P RED ACT -CS and from 26 to 45 on OULAD (Figure 3). The trend holds for both closed and open source models, indicating that more reliable tools translate into better instructor decisions in the agent-to-agent setting. The gain is steeper on P RED ACT -CS ( +37 F1 points across the accuracy range) than on OULAD ( +19 points), and on OULAD LLM instructor mean F1 in fact peaks at 70% accuracy (51) 7Table 4: Per-episode behavior profile on P RED ACT -CS. Turns : mean messages. Duration : mean seconds. Q-types : mean distinct question categories used (of 6). Override % : agent-flagged students whose initial decision changed after chat. Humans: 117 episodes; LLMs: 50 episodes each.                                                                  
+
+> Rater Turns Duration (s) Q-types (of 6) Override %
+> Closed-source LLMs
+> GPT-5.5 5.04 185.2 4.02 15.1
+> GPT-5.4 Mini 9.86 104.3 3.76 10.7 GPT-4o Mini 10.00 86.4 3.00 19.2 Claude Opus 4.7 8.96 135.4 3.12 18.5 Claude Haiku 4.5 9.26 186.6 3.80 27.4 Gemini 3.1 Pro 4.84 168.6 2.30 19.6 Gemini 3 Flash 7.78 103.3 3.20 16.7
+> Open-source LLMs
+> DeepSeek V4 Pro 8.48 321.7 3.24 18.1 DeepSeek V4 Flash 9.20 179.9 3.74 20.8 Mistral Small 24B 9.56 145.0 3.76 14.9 Ministral 3 14B 9.50 126.6 4.40 26.2 Qwen 3.5 35B 8.84 230.3 3.46 13.5 Qwen 3.5 9B 9.64 110.2 3.28 25.7
+> Human participants ( n= 13 )
+> Humans (no-agent baseline) —175.0 ——Humans (with agent) 3.65 302.1 2.49 20.7
+
+before declining at 80%, reflecting OULAD’s longer trajectories, UK grading thresholds, and noisier real assessment data, which together make each at-risk decision harder regardless of how accurate the predictor is. 
+
+Frontier LLMs generally lead, but the model gap is comparable to the dataset gap. Frontier closed source models top both rankings (Table 16), though the P RED ACT -CS leaderboard is mixed, with Gemini 3 Flash at 63.4, open source DeepSeek V4 Pro at 60.7, and GPT-5.5 at 59.2. On OULAD, GPT-5.5 leads at 55.1 followed by Gemini 3.1 Pro at 52.3. The largest cross dataset gap belongs to DeepSeek V4 Pro, which drops from 60.7 on P RED ACT -CS to 29.9 on OULAD ( ∆ = 30 .7). The mean cross dataset gap across all 13 models is 15.9 F1 points, comparable to the 19.5 point spread on PRED ACT -CS and smaller than the 31.9 point spread on OULAD. 
+
+Dialogue actively degrades decisions for most LLM instructors. The chat phase hurts more than it helps for 10 of 13 LLM instructors (Table 14, Appendix E). Only GPT-5.5 ( +0 .5), Gemini 3 Flash (+0 .4), and Gemini 3.1 Pro ( +1 .9) gain F1 through dialogue. The largest drops fall on smaller and mid tier models, with GPT-5.4 Mini at −11 .0, Qwen 3.5 9B at −8.5, and Ministral 3 14B at −7.5.The trust calibration metrics expose the mechanism. RSR sits at ceiling across all 13 instructors (mean 98 .2, range 90 .5 to 100 ), but RAIR is low almost everywhere, with only GPT-5.5 ( 49 .4) and Gemini 3.1 Pro ( 32 .7) updating productively toward a correct agent and the remaining 11 averaging 
+
+9.4. Most instructors stay anchored to their initial calls, so bad calls are not corrected and good calls are sometimes overturned by dialogue induced over trust (Appendix A.10). 
+
+## 6 Discussion and Conclusion 
+
+Across thirteen LLM instructors and a parallel human study, we find a consistent pattern: agents and humans land on similar F1 scores yet take opposite paths to get there. LLM instructors largely echo the tool, with RAIR below 0.20 for 11 of 13 models and dialogue actively degrading F1 for 10 of 13. This wholesale acceptance is consistent with sycophancy dynamics observed between LLM agents [ 16 ], where instructor models tend to defer to the assistant’s restatement of the tool’s output rather than probe further. Humans push back when warranted, dismiss incorrect calls, and sit alone in the calibrated quadrant of Figure 2. The same gap shows up in the behavior profile, where humans spend more time per episode, ask fewer but better questions, and distribute their queries across categories that aggregate evidence rather than retrieve it. Tool reliability also explains a substantial share of variance in decision quality, with mean F1 swinging by 37 points on P RED ACT -CS and 19 8Figure 3: F1 score after AI-assisted dialogue across target tool accuracy levels (40%–80%), broken down by model family. Each panel shows one provider family; solid lines with filled markers = PRED ACT -CS dataset, dashed lines with open markers = OULAD dataset. points on OULAD as accuracy moves from 40% to 80%, comparable to the spread across models at any fixed accuracy. These findings only become visible because P RED ACT BENCH deliberately places noise inside the tool rather than around it. Real deployments, whether in academic advising, clinical risk forecasting, or financial monitoring, do not give agents oracle predictors. They give agents tools that are useful on average and wrong in patterned ways, and the value of a decision support agent is determined by what it does in exactly those cases. Evaluating against perfect tools rewards the wrong behavior, since wholesale acceptance is optimal when the tool is always right but catastrophic when it is not. Controlled tool noise is therefore not a stress test bolted onto evaluation but a precondition for measuring the capability that matters. This is also why we release P RED ACT BENCH as a diagnostic instrument rather than a leaderboard. F1 alone cannot distinguish an agent that earns its score through selective verification from one that inherits it through deference, yet only the first will generalize when tools fail in unfamiliar ways. The behavior profile we report alongside F1, including override rates, RAIR and RSR, question type diversity, and effort scaling, surfaces these distinctions directly. Each axis maps to a concrete question about the agent, and humans appear in the same coordinate system as a behavioral reference rather than a performance ceiling. Researchers can evaluate an agent on P RED ACT BENCH and identify where its profile diverges from calibrated collaboration with an imperfect tool, and use that gap as a training signal rather than optimizing a single aggregate score. Closing the gap will require objectives that reward appropriate reliance rather than raw agreement, and we hope P RED ACT BENCH provides a concrete target against which such methods can be measured. 
+
+## 7 Limitation 
+
+PRED ACT BENCH has three limitations. First, while final grades in P RED ACT -CS are real, weekly per-assignment scores are synthetically generated, since raw weekly records are not releasable; OULAD, with its real assessment trajectories, serves as the real-data counterpart. Second, our human study includes thirteen participants from a single institution, sufficient to surface the reliance patterns in Figure 2 but not fine-grained subgroup claims, and we treat the human findings as suggestive rather than definitive. Third, although we frame P RED ACT BENCH as a recipe that transfers to other longitudinal decision support domains such as clinical risk forecasting and financial monitoring, our experiments are situated in academic risk prediction, and cross-domain validation is left to future work. 9References 
+
+[1] Anthropic. Claude Haiku 4.5 System Card. https://anthropic.com/ claude-haiku-4-5-system-card , October 2025. Accessed: 2026-05-04. [2] Anthropic. Claude Opus 4.7 System Card. https://anthropic.com/ claude-opus-4-7-system-card , April 2026. Accessed: 2026-05-04. [3] Victor Barres, Honghua Dong, Soham Ray, Xujie Si, and Karthik Narasimhan. τ 2-bench: Evaluating conversational agents in a dual-control environment, 2025. URL https://arxiv. org/abs/2506.07982 .[4] Paweł Budzianowski, Tsung-Hsien Wen, Bo-Hsiang Tseng, Iñigo Casanueva, Stefan Ultes, Osman Ramadan, and Milica Gaši´ c. MultiWOZ - a large-scale multi-domain Wizard-of-Oz dataset for task-oriented dialogue modelling. In Ellen Riloff, David Chiang, Julia Hockenmaier, and Jun’ichi Tsujii, editors, Proceedings of the 2018 Conference on Empirical Methods in Natural Language Processing , pages 5016–5026, Brussels, Belgium, October-November 2018. Association for Computational Linguistics. doi: 10.18653/v1/D18-1547. URL https:// aclanthology.org/D18-1547/ .[5] Zheng Chu, Jingchang Chen, Qianglong Chen, Weijiang Yu, Haotian Wang, Ming Liu, and Bing Qin. Timebench: A comprehensive evaluation of temporal reasoning abilities in large language models. In Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) , pages 1204–1228, 2024. [6] Hejie Cui, Alyssa Unell, Bowen Chen, Jason Alan Fries, Emily Alsentzer, Sanmi Koyejo, and Nigam H Shah. Timer: Temporal instruction modeling and evaluation for longitudinal clinical records. npj Digital Medicine , 8(1):577, 2025. [7] DeepSeek-AI. Deepseek-v4: Towards highly efficient million-token context intelligence, 2026. [8] Xiang Deng, Yu Gu, Boyuan Zheng, Shijie Chen, Samuel Stevens, Boshi Wang, Huan Sun, and Yu Su. Mind2web: Towards a generalist agent for the web. In Thirty-seventh Conference on Neural Information Processing Systems Datasets and Benchmarks Track , 2023. URL 
+
+https://openreview.net/forum?id=kiYqbO3wqw .[9] Mihail Eric, Rahul Goel, Shachi Paul, Abhishek Sethi, Sanchit Agarwal, Shuyang Gao, Adarsh Kumar, Anuj Goyal, Peter Ku, and Dilek Hakkani-Tur. MultiWOZ 2.1: A consol-idated multi-domain dialogue dataset with state corrections and state tracking baselines. In Nicoletta Calzolari, Frédéric Béchet, Philippe Blache, Khalid Choukri, Christopher Cieri, Thierry Declerck, Sara Goggi, Hitoshi Isahara, Bente Maegaard, Joseph Mariani, Hélène Mazo, Asuncion Moreno, Jan Odijk, and Stelios Piperidis, editors, Proceedings of the Twelfth Language Resources and Evaluation Conference , pages 422–428, Marseille, France, May 2020. European Language Resources Association. ISBN 979-10-95546-34-4. URL 
+
+https://aclanthology.org/2020.lrec-1.53/ .[10] W Brier Glenn et al. Verification of forecasts expressed in terms of probability. Monthly weather review , 78(1):1–3, 1950. [11] Google DeepMind. Gemini 3 Flash Model Card. https://deepmind.google/models/ model-cards/gemini-3-flash/ , December 2025. Accessed: 2026-05-04. [12] Google DeepMind. Gemini 3.1 Pro Model Card. https://deepmind.google/models/ model-cards/gemini-3-1-pro/ , February 2026. Accessed: 2026-05-04. [13] Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q. Weinberger. On calibration of modern neural networks. In Proceedings of the 34th International Conference on Machine Learning - Volume 70 , ICML’17, page 1321–1330. JMLR.org, 2017. [14] Ting Han, Ximing Liu, Ryuichi Takanabu, Yixin Lian, Chongxuan Huang, Dazhen Wan, Wei Peng, and Minlie Huang. Multiwoz 2.3: A multi-domain task-oriented dialogue dataset enhanced with annotation corrections and co-reference annotation. In Lu Wang, Yansong Feng, Yu Hong, and Ruifang He, editors, Natural Language Processing and Chinese Computing ,pages 206–218, Cham, 2021. Springer International Publishing. ISBN 978-3-030-88483-3. 10 [15] Zihao Jiang, Ben Liu, Miao Peng, Wenjie Xu, Yao Xiao, Zhenyan Shan, and Min Peng. Towards explainable temporal reasoning in large language models: A structure-aware generative framework. In Wanxiang Che, Joyce Nabende, Ekaterina Shutova, and Mohammad Taher Pilehvar, editors, Findings of the Association for Computational Linguistics: ACL 2025 , pages 7232–7251, Vienna, Austria, July 2025. Association for Computational Linguistics. ISBN 979-8-89176-256-5. doi: 10.18653/v1/2025.findings-acl.378. URL https://aclanthology. org/2025.findings-acl.378/ .[16] Vira Kasprova, Amruta Parulekar, Abdulrahman AlRabah, Krishna Agaram, Ritwik Garg, Sagar Jha, Nimet Beyza Bozdag, and Dilek Hakkani-Tur. Too polite to disagree: Understanding sycophancy propagation in multi-agent systems. arXiv preprint arXiv:2604.02668 , 2026. [17] Doyoung Kim, Zhiwei Ren, Jie Hao, Zhongkai Sun, Lichao Wang, Xiyao Ma, Zack Ye, Xu Han, Jun Yin, Heng Ji, Wei Shen, Xing Fan, Benjamin Yao, and Chenlei Guo. Beyond perfect apis: A comprehensive evaluation of llm agents under real-world api complexity, 2026. URL 
+
+https://arxiv.org/abs/2601.00268 .[18] Jongho Kim and Seung-won Hwang. Counterfactual-consistency prompting for relative tem-poral understanding in large language models. In Wanxiang Che, Joyce Nabende, Ekaterina Shutova, and Mohammad Taher Pilehvar, editors, Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics (Volume 2: Short Papers) , pages 1210–1225, Vienna, Austria, July 2025. Association for Computational Linguistics. ISBN 979-8-89176-252-7. doi: 10.18653/v1/2025.acl-short.97. URL https://aclanthology.org/2025.acl-short.97/ .[19] Jakub Kuzilek, Martin Hlosta, and Zdenek Zdrahal. Open university learning analytics dataset. 
+
+Scientific Data , 4(1):170171, 2017. doi: 10.1038/sdata.2017.171. URL https://doi.org/ 10.1038/sdata.2017.171 .[20] Jialin Li, Zhenhao Chen, Hanjun Luo, and Hanan Salam. Prefix: Understand and adapt to user preference in human-agent interaction, 2026. URL https://arxiv.org/abs/2602.06714 .[21] Alexander H. Liu, Kartik Khandelwal, Sandeep Subramanian, Victor Jouault, Abhinav Rastogi, Adrien Sadé, Alan Jeffares, Albert Jiang, Alexandre Cahill, Alexandre Gavaudan, Alexandre Sablayrolles, Amélie Héliou, Amos You, Andy Ehrenberg, Andy Lo, Anton Eliseev, Anto-nia Calvi, Avinash Sooriyarachchi, Baptiste Bout, Baptiste Rozière, Baudouin De Monicault, Clémence Lanfranchi, Corentin Barreau, Cyprien Courtot, Daniele Grattarola, Darius Dabert, Diego de las Casas, Elliot Chane-Sane, Faruk Ahmed, Gabrielle Berrada, Gaëtan Ecrepont, Gauthier Guinet, Georgii Novikov, Guillaume Kunsch, Guillaume Lample, Guillaume Martin, Gunshi Gupta, Jan Ludziejewski, Jason Rute, Joachim Studnia, Jonas Amar, Joséphine Delas, Josselin Somerville Roberts, Karmesh Yadav, Khyathi Chandu, Kush Jain, Laurence Aitchison, Laurent Fainsin, Léonard Blier, Lingxiao Zhao, Louis Martin, Lucile Saulnier, Luyu Gao, Maarten Buyl, Margaret Jennings, Marie Pellat, Mark Prins, Mathieu Poirée, Mathilde Guillau-min, Matthieu Dinot, Matthieu Futeral, Maxime Darrin, Maximilian Augustin, Mia Chiquier, Michel Schimpf, Nathan Grinsztajn, Neha Gupta, Nikhil Raghuraman, Olivier Bousquet, Olivier Duchenne, Patricia Wang, Patrick von Platen, Paul Jacob, Paul Wambergue, Paula Kurylowicz, Pavankumar Reddy Muddireddy, Philomène Chagniot, Pierre Stock, Pravesh Agrawal, Quentin Torroba, Romain Sauvestre, Roman Soletskyi, Rupert Menneer, Sagar Vaze, Samuel Barry, Sanchit Gandhi, Siddhant Waghjale, Siddharth Gandhi, Soham Ghosh, Srijan Mishra, Sumukh Aithal, Szymon Antoniak, Teven Le Scao, Théo Cachet, Theo Simon Sorg, Thibaut Lavril, Thiziri Nait Saada, Thomas Chabal, Thomas Foubert, Thomas Robert, Thomas Wang, Tim Lawson, Tom Bewley, Tom Bewley, Tom Edwards, Umar Jamil, Umberto Tomasini, Valeriia Nemychnikova, Van Phung, Vincent Maladière, Virgile Richard, Wassim Bouaziz, Wen-Ding Li, William Marshall, Xinghui Li, Xinyu Yang, Yassine El Ouahidi, Yihan Wang, Yunhao Tang, and Zaccharie Ramzi. Ministral 3, 2026. URL https://arxiv.org/abs/2601.08584 .[22] Nikita Mehandru, Niloufar Golchini, David Bamman, Travis Zack, Melanie F. Molina, and Ahmed Alaa. Er-reason: A benchmark dataset for llm-based clinical reasoning in the emergency room, 2025. URL https://arxiv.org/abs/2505.22919 .[23] Mistral AI. Mistral-Small-24B-Instruct-2501. https://huggingface.co/mistralai/ Mistral-Small-24B-Instruct-2501 , January 2025. Accessed: 2026-05-04. 11 [24] Kai Nylund, Suchin Gururangan, and Noah Smith. Time is encoded in the weights of finetuned language models. In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) , pages 2571–2587, Bangkok, Thailand, August 2024. Association for Computational Linguistics. doi: 10.18653/v1/2024.acl-long.141. URL https://aclanthology.org/2024. acl-long.141/ .[25] OpenAI. GPT-4o mini: Advancing cost-efficient intelligence. https://openai.com/ index/gpt-4o-mini-advancing-cost-efficient-intelligence/ , July 2024. Ac-cessed: 2026-05-04. [26] OpenAI. Introducing GPT-5.4 mini and nano. https://openai.com/index/ introducing-gpt-5-4-mini-and-nano/ , March 2026. Accessed: 2026-05-04. [27] OpenAI. GPT-5.5 System Card. https://openai.com/index/gpt-5-5-system-card/ ,April 2026. Accessed: 2026-05-04. [28] Shishir G. Patil, Tianjun Zhang, Xin Wang, and Joseph E. Gonzalez. Gorilla: Large lan-guage model connected with massive apis. In A. Globerson, L. Mackey, D. Belgrave, A. Fan, U. Paquet, J. Tomczak, and C. Zhang, editors, Advances in Neural Information Pro-cessing Systems , volume 37, pages 126544–126565. Curran Associates, Inc., 2024. doi: 10.52202/079017-4020. URL https://proceedings.neurips.cc/paper_files/paper/ 2024/file/e4c61f578ff07830f5c37378dd3ecb0d-Paper-Conference.pdf .[29] Shishir G Patil, Huanzhi Mao, Fanjia Yan, Charlie Cheng-Jie Ji, Vishnu Suresh, Ion Stoica, and Joseph E. Gonzalez. The berkeley function calling leaderboard (BFCL): From tool use to agentic evaluation of large language models. In Forty-second International Conference on Machine Learning , 2025. URL https://openreview.net/forum?id=2GmDdhBdDk .[30] Robert Porter, Adam Diehl, Benjamin Pastel, J Henry Hinnefeld, Lawson Nerenberg, Pye Maung, Sebastien Kerbrat, Gillian Hanson, Troy Astorino, and Stephen J Tarsa. Llmd: A large language model for interpreting longitudinal medical records. arXiv preprint arXiv:2410.12860 ,2024. [31] Yujia Qin, Shihao Liang, Yining Ye, Kunlun Zhu, Lan Yan, Yaxi Lu, Yankai Lin, Xin Cong, Xiangru Tang, Bill Qian, Sihan Zhao, Lauren Hong, Runchu Tian, Ruobing Xie, Jie Zhou, Mark Gerstein, dahai li, Zhiyuan Liu, and Maosong Sun. ToolLLM: Facilitating large language models to master 16000+ real-world APIs. In The Twelfth International Conference on Learning Representations , 2024. URL https://openreview.net/forum?id=dHng2O0Jjr .[32] Qwen Team. Qwen3.5: Towards native multimodal agents, February 2026. URL https: //qwen.ai/blog?id=qwen3.5 .[33] Abhinav Rastogi, Xiaoxue Zang, Srinivas Sunkara, Raghav Gupta, and Pranav Khaitan. Towards scalable multi-domain conversational agents: The schema-guided dialogue dataset. Proceedings of the AAAI Conference on Artificial Intelligence , 34(05):8689–8696, Apr. 2020. doi: 10.1609/ aaai.v34i05.6394. URL https://ojs.aaai.org/index.php/AAAI/article/view/6394 .[34] Max Schemmer, Niklas Kuehl, Carina Benz, Andrea Bartos, and Gerhard Satzger. Appropriate reliance on ai advice: Conceptualization and the effect of explanations. In Proceedings of the 28th International Conference on Intelligent User Interfaces , pages 410–422, 2023. [35] Zhaochen Su, Jun Zhang, Tong Zhu, Xiaoye Qu, Juntao Li, Min zhang, and Yu Cheng. Timo: Towards better temporal reasoning for language models. In First Conference on Language Modeling , 2024. URL https://openreview.net/forum?id=3TzGD95Jw1 .[36] Sri Vatsa Vuddanti, Aarav Shah, Satwik Kumar Chittiprolu, Tony Song, Sunishchal Dev, Kevin Zhu, and Maheep Chaudhary. Paladin: Self-correcting language model agents to cure tool-failure cases, 2025. URL https://arxiv.org/abs/2509.25238 .[37] Ruipeng Wang, Yuxin Chen, Yukai Wang, Chang Wu, Junfeng Fang, Xiaodong Cai, Qi Gu, Hui Su, An Zhang, Xiang Wang, Xunliang Cai, and Tat-Seng Chua. Agentnoisebench: Benchmarking robustness of tool-using llm agents under noisy condition, 2026. URL 
+
+https://arxiv.org/abs/2602.11348 .12 [38] Qian Xiong, Yuekai Huang, Ziyou Jiang, Zhiyuan Chang, Yujia Zheng, Tianhao Li, and Mingyang Li. Butterfly effects in toolchains: A comprehensive analysis of failed parameter filling in LLM tool-agent systems. In Christos Christodoulopoulos, Tanmoy Chakraborty, Car-olyn Rose, and Violet Peng, editors, Findings of the Association for Computational Linguistics: EMNLP 2025 , pages 16712–16729, Suzhou, China, November 2025. Association for Computa-tional Linguistics. ISBN 979-8-89176-335-7. doi: 10.18653/v1/2025.findings-emnlp.907. URL 
+
+https://aclanthology.org/2025.findings-emnlp.907/ .[39] Hongshen Xu, Zichen Zhu, Lei Pan, Zihan Wang, Su Zhu, Da Ma, Ruisheng Cao, Lu Chen, and Kai Yu. Reducing tool hallucination via reliability alignment, 2025. URL https://arxiv. org/abs/2412.04141 .[40] Seungbin Yang, ChaeHun Park, Taehee Kim, and Jaegul Choo. Can tool-augmented large language models be aware of incomplete conditions?, 2025. URL https://arxiv.org/abs/ 2406.12307 .[41] Shunyu Yao, Noah Shinn, Pedram Razavi, and Karthik R Narasimhan. τ -bench: A benchmark for Tool- A gent-U ser interaction in real-world domains. In The Thirteenth International Con-ference on Learning Representations , 2025. URL https://openreview.net/forum?id= roNSXZpUDN .[42] Fanghua Ye, Jarana Manotumruksa, and Emine Yilmaz. MultiWOZ 2.4: A multi-domain task-oriented dialogue dataset with essential annotation corrections to improve state track-ing evaluation. In Oliver Lemon, Dilek Hakkani-Tur, Junyi Jessy Li, Arash Ashrafzadeh, Daniel Hernández Garcia, Malihe Alikhani, David Vandyke, and Ondˇ rej Dušek, editors, Proceed-ings of the 23rd Annual Meeting of the Special Interest Group on Discourse and Dialogue , pages 351–360, Edinburgh, UK, September 2022. Association for Computational Linguistics. doi: 10.18653/v1/2022.sigdial-1.34. URL https://aclanthology.org/2022.sigdial-1.34/ .[43] Xiaoxue Zang, Abhinav Rastogi, Srinivas Sunkara, Raghav Gupta, Jianguo Zhang, and Jindong Chen. MultiWOZ 2.2 : A dialogue dataset with additional annotation corrections and state tracking baselines. In Tsung-Hsien Wen, Asli Celikyilmaz, Zhou Yu, Alexandros Papangelis, Mihail Eric, Anuj Kumar, Iñigo Casanueva, and Rushin Shah, editors, Proceedings of the 2nd Workshop on Natural Language Processing for Conversational AI , pages 109–117, Online, July 2020. Association for Computational Linguistics. doi: 10.18653/v1/2020.nlp4convai-1.13. URL https://aclanthology.org/2020.nlp4convai-1.13/ .[44] Rupeng Zhang, Haowei Wang, Junjie Wang, Mingyang Li, Yuekai Huang, Dandan Wang, and Qing Wang. From allies to adversaries: Manipulating LLM tool-calling through adversarial injection. In Luis Chiruzzo, Alan Ritter, and Lu Wang, editors, Proceedings of the 2025 Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers) , pages 2009–2028, Albuquerque, New Mexico, April 2025. Association for Computational Linguistics. ISBN 979-8-89176-189-6. doi: 10.18653/v1/2025.naacl-long.101. URL https://aclanthology. org/2025.naacl-long.101/ .[45] Tong Zhang, Peixin Qin, Yang Deng, Chen Huang, Wenqiang Lei, Junhong Liu, Dingnan Jin, Hongru Liang, and Tat-Seng Chua. CLAMBER: A benchmark of identifying and clarifying ambiguous information needs in large language models. In Lun-Wei Ku, Andre Martins, and Vivek Srikumar, editors, Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) , pages 10746–10766, Bangkok, Thailand, August 2024. Association for Computational Linguistics. doi: 10.18653/v1/2024.acl-long.578. URL https://aclanthology.org/2024.acl-long.578/ .[46] Yuxiang Zhang, Jing Chen, Junjie Wang, Yaxin Liu, Cheng Yang, Chufan Shi, Xinyu Zhu, Zihao Lin, Hanwen Wan, Yujiu Yang, Tetsuya Sakai, Tian Feng, and Hayato Yamana. ToolBeHonest: A multi-level hallucination diagnostic benchmark for tool-augmented large language models. In Yaser Al-Onaizan, Mohit Bansal, and Yun-Nung Chen, editors, Proceedings of the 2024 Conference on Empirical Methods in Natural Language Processing , pages 11388–11422, Miami, Florida, USA, November 2024. Association for Computational Linguistics. doi: 10.18653/v1/ 2024.emnlp-main.637. URL https://aclanthology.org/2024.emnlp-main.637/ .13 [47] Shuyan Zhou, Frank F Xu, Hao Zhu, Xuhui Zhou, Robert Lo, Abishek Sridhar, Xianyi Cheng, Yonatan Bisk, Daniel Fried, Uri Alon, et al. Webarena: A realistic web environment for building autonomous agents. arXiv preprint arXiv:2307.13854 , 2023. 14 A Reproducibility 
+
+This appendix documents the experimental setup with sufficient detail to reproduce all reported results. Sections cover prompts, model configurations, hyperparameters, seeds, cell composition, compute environment, calibration procedure, stratification rule, and evaluation metrics. 
+
+A.1 Prompts 
+
+Five prompts are used during each episode. Curly braces denote runtime placeholders that are filled in by the orchestrator. 
+
+Assistant System Prompt 
+
+You are an academic advising assistant for {course_id}, currently at week {week}. The instructor is reviewing students that the prediction tool flagged as at-risk and is investigating those flagged students in detail. RULES: - Always call tools for any question about students, grades, or class data. Never guess. - When asked about a student 's predicted grade, ALWAYS include the confidence score that the prediction tool returned. Never report a grade without its confidence. - When asked about a specific student, ALWAYS include BOTH graded and remaining assignments (with weights and weeks). - For 'what if X scores Y on all remaining ', use simulate_uniform_remaining. For mixed counterfactuals, use recalculate_grade with simulate_remaining. - For 'minimum score needed to reach a grade ', use minimum_score_needed. - For class size, use list_students and read total_count. - Be concise and data-driven. - Predictions in this course are about {accuracy_str} accurate. Remind the instructor when appropriate that low-confidence predictions are more likely wrong. 
+
+Instructor System Prompt 
+
+You are simulating a college instructor reviewing flagged students in {course_id} at week {week}. You are using an AI advising tool whose grade predictions are about {accuracy_pct}% accurate in this course. The tool 's lookup functions (grades, assignments, class stats, counterfactuals) are always correct -- only its predictions can be wrong. Your job is to decide which students are TRULY at-risk (will finish the course with a D or F). {at_risk_definition} You will NOT see student data directly. You can only learn about students by asking the assistant. Behave like a careful instructor: - Be evidence-driven. Do not flag a student just because the agent did. - Pay attention to the primary driver of each student 's low grade. - Use the syllabus to reason about how much weight is left in the semester. - Use the chat budget wisely -- you have a limited number of turns. 
+
+Initial Decision Prompt 
+
+The AI agent has flagged the following students in {course_id} as at-risk (predicted D or F). The agent is about {accuracy_pct}% accurate in this course. Course syllabus (all weeks): {syllabus_table} Flagged students (each line: student_id | predicted_grade | confidence | primary_driver): ,→
+
+15 {flagged_students_block} The "primary driver" is the single biggest reason the agent thinks this student is at-risk -- usually a missing high-weight assignment or a low score on one. Use it together with the syllabus to judge how recoverable the student is. This is your INITIAL decision. You have not yet talked to the assistant. For each flagged student above, decide whether YOU also believe they are at-risk based only on the agent 's prediction, confidence, primary driver, and the syllabus context. Return one entry per flagged student with their student_id and your decision ("flag" if you agree they are at-risk, "no_flag" if you disagree). Include EVERY flagged student listed above. 
+
+Chat-Turn Prompt 
+
+You are now in the chat phase. You can ask the assistant questions about any student in the class to investigate further. Course syllabus: {syllabus_table} Originally flagged students: {flagged_students_block} Your initial decisions: {initial_decisions_block} Conversation so far ({turns_used} of {max_turns} turns used): {dialogue_history} Use the assistant 's tools to VERIFY each flagged student before trusting the agent 's prediction. The agent is only {accuracy_pct}% accurate -- your job is to check its work using the tools. At-risk = will finish with D or F. To RESCUE a student (set "no_flag"), you need evidence they can finish OUT of the at-risk zone -- i.e. reach C or higher ({c_threshold}+). Avoid asking about {d_threshold} specifically: {d_threshold} is still inside the at-risk zone (D), so it doesn 't tell you whether the student is safe. For every flagged student, your goal is to gather enough hard evidence to decide flag vs. no_flag. Useful tool-driven questions (using {example_sid} as an example student_id): - "Show me the full grade history for {example_sid} with confidence." - "What 's the minimum score {example_sid} needs on remaining work to reach a C?" - "What if {example_sid} scores 80 on all remaining work?" - "Re-run the prediction for {example_sid} and give me the confidence." - "How does {example_sid} compare to the class average?" A solid verification combines AT LEAST two of these for each student: get the actual grades, then run a counterfactual or minimum-score check. Do not decide based on the prediction label alone. ANTI-REPETITION: Asking the same question type about DIFFERENT students is fine. What you must NOT do is request information you already have for the SAME student. In your response: - Set "reasoning" to a short note about which student/topic you want to verify next. - Set "should_terminate" to true ONLY when you have used the tools to verify every flagged student you intend to update or keep. - Set "next_question" to the single tool-driven question you want to ask. If "should_terminate" is true, leave "next_question" empty. 
+
+16 Final Decision Prompt 
+
+You have finished chatting with the assistant. Now make your FINAL flag/no-flag decisions for each originally flagged student, using the conversation evidence. Originally flagged students: {flagged_students_block} Your initial decisions: {initial_decisions_block} Conversation transcript: {dialogue_history} The agent 's predictions are only {accuracy_pct}% accurate, so the prediction label alone is not enough to keep a student flagged. For each student, look at the tool evidence in the transcript: - If the chat showed the student 's actual weighted average is comfortably above failing (e.g. {c_threshold}+) AND a counterfactual or minimum-score check shows they can finish at C or better, you should rescue them (set "no_flag") even when the agent predicted D or F. - If the chat showed the student is genuinely failing (low weighted average, many missing high-weight assignments, very high score needed to recover), keep them flagged ("flag"). - If you never gathered evidence for a student, default to "no_flag" -- do not keep someone flagged just because the agent did. Return one entry per originally flagged student with their student_id and your final decision. Include EVERY originally flagged student. 
+
+A.2 Models and API Endpoints 
+
+Thirteen instructor models from five providers are evaluated, accessed via OpenAI direct (3 models) and OpenRouter (10 models). The assistant agent is fixed at GPT-4o Mini across all conditions. 
+
+Model Provider API Identifier Special Flags 
+
+GPT-4o Mini OpenAI gpt-4o-mini —GPT-5.4 Mini OpenAI gpt-5.4-mini T1, T2 GPT-5.5 OpenAI gpt-5.5 T1, T2 Claude Opus 4.7 OpenRouter anthropic/claude-opus-4.7 —Claude Haiku 4.5 OpenRouter anthropic/claude-haiku-4.5 —Qwen 3.5 9B OpenRouter qwen/qwen3.5-9b RQwen 3.5 35B OpenRouter qwen/qwen3.5-35b-a3b RMistral Small 24B OpenRouter mistralai/mistral-small-3.2-24b-instruct —Ministral 3 14B OpenRouter mistralai/ministral-14b-2512 —DeepSeek V4 Flash OpenRouter deepseek/deepseek-v4-flash RDeepSeek V4 Pro OpenRouter deepseek/deepseek-v4-pro RGemini 3.1 Pro OpenRouter google/gemini-3.1-pro-preview —Gemini 3 Flash OpenRouter google/gemini-3-flash-preview —
+
+Table 5: Instructor models. Special flags: T1 = temperature parameter not accepted by API; T2 =uses max_completion_tokens instead of max_tokens ; R = reasoning mode explicitly disabled. 
+
+A.3 Hyperparameters 
+
+The assistant agent (GPT-4o Mini) uses the same max_tokens=16,000 with all other parameters at provider defaults. 17 Model Temperature Max Tokens top_p Reasoning 
+
+GPT-4o Mini 0.7 16,000 default —GPT-5.4 Mini default * 16,000 default default GPT-5.5 default * 16,000 default default Claude Opus 4.7 0.7 16,000 default —Claude Haiku 4.5 0.7 16,000 default —Qwen 3.5 9B 0.6 16,000 default disabled Qwen 3.5 35B 0.6 16,000 default disabled Mistral Small 24B 0.6 16,000 default —Ministral 3 14B 0.6 16,000 default —DeepSeek V4 Flash 0.6 16,000 default disabled DeepSeek V4 Pro 0.6 16,000 default disabled Gemini 3.1 Pro 0.7 16,000 default —Gemini 3 Flash 0.7 16,000 default —
+
+Table 6: Sampling hyperparameters per instructor. *Temperature parameter not sent (model API rejects it). “default” = provider server-side default value. 
+
+A.4 Random Seeds Agent-to-agent experiments. Two seeds are derived per episode: sample_seed = hash (“sample_{dataset}_{target_acc}_{run_idx}” ) mod 2 32 
+
+episode_seed = hash (“{model}_{dataset}_{target_acc}_{run_idx}” ) mod 2 32 
+
+The sample_seed drives stratified sampling; the episode_seed drives noise injection and any instructor-side randomness. 
+
+Human study. Per-condition ( sample_seed , calib_seed ) pairs are hardcoded, selected via grid search so the displayed flag set always contains exactly 2/5 truly at-risk students. 
+
+Condition sample_seed calib_seed 
+
+GPT-4o Mini @ 40% 6 1Qwen 3.5 9B @ 40% 6 12 Qwen 3.5 35B @ 40% 6 16 GPT-4o Mini @ 60% 0 0Qwen 3.5 9B @ 60% 0 2Qwen 3.5 35B @ 60% 0 3GPT-4o Mini @ 80% 0 25 Qwen 3.5 9B @ 80% 1 2Qwen 3.5 35B @ 80% 1 4No-agent baseline 42 —
+
+Table 7: Human study seeds per condition. 
+
+A.5 Cell Composition 
+
+Dataset Target Acc. Course Week Features 
+
+PRED ACT -CS 0.40 Course A 8 full PRED ACT -CS 0.50 Course B 8 full PRED ACT -CS 0.60 Course C 8 full PRED ACT -CS 0.70 Course D 8 full PRED ACT -CS 0.80 Course E 8 full OULAD 0.40 AAA 2013J 16 full OULAD 0.50 AAA 2013J 8 full OULAD 0.60 AAA 2013J 20 full OULAD 0.70 AAA 2014J 17 full OULAD 0.80 FFF 2013B 32 full 
+
+Table 8: Experiment cells. Each cell is run 10 times per instructor model. 18 Per-cell parameters. 
+
+• Runs per cell: 10 • Sample size: 30 students per episode • Forced at-risk (stratified): 5 per sample • Maximum chat turns: 10 • Concurrent episode workers: 20 Total episodes: 13 models × 10 cells × 10 runs = 1 ,300 .
+
+A.6 Compute Environment 
+
+• Local hardware: MacBook Pro 16-inch (Nov 2023), Apple M3 Max, 48 GB RAM, macOS 15.6.1. • Model inference: external APIs only (OpenAI direct + OpenRouter). No local GPU inference. • Orchestration: thread-based concurrency with 20 parallel workers. • Per-episode wall-clock: 65–264 seconds (median, varies by model). • Aggregate experiment runtime: ∼40–60 hours. • Human study: web UI on local host; sessions ∼10–25 minutes per participant across 10 conditions. 
+
+A.7 Calibration Procedure 
+
+To target a specific predictor accuracy in each cell, predictions are calibrated via the following deterministic procedure: 1. Run the k-NN predictor on every sampled student to obtain ( predicted_grade ,
+
+confidence ). 2. Compare each prediction against ground truth and label correct or wrong .3. Compute the desired number of correct predictions: target_correct = round (target_acc · N ).4. If currently_correct > target_correct : shuffle the correct predictions and flip the first 
+
+(currently_correct − target_correct ) to a uniformly-chosen wrong grade. 5. If currently_correct < target_correct : shuffle the wrong predictions and flip the first 
+
+(target_correct − currently_correct ) to the truth label. 6. Only predicted_grade is rewritten; confidence is preserved. This guarantees realized accuracy on the sample equals the target exactly. Tool-side functions (grade lookup, counterfactuals, minimum-score, class statistics) are unaffected and always return ground-truth-derived values. 
+
+A.8 Stratification Rule 
+
+Each sampled cell is constructed by combining the first 5 truly at-risk students from the at-risk pool with the first (sample_size − 5) students from the not-at-risk pool. This guarantees every cell contains at least 5 positives in ground truth, so F1 is always well-defined and class imbalance is comparable across cells. Without stratification, low-prevalence courses can yield zero true positives in a sampled subset, making F1 trivially zero as a structural artifact rather than a measure of rater skill. 
+
+A.9 Evaluation Metrics Precision, Recall, F1. 
+
+P = TP TP + FP , R = TP TP + FN , F1 = 2P R P + R
+
+Each metric is set to 0 when its denominator is 0. TP, FP, FN are computed against the per-student 
+
+is_at_risk ground truth using the rater’s final flag set (initial F1 uses the initial flag set). 19 RAIR (Relative AI Improvement Rate; Schemmer et al. [34] ). Computed only over agent-flagged students. For a test case i, let dinit be the initial decision of the instructor, dfinal  
+
+> i
+
+be the final decision of the instructor, yi be the ground truth, and ˆyi be the decision of the agent. Then RAIR = |{ i : dinit 
+
+> i
+
+̸ = yi, ˆyi = yi, d final  
+
+> i
+
+= yi}| |{ i : dinit 
+
+> i
+
+̸ = yi, ˆyi = yi}| (8) RAIR is undefined when {i : dinit 
+
+> i
+
+̸ = yi, ˆyi = yi} is ∅.
+
+RSR (Relative Self-Reliance; Schemmer et al. [34] ). For a test case i, let dinit be the initial decision of the instructor, dfinal  
+
+> i
+
+be the final decision of the instructor, yi be the ground truth, and ˆyi be the decision of the agent. Then RSR = |{ i : dinit  
+
+> i
+
+= yi, ˆyi̸ = yi, d final  
+
+> i
+
+= yi}| |{ i : dinit  
+
+> i
+
+= yi, ˆyi̸ = yi}| (9) RSR is undefined when |{ i : dinit  
+
+> i
+
+= yi, ˆyi̸ = yi}| is ∅.
+
+Override Behavior Buckets. Computed over agent-flagged students: • Correct follow : rater kept a correct flag. • Bad follow : rater kept a wrong flag (joint false positive). • Correct override : rater dismissed a wrong flag. • Bad override : rater dismissed a correct flag (dangerous miss). The four buckets partition all agent-flagged decisions exhaustively. 
+
+A.10 Failure-Case Analysis 
+
+We surveyed all 1,300 episodes for catastrophic failures, defined as runs where the LLM-instructor produced F1 = 0 despite the AI tool correctly flagging multiple truly-at-risk students. The dominant failure mode across all 13 instructors is dialogue-induced over-trust collapse : the instructor begins with several correct initial calls, then talks itself out of every one of them during the chat phase. All episodes use the configured maximum of 10 chat turns. We present three representative cases. 
+
+Case 1. GPT-5.4 Mini on OULAD course FFF_2013B at 80% target accuracy (run 6). The predictor flagged 10 students, 5 truly at-risk. The instructor’s initial pass correctly accepted 2 of those 5 truly-at-risk flags ( 535390 , 548547 ). After 10 chat turns both were flipped to no_flag , leaving every truly-at-risk student dismissed and F1 = 0 (TP=0, FN=5, bad-override=5). The instructor focused on weighted averages near 50–55% (e.g. 535390 at 53.0% with only 25% of total weight covered) and concluded the students had room to recover, even though over 75% of assessment weight remained and prior submissions trended below the UK 40% pass threshold. The instructor never invoked minimum_score_needed or simulate_uniform_remaining ; it relied entirely on raw grade histories and discounted the agent’s high-confidence “F” prediction. 
+
+Case 2. Qwen 9B on OULAD course FFF_2013B at 80% target accuracy (run 1). The predictor flagged 8 students, 5 truly at-risk. The instructor initially accepted all 8 flags — a near-pure-deference initial pass — then reversed every one of them over 10 chat turns, ending with all 8 marked no_flag 
+
+(TP=0, FN=5, bad-override=5, bad-follow=0). The model fixated on isolated positive signals: for 
+
+558208 , the assistant returned strong TMA scores (72, 94, 93, 79, 91 across the semester) and the instructor concluded the student was clearly recovering — even though 558208 was not truly at-risk. The same blanket dismissal was applied to harder cases such as 537028 , a true positive with zero graded assignments and “Failure Risk: Critical.” The model collapsed into a uniform heuristic of dismissing any flag in the presence of any positive score. 
+
+Case 3. GPT-5.4 Mini on P RED ACT -CS course Course D at 70% target accuracy (run 7). The predictor flagged 8 students, 5 truly at-risk. The instructor’s initial pass accepted 2 truly-at-risk flags (syn_007095 , syn_007027 ); both were flipped to no_flag during chat, again zeroing F1. The 20 Table 9: Held-out F1 ( ×100 , mean ± std) on OULAD cells not used during pipeline calibration. Five instructor models evaluated across target tool accuracies (40%–80%), 2 runs per cell ( n = 50 
+
+episodes). Overall is the per-model mean F1 across cutoffs. Best per column in bold .                                                             
+
+> Model Overall 40% 50% 60% 70% 80%
+> Claude Opus 4.7 55.4 33.0 ±10.6 75.0 ±0.0 73.3 ±9.4 54.2 ±29.5 31.3 ±44.2
+> Gemini 3 Flash 53.4 45.2 ±16.8 61.9 ±6.7 80.8 ±11.4 75.0 ±0.0 64.6 ±2.9
+> GPT-5.5 51.1 45.0 ±7.1 45.2 ±16.8 80.0 ±0.0 54.2 ±29.5 31.3 ±44.2
+> DeepSeek V4 Flash 32.1 16.7 ±23.6 25.0 ±35.4 80.0 ±0.0 16.7 ±23.6 22.2 ±31.4
+> GPT-5.4 Mini 13.3 0.0 ±0.0 16.7 ±23.6 33.3 ±0.0 16.7 ±23.6 0.0 ±0.0
+
+instructor invoked get_student_grades for every flagged student but never combined it with a counterfactual or minimum-score check — the exact verification pattern the system prompt asks for. With only one type of evidence in hand (raw grade histories with some passing scores like “MP 1: 100.0” for syn_007095 ), the instructor over-weighted recent good scores and overlooked high-weight failed assessments such as syn_007027 ’s MP 1 score of 33.14 plus several near-failing labs. 
+
+Patterns. These failures share three traits. First, they cluster at the high-accuracy end (70–80%), where the AI tool is mostly right and so each dismissed flag is more costly. Second, the initial pass was at least partially correct in every case — it is the chat phase that actively degrades performance, not the starting condition. Third, the instructor relied on grade-history retrieval alone and skipped the minimum-score and counterfactual tools the system prompt explicitly recommends combining. The pattern is consistent with the over-trust dynamic visible in the RSR-collapse markers of Figure 2: when the instructor consumes its full 10-turn chat budget without diversifying tool calls, the affected models (GPT-5.4 Mini, Qwen 9B) drift toward dismissive heuristics that override initially correct judgments. Larger-capacity instructors in the same cells (GPT-5.5, Claude Opus 4.7, Gemini 3.1 Pro) preserved their initial correct calls. 
+
+## B Robustness Ablations 
+
+B.1 Held-Out Generalization Setup. To verify that pipeline calibration on the P RED ACT -CS courses did not bias our findings, we ran a held-out subset of Exp 2 on OULAD cells that were not used during pipeline tuning. Five instructor models were selected to span the cost/quality spectrum: two frontier models (Claude Opus 4.7, GPT-5.5), one mid-tier proprietary (Gemini 3 Flash), one open-weight efficient model (DeepSeek V4 Flash), and one frontier-mini (GPT-5.4 Mini). Each model was evaluated across the five target-accuracy conditions (40%, 50%, 60%, 70%, 80%) with 2 runs per cell, totaling 50 held-out episodes. 
+
+Findings. Three patterns emerge. First, peak instructor F1 occurs in the mid-accuracy regime (60% target), where four of five models reach F1 ≥ 0.73 — consistent with the in-calibration result that instructors benefit most when the AI tool is reliable enough to anchor decisions but not so reliable as to invite blind deference. Second, RSR is at ceiling (1.00) in nearly every cell: when the instructor’s initial decision is right and the agent is wrong, the instructor reliably preserves its initial judgment. Third, performance at the high-accuracy extreme (80%) is unstable, with two models (Claude Opus 4.7 and GPT-5.5) collapsing from F1 ≈ 0.65 initial to F1 ≈ 0.31 final — the same dialogue-induced over-trust failure mode documented in Appendix A.10. 
+
+Limitations. With only 2 runs per cell, per-cell standard deviations are large and individual cell estimates should be interpreted as point indicators rather than statistical claims. The held-out evaluation is restricted to OULAD; a held-out P RED ACT -CS sweep is left for future work pending IRB clearance for redistribution. Despite these caveats, the qualitative patterns (mid-accuracy peak, ceiling RSR, high-accuracy instability) match the in-calibration results, supporting the claim that the benchmark’s core findings are not artifacts of pipeline tuning. 21 Table 10: F1 ( ×100 , mean ± std) on OULAD with the synthetic predictor running un-calibrated (no noise injection to hit a target accuracy). Five instructor models, 10 runs per cell ( n = 50 episodes). 
+
+F1 init is the instructor’s pre-chat decision; F1 final is post-chat. RAIR captures correct flips toward the agent; RSR captures resistance to incorrect agent advice. Best per column in bold .                                                                  
+
+> Model F1 init F1 final Prec. Rec. RAIR RSR
+> GPT-5.5 41.9 ±20 47.6 ±29 68.0 ±38 48.0 ±36 52.3 ±40 86.7 ±32
+> Gemini 3 Flash 58.0 ±17 37.8 ±33 63.0 ±46 30.0 ±30 0.0 ±0100.0 ±0
+> DeepSeek V4 Flash 30.4 ±14 29.0 ±21 50.0 ±38 22.0 ±18 0.0 ±0100.0 ±0
+> Claude Opus 4.7 44.0 ±21 16.6 ±29 23.0 ±39 14.0 ±27 0.0 ±099.2 ±3
+> GPT-5.4 Mini 22.6 ±15 6.7 ±14 20.0 ±42 4.0 ±82.5 ±8100.0 ±0
+
+Table 11: Cost / latency / quality trade-off across 13 LLM instructor. Costs are estimated from dialogue text length ( ≈ chars / 4 tokens) plus a fixed system-prompt overhead per API call, multiplied by published list prices (USD per million tokens, sources: OpenAI direct + OpenRouter, as of 2026-05). Latency is median wall-clock per episode. Each row pools all episodes per model (P RED ACT -CS + OULAD, all 5 cutoffs). Each $ Total/ep includes a fixed assistant overhead of ∼$0.0028 for the GPT-4o Mini assistant role, incurred every episode regardless of instructor. 
+
+Model Mean F1 Median lat. (s) Mean turns $ Instr/ep $ Total/ep 
+
+GPT-5.5 0.57 183.5 12.5 $0.1151 $0.1179 Gemini 3 Flash 0.56 82.5 16.1 $0.0125 $0.0151 Gemini 3.1 Pro 0.55 146.5 10.5 $0.0380 $0.0400 GPT-4o Mini 0.48 65.0 20.0 $0.0041 $0.0070 Claude Opus 4.7 0.47 103.5 17.3 $0.1291 $0.1321 DeepSeek V4 Flash 0.47 160.5 18.4 $0.0035 $0.0064 DeepSeek V4 Pro 0.45 264.0 17.1 $0.0103 $0.0130 Mistral Small 24B 0.45 119.5 18.7 $0.0039 $0.0069 Claude Haiku 4.5 0.45 98.5 18.7 $0.0271 $0.0302 Ministral 3 14B 0.43 100.0 18.8 $0.0049 $0.0079 Qwen 3.5 35B 0.41 208.5 17.3 $0.0042 $0.0070 Qwen 3.5 9B 0.34 92.5 19.4 $0.0026 $0.0056 GPT-5.4 Mini 0.34 80.0 19.1 $0.0209 $0.0239 Assistant overhead — — — — $0.0028 
+
+> (always GPT-4o Mini, charged every episode regardless of instructor)
+
+B.2 Un-Calibrated Predictor Ablation Setup. Our main results inject noise into the synthetic predictor to hit a target accuracy in each cell. To verify that this calibration step is not driving our findings, we re-ran the same 5-model subset with the predictor in its natural, un-calibrated state. All other settings (10 runs per cell, OULAD, 5 forced at-risk per sample) match the main experiment. 
+
+Findings. Three patterns from the main results survive without calibration. First, the instructor-to-instructor ranking is preserved: GPT-5.5 leads on final F1, GPT-5.4 Mini trails. Second, the dialogue-induced over-trust pattern is even more pronounced without calibration — four of five models lose F1 from the initial to the final decision, with Claude Opus 4.7 dropping from 0.44 to 0.17. Third, RSR remains near ceiling ( ≥ 0.87 across all models), confirming that instructors reliably resist the agent when their initial judgment is right and the agent is wrong, regardless of whether the predictor’s accuracy is calibrated. GPT-5.5 is the only model that gains F1 through chat (RAIR = 0.52), consistent with its behavior in the main calibrated experiment. 
+
+Limitations. Without target-accuracy calibration, the synthetic predictor’s accuracy varies by cell, so per-cell F1 cannot be compared across cells in the same way as the main results. The ablation is intended as a robustness check, not a primary finding. 22 Figure 4: Reliability diagrams of the k-NN grade predictor on OULAD (left) and P RED ACT -CS (right). The diagonal shows perfect calibration; blue bars are observed accuracy within each confidence bin, and the red hatched region is the calibration gap. Top histograms show the distribution of predictions across confidence bins. Both predictors are systematically overconfident, with OULAD exhibiting a larger expected calibration error (ECE = 0 .188 ) than P RED ACT -CS (ECE = 0 .099 ). 
+
+## C Expert Evaluation of Dialogue Quality 
+
+To complement the automated behavior metrics in the main paper, two expert raters manually scored a stratified sample of human and LLM dialogues on two dialogue-quality dimensions. Each dialogue was scored on a 0–2 scale: verification quality captures whether the rater actively checked the agent’s call before deciding, and question quality captures whether the rater’s questions were specific, targeted, and built on prior tool answers. Five dialogues were double-coded as a calibration check; raters agreed exactly on 4/5 verification scores and 3/5 question scores. Significance is reported using the Mann-Whitney U test, appropriate for the ordinal 0–2 scale. Table 12 reports the results. Verification quality is statistically indistinguishable between humans and LLMs (both 1.42, p = 0 .826 ), confirming that mechanical thoroughness is not the differentiator. Question quality, however, is significantly higher for humans (1.54 vs 1.21, p = 0 .026 ), supporting the qualitative finding from the main paper: humans ask better, more targeted, more adaptive questions, even when they ask fewer of them. 
+
+## D F1 Results 
+
+Table 12: Manual evaluation of dialogue quality. Two expert raters scored sampled human and LLM dialogues on a 0–2 scale across two dimensions: verification quality (whether the rater checked the agent’s call) and question quality (whether the questions were specific, built on prior answers, and included follow-ups). p-values are from Mann-Whitney U tests comparing humans vs LLMs.              
+
+> Dimension Human (n= 26 )LLM (n= 24 )p-value
+> Verification quality 1.42 1.42 0.826 (n.s.) Question quality 1.54 1.21 0.026
+
+23 Figure 5: Example P RED ACT BENCH episode. The instructor agent receives a task description, sees flagged students with predicted grades and confidence scores, records an initial decision, then queries the assistant agent for grade histories and counterfactuals before committing to a final decision. Red text indicates values returned by tools. 
+
+Figure 6: Tool quality across the semester. Accuracy, ECE, and Brier score for the k-NN grade predictor on P RED ACT -CS and OULAD, showing that tool outputs are realistically noisy at every point in the term. 
+
+## E Q-Type Definitions 
+
+Table 13 defines the six question categories used to classify rater messages in Table 4 and the Q-type distribution analysis. 
+
+## F Human study interface 
+
+The human study was administered through a web interface that walked each participant through the ten scenarios. The first scenario requires the user to manually select flagged students, then each scenario after that presented the flagged students with the agent’s predicted grades and confidence scores, recorded the participant’s initial flag/no-flag decision, provided a chat panel for querying the AI assistant, and then collected a final decision followed by a short Likert questionnaire. 24 Table 13: Definitions of the six question categories used to classify rater messages in Table 4 and the Q-type distribution analysis.          
+
+> Category Description
+> grade_lookup Asking for a specific student’s current grades or assignment scores.
+> min_score Asking what score a student needs on remaining work to reach a target grade.
+> counterfactual “What if” scenarios (e.g., what if the student scores Xon the final?).
+> prediction_query Asking for the model’s predicted final grade or pass/fail outcome.
+> class_comparison Comparing a student against the class average or other students.
+> other Anything not covered above (e.g., general course information, listing flagged students).
+
+Table 14: Per-model breakdown of initial F1, final F1, RAIR, and RSR, averaged across all 10 cells (5 target accuracies × 2 datasets, 10 runs per cell). ∆F1 is the change from initial to final ( dinit  
+
+> i
+
+→ dfinal  
+
+> i
+
+). All values ×100 . Models sorted by final F1.                                                                            
+
+> Model F1 init F1 final ∆F1 RAIR RSR
+> GPT-5.5 56.7 57.2 +0 .549.4 90.5 Gemini 3 Flash 55.6 56.0 +0 .416.7 100.0 Gemini 3.1 Pro 53.2 55.1 +1 .932.7 95.4 Claude Opus 4.7 51.4 47.2 −4.27.1 98.5 GPT-4o Mini 50.7 47.8 −2.90.0 99.7 DeepSeek V4 Flash 54.3 47.0 −7.39.6 99.4 Mistral Small 24B 47.7 44.9 −2.85.0 100.0 DeepSeek V4 Pro 51.0 44.9 −6.18.1 99.7 Claude Haiku 4.5 49.5 44.7 −4.813.7 98.7 Ministral 3 14B 49.5 42.0 −7.54.9 98.5 Qwen 3.5 35B 47.6 41.8 −5.815.0 98.0 Qwen 3.5 9B 42.4 33.9 −8.54.3 98.7 GPT-5.4 Mini 44.6 33.6 −11 .05.6 99.4
+> Mean 50.3 45.9 −4.513.2 98.2
+
+## G Human Subjects, Potential Risks, and Institutional Review 
+
+Our human study involved instructors and teaching assistants who completed simulated academic risk prediction scenarios using the study interface described in Appendix F. Participants reviewed AI-flagged students, made initial flag/no-flag decisions, interacted with an AI assistant through a chat interface, submitted final decisions, and completed short post-condition questionnaires. The study was conducted for research purposes only; participant decisions did not affect any real student, course, grade, or academic intervention. 
+
+Potential risks to participants. The study posed no more than minimal risk to participants. The main potential risks were mild fatigue from completing multiple scenarios, possible frustration when the AI assistant produced uncertain or incorrect predictions, and possible concern that participants’ decisions could be interpreted as an evaluation of their personal teaching or advising ability. To mitigate these risks, participants were informed that the scenarios were simulated, that the AI tool could be inaccurate, and that the purpose of the study was to evaluate the decision-support setting rather than individual participant performance. The study did not involve deception about tool reliability: participants were shown the approximate prediction accuracy of the AI tool in each condition. 
+
+Risk disclosure and consent. Before beginning the study, participants were given study instructions describing the task procedure, expected duration, voluntary nature of participation, potential risks, and data use. Participants were informed that they could stop participating at any time without penalty. They were also informed that their responses would be analyzed in aggregate and that no personally identifying information would be reported in the paper. 25 Table 15: Human study: F1 ( ×100 ) of instructors and teaching assistants paired with three LLM instructor agents at target tool accuracies (40%–80%). Init is the participant’s at-risk classification F1 before agent dialogue; Final is after dialogue. Overall is the per-agent mean F1 across cutoffs. Best per column within each block in bold . Each cell aggregates 13 participants. The no-agent baseline (humans deciding without any LLM agent) achieves Final F1 = 89.0.                                    
+
+> Agent Stage Overall 40% 60% 80%
+> Initial decision (pre-dialogue)
+> GPT-4o Mini Init 49.6 34.8 59.0 54.9 Qwen-9B Init 50.8 30.8 67.7 53.8 Qwen-35B Init 52.8 33.6 66.2 58.7
+> Final decision (post-dialogue)
+> GPT-4o Mini Final 55.3 27.7 68.7 69.5
+> Qwen-9B Final 55.8 31.6 72.6 63.3 Qwen-35B Final 56.3 32.6 72.8 63.6
+
+Figure 7: Override behavior on agent-flagged students for humans (n=13, GPT-4o Mini assistant) vs. 13 LLM instructors, all paired with the same calibrated synthetic tool and GPT-4o Mini assistant. Bars show the share of decisions in four ground-truth-aware buckets: correct follow / correct override / bad follow / bad override. Pooled across 40 / 60 / 80 % target tool accuracies. P RED ACT -CS only 
+
+Privacy and confidentiality. We do not report personally identifying information about participants. Human study results are reported only in aggregate, including decision quality, reliance metrics, questionnaire responses, and interaction statistics. The paper does not include participant names, email addresses, or individually attributable responses. Interface screenshots included in the appendix are representative screenshots and do not reveal participant identities. 
+
+Institutional review. Under the authors’ institutional policies, this minimal-risk study using sim-ulated academic decision scenarios did not require full Institutional Review Board approval. The study involved adult participants, did not affect real students or course outcomes, and reports only aggregate, non-identifying results. 
+
+## H License of OULAD 
+
+This paper uses the data from OULAD dataset. The OULAD dataset is released under the CC-BY 4.0 license, and we fully respect the license. 26 Figure 8: Post-study Likert survey responses (mean ± SD, n = 13 ) across five questions and four conditions. Decision confidence is reported for all conditions including the no-agent baseline; the remaining four questions apply only to agent conditions. No Agent (gray) serves as a reference baseline. Agent conditions are GPT-4o Mini, Qwen-9B, and Qwen-35B; Overall (agents) (diamond) pools responses across all three. The dashed vertical line marks the neutral midpoint (3). Scale: 1 = Strongly Disagree, 5 = Strongly Agree. 27 Table 16: F1 ( ×100 , mean ± std) of LLM instructors on P RED ACT -CS and OULAD across target tool accuracies (40%–80%). Overall is the per-dataset mean F1 across cutoffs. Best per column within each block (per dataset) in bold . Rows sorted within each block by combined Overall across both datasets. Each cell aggregates 10 episodes (30 students, 5 forced at-risk). 
+
+Model Dataset Overall 40% 50% 60% 70% 80% 
+
+Closed-source Models 
+
+GPT-5.5 PRED ACT -CS 59.2 34.8 ±32.2 74.7 ±13.3 57.8 ±10.4 46.4 ±33.9 82.6 ±13.5 
+
+OULAD 55.1 44.5 ±25.4 43.5 ±22.0 61.3 ±25.3 75.4 ±14.9 51.0 ±28.9 
+
+Gemini 3 Flash PRED ACT -CS 63.4 55.8 ±16.4 70.3 ±13.7 50.6 ±14.3 59.8 ±21.5 80.6 ±15.5 
+
+OULAD 48.6 29.5 ±27.0 30.2 ±18.2 57.7 ±15.2 61.9 ±18.2 63.5 ±15.9 
+
+Gemini 3.1 Pro PRED ACT -CS 57.0 38.9 ±28.8 62.2 ±18.2 44.7 ±12.0 58.9 ±11.0 80.5 ±15.7 
+
+OULAD 52.3 43.7 ±21.2 36.2 ±26.0 55.6 ±25.8 56.2 ±23.8 70.1 ±14.1 
+
+Claude Opus 4.7 PRED ACT -CS 55.4 31.1 ±26.2 68.1 ±13.8 47.4 ±30.0 55.3 ±28.0 75.3 ±20.5 
+
+OULAD 38.5 14.8 ±20.6 38.3 ±22.4 39.4 ±28.9 47.9 ±23.0 52.3 ±24.2 
+
+GPT-4o Mini PRED ACT -CS 54.2 42.4 ±16.9 55.5 ±14.1 47.9 ±13.1 51.8 ±16.6 73.6 ±11.4 
+
+OULAD 41.5 28.6 ±20.2 28.8 ±20.6 43.3 ±11.9 56.7 ±16.3 49.9 ±13.2 
+
+Claude Haiku 4.5 PRED ACT -CS 51.9 31.9 ±31.2 44.7 ±22.5 55.5 ±18.5 59.5 ±16.2 67.9 ±18.5 
+
+OULAD 37.5 26.4 ±21.4 29.1 ±17.5 28.6 ±23.1 55.0 ±18.2 48.3 ±22.8 
+
+GPT-5.4 Mini PRED ACT -CS 44.4 40.4 ±25.2 54.4 ±14.1 43.5 ±15.4 23.3 ±27.4 60.4 ±19.0 
+
+OULAD 23.2 12.9 ±16.7 28.6 ±16.9 32.9 ±24.9 26.5 ±26.4 15.2 ±16.2 
+
+Open-source Models 
+
+DeepSeek V4 Flash PRED ACT -CS 52.4 28.8 ±18.1 62.2 ±19.3 49.7 ±22.5 55.4 ±20.2 65.7 ±28.7 
+
+OULAD 41.3 29.2 ±23.5 32.5 ±19.9 35.0 ±16.9 52.3 ±27.8 57.6 ±33.4 
+
+DeepSeek V4 Pro PRED ACT -CS 60.7 42.6 ±22.6 68.5 ±19.1 48.2 ±20.6 60.3 ±19.3 83.8 ±13.2 
+
+OULAD 29.9 27.8 ±21.8 23.5 ±20.0 32.4 ±19.3 33.1 ±27.4 33.0 ±26.9 
+
+Mistral Small 24B PRED ACT -CS 57.0 42.8 ±20.3 58.5 ±16.7 51.6 ±14.5 62.2 ±21.6 70.0 ±16.7 
+
+OULAD 32.3 13.0 ±17.4 15.6 ±18.0 33.7 ±22.7 52.3 ±24.2 47.1 ±26.5 
+
+Ministral 3 14B PRED ACT -CS 49.2 34.8 ±15.7 49.1 ±28.1 47.8 ±28.1 44.8 ±18.4 69.8 ±16.4 
+
+OULAD 36.1 26.3 ±21.3 22.5 ±17.9 39.5 ±18.2 48.8 ±19.3 43.5 ±25.4 
+
+Qwen 3.5 35B PRED ACT -CS 49.8 27.7 ±23.1 61.2 ±18.1 40.6 ±21.2 50.1 ±17.7 69.5 ±24.2 
+
+OULAD 31.5 22.6 ±22.6 21.1 ±20.0 29.5 ±23.4 45.8 ±15.0 38.7 ±13.2 
+
+Qwen 3.5 9B PRED ACT -CS 43.9 22.2 ±24.8 37.2 ±26.4 54.7 ±23.2 38.8 ±29.8 66.8 ±22.2 
+
+OULAD 24.6 12.4 ±14.1 22.5 ±14.1 24.7 ±20.3 50.7 ±24.6 33.0 ±26.9 
+
+Table 17: F1 ( ×100 , mean ± std) of 13 participants paired with three LLM Assistant on P RED ACT -CS across target tool accuracies (40%–80%). 
+
+LLM Assistant Dataset Overall 40% 60% 80% 
+
+No agent (baseline) PRED ACT -CS 89.0 ±14.1 – – –GPT-4o Mini PRED ACT -CS 55.3 ±35.4 27.7 ±36.4 68.7 ±32.4 69.5 ±15.5 
+
+Qwen-35B PRED ACT -CS 56.3 ±35.0 32.6 ±36.0 72.8 ±27.2 63.6 ±27.3 
+
+Qwen-9B PRED ACT -CS 55.8 ±30.3 31.6 ±36.0 72.6 ±18.9 63.3 ±13.4 
+
+28
