@@ -1,0 +1,558 @@
+Title: Tracing the Heart: An Evidence-Linked Pipeline for Heart-Failure Feature Engineering
+
+URL Source: https://arxiv.org/pdf/2608.06366v1
+
+Published Time: Fri, 07 Aug 2026 01:19:47 GMT
+
+Number of Pages: 29
+
+Markdown Content:
+> Submitted to ML4H 2026: Unspecified Track Machine Learning for Health (ML4H) 2026
+
+# Tracing the Heart: An Evidence-Linked Pipeline for Heart-Failure Feature Engineering 
+
+Soorya Ram Shimgekar 
+
+Nimblemind 
+
+Michelle Hu 
+
+Nimblemind 
+
+Dorisa Shehi 
+
+Nimblemind 
+
+Daniel Kang 
+
+Nimblemind 
+
+Roy Ka-Wei Lee 
+
+Singapore University of Technology and Design 
+
+Koustuv Saha 
+
+University of Illinois Urbana-Champaign 
+
+Christian Poellabauer 
+
+Florida International University 
+
+Christopher Lee 
+
+University of California Los Angeles 
+
+Sajeev Singh 
+
+Department of Health Informatics, Rutgers University Newark 
+
+Piyum Zonooz 
+
+Nimblemind 
+
+Navin Kumar 
+
+Nimblemind 
+
+Zeeshan Ahmed 
+
+Rutgers Institute for Health, Health Care Policy and Aging Research Department of Medicine, Robert Wood Johnson Medical School, Rutgers Health 
+
+Priyadarshini Kachroo 
+
+Department of Health Informatics, Rutgers University Newark 
+
+# Abstract 
+
+Electronic health record (EHR) feature engi-neering is a major bottleneck in clinical research and AI, accounting for 39–45% of data scien-tists’ workload. This is especially pronounced in heart failure, which affects an estimated 6.7 million U.S. adults and requires integrat-ing fragmented EHR data with disease-specific, guideline-based clinical reasoning. Existing rule-based and large language model (LLM)-based approaches offer only partial automa-tion with limited maintainability and evidence traceability. We developed the Nimblemind Multi-Agent System (nMAS), an evidence-linked, rubric-grounded pipeline for automated heart-failure feature engineering, and evaluated it on 500 dummy patient records from nine EHR source tables. nMAS generated 132 struc-tured and 70 rubric-scored aggregated features, verified for structural integrity, rubric compli-ance, and provenance, and audited by a re-stricted LLM. Adding the aggregated features improved held-out AUROC from 0.895 to 0.963 for HFrEF and 0.870 to 0.910 for HFpEF pheno-typing, and an independent LLM-based rubric assessment of evidence support and method-ological soundness scored the features at 81.5% of maximum points. These results demon-strate the feasibility of automated, auditable feature engineering for complex cardiovascular EHR data, though evaluation was limited to a single-institution cohort and external validation is needed.     
+
+> ©S.R. Shimgekar et al .arXiv:2608.06366v1 [cs.AI] 6 Aug 2026 Tracing the Heart
+> Keywords: electronic health records, heart failure, feature engineering, clinical artificial in-telligence, multi-agent systems, evidence-linked extraction
+
+# 1. Introduction 
+
+Before a clinical machine-learning model can be trained or a population-level cohort study can be conducted, routinely collected clinical data must be transformed into reliable, analysis-ready patient-level variables. This feature-engineering process involves extracting, cleaning, harmonizing, and deriving vari-ables from heterogeneous clinical records and repre-sents a substantial component of healthcare data-science workflows. Data scientists report spending approximately 39–45% of their working time on data loading and cleaning rather than analysis (Anaconda, 2020). At the median U.S. data-scientist wage of $112,590 per year, or approximately $54 per hour (U.S. Bureau of Labor Statistics, 2026), this corre-sponds to roughly $845–$975 of labor per 40-hour workweek devoted to data preparation. These costs are further compounded when feature-engineering workflows must be repeatedly reconstructed for new datasets, institutions, or research questions. The re-sulting lack of reusable data infrastructure remains a barrier to the broader deployment of artificial intelli-gence (AI) in healthcare (Bian et al., 2026). Cardiology presents a particularly demanding set-ting for clinical feature engineering because clinically meaningful variables are distributed across multiple EHR domains and often require longitudinal inter-pretation. Diagnoses, medications, laboratory mea-surements, procedures, and imaging findings may be stored in separate relational tables rather than in a single analysis-ready dataset (Kao, 2022). Conse-quently, constructing patient-level features requires more than extracting individual variables: heteroge-neous records must be reconciled, temporally aggre-gated, and transformed according to clinically mean-ingful definitions (Roger, 2021). Heart failure (HF) provides a representative case because its character-ization depends on multiple complementary sources of clinical evidence and affects a large and growing patient population. An estimated 6.7 million U.S. adults have HF, with prevalence projected to increase to 8.7 million by 2030 (Fonarow et al., 2026). In 2023, HF was mentioned on 452,573 U.S. death certificates, corresponding to 14.6% of all deaths (National Center for Health Statistics, 2025). HF phenotyping also requires the application of ex-plicit clinical definitions to heterogeneous measure-ments. Contemporary classifications use guideline-specified thresholds, such as ejection-fraction cat-egories, while other features depend on labora-tory measurements, medication histories, comorbidi-ties, and disease-specific scoring criteria (Ostrominski et al., 2024; Maddox et al., 2024). These requirements create a distinction between simply extracting infor-mation from an EHR and constructing a clinically meaningful feature: the latter requires explicit rules describing which source variables should be used, how they should be combined, and how the result-ing value should be interpreted. For research appli-cations, these transformations must additionally be reproducible and traceable to their underlying source data. These requirements motivate an automated feature-engineering approach that combines het-erogeneous EHR integration with explicit clinical specifications and evidence traceability. We ad-dress this need with the Nimblemind Multi-Agent System (nMAS) (Shimgekar et al., 2025b), an evidence-linked, rubric-grounded pipeline for heart-failure feature engineering. Rather than generating unrestricted clinical summaries, nMAS applies deterministic scoring rules derived from clinical specifications and uses a restricted language-model auditing step to evaluate the resulting feature con-struction. Each derived feature remains linked to its source EHR variables and predefined scoring criteria, enabling automated processing while preserving interpretability and auditability. In this pilot study, we applied nMAS to 500 dummy heart-failure patient records assembled from nine EHR source tables. We evaluated the re-sulting dataset for structural integrity, rubric com-pliance, and clinical coherence. Although down-stream predictive performance is reported as a sec-ondary evaluation, the primary objective is to as-sess whether automated feature engineering produces structurally valid, rubric-compliant, and clinically co-herent patient-level features. This study therefore provides preliminary evidence for the feasibility of evidence-linked, rubric-grounded feature generation as a reusable approach for preparing complex cardio-vascular EHR datasets. 
+
+> 2Tracing the Heart
+
+# 2. Related Work 
+
+Artificial intelligence has been widely applied to di-agnosis, risk stratification, and disease management, but most systems operate on a single data modal-ity rather than integrating longitudinal EHR data (Boccuto et al., 2023). Many derive structured clin-ical variables from a single rich source, such as un-structured clinical documents processed with large language models (Truhn et al., 2024; Balasubrama-nian et al., 2025), instead of reconciling heteroge-neous data across multiple EHR domains. The same pattern exists in cardiology, where AI mod-els have been developed for electrocardiogram-based heart-failure risk prediction (Dhingra et al., 2025). However, these single-modality approaches do not address the preprocessing and integration of struc-tured EHR data required for heart-failure phenotyp-ing, which depends on combining guideline-defined ejection-fraction categories, medication history, labo-ratory measurements, comorbidities, and other clin-ical variables across multiple EHR domains (Roger, 2021). General EHR feature-engineering frameworks ad-dress part of this preprocessing challenge but remain disease agnostic. FIDDLE and MIMIC-Extract auto-mate preprocessing and temporal aggregation to gen-erate machine learning-ready representations (Tang et al., 2020; Wang et al., 2020); the OHDSI patient-level prediction framework derives standardized co-variates from common clinical domains (Reps et al., 2018); and rule-based methods such as the Charlson and Elixhauser indices engineer comorbidity features from diagnosis codes (Quan et al., 2005). More re-cent LLM-based approaches relax the rule-based con-straint but not the need for guideline-grounded rea-soning: FeatEHR-LLM generates feature-extraction code from dataset schemas rather than clinical liter-ature (Karami et al., 2026), while AgentScore learns candidate scoring rules validated statistically against patient data rather than grounded in clinical evi-dence (Estévez et al., 2026). Consequently, these approaches cannot derive many clinically meaningful heart-failure predictors, including phenotype, disease severity, guideline-directed medical therapy, and care gaps, which require synthesizing diagnoses, medica-tions, laboratory results, imaging, procedures, and behavioral history using guideline-based clinical rea-soning. Few reusable frameworks therefore address the full feature-engineering requirements of cardiovascular re-search. Heart-failure phenotyping requires integrat-ing diagnoses, medications, laboratory results, imag-ing, procedures, behavioral history, and guideline-defined ejection-fraction thresholds across longitudi-nal EHR data. Because these derived variables gov-ern clinical risk stratification, cohort eligibility, and treatment assessment, feature engineering requires both guideline-based clinical reasoning and an au-ditable link between every derived feature and its supporting evidence. The present work addresses this gap with an evidence-linked, rubric-grounded pipeline for auto-mated heart-failure feature engineering. Unlike exist-ing frameworks that emphasize generic preprocessing or data-driven rule discovery, our approach encodes guideline-based clinical reasoning within an explicit rubric, integrates heterogeneous EHR evidence into clinically meaningful features, and preserves trace-ability from each feature to its underlying evidence and source records. 
+
+# 3. Data 
+
+The evaluation dataset consisted of 500 dummy pa-tient records drawn from an aggregated cohort mod-eled on REDACTED, a cardiovascular program serv-ing a minoritized population (Piña et al., 2021). Pa-tients were included if they had a documented heart-failure diagnosis in the source EHR; no additional inclusion or exclusion criteria were applied. Cohort characteristics are summarized in Table 1. Each pa-tient was represented across nine structured EHR ta-bles covering demographics, other diagnoses, medica-tion orders, echocardiogram procedures, surgical pro-cedures, laboratory components and external labs, ejection fraction flowsheet entries, and social history (Table 4 in the Appendix). Direct patient identi-fiers were replaced with de-identified identifiers be-fore analysis, while clinically relevant information re-quired for feature extraction and phenotyping was preserved. Each record combined coded administrative and demographic fields (age, sex, race, ethnicity, lan-guage, vitals) with free-text clinical fields requir-ing pattern-based extraction, including ICD-10 code lists, diagnosis names, medication display and pharmacologic-class names, procedure display names, ejection fraction flowsheet text, and social history narrative. 
+
+> 3Tracing the Heart
+
+# 4. Method 
+
+Figure 1: Overview of the nMAS heart-failure feature-extraction pipeline. 
+
+Workflow Overview. As shown in Figure 1, the workflow begins with a request specifying the input EHR exports and constructs the target fea-tures defined in the versioned rubric. The Achievabil-ity Agent first checks that the available source data can support each target feature; features whose re-quired inputs are absent are reported as unsupported rather than assigned inferred values. For supported requests, the Query Parser then routes the request to one of several nMAS pipelines (Shimgekar et al., 2025b); for brevity, we provide two representative pipelines here: feature extraction and feature engi-neering. In the feature-extraction pipeline, each field is routed through rule/LLM-based extraction tiers, de-pending on how much contextual interpretation the field requires, and returns the field’s value directly from the source document along with a verbatim source sentence confirming that value (Wang et al., 2026). Feature engineering instead composes ex-tracted values into rubric-scored, evidence-linked composite variables that remain traceable to their source data and to the guideline literature that jus-tifies them. This paper focuses exclusively on the feature-engineering pipeline, in which supported fea-tures are produced in two stages, with routing driven by the configured rubric and field definitions rather than by any downstream label. Stage 1 builds a single patient-level table from the EHR source tables: (1) standardizes each table (whitespace, null tokens, up-percased identifiers, and ISO datetimes); (2) dedupli-cates each table on a clinically meaningful event key; (3) temporally aggregates each source to the patient level independently; (4) Merges per-table summaries into unique patient rows. Stage 2 enriches this table with higher-order com-posite features: (1) produces the higher-order feature categories described below, including a comorbid-burden category spanning five organ systems, each returned as a compact value paired with a struc-tured evidence trace; (2) reviews composite features with an LLM auditor; (3) checks structural integrity, rubric compliance, monotonicity, and evidence trace-ability before release. 
+
+Input Standardization and Deduplication. 
+
+Before aggregation, every source table was converted into a consistent representation. String columns were whitespace-collapsed and trimmed, empty strings and literal "nan" tokens were converted to null, and patient identifiers were uppercased so that keys join reliably. EHR-style datetime fields (for example, 
+
+03-Apr-24 06.00.00.000000 AM ) were parsed into a unified ISO representation ( 2024-04-03 06:00:00 ), which is required for correct temporal ordering, first/latest event extraction, and recurrence analysis. Each table was deduplicated using clinically mean-ingful event keys to prevent repeated exports or re-orders from inflating counts. The source tables and keys are listed in Appendix Table 5. Deduplica-tion preceded aggregation so that, for example, re-sent medications and retransmitted laboratory re-sults were not double counted. 
+
+Patient-Level Temporal Aggregation. Each source was collapsed to the patient level first, com-puting counts, first and latest event timestamps, and clinically relevant flags. Table 6 in the Appendix lists the quantities produced from each event source. Ejection fraction is often recorded as a range (Os-trominski et al., 2024), so each entry was parsed into a low bound, a high bound, and a midpoint (“20–25%” becomes 20, 25, and 22.5), from which the lowest, highest, and most-recent EF were computed, plus a flag for latest recordings with conflicting values. On merging, every continuous measurement (EF, BNP, troponin, BMI, blood pressure) received an availabil-ity indicator, and missing values were kept missing rather than set to zero, since a zero EF would read as profound systolic dysfunction and inflate the sever-ity scores. The merge was validated to keep one row per patient and preserve the input row count. 
+
+> 4Tracing the Heart
+
+Clinical Feature Engineering. Before scoring, a clinical-reasoning layer converted raw text and codes into interpretable flags (Table 7 in the Appendix). Two choices are worth noting. First, behavioral ex-posures were kept as ordered categories rather than binary flags, because cardiovascular risk from tobacco and alcohol persists after cessation and varies by in-tensity (Yoo et al., 2023; Piano et al., 2025). Second, the heart-failure phenotype was dictated by ICD-derived values rather than diagnosis names, carrying a conflict flag when the two disagreed (Quan et al., 2005). 
+
+Composite Feature Generation. In Stage 2, the pipeline generates composite features by apply-ing a versioned clinical scoring rubric to Stage 1 vari-ables. These features summarize multiple clinical in-puts into interpretable scores, counts, and indices while preserving their contributing evidence. The rubric defines the conditions, point assignments, and evidence hierarchy used to transform structured EHR data into interpretable feature scores. Table 3 in the Appendix provides the complete point structure for all eight feature categories, includ-ing each component’s condition and point value. Arepresentative portion of the underlying JSON repre-sentation is shown in Figure 2 in the Appendix. The rubric was developed using Qwen 2.5-1.5B-Instruct , which assembled recent guideline-level literature into a proposed scoring framework. A professional cardiologist then reviewed and approved the rubric in full. The final version included 22 references from 2023 onward, sourced from leading cardiovascular and specialty journals, with each reference linked to the component it supports. The scoring system preserves clinically meaning-ful ordering across structured variables. The weights distinguish: (1) direct evidence from supportive ev-idence; (2) current findings from historical informa-tion; (3) independent features from overlapping mea-surements; and (4) feature-specific variables from cross-system modifiers. The assigned point val-ues represent an interpretable engineering design in-formed by clinical literature rather than quantities directly derived from published studies. In general, direct diagnostic evidence receives the highest weight within each category. Supportive laboratory findings and cross-system modifiers con-tribute smaller, capped amounts. For example, hy-pertension diagnosis contributes fewer cardiovascular risk points because measured blood pressure is scored separately. Elevated natriuretic peptide and troponin increase disease severity because they reflect wors-ening cardiac structure and function (Myhre et al., 2024). Current tobacco use receives greater weight than former use because smoking cessation reduces heart failure risk (Yoo et al., 2023). Alcohol use is ordered by consumption intensity following Ameri-can Heart Association guidance (Piano et al., 2025). Age and blood pressure weights follow contemporary cardiovascular risk equations validated across diverse populations (Lewis et al., 2025). Demographic vul-nerability variables are included only as administra-tive equity review factors rather than biological risk measures (Bazoukis et al., 2025). After validation, patient data are processed through the deterministic scoring engine using the finalized rubric. Seven of the eight category features use the same scoring approach. These include dis-ease severity, cardiovascular risk, the five comorbid-burden scores (kidney, lungs, metabolic, blood, and brain-health context), and demographic vulnerabil-ity. Each feature sums component points, caps the total at 100, and maps the score to an ordinal la-bel. Scores of 55 or above are classified as high, 25 to 54 as medium, and below 25 as low. Each feature also returns the contributing components, assigned points, plain-language explanations, source columns, and whether required inputs were present. This en-sures that every aggregated value remains auditable. The heart-failure phenotype feature uses a sepa-rate logic because ejection-fraction classes are cate-gorical thresholds rather than weighted composites. The phenotype is assigned using a precedence rule over available evidence. When numeric EF is present, it directly determines the phenotype: heart failure with reduced ejection fraction (HFrEF) at midpoint 
+
+≤ 40 , heart failure with mildly reduced ejection frac-tion (HFmrEF) below 50, and heart failure with pre-served ejection fraction (HFpEF) otherwise, following contemporary guideline EF categories (Ostrominski et al., 2024). When EF is unavailable, the pipeline uses ICD-10 diagnosis codes for systolic, diastolic, or combined heart failure without imputing an EF value. A patient is never assigned both reduced and preserved phenotypes. This same numeric-or-diagnosis-only logic determines eligibility for HFrEF-specific care-gap checks, keeping guideline-directed therapy recommendations aligned with available evi-dence (Maddox et al., 2024). 
+
+LLM Rubric-Auditor Validation and Cor-rection. Because composite features encode clinical 
+
+> 5Tracing the Heart
+
+reasoning that deterministic rules may approximate imperfectly, each candidate row is audited by Qwen 2.5-1.5B-Instruct . The prompt provides patient evidence, the candidate row, and a whitelist of cor-rectable fields; the model returns {"valid": true} 
+
+when the row is correct or a minimal corrections 
+
+object otherwise. Only whitelisted numeric and cat-egorical fields may be modified (Table 9 in the Ap-pendix); fields ending in _json or _explanation are protected to preserve deterministic evidence traces and rationales. Corrections are type-coerced before application, while unparseable responses are logged as audit failures and leave the original scores un-changed. The prompt template is provided in Fig-ure 3 in the Appendix. The auditor runs locally, and each row records the model, raw response, and generated_* status, ensur-ing that auditing is a required and traceable pipeline step rather than an optional post-processing stage. 
+
+Comorbid Condition Discovery. A final stage catalogs conditions beyond heart failure that the dataset can model. Candidate conditions are fixed in the rubric (13 cardiovascular and comorbid con-ditions, each tagged by clinical group and evidence type), so the stage selects supporting evidence rather than discovering new conditions. For each candi-date, the pipeline considers only merged and higher-order columns in the final dataset, excludes condi-tions without supporting columns, and prompts the language model, under the auditor’s guardrails, to identify evidence-bearing columns and explain their relevance. The model cannot add conditions, invent columns, or label patients; returned columns are val-idated against the dataset, with a deterministic fall-back for unusable responses. The resulting condition-prediction catalog and prompt template are provided in Figure 4 in the Appendix. 
+
+Quality Assurance and Evaluation. The en-riched dataset was validated using an automated eval-uation harness that performs structural, clinical, and provenance checks and generates a machine-readable report of identified issues. The harness verifies: (1) unique patient identifiers and valid table joins; (2) valid and mutually exclusive heart-failure phenotype indicators; (3) preservation of missing values; (4) compliance with the scoring rubric by independently checking selected scores against predefined thresholds and formulas defined in Figure 2; (5) expected scor-ing behavior, such as higher scores for current ver-sus former tobacco use; (6) complete traceability of score components; and (7) provenance of generated features and supporting references. 
+
+Multi-Agent System Evaluation. To evaluate whether aggregated features improve prediction be-yond cleaned EHR variables alone, we trained XG-Boost classifiers (Chen and Guestrin, 2016) for two binary tasks: HFrEF (reduced ejection fraction, EF 
+
+≤ 40 ) versus phenotype-unknown and HFpEF (pre-served ejection fraction, EF ≥ 50 ) versus phenotype-unknown. As described in Section 3, this cardiovas-cular program serves a minoritized population where limited access to diagnostic imaging and specialist follow-up can leave heart failure documented with-out definitive phenotype assignment (Piña et al., 2021). Consequently, a representative non-heart-failure control cohort was unavailable for this pi-lot study. Phenotype-unknown patients had docu-mented heart failure but insufficient evidence to as-sign HFrEF, HFmrEF, or HFpEF; thus, the evalua-tion assessed heart-failure phenotyping rather than disease diagnosis. For each task, we compared a baseline containing only cleaned and merged structured variables with an aggregated feature set that additionally included the composite features. XGBoost was chosen be-cause it natively handles missing values during split selection, eliminating explicit imputation. All models used identical hyperparameters (Appendix A.3). Models were evaluated using 5-fold stratified cross-validation repeated 10 times with independent shuf-fles (50 test evaluations per model). The same fold assignments were reused for both feature sets within each task to enable paired comparisons on identical patients. We report mean ± standard deviation for accuracy, AUROC, and F1 score across test folds. Feature contributions were quantified using global TreeSHAP values (Lundberg and Lee, 2017). 
+
+LLM-Based Evaluation. To assess feature qual-ity beyond predictive performance, we performed a structured construct-validity evaluation of every engi-neered rubric component using Claude Opus 4.8 and a five-dimensional rubric. The evaluation assessed ex-ternal evidence support, methodological soundness, reproducibility, and EHR data reliability, comple-menting downstream classification results. The com-plete rubric, procedure, system prompt, metadata, and results are provided in Appendix A.6. 
+
+Comparator and ablation studies. We con-ducted two additional analyses: an ablation study measuring the contribution of individual feature cat-egories and rubric design choices, and an indepen-
+
+> 6Tracing the Heart
+
+dent comparator where an LLM engineered features directly from raw EHR data. Full methodologies, re-sults, and prompts are provided in Appendix A.10 and Appendix A.9. 
+
+# 5. Results 
+
+Structured Merge. Stage 1 collapsed nine source tables to the patient level without Cartesian explo-sion, producing exactly one row per patient, no du-plicates, and 132 structured columns across all 500 patients. The engineered features showed coherent cohort-level distributions (Table 1): cardiovascular comorbidities were common, while key measurements remained sparse. Notably, numeric ejection fraction was available for only 3.0% of patients, requiring diagnosis-name fallback for phenotype assignment. Table 1: Characteristics of the 500-patient develop-ment cohort. Values shown are dummy data for illustration.              
+
+> Characteristic Value
+> Total patients 500
+> Sex
+> Male 256 (51.2%) Female 243 (48.6%) Unspecified 1 (0.2%) Mean BMI (n =266) 29.99
+> Documented comorbidities
+> Chronic kidney disease 227 (45.4%) Diabetes 208 (41.6%) Coronary artery disease 202 (40.4%) Atrial fibrillation 175 (35.0%)
+> Measurement availability
+> Numeric ejection fraction 15 (3.0%) BNP / NT-proBNP 154 (30.8%) Troponin 429 (85.8%)
+
+Higher-Order Composite Features. Stage 2 generated the feature categories in Table 3 as 70 columns, with all 500 rows audited by Qwen 2.5-1.5B-Instruct . Each feature included a struc-tured evidence trace documenting contributing com-ponents, point values, source columns, and input availability. The categories produced two output types, illustrated by representative examples. The first was a scored assessment with ranked drivers, shown in Figure 6 using the disease-severity feature. Because this patient lacked numeric ejec-tion fraction, phenotype was inferred from diagnosis text ( HFpEF_by_diagnosis_name , source DXNAMES ). The resulting score was driven by elevated natriuretic peptide levels, abnormal troponin results, and chronic kidney disease, each recorded as a source-linked con-tributor. The second output type was a documentation-gap list, shown in Figure 7. The care-recommendation feature identifies evidence columns associated with each gap and frames outputs as documentation re-view rather than prescriptive advice. For example, a patient with coronary artery disease but no statin flag received a high-urgency statin documentation re-view prompt, along with prompts to review potas-sium, creatinine, and sodium monitoring. 
+
+Comorbid Condition Discovery. The condition-discovery stage indicates which other conditions the enriched dataset could support for modeling. It produced a catalog of thirteen candidate conditions spanning cardiac, vascular, metabolic, renal, pulmonary, and hematologic domains, for example hypertension, diabetes, chronic kidney disease, coronary artery disease, atrial fibrillation, anemia, and COPD. For each, it listed the merged and higher-order columns present in the final dataset that could serve as modeling evidence, together with a generated rationale and no patient-level diagnoses. The anemia entry in the Appendix (Fig-ure 5) is representative: an anemia diagnosis flag, hemoglobin laboratory summaries, and blood and kidney comorbid-burden features together support modeling that condition. 
+
+Evaluation Performance. Table 2 summarizes the 5-fold cross-validated performance of the base-line and aggregated feature sets. Adding the com-posite features improved performance for both clas-sification tasks across all evaluation metrics. The largest improvement was observed for HFrEF clas-sification, with accuracy increasing from 0.776 to 0.896 (+0.120). HFpEF classification also improved across all evaluated metrics, although the gains were smaller, with accuracy increasing from 0.752 to 0.809 (+0.057). Global feature importance was assessed using mean absolute SHAP values. For HFrEF classification, 6 of the top 10 features were composite features generated by the proposed framework, with demographic vul-nerability adjusted gap and disease severity adjusted gap ranking above the highest-ranked baseline fea-ture, HF GDMT medication class count. For HFpEF, 
+
+> 7Tracing the Heart
+
+Table 2: Held-out cross-validated performance (mean ± std across 5 folds, repeated 10 times) for baseline versus aggregated feature sets, for each phenotype classification task.                                           
+
+> Task Features Accuracy AUROC F1
+> HFrEF Baseline 0.776 ±0.065 0.895 ±0.046 0.776 ±0.063 Aggregated 0.896 ±0.049 0.963 ±0.028 0.894 ±0.052 HFpEF Baseline 0.752 ±0.056 0.870 ±0.042 0.758 ±0.058 Aggregated 0.809 ±0.061 0.910 ±0.040 0.812 ±0.059
+
+two composite features appeared in the top 10, with disease severity score as the most influential compos-ite predictor and troponin abnormal count remain-ing the dominant baseline feature. Complete SHAP rankings are provided in Table 12 in the Appendix. The LLM-based construct-validity assessment showed strong overall performance, with most cat-egories exceeding 85% and an overall normalized score of 81.5% (Table 11). Lower scores were ob-served for demographic vulnerability and gap fea-tures, with care recommendations receiving the low-est score (38.5 To determine whether performance gains reflected clinically grounded feature weighting rather than fea-ture count alone, equal-weight and random-weight ablations fixed the aggregated feature set while vary-ing only the scoring logic. Both substantially reduced performance (Appendix A.10), indicating that rubric weighting contributed to the improvement. Full ab-lation and comparator analyses are reported in Ap-pendix A.10 and Appendix A.9. 
+
+# 6. Discussion 
+
+We developed a pipeline that transforms fragmented EHR exports into a patient-level heart-failure co-hort with rubric-derived, evidence-linked feature cat-egories. Adding these features improved HFrEF accuracy, AUROC, and F1 score by 0.120, 0.068, and 0.118, respectively, and HFpEF performance by 0.057, 0.040, and 0.054, respectively. Inde-pendent literature-grounded grading scored seven of eleven feature categories above 85/100. Feature-importance analysis showed that rubric-derived fea-tures accounted for 6 of the top 10 HFrEF predictors and 2 of the top 10 HFpEF predictors, suggesting they captured information beyond the original struc-tured variables. Although not designed for clinical decision support, the generated features may support identification of patients relevant to established care pathways. For example, care-gap checks identify reduced-EF heart-failure patients lacking guideline-directed medical therapy, a population relevant to optimization strate-gies such as STRONG-HF (Mebazaa et al., 2022), while kidney comorbidity features may help identify patients who could benefit from earlier nephrology referral, which has been associated with improved outcomes in observational studies and meta-analyses (Cheng et al., 2025). These represent potential ap-plications rather than measured clinical effects. Beyond predictive performance, the pipeline pro-vides a reproducible and auditable approach for clin-ical data preparation. The generated features re-tain links to their source variables, scoring crite-ria, and supporting evidence, enabling transparent review of how each feature was constructed. This design separates clinical knowledge representation from feature execution, allowing the scoring frame-work to be updated independently from the under-lying data-processing pipeline. The same separa-tion makes the approach reusable well beyond heart failure. Any data-intensive chronic disease facing the same feature-engineering bottleneck could substi-tute its own guideline-grounded rubric into this scor-ing engine without rebuilding the extraction and au-diting infrastructure underneath it. The condition-discovery catalog is one concrete instance of this reusability, extending the framework across thirteen cardiovascular conditions and allowing future stud-ies to reuse feature-generation methods rather than repeat manual preparation. Constructing analysis-ready cohorts from frag-mented EHR exports remains a major bottleneck in clinical research. As noted in Section 1, data preparation accounts for a substantial portion of data scientists’ time (Anaconda, 2020), making reusable, 
+
+> 8Tracing the Heart
+
+version-controlled pipelines valuable for reducing repetitive manual work. This burden extends to clin-ical workflows: in a heart-failure clinical trial pre-screening effort, manual eligibility review took ap-proximately 15–20 minutes per patient, with screen-ing of 198 patients requiring two weeks of coordinator effort (Adupa et al., 2016). The pipeline combines deterministic, guideline-grounded scoring with bounded model-assisted rubric generation and auditing. Rule-based approaches pro-vide transparency but can become brittle as schemas evolve (Wang et al., 2018), whereas large language models offer flexible clinical abstraction but may produce unsupported outputs (Ji et al., 2023). By combining structured execution with evidence-linked rubric development, this framework extends prior evidence-linked clinical AI approaches (Shimgekar et al., 2025b,a; Vassef et al., 2025; Wang et al., 2026) toward reusable EHR feature engineering. Several limitations should be considered. The pipeline was evaluated on a dummy, single-institution cohort of 500 patients, limiting statistical power and external generalizability. HFrEF and HFpEF were classified against phenotype-unknown patients rather than non-HF controls, so performance re-flects phenotype characterization within an HF co-hort rather than general disease detection. Evalu-ation focused on internal consistency, feature trace-ability, and downstream classification rather than ex-ternal clinical validity, and some aggregated features incorporate phenotype-related evidence, creating po-tential feature-label overlap in performance and abla-tion analyses. Prospective clinical impact and patient outcomes were not assessed. Comorbidity and behav-ioral features rely partly on regular-expression match-ing and may miss atypical or institution-specific lan-guage. Finally, clinician review covered the extrac-tion rubric and representative outputs rather than the full cohort. Future work should evaluate the pipeline on larger, multi-institutional cohorts with temporally separated validation sets to assess generalizability. Broader evaluation should include both heart-failure and non-heart-failure populations, independent clinician-adjudicated phenotypes, and additional phenotyping and outcome-prediction tasks, as well as prospective workflow impact (Collins et al., 2024). Until such validation, the pipeline should remain an evidence-linked feature-engineering layer for research and clin-ical review rather than autonomous clinical decision-making. 
+
+# References 
+
+Abhishek Kalyan Adupa, Ravi Prakash Garg, Jessica Corona-Cox, Sanjiv. J. Shah, and Siddhartha R. Jonnalagadda. An information extraction ap-proach to prescreen heart failure patients for clin-ical trials, 2016. URL https://arxiv.org/abs/1609. 01594. Anaconda. 2020 state of data science: Mov-ing from hype toward maturity, 2020. URL https://www.anaconda.com/resources/ whitepaper/state-of-data-science-2020. Accessed: July 9, 2026. Reported that data scientists spend an average of 45% of their time loading and cleansing data. J. B. Balasubramanian, D. Adams, I. Roxanis, Ana B. de Gonzalez, P. Coulson, J. S. Almeida, and M. García-Closas. Leveraging large language models for structured information extraction from pathology reports. Journal of Pathology Infor-matics , 19:100521, 2025. doi: 10.1016/j.jpi.2025. 100521. URL https://doi.org/10.1016/j.jpi.2025. 100521. G. Bazoukis, J. Loscalzo, J. L. Hall, S. C. Bollepalli, J. P. Singh, and A. A. Armoundas. Impact of social determinants of health on cardiovascular disease. 
+
+Journal of the American Heart Association , 14(5): e039031, 2025. doi: 10.1161/JAHA.124.039031. Jiang Bian, Majid Afshar, Catherine M. Scifres, et al. The bottleneck was never data or algo-rithms: Building a learning utility for ai-enabled learning health systems. npj Health Systems , 3: 43, 2026. doi: 10.1038/s44401-026-00107-x. URL https://doi.org/10.1038/s44401-026-00107-x. Francesco Boccuto, Salvatore De Rosa, Danilo Torella, Pierangelo Veltri, and Pietro H. Guzzi. Will artificial intelligence provide answers to cur-rent gaps and needs in chronic heart failure? 
+
+Applied Sciences , 13(13):7663, 2023. doi: 10. 3390/app13137663. URL https://doi.org/10.3390/ app13137663. Tianqi Chen and Carlos Guestrin. Xgboost: A scal-able tree boosting system. In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining , KDD ’16, page 785–794. ACM, August 2016. doi: 10.1145/ 2939672.2939785. URL http://dx.doi.org/10.1145/ 2939672.2939785. 
+
+> 9Tracing the Heart
+
+L. Cheng, N. Hu, D. Song, L. Liu, and Y. Chen. Early versus late nephrology referral and pa-tient outcomes in chronic kidney disease: An updated systematic review and meta-analysis. 
+
+BMC Nephrology , 26(1):25, 2025. doi: 10. 1186/s12882-025-03944-4. URL https://doi.org/ 10.1186/s12882-025-03944-4. Gary S. Collins, Karel G. M. Moons, Paula Dhi-man, Richard D. Riley, Andrew L. Beam, Ben Van Calster, Marzyeh Ghassemi, Xiaoxuan Liu, Johannes B. Reitsma, Maarten van Smeden, Anne-Laure Boulesteix, Jennifer C. Camaradou, Leo An-thony Celi, Spiros Denaxas, Alastair K. Dennis-ton, Ben Glocker, Robert M. Golub, Hugh Har-vey, Georg Heinze, Michael M. Hoffman, An-dre Pascal Kengne, Emily Lam, Naomi Lee, Eliz-abeth W. Loder, Lena Maier-Hein, Bilal A. Ma-teen, Melissa D. McCradden, Lauren Oakden-Rayner, Johan Ordish, Richard Parnell, Sherri Rose, Karandeep Singh, Laure Wynants, and Patri-cia Logullo. Tripod+ai statement: updated guid-ance for reporting clinical prediction models that use regression or machine learning methods. BMJ ,385:q902, 2024. doi: 10.1136/bmj.q902. Lovedeep S. Dhingra, Arya Aminorroaya, Veer Sangha, Aline F. Pedroso, Folkert W. Asselbergs, Luisa C. C. Brant, Sandhi M. Barreto, Antonio Luiz P. Ribeiro, Harlan M. Krumholz, Evange-los K. Oikonomou, and Rohan Khera. Heart fail-ure risk stratification using artificial intelligence applied to electrocardiogram images: A multina-tional study. European Heart Journal , 46(11):1044– 1053, 2025. doi: 10.1093/eurheartj/ehae914. URL https://doi.org/10.1093/eurheartj/ehae914. Silas Ruhrberg Estévez, Christopher Chiu, and Mi-haela van der Schaar. Automatic construction of clinical scoring systems with llm agents, 2026. URL https://arxiv.org/abs/2601.22324. Gregg C. Fonarow, Faraz S. Ahmad, Tariq Ahmad, et al. HF STATS 2025: Heart Failure Epidemiology and Outcomes Statistics: An Updated 2025 Report from the Heart Failure Society of America. Journal of Cardiac Failure , 32(2):439–498, February 2026. doi: 10.1016/j.cardfail.2025.07.007. URL https:// doi.org/10.1016/j.cardfail.2025.07.007. Ziwei Ji, Nayeon Lee, Rita Frieske, Tiezheng Yu, Dan Su, Yan Xu, Etsuko Ishii, Ye Jin Bang, Andrea Madotto, and Pascale Fung. Survey of hallucina-tion in natural language generation. ACM Com-puting Surveys , 55(12):1–38, March 2023. ISSN 1557-7341. doi: 10.1145/3571730. URL http: //dx.doi.org/10.1145/3571730. M. G. Kahn, T. J. Callahan, J. Barnard, A. E. Bauck, J. Brown, B. N. Davidson, H. Estiri, C. Goerg, E. Holve, S. G. Johnson, S. T. Liaw, M. Hamilton-Lopez, D. Meeker, T. C. Ong, P. Ryan, N. Shang, N. G. Weiskopf, C. Weng, M. N. Zozus, and L. Schilling. A harmonized data quality assessment terminology and framework for the secondary use of electronic health record data. EGEMS (Wash-ington, DC) , 4(1):1244, 2016. doi: 10.13063/ 2327-9214.1244. David P. Kao. Electronic health records and heart failure. Heart Failure Clinics , 18(2):201–211, April 2022. doi: 10.1016/j.hfc.2021.12.004. URL https: //doi.org/10.1016/j.hfc.2021.12.004. Hojjat Karami, David Atienza, Jean-Philippe Thi-ran, and Anisoara Ionescu. Featehr-llm: Lever-aging large language models for feature engineer-ing in electronic health records, 2026. URL https: //arxiv.org/abs/2604.22534. A. A. Lewis, A. M. Bacong, L. Palaniappan, and T. Hernandez-Boussard. Validation of the amer-ican heart association predicting risk of cardiovas-cular disease events equations in diverse socioeco-nomic groups: The all of us cohort. Journal of the American Heart Association , 14(18):e041549, 2025. doi: 10.1161/JAHA.125.041549. Scott Lundberg and Su-In Lee. A unified approach to interpreting model predictions, 2017. URL https: //arxiv.org/abs/1705.07874. Thomas M. Maddox, James L. Jr. Januzzi, Larry A. Allen, Khadijah Breathett, Sarah Brouse, Javed Butler, Lori L. Davis, Gregg C. Fonarow, Nas-rien E. Ibrahim, JoAnn Lindenfeld, Frederick A. Masoudi, Shubha R. Motiwala, Edwin Oliveros, Michael N. Walsh, Andrew Wasserman, Clyde W. Yancy, and Quinn R. Youmans. 2024 acc expert consensus decision pathway for treatment of heart failure with reduced ejection fraction: A report of the american college of cardiology solution set over-sight committee. Journal of the American Col-lege of Cardiology , 83(15):1444–1488, 2024. doi: 10.1016/j.jacc.2023.12.024. 
+
+> 10 Tracing the Heart
+
+T. G. McGinn, G. H. Guyatt, P. C. Wyer, C. D. Naylor, I. G. Stiell, and W. S. Richardson. Users’ guides to the medical literature: Xxii: How to use articles about clinical decision rules. JAMA , 284 (1):79–84, 2000. doi: 10.1001/jama.284.1.79. A. Mebazaa, B. Davison, O. Chioncel, A. Cohen-Solal, R. Diaz, G. Filippatos, M. Metra, P. Ponikowski, K. Sliwa, A. A. Voors, C. Ed-wards, M. Novosadova, K. Takagi, A. Damas-ceno, H. Saidu, E. Gayat, P. S. Pang, J. Ce-lutkiene, and G. Cotter. Safety, tolerability and efficacy of up-titration of guideline-directed medi-cal therapies for acute heart failure (strong-hf): A multinational, open-label, randomised, trial. The Lancet , 400(10367):1938–1952, 2022. doi: 10.1016/ S0140-6736(22)02076-1. P. L. Myhre, B. Claggett, C. M. Ballantyne, R. C. Hoogeveen, E. Selvin, K. Matsushita, D. Kitzman, S. Konety, T. Mosley, and A. M. Shah. Nt-probnp and cardiac troponin i, but not cardiac troponin t, are associated with 7-year changes in cardiac structure and function in older adults: The aric study. Circulation , 150(23):1847–1857, 2024. doi: 10.1161/CIRCULATIONAHA.124.069735. Claude Nadeau and Yoshua Bengio. Inference for the generalization error. Machine Learning , 52(3):239– 281, 2003. doi: 10.1023/A:1024068626366. National Center for Health Statistics. Multiple cause of death 2018–2023 on cdc wonder database, 2025. URL https://wonder.cdc.gov/mcd.html. Accessed: February 1, 2025. In 2023, heart failure was men-tioned on 452,573 death certificates, accounting for 14.6% of all U.S. deaths. John W. Ostrominski, Ersilia M. DeFilippis, Kannu Bansal, Ralph J. III Riello, Biykem Bozkurt, Paul A. Heidenreich, and Muthiah Vaduganathan. Contemporary american and european guidelines for heart failure management: JACC: Heart fail-ure guideline comparison. JACC: Heart Failure ,12(5):810–825, May 2024. doi: 10.1016/j.jchf.2024. 02.020. URL https://doi.org/10.1016/j.jchf.2024. 02.020. M. R. Piano, G. M. Marcus, D. M. Aycock, J. Buck-man, C. L. Hwang, S. C. Larsson, K. J. Mukamal, and M. Roerecke. Alcohol use and cardiovascular disease: A scientific statement from the american heart association. Circulation , 152(1):e7–e21, 2025. doi: 10.1161/CIR.0000000000001341. I. L. Piña, S. Jimenez, E. F. Lewis, A. A. Morris, A. Onwuanyi, E. Tam, and H. O. Ventura. Race and ethnicity in heart failure: Jacc focus seminar 8/9. Journal of the American College of Cardiol-ogy , 78(25):2589–2598, 2021. doi: 10.1016/j.jacc. 2021.06.058. Hude Quan, Vijaya Sundararajan, Patricia Halfon, Andrew Fong, Bernard Burnand, Jean-Christophe Luthi, Lesley D. Saunders, Cynthia A. Beck, Thomas E. Feasby, and William A. Ghali. Cod-ing algorithms for defining comorbidities in icd-9-cm and icd-10 administrative data. Medical Care , 43(11):1130–1139, 2005. doi: 10.1097/01. mlr.0000182534.19832.83. URL https://doi.org/ 10.1097/01.mlr.0000182534.19832.83. Jennifer M. Reps, Martijn J. Schuemie, Marc A. Suchard, Patrick B. Ryan, and Peter R. Rijn-beek. Design and implementation of a standard-ized framework to generate and evaluate patient-level prediction models using observational health-care data. Journal of the American Medical In-formatics Association , 25(8):969–975, 2018. doi: 10.1093/jamia/ocy032. URL https://doi.org/10. 1093/jamia/ocy032. Véronique L. Roger. Epidemiology of heart fail-ure: A contemporary perspective. Circulation Re-search , 128(10):1421–1434, 2021. doi: 10.1161/ CIRCRESAHA.121.318172. URL https://doi.org/ 10.1161/CIRCRESAHA.121.318172. Soorya Ram Shimgekar, Abhay Goyal, Shayan Vassef, Koustuv Saha, Christian Poellabauer, Xavier Vautier, Pi Zonooz, and Navin Kumar. Nimblelabs: Accelerating healthcare ai develop-ment through agentic ai. In 2025 IEEE Interna-tional Conference on Big Data (BigData) , pages 8327–8329, 2025a. doi: 10.1109/BigData66926. 2025.11401464. Soorya Ram Shimgekar, Shayan Vassef, Abhay Goyal, Navin Kumar, and Koustuv Saha. Agentic ai framework for end-to-end medical data inference, 2025b. URL https://arxiv.org/abs/2507.18115. Shengpu Tang, Pedram Davarmanesh, Yang Song, Danai Koutra, Michael W. Sjoding, and Jenna Wiens. Democratizing ehr analyses with fiddle: A flexible data-driven preprocessing pipeline for structured clinical data. Journal of the Ameri-can Medical Informatics Association , 27(12):1921– 
+
+> 11 Tracing the Heart
+
+1934, 2020. doi: 10.1093/jamia/ocaa139. URL https://doi.org/10.1093/jamia/ocaa139. Daniel Truhn, Christian M. Loeffler, Gustav Müller-Franzes, Sven Nebelung, Kevin J. Hewitt, Sebas-tian Brandner, Keno K. Bressem, Sebastian Foer-sch, and Jakob N. Kather. Extracting structured information from unstructured histopathology re-ports using generative pre-trained transformer 4 (GPT-4). The Journal of Pathology , 262(3):310– 319, 2024. doi: 10.1002/path.6232. URL https: //doi.org/10.1002/path.6232. U.S. Bureau of Labor Statistics. Occupational out-look handbook: Data scientists, 2026. URL https: //www.bls.gov/ooh/math/data-scientists.htm. Accessed: July 9, 2026. Reported median annual wage: USD $112,590 (May 2024). B. Vasey, M. Nagendran, B. Campbell, D. A. Clifton, G. S. Collins, S. Denaxas, A. K. Denniston, L. Faes, B. Geerts, M. Ibrahim, X. Liu, B. A. Mateen, P. Mathur, M. D. McCradden, L. Morgan, J. Or-dish, C. Rogers, S. Saria, D. S. W. Ting, P. Watkin-son, and DECIDE-AI Expert Group. Reporting guideline for the early stage clinical evaluation of decision support systems driven by artificial intel-ligence: Decide-ai. BMJ , 377:e070904, 2022. doi: 10.1136/bmj-2022-070904. Shayan Vassef, Soorya Ram Shimegekar, Abhay Goyal, Koustuv Saha, Pi Zonooz, and Navin Ku-mar. One vlm, two roles: Stage-wise routing and specialty-level deployment for clinical workflows, 2025. URL https://arxiv.org/abs/2508.16839. Shirly Wang, Matthew B. A. McDermott, Geet-icka Chauhan, Marzyeh Ghassemi, Michael C. Hughes, and Tristan Naumann. Mimic-extract: a data extraction, preprocessing, and representa-tion pipeline for mimic-iii. In Proceedings of the ACM Conference on Health, Inference, and Learn-ing , ACM CHIL ’20, page 222–235. ACM, April 2020. doi: 10.1145/3368555.3384469. URL http: //dx.doi.org/10.1145/3368555.3384469. Yanshan Wang, Liwei Wang, Majid Rastegar-Mojarad, Sungrim Moon, Feichen Shen, Naveed Afzal, Sijia Liu, Yuqun Zeng, Saeed Mehrabi, Sunghwan Sohn, and Hongfang Liu. Clinical in-formation extraction applications: A literature re-view. Journal of Biomedical Informatics , 77:34–49, January 2018. doi: 10.1016/j.jbi.2017.11.011. URL https://doi.org/10.1016/j.jbi.2017.11.011. Yufan Wang, Anit Kumar Sahu, Yan Fei Ng, Daniel Kang, Shayan Vassef, Soorya Ram Shimgekar, Koustuv Saha, Piyum Zonooz, Navin Kumar, Chee Leong Cheng, and Li Yan Khor. Finding H. pylori in the Fine Print: Evidence-Linked Multi-Agent Case Finding from Gastric Biopsy Reports, 2026. J. H. Wasson, H. C. Sox, R. K. Neff, and L. Gold-man. Clinical prediction rules: Applications and methodological standards. The New England Jour-nal of Medicine , 313(13):793–799, 1985. doi: 10. 1056/NEJM198509263131306. P. F. Whiting, A. W. Rutjes, M. E. West-wood, S. Mallett, J. J. Deeks, J. B. Reitsma, M. M. Leeflang, J. A. Sterne, P. M. Bossuyt, and QUADAS-2 Group. Quadas-2: A re-vised tool for the quality assessment of diag-nostic accuracy studies. Annals of Internal Medicine , 155(8):529–536, 2011. doi: 10.7326/ 0003-4819-155-8-201110180-00009. R. F. Wolff, K. G. M. Moons, R. D. Riley, P. F. Whiting, M. Westwood, G. S. Collins, J. B. Re-itsma, J. Kleijnen, S. Mallett, and PROBAST Group. Probast: A tool to assess the risk of bias and applicability of prediction model studies. An-nals of Internal Medicine , 170(1):51–58, 2019. doi: 10.7326/M18-1376. J. E. Yoo, S. M. Jeong, Y. Yeo, W. Jung, J. Yoo, K. Han, C. M. Lee, J. H. Park, K. W. Park, and D. W. Shin. Smoking cessation reduces the risk of heart failure: A nationwide cohort study. JACC: Heart Failure , 11(3):277–287, 2023. doi: 10.1016/ j.jchf.2022.07.006. 
+
+> 12
+
+Tracing the Heart 
+
+# Appendix A. Supplementary Material 
+
+This appendix provides supplementary material referenced throughout the main text but omitted for space. Section A.1 gives the complete point-based scoring rubric underlying all composite features. The remaining subsections provide implementation and evaluation details: EHR source-table schema and preprocessing, model and prompt configurations for the rubric auditor and comorbid-condition discovery, the full LLM construct-validity rubric and results, composite-feature output examples, SHAP feature-importance rankings, the Claude comparator prompt, and the ablation study details and results referenced in Sections 4 and 5. 
+
+A.1. Complete Feature Scoring Rubric 
+
+Feature Component Condition Points 
+
+Disease severity EF midpoint < 30 (severely reduced) 35 30–40 (reduced) 25 40–50 (mildly reduced) 10 Missing EF (inferred from DX) 8Biomarkers BNP max ≥ 900 20 
+
+300 ≤ BNP max < 900 10 Troponin per abnormal result 3 (max 24) Procedures per surgery/procedure 2 (max 12) LVAD implantation 18 Comorbidity chronic kidney disease (DX) 6Cardiovascular risk Age (cont.) 35 (min) to 95 (max) max 45 Systolic BP (cont.) 110 (min) to 180 (max) max 18 Diastolic BP (cont.) 70 (min) to 110 (max) max 8 Risk factor coronary artery disease (DX) 10 diabetes (DX) 8chronic kidney disease (DX) 8hypertension (DX) 6hyperlipidemia (DX) 5tobacco, current 8tobacco, former 3alcohol, daily 3Kidney burden Primary indicator chronic kidney disease (DX) 35 acute kidney failure (DX) 25 Lab modifier creatinine abnormalities 4 (max 20) latest creatinine > 1.3 5latest creatinine > 2.0 10 electrolyte (Na/K) abnormalities 2 (max 10/type) Contextual diabetes or hypertension (DX) 5 each Lungs burden Primary indicator COPD (DX) 35 sleep apnea (DX) 25 Risk context tobacco, current 12 tobacco, former 5BMI ≥ 35 8BMI 30–34.9 4Metabolic burden Diagnosis flag diabetes (DX) 25 continued on next page 
+
+13 Tracing the Heart 
+
+Table 3 – continued from previous page 
+
+Feature Component Condition Points 
+
+obesity (DX) 20 hyperlipidemia (DX) 10 hypertension (DX) 8Physical/lab marker BMI ≥ 35 20 BMI 30–34.9 12 glucose abnormalities 3 (max 15) latest glucose > 126 5latest glucose > 200 10 Blood burden Primary indicator anemia (DX) 35 Lab modifier hemoglobin abnormalities 5 (max 25) hemoglobin < 12 10 hemoglobin < 10 20 Contextual chronic kidney disease modifier 5Brain-health risk Scoring factor age ≥ 75 8hypertension (DX) 12 diabetes (DX) 10 hyperlipidemia (DX) 8sleep apnea (DX) 5tobacco, current 8alcohol, daily 5Demographic vulnerability Language non-English language 35 Ethnicity Hispanic/Latino 15 unknown/declined 10 Race Black or African American 15 other/unknown/declined 10 
+
+Table 3: Complete scoring rubric across all eight point-based aggregated feature categories. Within each category, component points are summed and the total is capped at 100. 
+
+14 Tracing the Heart 
+
+{"disease_severity": { "ef_points": [ {"condition": "ef_midpoint < 30", "points": 35}, {"condition": "30 <= ef_midpoint <= 40", "points": 25} ], "severity_cutoffs": {"medium_min": 25, "high_min": 55} }, "cardiovascular_risk": { "continuous_components": { "age": {"minimum_age": 35, "maximum_age": 95, "maximum_points": 45} }}, "medical_grounding": { "references": [ {"journal": "JACC: Heart Failure", "year": 2024, "doi": "10.1016/j.jchf.2024.02.020"} ]}}
+
+Figure 2: Representative slice of the versioned scoring rubric. 
+
+A.2. Stage 1 Preprocessing: Source Tables, Deduplication, Aggregation, and Signal Engineering 
+
+Table 4 lists the nine EHR-exported source tables described in Section 3, along with example fields from each. Table 4: EHR-exported source tables 
+
+Source table Description Example fields 
+
+PatientBase Demographics and core diagnoses Patient ID, Age, Sex, Race, Ethnicity, Language, BMI, Blood pressure (systolic/diastolic), Pulse, Primary ICD-10 code list, Primary diagnosis name (free text) OtherDiagnosis Additional ICD diagnoses ICD-10 code, diagnosis name, diagnosis date Medications Longitudinal medication history Medication display name, Pharmacologic class, Therapeutic class, Order date EchoProcs Echocardiography procedures Procedure code, Procedure name, Order date Surgery Surgical procedures Procedure name, Procedure date, Hospital, Department LabsComponents Internal laboratory data Laboratory component name, Results date, Units, Abnormal flag, Procedure name LabsExternal External laboratory data Test name, Result value, Units, Abnormal flag, Collection time EjectionFraction Ejection fraction recordings EF value/range (e.g., “25–30%”), Recorded time SocialHx Tobacco, alcohol, illicit drug history Tobacco use, Alcohol use, Illicit drug use 
+
+Table 5 lists the deduplication key used for each source table, described in Section 4. 
+
+15 Tracing the Heart 
+
+Table 5: Deduplication keys used for EHR source tables. 
+
+Source table Deduplication key 
+
+PatientBase one row per UNIQUEPATID (enforced) OtherDiagnosis UNIQUEPATID + ICD list + DX name Medications UNIQUEPATID + ORDERINST + MEDICATION_ID 
+
+EchoProcs UNIQUEPATID + ENCID + ORDER_PROC_ID 
+
+Surgery UNIQUEPATID + ENCID + OR_PROC_ID 
+
+Labs (internal + external) UNIQUEPATID + result time + component + value EjectionFraction UNIQUEPATID + RECORDED_TIME + entry SocialHx one row per UNIQUEPATID 
+
+Table 6 lists the patient-level quantities aggregated from each event source before merging, described in Section 4. Table 6: Patient-level quantities aggregated from each event source before merging. 
+
+Source domain Patient-level aggregates 
+
+Medications Order and distinct-drug counts; first and latest order timestamps; sixteen car-diovascular drug-class flags (e.g., beta blockers, ACE inhibitors, ARBs, ARNI, MRAs, SGLT2 inhibitors, loop diuretics, anticoagulants, inotropes); and de-rived RAAS and GDMT class counts Laboratory (internal + external) Per-analyte counts, abnormal-result counts, maxima, and latest values, with dedicated handling for BNP, NT-proBNP, troponin, electrolytes, creatinine, glucose, and hemoglobin Surgery Procedure count and procedure-type indicators (e.g., LVAD, device, valve, catheterization, PCI) Echocardiography Procedure count and first/latest order timestamps 
+
+Table 7 lists the clinical-reasoning layer that converts raw text and codes into interpretable flags, described in Section 4. Table 7: Clinical-reasoning layer mapping raw EHR signals to interpretable patient-level features. 
+
+Signal Source Engineered representation 
+
+Cardiovascular comor-bidities ICD-10 codes and diagnosis names Binary flags from curated pattern sets (e.g., heart failure, coronary artery disease, atrial fibrillation, chronic kidney disease, diabetes, hypertension, COPD) Behavioral risk Social history Ordered categories for tobacco and alcohol use (e.g., cur-rent vs. former tobacco use; daily, occasional, past, or no alcohol use) Biomarkers and advanced therapies Laboratory results and medica-tions High-risk biomarker flags (BNP, NT-proBNP, troponin) and advanced-HF therapy flags (e.g., ARNI, SGLT2 in-hibitors, inotropes, beta blockers) Heart-failure phenotype Diagnosis names and ICD codes Systolic, diastolic, or combined phenotype with a diagnosis-name/ICD conflict flag 
+
+16 Tracing the Heart 
+
+A.3. XGBoost Hyperparameter Configuration 
+
+The configuration in Table 8 emphasizes regularization through shallow trees, conservative split criteria, and row and column subsampling to reduce overfitting on the relatively small training set. The same configuration was used for all experiments so that performance differences reflected the feature sets rather than model tuning. Table 8: Fixed XGBoost hyperparameter configuration used for all downstream classification experiments.         
+
+> Hyperparameter Value
+> max_depth 3
+> n_estimators 100
+> learning_rate 0.05
+> gamma 1.0
+> min_child_weight 3
+> subsample 0.8
+> colsample_bytree 0.8
+
+A.4. LLM Rubric-Auditor Prompt 
+
+The rubric-auditor step (Section 4) uses Qwen 2.5-1.5B-Instruct to validate each feature row against patient evidence and correct only whitelisted fields (Table 9). The abbreviated prompt is shown in Figure 3. Table 9: Whitelisted fields the LLM auditor may correct, versus fields protected from modification.     
+
+> LLM-correctable Protected (never modified)
+> Numeric scores, counts, indices, frequencies Evidence traces ( *_json )Indicator / availability flags Narrative rationales ( *_explanation )Fixed set of classification and urgency labels Patient identifier ( UNIQUEPATID )
+
+17 Tracing the Heart 
+
+You are a rubric auditor. Review the candidate feature row against the patient evidence. Rules: 1. Use ONLY the patient data. 2. Use ONLY the rubric logic. 3. Do NOT recreate the entire row. 4. If every field is correct return {"valid": true}. 5. If any field is incorrect return {"valid": false, "corrections": {"field_name": corrected_value}}. 6. Include ONLY fields that require correction. 7. Never return the entire candidate row. 8. NEVER include any field whose name ends with "_json" or "_explanation". 9. Corrections may only contain scores, counts, classifications, urgency labels, indicator flags. 10-11. Do not return explanations or audit JSON. 12. Correction keys must be selected from correctable_fields only. JSON only. INPUT: {"patient": {...}, "candidate": {...}, "correctable_fields": [...]} 
+
+Figure 3: Abbreviated rubric-auditor prompt 
+
+18 Tracing the Heart 
+
+A.5. Comorbid Condition Discovery: Prompt and Example Output 
+
+The comorbid condition discovery stage described in Section 4 prompts the language model to select sup-porting evidence columns for each of the thirteen fixed candidate conditions. Figure 4 shows the abbreviated prompt template for one candidate condition, and Figure 5 shows the representative anemia-candidate output discussed in Section 5. 
+
+You are creating one row for a condition-level modeling catalog. Use only this rubric payload and the listed final dataset columns. Do not assign diagnoses to individual patients. Do not invent condition names, columns, papers, thresholds, or rules. Return one JSON object only: {"condition_name": "exact candidate condition name", "prediction_columns": ["column_a", "column_b"], "explanation": "why these columns support prediction/phenotyping/research flagging" }RUBRIC PAYLOAD: {"rubric_version": "2026-06-16", "candidate_condition": {"condition_name": "Anemia or hemoglobin abnormality", ...}, "column_summary": {...}} 
+
+Figure 4: Abbreviated condition-discovery prompt template for one candidate condition. 
+
+{"condition_name": "Anemia or hemoglobin abnormality", "condition_group": "blood", "evidence_type": "direct_diagnosis_plus_lab_support", "prediction_columns": [ "dx_anemia", "lab_hemoglobin_count", "lab_hemoglobin_abnormal_count", "lab_hemoglobin_latest_value", "dx_chronic_kidney_disease", "feature_blood_comorbid", "feature_blood_comorbid_score", "feature_kidney_comorbid_score" ], "explanation": "These columns provide direct and supportive evidence for the Anemia or hemoglobin abnormality condition. The ’dx_anemia’ column indicates whether anemia has been diagnosed, while ’lab_hemoglobin_count’, ’lab_hemoglobin_abnormal_count’, and ’lab_hemoglobin_latest_value’ capture hemoglobin levels and their variability. [...]" }
+
+Figure 5: Representative comorbid condition-discovery output for the anemia candidate condition. 
+
+19 Tracing the Heart 
+
+A.6. LLM Construct-Validity Evaluation 
+
+The rubric was developed by clinician and methodology experts based on established prediction-model as-sessment standards (Collins et al., 2024; Wolff et al., 2019; Kahn et al., 2016; Whiting et al., 2011; Vasey et al., 2022; Wasson et al., 1985; McGinn et al., 2000). These frameworks were synthesized into five in-dependent dimensions: (1) external validation evidence, (2) predictor construction risk, (3) definition and reporting transparency, (4) EHR source data quality, and (5) evidence population and outcome validity. Table 10 reproduces the complete rubric. Evaluation was performed using Claude Opus 4.8 as an isolated background agent. The model received only the grading rubric and pipeline metadata for each engineered component and was instructed to conduct live web searches for literature supporting each dimension. Unverifiable references were scored as “no verified source found” rather than inferred from model knowledge. Each component received a maximum of 13 points across the five dimensions. Scores were summed within categories and normalized to 0–100 by dividing by the category maximum, 13 × the number of components, enabling comparison across categories of different sizes. Table 10: Five-dimensional rubric used for the LLM-based evaluation of engineered clinical features. 
+
+Dimension Points Evaluation Criteria 
+
+External Validation Evidence 0–3 Assesses whether the predictor, or a clinically similar proxy, appears in an externally validated multivariable prediction model (e.g., MAGGIC, SHFM, PREVENT, KFRE). Higher scores indicate stronger evidence that the predictor has previously demonstrated prognostic value in validated clinical prediction models. Predictor Construction Risk 0–3 Evaluates whether the predictor is appropriate for prediction according to PROBAST-inspired principles, including consistent measurement, availability at prediction time, and absence of label leakage. Predictors derived directly or indirectly from outcome-defining variables receive a score of zero. Definition and Reporting Transparency 0–2 Assesses whether the predictor can be reproduced from the documented implementation, including source variables, computation logic, timing, and handling of missing data. EHR Source Data Quality 0–3 Evaluates the quality of the underlying structured EHR data using the Kahn data quality framework, assessing conformance to expected formats, completeness of source fields, and clinical plausibility of recorded values. Evidence Population and Outcome Validity 0–2 Assesses whether supporting literature was conducted in clinically comparable populations using appropriate and reliable outcome definitions or reference standards. Higher scores indicate stronger applicability of the supporting evidence to the intended heart-failure population. 
+
+Maximum Total Score 13 Sum of all five evaluation dimensions for each engineered component. Category scores are reported as normalized percentages to account for differing numbers of components per category. To illustrate the evaluation procedure, an excerpt of the LLM system prompt is provided below through Dimension 1 (External Validation Evidence). The excerpt shows the instructions governing feature-level 
+
+> 20
+
+Tracing the Heart 
+
+grading, evidence verification, and the first rubric dimension. The complete evaluation protocol consisted of five dimensions as described in the main text. 
+
+SYSTEM 
+
+Grade engineered heart-failure pipeline features across five independent dimensions. Ev-ery feature belongs to exactly one of 11 categories: behavioral_risk , disease_severity ,
+
+cardiovascular_risk , kidney_comorbid , lungs_comorbid , brain_comorbid , metabolic_comorbid ,
+
+blood_comorbid , demographic_vulnerability , gap , and care .Each category lists a “components:” line in PIPELINE METADATA naming its individual weighted findings, gap checks, or derived features. The gap category consolidates every feature with “gap” or “gap_count” in its name, including feature_lab_gap_count , medication_gap_count , surgery_gap_count ,
+
+care_gap_count , behavior_aware_care_gap , disease_severity_adjusted_gap , cv_risk_adjusted_gap ,and demographic_vulnerability_adjusted_gap .These features are grouped together because they are either sums over, or single-formula derivatives of, the same underlying gap checks. The care category contains only feature_care_recommendation_urgency ,which is kept separate from gap because it is not itself a gap check or gap-count derivative. No feature is graded standalone outside a category. 
+
+Component-level grading. 
+
+Grade EACH listed component separately (0–13, across the same five dimensions), using the category’s shared rubric, citations, implementation notes, and statistics as context. Grade each component’s citation, leakage, and transparency independently; do not simply copy one grade across a category. After grading a category’s components, compute the rollup: 
+
+raw_total = X component total_points 
+
+max_possible = 13 × number of components 
+
+normalized_score = round 
+
+
+
+100 × raw_total max_possible , 1
+
+
+
+The five dimensions are derived from the following methodological frameworks: 
+
+1. External Validation Evidence: adapted from TRIPOD/PROBAST principles for predictor justi-fication and external validation. 2. Predictor Construction Risk: adapted from label leakage and prediction-timing guidance. 3. Definition and Reporting Transparency: adapted from TRIPOD reporting recommendations. 4. EHR Feasibility: adapted from common EHR feature-engineering and computability principles. 5. Clinical Plausibility: adapted from evidence-based clinical prediction-model development and guideline-supported predictors. For dimensions 1 and 5, every non-zero score must be supported by a verified source (author, year, journal, PMID/DOI if available). If no qualifying source is found, assign 0 (or the lowest applicable band) and state “no verified source found.” Never invent citations. For both dimensions, explicitly state whether a literature search was performed. For pipeline-specific dimensions, use only the provided PIPELINE METADATA. Do not infer undocu-mented behavior. 
+
+Read the entire PIPELINE METADATA before grading. Some metadata blocks document mul-tiple features because they share implementation details; however, each named feature must be graded independently. Shared documentation does not imply identical scores, particularly for Dimension 2, where trigger conditions may differ. Grade each feature independently without referencing scores assigned to other features. Do not normalize or adjust scores across different features. Process features in metadata order and return exactly 19 output objects in that order. 21 Tracing the Heart 
+
+DIMENSION 1 – External Validation Evidence [0–3] 
+
+Evaluate whether this predictor, or a close clinical proxy, appears in an externally validated, multivariable-derived cardiovascular or heart-failure prediction model. 
+
+0 = No externally validated multivariable-derived composite score for heart failure or cardiovascular risk includes this predictor or a close clinical proxy. 
+
+1 = Appears only in guideline-level evidence, association studies, or single-variable evidence – not in a multivariable-derived score. 
+
+2 = Appears as a variable in an externally validated multivariable-derived score (e.g., MAGGIC, SHFM, Framingham, ASCVD/PREVENT, KFRE), but concordance with this pipeline’s use cannot be con-firmed. 
+
+3 = Appears in such a score and the direction and clinical importance of the predictor are broadly con-cordant with how this pipeline uses and weights the feature. Exact numerical equivalence between published coefficients and pipeline rubric points is not required. 
+
+Required output: named score(s), full citation, matched variable name, citation confidence ( verified |
+
+uncertain | not_found ), and whether a literature search was performed. ... [Prompt excerpt ends here.] 
+
+The model additionally received structured pipeline metadata for each engineered component. An example of the metadata supplied for one feature is shown below. 
+
+feature_behavior_risk_score category: behavioral_risk 
+
+rubric: tobacco_current=25 (else tobacco_former=10 ); alcohol_daily=15 (else alcohol_current=3 , else 
+
+alcohol_past=1 ); illicit_drug_current=25 ; age>=75 +5 ; ef_latest_midpoint_min in (0,40) +8 ; and 
+
+dx_chronic_kidney_disease , dx_diabetes , and dx_coronary_artery_disease each contribute +3. 
+
+components: tobacco_current , tobacco_former , alcohol_daily , alcohol_current_non_daily ,
+
+alcohol_past , illicit_drug_current , age_75_or_older_modifier , ef_below_40_modifier ,
+
+ckd_modifier , diabetes_modifier , cad_modifier .
+
+clinical rationale: Estimates lifestyle-related cardiovascular risk, with direct behavioral evidence weighted highest and age, EF, and comorbidity treated as smaller cross-system modifiers. 
+
+implementation notes: Tobacco and alcohol variables use hierarchical precedence rules. The temporal EF definition uses the most recent recorded EF rather than the first-recorded or lowest-ever EF. 
+
+stats: missing = 0.0%, range = 0–62, mean = 8.3, median = 6.0. 
+
+Table 11 reports the resulting category-level construct-validity scores, summarized in Section 5. 
+
+22 Tracing the Heart 
+
+Table 11: LLM-based construct-validity evaluation of engineered clinical feature categories. Scores represent summed rubric points across components and normalized category performance relative to the maximum possible score. 
+
+Feature Category Normalized Score (%) 
+
+Blood Comorbidities 93.8 Cardiovascular Risk 93.4 Brain Comorbidities 91.3 Kidney Comorbidities 90.6 Behavioral Risk 89.5 Lung Comorbidities 88.5 Metabolic Comorbidities 85.5 Disease Severity 74.6 Demographic Vulnerability 63.1 Gap Features 60.6 Care Recommendations 38.5 
+
+Overall 81.5 A.7. Composite Feature Output Examples 
+
+Section 5 describes the two output shapes returned by the higher-order composite features: a scored assess-ment with ranked drivers, and a list of documentation gaps. Figure 6 shows a representative disease-severity result, and Figure 7 shows a representative care-recommendation result. 
+
+> {"severity": "high", "severity_score": 55.0, "hf_classification": "HFpEF_by_diagnosis_name", "hf_classification_source": "DXNAMES", "drivers": [ "HF phenotype inferred from diagnosis text because EF is missing", "Markedly elevated BNP/NT-proBNP maximum", "Abnormal troponin result burden", "CKD comorbidity increases disease complexity" ]}
+
+Figure 6: Disease severity feature output. 
+
+> 23
+
+Tracing the Heart 
+
+{"medications": [ {"recommendation": "review statin therapy documentation for CAD", "evidence_column": "med_statin"} ], "labs": [ {"recommendation": "review potassium monitoring availability", "evidence_column": "lab_potassium_count"}, {"recommendation": "review creatinine monitoring availability", "evidence_column": "lab_creatinine_count"}, {"recommendation": "review sodium monitoring availability", "evidence_column": "lab_sodium_count"} ], "surgeries": [], "urgency": "high", "recommendation_gap_count": 4 }
+
+Figure 7: Care recommendation feature output. 
+
+A.8. SHAP Feature Importance 
+
+Table 12 reports the complete top-10 SHAP feature rankings for both classification tasks, summarized in Section 5. Table 12: Top 10 features ranked by mean absolute SHAP value for the composite-feature XGBoost models. Larger values indicate greater average contribution to model predictions.                        
+
+> Task Feature Mean |SHAP |
+> HFrEF Demographic vulnerability adjusted gap 0.597 Disease severity adjusted gap 0.456 HF GDMT medication class count 0.425 Medication gap count 0.342 Care gap count 0.322 Cardiovascular risk adjusted gap 0.307 Behavior aware care gap 0.229 Other diagnosis count 0.169 Medication order count 0.169 Atrial fibrillation diagnosis 0.141 HFpEF Disease severity score 0.715 Troponin abnormal count 0.172 Troponin max value 0.158 Other diagnosis count 0.142 Systolic blood pressure 0.136 Surgery count 0.117 Disease severity adjusted gap 0.116 Weight 0.116 B-type natriuretic peptide latest value 0.111 B-type natriuretic peptide max value 0.090
+
+24 Tracing the Heart 
+
+A.9. Claude Comparator Prompt 
+
+As an independent comparator, we used Claude Opus 4.8, a state-of-the-art large language model, to deter-mine whether a general-purpose LLM could autonomously engineer clinically meaningful features directly from the same raw EHR data. The model received only the EHR schema, dataset description, and a general instruction to construct features for heart-failure prediction and risk stratification. It was not provided the proposed feature schema, scoring rubric, derived feature categories, or other project-specific implementa-tion details. The comparator was executed once using a single prompt with web search enabled, producing feature-engineering code, documentation, and a patient-level feature matrix without manual modification. The resulting feature set was evaluated using the same baseline variables, XGBoost models, hyperparame-ters, cross-validation protocol, performance metrics, and construct-validity grading procedure as the proposed framework. The following prompt was provided to Claude Opus 4.8 to independently generate a patient-level feature dataset from the raw EHR exports. 
+
+SYSTEM 
+
+You are a data scientist independently building a patient-level feature dataset from fragmented electronic health record (EHR) exports for a heart-failure cohort at an academic medical center. 
+
+DATA 
+
+You have nine raw relational tables, all keyed on UNIQUEPATID . One patient can have multiple rows in most tables, whereas PatientBase and SocialHx contain one row per patient. Files are located at 
+
+[PATH]/baseline_data/ .
+
+• PatientBase : UNIQUEPATID, AGE, PATIENT_SEX, GENDER_IDENTITY, ..., BMI, BP_SYSTOLIC, BP_DIASTOLIC, PULSE, ICD10CODES, DXNAMES .
+
+• otherDiagnosis : UNIQUEPATID, CURRENT_ICD10_LIST, DX_NAME .
+
+• Medications : UNIQUEPATID, ORDERINST, MEDICATION_ID, DISPLAY_NAME, PHARMCLASS, THERACLASS .
+
+• EchoProcs : UNIQUEPATID, ENCID, ORDER_PROC_ID, ORDER_INST, PROC_CODE, PROC_NAME .
+
+• surgery : UNIQUEPATID, ENCID, SURGERY_DATE, STATUS_C, OR_PROC_ID, PROC_DISPLAY_NAME, ... .
+
+• LabsComponents : UNIQUEPATID, ENCID, ORDER_PROC_ID, ORDER_INST, PROC_CODE, ORDER_PROCNAME, RESULT_TIME, COMPONENT_NAME, ABNORMAL_YN, ORD_VALUE, REFERENCE_UNIT .
+
+• LabsExternal : Same structure as LabsComponents , plus COMPONENT_ID and COMMON_NAME .
+
+• EjectionFraction : UNIQUEPATID, ENCID, DISP_NAME, RECORDED_TIME, FLOWSHEET_ENTRY, ENTRY_COMMENTS . FLOWSHEET_ENTRY contains the raw ejection fraction value or range (e.g., “55”, “45–50”, “preserved”). 
+
+• SocialHx : UNIQUEPATID, TOBACCOUSE, ALCOHOLUSE, ILLICITDRUGUSE .
+
+The original prompt contained the complete column schema for all nine tables. Repetitive column lists have been abbreviated using ... for readability; all instructional content below is reproduced verbatim. 
+
+This is a real, de-identified, single-institution EHR export rather than a curated benchmark. Expect duplicate records, inconsistent terminology, free text, and missing observations. Absence of a record means that information was not recorded; it does not necessarily indicate a negative finding. Treat missing and explicitly negative findings as distinct where possible. 
+
+PURPOSE 
+
+The resulting dataset will be used for downstream heart-failure prediction and risk-stratification tasks. Prioritize features that plausibly capture clinically meaningful information relevant to predicting heart-failure risk. 
+
+TASK 
+
+25 Tracing the Heart 
+
+Build a single patient-level dataset with exactly one row per UNIQUEPATID .First, consolidate the nine tables by independently determining deduplication and aggregation strategies for diagnoses, medications, laboratory results, procedures, ejection-fraction measurements, and other repeated records. Second, independently engineer additional patient-level features that you consider clinically useful for pre-dicting and risk-stratifying heart failure. You may transform, combine, aggregate, or summarize any avail-able variables. Determine the feature definitions, representations, thresholds, and aggregation strategies yourself. You are intentionally not given a predefined feature schema, feature categories, scoring rubric, prediction target, or target feature count. Do not attempt to reproduce any existing feature-engineering framework. Composite features should be included when they provide a clinically meaningful representation that is not adequately captured by their individual components rather than being included purely for descriptive completeness. Where useful, you may use web search to verify clinical definitions or thresholds. Restrict searches to general peer-reviewed clinical and biomedical literature. 
+
+REQUIREMENTS 
+
+• Implement the complete workflow as runnable Python using pandas .
+
+• Every feature must be generated deterministically from the provided EHR data. 
+
+• Do not invent, hallucinate, or assign patient information not supported by the source data. 
+
+• Do not use UNIQUEPATID , row order, or database artifacts as features. 
+
+• Missing information must not automatically be interpreted as a negative clinical finding. 
+
+• Prioritize clinically meaningful and interpretable features rather than maximizing feature count. 
+
+• Document all deduplication, aggregation, and feature-engineering decisions. For every derived feature, document: 
+
+• what it measures; 
+
+• source table(s) and column(s); 
+
+• how it is computed; 
+
+• how missing data are handled; 
+
+• any clinical assumptions or thresholds used; 
+
+• supporting literature citation, if verified through an allowed literature search. 
+
+OUTPUTS 
+
+Produce: 1. comparator_features.csv containing one row per UNIQUEPATID with the consolidated patient-level variables and independently engineered features. 2. comparator_feature_documentation.md documenting all aggregation and derived-feature decisions. 3. The Python script used to generate both outputs. Before finishing, verify that the CSV contains exactly one row per UNIQUEPATID .
+
+Inspection of the comparator features showed that the LLM followed a different feature-engineering strat-egy from the proposed framework. Given only the raw EHR tables, it primarily generated features based on directly observed clinical variables, including ICD-10 diagnosis patterns, ejection-fraction measurements, medication use, laboratory values, and procedure history. Examples included ICD-10-derived heart-failure phenotype and acuity indicators, a guideline-directed medical therapy (GDMT) medication count, an ICD-10 adaptation of the Charlson Comorbidity Index, laboratory abnormality indicators, and healthcare utilization 
+
+26 Tracing the Heart 
+
+measures such as echocardiography frequency. Several of these features were clinically meaningful. How-ever, features derived from heart-failure diagnosis codes and ejection-fraction measurements received lower construct-validity scores because they were closely related to the classification labels themselves, creating predictor-construction concerns. Additionally, utilization-based features captured patterns of care delivery rather than independently validated markers of disease severity. These findings demonstrate that generating clinically plausible features alone does not guarantee features that are independent, evidence-grounded, and suitable for downstream prediction. 
+
+A.10. Ablation Details 
+
+Eight targeted modifications were applied independently to the full feature-engineering pipeline to assess the contribution of individual feature categories and design choices. For each ablation, synthetic features were regenerated using the modified scoring logic and evaluated using the identical XGBoost training and cross-validation pipeline as the full aggregated model. This design isolates the contribution of each feature component or scoring decision by ensuring that observed performance differences arise only from the targeted ablation. Table 13: Ablation configurations evaluated in the sensitivity analysis. 
+
+Configuration Description 
+
+Category ablation Excludes all features within a composite feature category to assess its contribution. Feature ablation Excludes one feature at a time to assess individual feature contributions. Equal-weight rubric Replaces clinician-derived point values with equal feature weights. Random-weight rubric Replaces clinician-derived point values with randomized weights. No modifiers Removes cross-system comorbidity modifiers (CKD, diabetes, CAD, and hypertension) from their respective category scores. Uniform modifiers Assigns a fixed 1-point weight to all cross-system modifiers to assess the contribution of modifier presence independent of magnitude. No missingness guardrails Removes availability indicators and imputes missing continuous variables to assess the effect of distinguishing unmeasured from measured-normal values. Direct evidence only Restricts features to diagnoses and direct measurements, excluding supportive laboratory findings, behavioral factors, and cross-system modifiers. Because repeated-CV folds reuse the same patients under different partitions and are therefore not in-dependent trials, significance is assessed with the corrected resampled paired t-test of Nadeau and Bengio (2003), which inflates the variance estimate by (1 /k + ntest /n train ) to avoid overstating confidence from correlated fold-level measurements. 
+
+A.11. Ablation Results 
+
+Category-level ablation identified the clinical domains contributing most to classification performance (Ta-ble 15). For HFrEF, removing care-gap features produced the largest performance reduction ( ∆AUROC=-0.039), whereas other category removals had minimal effects. For HFpEF, disease severity was the dominant contributor ( ∆AUROC=-0.033), consistent with the importance of phenotype-specific evidence. Individual feature ablations, reported below, showed similar patterns with smaller effects, suggesting that performance gains arose from combining related clinical evidence rather than dependence on single features. 
+
+> 27
+
+Tracing the Heart 
+
+Table 14: Rubric design ablation results relative to the full aggregated model. 
+
+Ablation Modification HFrEF HFpEF 
+
+∆AUROC p ∆AUROC p
+
+Equal-weight rubric Replaces clinician-assigned weights with equal component weighting. -0.060 0.0059 -0.041 0.0007 Random-weight rubric Replaces clinician-assigned weights with randomized weights. -0.058 0.0070 -0.040 0.0010 No modifiers Removes cross-system comorbidity modi-fiers. -0.001 0.748 -0.000 0.779 Uniform modi-fiers Sets all modifiers to a fixed 1-point contri-bution. -0.000 0.936 -0.001 0.928 No missingness guardrails Removes availability indicators and im-putes missing values. +0.001 0.749 +0.007 0.607 Direct evidence only Removes supportive evidence and retains direct measurements only. -0.065 0.0037 -0.040 0.0003 
+
+Table 15: Category-level ablation results relative to the full aggregated model. ∆AUROC represents the change in mean test AUROC relative to the full model. Negative values indicate reduced perfor-mance after category removal. 
+
+Removed feature category HFrEF ∆AUROC HFpEF ∆AUROC 
+
+Care gap features -0.039 -0.003 Disease severity -0.000 -0.033 Brain comorbid burden +0.001 -0.002 Recurrence/redundancy -0.001 -0.001 Metabolic comorbid burden -0.001 -0.001 Demographic vulnerability -0.001 -0.000 Kidney comorbid burden -0.000 -0.000 Lung comorbid burden -0.001 +0.001 Blood comorbid burden +0.001 +0.001 Cardiovascular risk +0.000 +0.001 Behavioral risk -0.001 +0.003 
+
+28 Tracing the Heart 
+
+A.12. Individual Feature Ablation 
+
+Table 16: Individual feature ablation results for HFrEF classification. 
+
+Feature category Removed feature ∆AUROC 
+
+Metabolic comorbid burden feature_metabolic_comorbid_score -0.002 Behavioral risk feature_behavior_risk_score -0.001 Demographic vulnerability feature_demographic_vulnerability_score -0.001 Lung comorbid burden feature_lungs_comorbid_score -0.000 Care gap feature_lab_gap_count -0.000 Care gap feature_surgery_gap_count -0.000 Brain comorbid burden feature_brain_comorbid_score -0.000 Care gap feature_care_gap_count -0.000 Disease severity feature_disease_severity_score -0.000 Blood comorbid burden feature_blood_comorbid_score -0.000 Care gap feature_medication_gap_count +0.000 Care gap feature_behavior_aware_care_gap +0.000 Cardiovascular risk feature_cardiovascular_risk_score +0.000 Kidney comorbid burden feature_kidney_comorbid_score +0.000 Care gap feature_demographic_vulnerability_adjusted_gap +0.001 
+
+Table 17: Individual feature ablation results for HFpEF classification. 
+
+Feature category Removed feature ∆AUROC 
+
+Disease severity feature_disease_severity_score -0.033 Care gap feature_disease_severity_adjusted_gap -0.003 Care gap feature_surgery_gap_count -0.002 Care gap feature_lab_gap_count -0.001 Kidney comorbid burden feature_kidney_comorbid_high -0.001 Care gap feature_medication_gap_count -0.001 Kidney comorbid burden feature_kidney_comorbid_score -0.001 Care gap feature_behavior_aware_care_gap -0.001 Care gap feature_demographic_vulnerability_adjusted_gap -0.001 Care gap feature_care_gap_count -0.001 Metabolic comorbid burden feature_metabolic_comorbid_nan -0.001 Kidney comorbid burden feature_kidney_comorbid_medium -0.001 Kidney comorbid burden feature_kidney_comorbid_nan -0.000 Lung comorbid burden feature_lungs_comorbid_low -0.000 Lung comorbid burden feature_lungs_comorbid_nan -0.000 
+
+29

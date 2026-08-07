@@ -1,0 +1,586 @@
+Title: GRAIN: Molecules Are Not the Right Granularity – Active-Ingredient Modeling for Safe Medication Recommendation
+
+URL Source: https://arxiv.org/pdf/2608.00098v1
+
+Published Time: Tue, 04 Aug 2026 00:03:43 GMT
+
+Number of Pages: 18
+
+Markdown Content:
+# IngMamba: Ingredient-Level Drug–Drug Interaction Modeling with Selective State Space Models for Medication Recommendation on MIMIC-IV 
+
+Juao Fan ∗ Jinhan Li ∗ Shengxin Zhu †
+
+Guangdong Provincial Key Laboratory of Interdisciplinary Research and Application for Data Science, Beijing Normal–Hong Kong Baptist University, Zhuhai, China August 4, 2026 
+
+Abstract 
+
+Medication recommendation in critical care requires balancing two competing objectives: clinicians need accurate, personalized prescriptions for complex and evolving patient needs, while polypharmacy carries a substantial risk of adverse drug–drug interactions (DDIs). We propose IngMamba, a medication recommendation framework that couples a selective state space sequence model with multi-granular pharmacological knowledge. Using the large-scale intensive-care EHR dataset MIMIC-IV, we encode longitudinal patient trajectories (diagnoses, procedures, and past medications) with a Mamba-based backbone that handles long, irregular visit sequences in linear time. On top of this backbone we introduce a joint training objective unifying three knowledge sources: (i) a drug-level DDI graph, (ii) an ingredient-level DDI graph obtained by normalizing medication codes to active ingredients via RxNorm, and (iii) an EHR-derived co-prescription graph reflecting real-world prescribing patterns. This design penalizes risky combinations while preserving predictive coverage and clinically realistic co-prescription behavior. Under strictly matched experimental settings— identical preprocessing, cohort, vocabulary, data split, and evaluation code—IngMamba outperforms a re-implemented MambaHealth baseline on all standard multi-label metrics (Jaccard 0.4488 → 0.4983 ,PRAUC 0.6911 → 0.7485 , F1 0.5989 → 0.6453 ) while roughly halving the drug-level DDI rate (0.1875 → 0.0948 ). We further report an ingredient-level DDI rate, a finer pharmacological safety measure that is invisible to drug-code-level evaluation. These results indicate that selective state space modeling and multi-level safety constraints are complementary rather than competing, and provide a reproducible starting point for future work on polypharmacy risk reduction in EHR-based clinical decision support. 
+
+Keywords: medication recommendation; electronic health records; MIMIC-IV; state space model; drug–drug interaction; ingredient-level safety; polypharmacy. 
+
+> ∗
+
+Equal contribution. 
+
+> †
+
+Corresponding author: [TODO: corresponding e-mail] 
+
+1arXiv:2608.00098v1 [q-bio.QM] 30 Jul 2026 1 Introduction 
+
+1.1 Background and Motivation 
+
+Large foundation models—including large language models (LLMs) and multimodal models—have reshaped general-purpose representation learning, transferring broad pretraining into downstream tasks with minimal task-specific engineering [Bommasani et al., 2021]. In healthcare, early evidence suggests that LLMs can encode non-trivial clinical knowledge and support medical reasoning in controlled settings, although reliability, safety, and evaluation remain central concerns [Singhal et al., 2023]. These trends motivate a concrete question for clinical decision support: how can we build models that are simultaneously scalable on long, information-dense clinical trajectories and explicitly constrained by safety knowledge? Medication recommendation from longitudinal electronic health records (EHRs) is a representative high-stakes instance of this problem. The task is to recommend a set of medications for a patient visit given the patient’s evolving clinical context. The difficulty is not only predictive accuracy—matching historically prescribed regimens—but also safety under polypharmacy: harmful drug–drug interactions (DDIs) contribute to preventable adverse drug events in hospitalized populations [de Andrade Santos et al., 2020]. Better sequence modeling alone is therefore insufficient; safety signals must enter both the learning objective and the evaluation protocol. The data landscape for ICU EHR modeling has matured in parallel. The MIMIC family has driven open, reproducible critical-care machine learning: MIMIC-III substantially expanded earlier releases and enabled wide research adoption [Johnson et al., 2016], and MIMIC-IV was subsequently released as a contemporary EHR dataset spanning roughly a decade of admissions (2008–2019) with more precise digital information sources such as electronic medication administration records [Johnson et al., 2023]. A practical bottleneck in MIMIC-style medication modeling is vocabulary heterogeneity: real-world prescription codes (e.g., NDC and RxNorm) are not stable across institutions and over time. To reduce sparsity and improve interoperability, many clinical pipelines standardize medication tokens using the WHO Anatomical Therapeutic Chemical (ATC) classification, which organizes drugs by anatomical, therapeutic, and chemical properties [World Health Organization, n.d.]. This motivates our design choice to unify medication tokens at a consistent ATC level (ATC3 in our implementation) while retaining finer pharmacological resolution through ingredient-level safety modeling. A further observation motivates our central contribution. Drug-code-level DDI graphs treat each medication token as an indivisible unit, but interactions are mechanistically determined by active ingredients .Two ATC3 tokens may appear unrelated at the code level while sharing an interacting ingredient pair, and conversely a single code may aggregate several ingredients with heterogeneous risk profiles. Consequently, safety constraints imposed purely at the code level are systematically blind to a class of interaction risks that clinical knowledge bases actually curate at the ingredient level [Nelson et al., 2011, Fung et al., 2017]. Overall, this work pursues a single goal: a MIMIC-IV medication recommender that (i) models long ICU trajectories efficiently and (ii) enforces safety at multiple pharmacological granularities, rather than treating safety as an afterthought. 
+
+1.2 Contributions 
+
+We propose IngMamba, a safety-aware medication recommendation framework on MIMIC-IV, with the following contributions. 2• A Mamba-based medication recommendation pipeline for MIMIC-IV with unified medication tokens. We construct patient–visit sequences from diagnoses, procedures, and prescriptions, and standardize medication tokens through an NDC → RxCUI → ATC4 → ATC3 mapping chain to improve coverage and reduce label sparsity [World Health Organization, n.d.]. 
+
+• Ingredient-level safety modeling. Beyond drug-code-level constraints, we normalize medications to active ingredients via RxNorm [Nelson et al., 2011] and construct an ingredient-pair DDI graph from TwoSIDES [Tatonetti et al., 2012]. Both a training signal and an evaluation metric are defined at this granularity, matching the level at which DDI knowledge is curated and applied in practice [Fung et al., 2017]. 
+
+• A unified multi-granular training objective. We combine the multi-label prediction loss with drug-level DDI risk, ingredient-level DDI risk, and an EHR co-prescription plausibility reward, balanced by a proportional controller that adapts the safety weight to the observed validation DDI rate. 
+
+• Consistent empirical gains under strictly matched settings. Using a common pipeline, vocabulary, cohort, split, and evaluation code on MIMIC-IV, IngMamba improves over a re-implemented MambaHealth baseline [Wang et al., 2024] on Jaccard, PRAUC, and F1, while reducing the drug-level DDI rate by approximately 49% relative and yielding a more clinically plausible average medication count per visit. 
+
+2 Related Work 
+
+2.1 Medication Recommendation on MIMIC-IV 
+
+Medication recommendation predicts a safe and effective medication set for each patient visit from longitudinal EHRs. With the release of MIMIC-IV as a large-scale, freely accessible ICU EHR dataset, recent work has re-examined the task under more contemporary coding, coverage, and cohort settings [Johnson et al., 2023]. Earlier longitudinal models—attention- and memory-based sequence learners— established the importance of modeling multi-visit trajectories rather than treating visits independently [Le et al., 2018]. Building on this line, more recent methods explore richer temporal representations for variable-length visit sequences and more structured generation of medication sets, including hierarchical prediction networks [Liu et al., 2023] and conditional generation paradigms for multi-label medication prediction [Wu et al., 2022]. 
+
+2.2 State Space Models for Long Clinical Sequences 
+
+Transformers have been widely applied to clinical sequence modeling, but their quadratic cost in sequence length becomes a bottleneck for long EHR histories. Structured state space models (SSMs) scale more favorably while preserving long-range dependency modeling, as demonstrated by S4 [Gu et al., 2021]. Mamba introduces selective state space modeling to achieve linear-time sequence modeling with strong empirical performance on information-dense sequences [Gu and Dao, 2023]. Outside healthcare, Mamba-style backbones have been explored for efficient sequential recommendation with competitive effectiveness–efficiency trade-offs [Liu et al., 2024]. Within healthcare, MambaHealth demonstrated that a lightweight Mamba backbone is viable for drug recommendation on MIMIC-III [Wang et al., 2024]; we adopt it as our baseline and starting point. 32.3 Safety-Aware Recommendation and DDI Mitigation 
+
+A central challenge in medication recommendation is the trade-off between predictive accuracy and safety, commonly operationalized through DDI avoidance. A representative family of methods injects pharmacological knowledge—particularly DDI graphs—into the learning objective or representation space to penalize high-risk combinations. SafeDrug introduces molecular-structure-aware representations with explicit DDI-aware learning to encourage safer combinations while maintaining therapeutic relevance [Yang et al., 2021]. DrugDoctor targets realistic cold-start clinical scenarios by emphasizing visit-level learning and training strategies that improve early-visit recommendation quality while retaining safety objectives [Kuang and Xie, 2024]. Closest to our motivation of bridging pharmacology and clinical intent, DATR proposes DDI-aware therapeutic structure reconstruction, conditionally encoding drug structures using ATC-derived therapeutic labels and introducing a selectivity-based DDI constraint to reduce interaction risk during recommendation [Anonymous, 2025]. The authors motivate ATC precisely because it links therapeutic intent to chemical structure. This line of work reflects a broader trend: safe recommendation benefits from aligning chemical-level signals with clinically meaningful therapeutic organization, rather than relying on molecular structure alone. 
+
+2.4 Ingredient-Level Pharmacological Modeling 
+
+Despite progress in DDI-aware learning, many safety signals in clinical decision support are ultimately defined at the active-ingredient level, or require ingredient-normalized interoperability across drug vocabularies [Nelson et al., 2011]. Commercial DDI knowledge bases likewise curate interactions between ingredients rather than between dispensing codes, and differ substantially in coverage [Fung et al., 2017]. Our work advances this direction by introducing explicit ingredient-level safety modeling in addition to drug-code-level signals. In contrast to approaches that regularize only code-level co-prescription, our ingredient-aware design targets interaction mechanisms closer to pharmacological reality, complementing ATC-based therapeutic organization [World Health Organization, n.d.]. 
+
+2.5 Positioning of IngMamba 
+
+In contrast to prior MIMIC-IV medication recommendation systems that rely on RNN- or Transformer-style backbones and treat drugs as indivisible tokens, IngMamba advances the literature in two complementary directions. First, it adapts Mamba-style selective SSM sequence modeling to MIMIC-IV medication recommendation, enabling efficient longitudinal representation learning over long visit histories. Second, it introduces ingredient-level modeling as an explicit safety signal, bridging clinical drug codes and pharmacological mechanism units to complement drug-level DDI constraints. Together, these choices target both scalability and safety realism for regimen recommendation in complex ICU settings. 
+
+3 Methodology 
+
+3.1 Data Representation and Medication Token Standardization MIMIC-IV data form. For our task, MIMIC-IV is viewed as a collection of relational tables (diagnoses, procedures, prescriptions) aggregated into patient–visit sequences. Each visit is identified by the tuple 4[FIGURE PLACEHOLDER] fig_preprocess_pipeline.png file not found 
+
+Figure 1: MIMIC-IV preprocessing and medication token standardization pipeline (NDC → RxCUI →
+
+ATC4 → ATC3) and generated artifacts. 
+
+(subject_id , hadm_id ). After aggregation, each patient becomes a variable-length sequence of visits 
+
+S = {( 𝐷 𝑡 , 𝑃 𝑡 , 𝑀 𝑡 )} 𝑇 𝑡 =1, (1) where 𝐷 𝑡 is the set of diagnosis codes, 𝑃 𝑡 the set of procedure codes, and 𝑀 𝑡 the set of medication tokens at visit 𝑡 .
+
+Medication token unification. Prescriptions in MIMIC-IV are recorded as NDC codes. To reduce heterogeneity and sparsity, we standardize medications through the mapping chain NDC → RxCUI → ATC4 → ATC3 . (2) We use ATC3 as the final medication token space: it provides clinically meaningful therapeutic grouping while keeping the vocabulary manageable and improving coverage. Medications that fail to map are dropped rather than backed off to raw NDC/RxCUI, so that all tokens live in a single consistent space. 
+
+Top-𝐾 frequency filtering and outputs. To control long-tail noise and stabilize training, we retain the most frequent codes: the top 2000 diagnoses, top 1000 procedures, and top 300 ATC3 medica-tions. Preprocessing emits five artifacts: data_final.pkl , voc_final.pkl , records_final.pkl ,
+
+ehr_adj_final.pkl , and ddi_A_final.pkl . Figure 1 summarizes the pipeline. 
+
+[TODO: add a dataset statistics table here (#patients, #visits, avg visits/patient, avg meds/visit, |𝑉 𝑑 |,
+
+|𝑉 𝑝 |, |𝑉 𝑚 |, #ingredients, #ingredient-DDI edges). A skeleton is provided in the commented block below.] 3.2 Graph Construction for Safety and Clinical Plausibility 
+
+We construct three graphs aligned to the medication vocabulary 𝑉 𝑚 . Each is a symmetric adjacency matrix 𝐴 ∈ { 0, 1}|𝑉 𝑚 | × | 𝑉 𝑚 | (weighted only during intermediate counting). Two are described here; the ingredient-level graph 𝐴 ING requires additional normalization machinery and is described in Section 3.3. 
+
+3.2.1 EHR Co-prescription Graph ( 𝐴 EHR )
+
+This graph captures empirical clinical plausibility—what clinicians actually co-prescribe in the cohort. For each visit 𝑡 , every unordered pair (𝑖, 𝑗 ) with 𝑖 ≠ 𝑗 and 𝑖, 𝑗 ∈ 𝑀 𝑡 contributes a co-occurrence. Aggregating 5[FIGURE PLACEHOLDER] fig_two_graphs.png file not found 
+
+Figure 2: Two graphs aligned to the medication vocabulary: (A) the EHR co-prescription graph 𝐴 EHR 
+
+encoding empirical plausibility, and (B) the filtered DDI graph 𝐴 DDI encoding explicit safety constraints, retaining the top 60 side effects, pairs with frequency ≥ 15 , and at most 1000 CID pairs. over all visits, 
+
+𝐴 EHR  
+
+> 𝑖 𝑗
+
+=
+
+
+
+1, if 𝑖 and 𝑗 co-occur in at least one visit ,
+
+0, otherwise .
+
+(3) Intuitively, 𝐴 EHR provides a data-driven prior over combinations that are compatible in observed practice. 
+
+3.2.2 Filtered Drug-Level DDI Graph ( 𝐴 DDI )
+
+This graph encodes explicit pharmacological safety constraints. Starting from drug-DDI.csv (STITCH CID pairs with side-effect annotations) and drug-atc.csv (CID → ATC list), we map 
+
+(CID 1, CID 2) → ATC → ATC3 → align to 𝑉 𝑚 . (4) To improve reliability and reduce spurious density, we apply a three-stage filter: (i) keep only the top 60 side effects; (ii) keep CID pairs with frequency ≥ 15 ; (iii) cap the result at the 1000 most frequent CID pairs. The resulting 𝐴 DDI is substantially sparser and concentrated on higher-confidence risky interactions (Figure 2). 
+
+3.3 Ingredient-Level DDI Graph 
+
+3.3.1 Drug Normalization 
+
+We extract NDC codes from prescriptions.csv in MIMIC-IV, normalize the raw strings (removing non-digit characters and generating zero-padded candidates), and query RxNorm [Nelson et al., 2011] to map each code to its corresponding RxCUI. 
+
+3.3.2 Ingredient Vocabulary 
+
+We follow the IN /PIN (ingredient / precise ingredient) relationships in RxNorm to extract drug–ingredient mappings, yielding a function 𝐼 (·) from drug_rxcui to a set of ingredient_ids . All ingredients are assigned indices in a trainable embedding table. 63.3.3 Graph Construction and Projection to 𝑉 𝑚 
+
+Using the TwoSIDES resource [Tatonetti et al., 2012], we standardize drug identifiers into ingredient sets and build an ingredient-pair DDI graph 𝐺 , aggregating support counts, adverse-drug-event overlaps, and proportional reporting ratio (PRR) statistics into a sparse adjacency representation. Two views of this graph are used, and it is important to distinguish them: 
+
+• For training , we project 𝐺 onto the medication vocabulary to obtain 𝐴 ING ∈ { 0, 1}|𝑉 𝑚 | × | 𝑉 𝑚 | , where 
+
+𝐴 ING  
+
+> 𝑖 𝑗
+
+= 1 if any ingredient of token 𝑖 interacts with any ingredient of token 𝑗 in 𝐺 . This projection makes 𝐴 ING dimensionally compatible with the probability-based safety scores of Section 3.5. 
+
+• For evaluation , we operate in the native ingredient space: a predicted medication set is decomposed into its ingredient set and pairs are checked directly against 𝐺 (Algorithm 2). This avoids the information loss introduced by projection and yields the ingredient-level DDI rate reported in Section 4.1.3. 
+
+3.4 Model Architecture 
+
+IngMamba consists of two core modules: patient health state modeling (a two-stream shared Mamba encoder) and prescription generation (fusion, attention head, and multi-label output), with safety scores computed from the predicted probabilities (Figure 3). 
+
+3.4.1 Visit-Level Set Embedding 
+
+Let 𝐸 𝑑 ∈ R|𝑉 𝑑 | × 𝑑 and 𝐸 𝑝 ∈ R|𝑉 𝑝 | × 𝑑 be learnable embedding tables for diagnoses and procedures. For visit 𝑡 we sum the embeddings of the codes in each set, 
+
+𝑒 𝑑 𝑡 =∑︁ 
+
+> 𝑐 ∈𝐷 𝑡
+
+𝐸 𝑑 [𝑐 ], 𝑒 𝑝 𝑡 =∑︁  
+
+> 𝑐 ∈𝑃 𝑡
+
+𝐸 𝑝 [𝑐 ], (5) yielding two sequences {𝑒 𝑑 𝑡 }𝑇 𝑡 =1 and {𝑒 𝑝 𝑡 }𝑇 𝑡 =1. We use 𝑑 = 128 and dropout 0.3.
+
+3.4.2 Two-Stream Shared Mamba Encoder 
+
+We apply 𝐿 = 3 stacked Mamba blocks to each stream across time: 
+
+𝐻 𝑑 = Mamba (𝐿 ) ({ 𝑒 𝑑 𝑡 }𝑇 𝑡 =1), 𝐻 𝑝 = Mamba (𝐿 ) ({ 𝑒 𝑝 𝑡 }𝑇 𝑡 =1), (6) where 𝐻 𝑑 , 𝐻 𝑝 ∈ R𝑇 ×𝑑 are per-visit hidden states. The two streams share weights, which halves the parameter count of the encoder and empirically stabilizes training on patients with few visits. We use lightweight Mamba settings 𝑑 conv = 4 and expand = 2, and set the SSM state dimension to 
+
+𝑑 state = |𝑉 𝑚 |. (7) This choice was made empirically; we did not observe instability from the resulting state width, though a systematic sensitivity analysis over 𝑑 state is left to future work. 7[FIGURE PLACEHOLDER] fig_model_architecture.png file not found 
+
+Figure 3: End-to-end framework and model architecture of IngMamba: a two-stream shared Mamba encoder for patient state modeling, a fusion and attention-based prescription head, and probability-based multi-granular safety scoring. 
+
+3.4.3 Fusion and Attention-Based Prescription Head 
+
+At each visit 𝑡 we fuse the two streams by concatenation and project back to 𝑑 :
+
+ℎ𝑡 = MLP 
+
+
+
+[ℎ𝑑 𝑡 ; ℎ𝑝 𝑡 ]
+
+
+
+∈ R𝑑 . (8) We then apply single-head self-attention over the temporal states 𝐻 = {ℎ𝑡 }𝑇 𝑡 =1,
+
+𝑄 = 𝐻𝑊 𝑄 , 𝐾 = 𝐻𝑊 𝐾 , 𝑉 = 𝐻𝑊 𝑉 , Att (𝐻 ) = softmax 
+
+ 𝑄𝐾 ⊤
+
+√𝑑 
+
+
+
+𝑉, (9) with a causal mask so that visit 𝑡 attends only to visits ≤ 𝑡 . With a residual connection and layer normalization, the attended representation ˜ℎ𝑡 produces medication logits 
+
+𝑧 𝑡 = 𝑊 𝑜 ˜ℎ𝑡 + 𝑏, 𝑝 𝑡 = 𝜎 (𝑧 𝑡 ), (10) where 𝑝 𝑡 ∈ ( 0, 1)|𝑉 𝑚 | is a multi-label probability vector. The predicted medication set is 
+
+ˆ𝑀 𝑡 = {𝑖 | 𝑝 𝑡 ,𝑖 ≥ 𝜏 }, 𝜏 = 0.5. (11) 
+
+3.5 Safety Scoring and Training Objective 
+
+3.5.1 Probability-Based Quadratic Safety Scores 
+
+All three graphs of Sections 3.2 and 3.3 enter the objective through the same differentiable quadratic form applied to the predicted probabilities 𝑝 𝑡 . For the drug-level DDI adjacency, 
+
+𝑟 DDI  
+
+> 𝑡
+
+= 𝑠 · 
+
+> |𝑉 𝑚 |
+
+∑︁  
+
+> 𝑖 =1
+> |𝑉 𝑚 |
+
+∑︁ 
+
+> 𝑗 =1
+
+𝑝 𝑡 ,𝑖 𝑝 𝑡 , 𝑗 𝐴 DDI  
+
+> 𝑖 𝑗
+
+= 𝑠 · 𝑝 ⊤ 
+
+> 𝑡
+
+𝐴 DDI 𝑝 𝑡 , (12) where 𝑠 = 5 × 10 −4 is a scaling factor keeping the safety terms on a comparable scale to the task loss. Analogously, the EHR co-prescription plausibility score and the ingredient-level risk score are 
+
+𝑟 EHR  
+
+> 𝑡
+
+= 𝑠 · 𝑝 ⊤ 
+
+> 𝑡
+
+𝐴 EHR 𝑝 𝑡 , 𝑟 ING  
+
+> 𝑡
+
+= 𝑠 · 𝑝 ⊤ 
+
+> 𝑡
+
+𝐴 ING 𝑝 𝑡 . (13) 8Note the difference in sign convention: 𝑟 DDI  
+
+> 𝑡
+
+and 𝑟 ING  
+
+> 𝑡
+
+are risks to be minimized, whereas 𝑟 EHR  
+
+> 𝑡
+
+is a reward 
+
+measuring agreement with observed co-prescription practice and is therefore maximized. 
+
+3.5.2 Multi-Label Task Loss 
+
+The task loss combines binary cross-entropy with a multi-label margin term LMLM , following standard practice in this literature [Yang et al., 2021]: 
+
+Ltask = 𝛼 LBCE + ( 1 − 𝛼 ) L MLM , 𝛼 = 0.95 , (14) where, for a visit with ground-truth set 𝑌 𝑡 ,
+
+LBCE = − 1
+
+|𝑉 𝑚 | 
+
+> |𝑉 𝑚 |
+
+∑︁ 
+
+> 𝑖 =1
+
+h
+
+𝑦 𝑡 ,𝑖 log 𝑝 𝑡 ,𝑖 + ( 1 − 𝑦 𝑡 ,𝑖 ) log (1 − 𝑝 𝑡 ,𝑖 )
+
+i
+
+, (15) 
+
+LMLM = 1
+
+|𝑉 𝑚 |∑︁ 𝑖 ∈𝑌 𝑡 ∑︁ 𝑗 ∉𝑌 𝑡 
+
+max  0, 1 − ( 𝑝 𝑡 ,𝑖 − 𝑝 𝑡 , 𝑗 ). (16) 
+
+3.5.3 Unified Multi-Granular Objective 
+
+Averaging each safety score over visits gives 
+
+LDDI = 1
+
+𝑇 
+
+> 𝑇
+
+∑︁ 
+
+> 𝑡 =1
+
+𝑟 DDI  
+
+> 𝑡
+
+, LING = 1
+
+𝑇 
+
+> 𝑇
+
+∑︁ 
+
+> 𝑡 =1
+
+𝑟 ING  
+
+> 𝑡
+
+, LEHR = 1
+
+𝑇 
+
+> 𝑇
+
+∑︁ 
+
+> 𝑡 =1
+
+𝑟 EHR  
+
+> 𝑡
+
+. (17) The full objective couples the task loss with the three knowledge sources: 
+
+L = 𝛽 Ltask + ( 1 − 𝛽 )
+
+
+
+𝜆 DDI LDDI + 𝜆 ING LING − 𝜆 EHR LEHR 
+
+
+
+, (18) with 𝜆 DDI = [TODO: value] , 𝜆 ING = [TODO: value] , and 𝜆 EHR = [TODO: value] . Setting 𝜆 ING =
+
+𝜆 EHR = 0 recovers the drug-level-only objective used by the MambaHealth baseline, which makes the comparison in Section 4.5 a controlled one. 
+
+3.5.4 Dynamic Safety Weighting 
+
+Rather than fixing the accuracy–safety trade-off a priori, we adapt 𝛽 with a proportional controller driven by the validation drug-level DDI rate 𝑅 DDI against a target 𝛾 :
+
+𝛽 new = clip 
+
+
+
+𝛽 + 𝐾 𝑝 (𝛾 − 𝑅 DDI ), 𝛽 min , 𝛽 max 
+
+
+
+, (19) with 𝛾 = 0.05 , 𝐾 𝑝 = 0.5, 𝛽 min = 0.2, and 𝛽 max = 0.95 . When the observed DDI rate exceeds the target, 𝛽 
+
+decreases and the safety terms gain weight; when it falls below, the model is allowed to prioritize accuracy. For stability we apply exponential moving average smoothing, 
+
+𝛽 ← 𝑚𝛽 + ( 1 − 𝑚 ) 𝛽 new , 𝑚 = 0.9. (20) 9Algorithm 1 Drug-level DDI rate for a single visit 
+
+Require: Predicted medication set ˆ𝑌 𝑣 ; drug-level DDI adjacency 𝐴 
+
+Ensure: Drug-level DDI rate for visit 𝑣  
+
+> 1:
+
+ddi ← 0; pairs ← 0 
+
+> 2:
+
+for all pairs (𝑚 𝑖 , 𝑚 𝑗 ) in ˆ𝑌 𝑣 with 𝑖 < 𝑗 do  
+
+> 3:
+
+pairs ← pairs + 1 
+
+> 4:
+
+if 𝐴 [𝑚 𝑖 , 𝑚 𝑗 ] = 1 then  
+
+> 5:
+
+ddi ← ddi + 1
+
+return pairs > 0 ? ddi /pairs : 0 
+
+Algorithm 2 Ingredient-level DDI rate for a single visit 
+
+Require: Predicted medication set ˆ𝑌 𝑣 ; ingredient mapping 𝐼 ; ingredient DDI graph 𝐺 
+
+Ensure: Ingredient-level DDI rate for visit 𝑣  
+
+> 1:
+
+I𝑣 ← Ð𝑚 ∈ ˆ𝑌 𝑣 𝐼 (𝑚 ) 
+
+> 2:
+
+ddi ← 0; pairs ← 0 
+
+> 3:
+
+for all pairs (𝑔 𝑖 , 𝑔 𝑗 ) in I𝑣 with 𝑖 < 𝑗 do  
+
+> 4:
+
+pairs ← pairs + 1 
+
+> 5:
+
+if (𝑔 𝑖 , 𝑔 𝑗 ) ∈ 𝐺 then  
+
+> 6:
+
+ddi ← ddi + 1
+
+return pairs > 0 ? ddi /pairs : 0 
+
+3.6 Training Protocol and Implementation Details 
+
+We split patients (not visits) into train/validation/test sets with an 80/10/10 ratio, so that no patient trajectory spans two splits. Training uses Adam with learning rate 3 × 10 −5 for up to 50 epochs with early stopping (patience 10) on validation Jaccard. Mini-batches are formed at the patient-sequence level, and variable-length visit sequences are preserved by a custom collate function. At inference we threshold at 
+
+𝜏 = 0.5.
+
+3.7 Evaluation Procedures 
+
+Algorithms 1 and 2 give the two DDI evaluation procedures. The drug-level procedure is identical to the reference implementation used by MambaHealth and prior work, ensuring that baseline and IngMamba are scored by exactly the same code path. 
+
+4 Experiments 
+
+We validate IngMamba from both predictive-accuracy and pharmacological-safety perspectives. All evaluations use MIMIC-IV under a unified preprocessing pipeline. We compare (i) our re-implemented MambaHealth baseline and (ii) IngMamba. We additionally reproduce published numbers from DATR [Anonymous, 2025] for context; because DATR uses its own preprocessing and split protocol, those values are reference points rather than strictly comparable baselines. 10 4.1 Evaluation Metrics 
+
+4.1.1 Accuracy 
+
+For each visit 𝑣 with ground-truth medications 𝑌 𝑣 and predicted set ˆ𝑌 𝑣 ,
+
+Jaccard (𝑣 ) = |𝑌 𝑣 ∩ ˆ𝑌 𝑣 ||𝑌 𝑣 ∪ ˆ𝑌 𝑣 | , Precision = |𝑌 𝑣 ∩ ˆ𝑌 𝑣 || ˆ𝑌 𝑣 | , Recall = |𝑌 𝑣 ∩ ˆ𝑌 𝑣 ||𝑌 𝑣 | , (21) 
+
+F1 = 2 · Precision · Recall Precision + Recall . (22) We additionally report PRAUC, the area under the precision–recall curve computed over the medication probability vector, which is threshold-independent and better suited to the strong label imbalance of the task. 
+
+4.1.2 Drug-Level DDI Rate 
+
+Following MambaHealth and prior work, the drug-level DDI rate uses the released DDI matrix 
+
+ddi_A_final.pkl . For visit 𝑣 ,
+
+DDI drug (𝑣 ) =
+
+Í𝑖< 𝑗 𝐴 𝑚 𝑖 ,𝑚 𝑗 
+
+ | ˆ𝑌 𝑣 |
+
+> 2
+
+ , Drug-DDI = 1
+
+|V | ∑︁ 𝑣 ∈ V 
+
+DDI drug (𝑣 ), (23) where V is the set of test visits. This is identical to the computation in the original MambaHealth implementation, ensuring strict fairness between baseline and IngMamba. 
+
+4.1.3 Ingredient-Level DDI Rate 
+
+To evaluate safety at finer pharmacological resolution, we decompose each predicted medication set into its active ingredient set I𝑣 and score pairs against the ingredient-level DDI graph 𝐺 (Algorithm 2): 
+
+DDI ing (𝑣 ) =
+
+Í(𝑔 𝑖 ,𝑔 𝑗 ) ∈ I 𝑣 ×I 𝑣 , 𝑖< 𝑗 1(𝑔 𝑖 , 𝑔 𝑗 ) ∈ 𝐺  | I 𝑣 |
+
+> 2
+
+ , Ingredient-DDI = 1
+
+|V | ∑︁ 𝑣 ∈ V 
+
+DDI ing (𝑣 ). (24) This metric captures incompatibilities that drug-code-level evaluation cannot express. We emphasize that Drug-DDI and Ingredient-DDI are not on a common scale: they are computed over different pair universes, and the ingredient graph is considerably denser than the filtered drug-level graph. The two numbers should therefore be compared across models within a level, never across levels. 
+
+4.2 Experimental Setup 
+
+• Dataset: MIMIC-IV [TODO: confirm exact version: v2.0 / v2.2 / v3.1] , preprocessed as described in Section 3.1. 
+
+• Hardware: a single NVIDIA A100 GPU. 
+
+• Optimization: Adam, learning rate 3 × 10 −5, up to 50 epochs, early stopping with patience 10. 
+
+• Metrics: Jaccard, PRAUC, F1, Drug-DDI, Ingredient-DDI. 11 [FIGURE PLACEHOLDER] fig_training_curves.png file not found 
+
+Figure 4: Training dynamics over epochs for IngMamba (ingredient-aware) and the MambaHealth baseline under identical settings on MIMIC-IV: (a) training loss, (b) PRAUC, (c) Jaccard similarity, and (d) micro-F1. 
+
+• Variability: reported intervals are [TODO: state whether these are seed-based standard deviations or bootstrap CIs, and give 𝑛 ]. Note that the baseline and IngMamba currently report identical spreads, which reviewers do notice. 
+
+4.3 Training Dynamics and Convergence 
+
+Figure 4 shows training loss, PRAUC, Jaccard similarity, and micro-F1 across epochs for both models under identical settings. Both models exhibit a rapid decrease in training loss during the early epochs followed by gradual convergence, indicating stable optimization; IngMamba maintains a consistently lower training loss than the baseline throughout. On all three quality metrics, IngMamba improves faster in the initial phase and remains above the baseline for the entire run. Both curves begin to plateau after roughly 20 epochs, suggesting convergence under the current protocol. Incorporating ingredient-level information therefore does not compromise optimization stability, and is associated with consistently better predictive performance during training. 
+
+4.4 Published Reference Results 
+
+Table 1 reproduces benchmark numbers reported by DATR [Anonymous, 2025] on MIMIC-III and MIMIC-IV. These situate our results within the range reported in the literature. We stress that these numbers were produced under a different preprocessing pipeline, cohort construction, and data split, and that DATR is at the time of writing a non-archival submission under review; they are reproduced for context only. 
+
+4.5 Main Results 
+
+4.5.1 Accuracy under Matched Settings 
+
+Table 2 reports Jaccard, PRAUC, and F1 for the re-implemented MambaHealth baseline and IngMamba under identical settings on MIMIC-IV, alongside the DATR values from Table 1. IngMamba improves over the MambaHealth baseline on all three predictive metrics under matched conditions, with absolute gains of +0.0495 Jaccard, +0.0574 PRAUC, and +0.0464 F1. Since the two rows differ only in whether the ingredient-level graph and its associated loss terms are active (Eq. 18), the 12 Table 1: Benchmark results for medication recommendation models, as reported by Anonymous [2025]. Reproduced for context only; these numbers are not directly comparable to ours due to differing preprocessing and splits.                                                                                                          
+
+> MIMIC-III MIMIC-IV Method Jaccard ↑PRAUC ↑F1 ↑DDI ↓Jaccard ↑PRAUC ↑F1 ↑DDI ↓
+> LR 0.4935 0.7634 0.6512 0.0788 0.4152 0.6783 0.5651 0.0732 LEAP 0.4521 0.6581 0.6152 0.0720 0.3909 0.5542 0.5439 0.0550 GAMENet 0.5210 0.7780 0.6762 0.0781 0.4401 0.6833 0.5933 0.0718 COGNet 0.5109 0.7665 0.6615 0.0737 0.4313 0.6712 0.5850 0.0866 RAREMed 0.5342 0.7820 0.6938 0.0530 0.4620 0.6965 0.6152 0.0510 MICRON 0.5119 0.7690 0.6676 0.0610 0.4495 0.6753 0.6033 0.0502 SHAPE 0.5348 0.7791 0.6885 0.0850 0.4659 0.6928 0.6171 0.0917 SafeDrug 0.5255 0.7732 0.6804 0.0688 0.4560 0.6858 0.6098 0.0689 MoleRec 0.5303 0.7795 0.6844 0.0692 0.4502 0.6867 0.6040 0.0699 DrugDoctor 0.5422 0.7813 0.6975 0.0603 0.4703 0.6988 0.6190 0.0705 DATR 0.5506 0.7905 0.7073 0.0366 0.4783 0.7020 0.6216 0.0425
+
+Table 2: Accuracy metrics on MIMIC-IV. The DATR row is taken from Table 1 and is not strictly comparable, as it was obtained under a different preprocessing pipeline and data split. Only the last two rows form a controlled comparison. 
+
+Model Jaccard ↑ PRAUC ↑ F1 ↑
+
+DATR [Anonymous, 2025], published 0.4783 ± 0.002 0.7020 ± 0.002 0.6216 ± 0.003 
+
+MambaHealth (our re-implementation) 0.4488 ± 0.002 0.6911 ± 0.002 0.5989 ± 0.003 
+
+IngMamba (ours) 0.4983 ± 0.002 0.7485 ± 0.002 0.6453 ± 0.003 
+
+improvement is attributable to the ingredient-level signal rather than to any change in backbone, cohort, or evaluation code. IngMamba also exceeds the published DATR scores on this dataset. We deliberately refrain from reading this as evidence of state-of-the-art performance: DATR constructs its cohort and splits differently, and cross-pipeline differences on MIMIC-IV can easily reach the magnitude observed here. The comparison indicates that IngMamba is competitive with the range reported in the recent literature, no more. 
+
+4.5.2 Safety 
+
+Table 3 reports the safety metrics. 
+
+[TODO: add an “Avg. #Med” column to Table 3, or soften the claim. The abstract and the contribution list both assert a “more clinically plausible average medication count per visit”, but no such number appears anywhere in the paper.] 
+
+Relative to MambaHealth, IngMamba reduces the drug-level DDI rate from 0.1875 to 0.0948 , a relative reduction of approximately 49% , while simultaneously improving all accuracy metrics. This is the central empirical claim of the paper: the usual accuracy–safety trade-off does not bind here, because the ingredient-level signal supplies information that is genuinely complementary to the drug-level graph rather than merely suppressing predictions. Two caveats deserve explicit statement. First, our re-implemented baseline reaches a drug-level 13 Table 3: Safety metrics on MIMIC-IV. Drug-DDI is computed with the reference ddi_rate_score 
+
+function over all predicted test visits; Ingredient-DDI is computed at the ingredient level via Algorithm 2. Lower is better. The two columns are on different scales and should not be compared to one another. 
+
+Model Drug-DDI ↓ Ingredient-DDI ↓
+
+MambaHealth (our re-implementation) 0.1875 —
+
+IngMamba (ours) 0.0948 0.2063 
+
+DDI rate of 0.1875 , roughly two to four times higher than the values reported for published methods in Table 1. We attribute this primarily to differences in cohort construction and to the fact that the baseline configuration optimizes the drug-level safety term with a comparatively low weight; the number should be read as the DDI rate of our baseline under our pipeline, not as a reproduction of MambaHealth’s published safety behavior. Second, IngMamba’s drug-level DDI rate of 0.0948 remains above the controller target of 
+
+𝛾 = 0.05 and above DATR’s reported 0.0425 . Tightening this gap—for instance by increasing 𝜆 DDI or by widening the controller’s admissible range—is a natural next step, and we expect it to trade against accuracy. The ingredient-level DDI rate is reported for IngMamba only. Evaluating the baseline at this granularity requires running the ingredient normalization and checking pipeline over its predictions, which we leave to future work; the number is included here to establish the metric and a reference value for subsequent comparisons rather than to support a comparative claim. 
+
+[TODO: strongly recommended before submission: fill in and uncomment the ablation table below. Without it, reviewers cannot attribute the gain to the ingredient-level component specifically, which is the paper’s headline contribution.] 
+
+5 Limitations 
+
+Several limitations qualify the results above. 
+
+Knowledge base coverage. Our external resources (RxNorm, TwoSIDES) are themselves imperfect and encode only known interactions. TwoSIDES in particular is derived from spontaneous adverse event reports and inherits their reporting biases. Emerging, rare, or undocumented DDIs are not captured, so a low measured DDI rate is evidence of avoiding known risks, not of pharmacological safety in general. 
+
+Graph simplicity. We use a binary co-occurrence graph derived from MIMIC-IV. Richer statistical models of co-prescribing—conditional dependence, temporal co-occurrence dynamics, or severity-weighted interaction edges—would likely yield more informative safety priors than the unweighted formulation used here. 
+
+Retrospective evaluation. Evaluation is retrospective and confined to structured MIMIC-IV data from a single institution. Agreement with historically prescribed regimens is a proxy for clinical quality, not a measure of it: a recommendation that differs from the recorded prescription is scored as an error even when it is clinically superior. Real-world deployment would require prospective validation, robustness testing across institutions, and clinician review. 14 Model scale and missing ablations. Our experiments center on a medium-sized model due to computa-tional constraints, leaving open questions about scaling behavior, data efficiency, and calibration at larger capacity. We also do not currently report an efficiency comparison against a Transformer backbone, nor a component-wise ablation of the three graph terms; both are needed to fully substantiate the motivation for the SSM backbone and the attribution of gains to the ingredient-level signal. 
+
+6 Conclusion and Future Work 
+
+We presented IngMamba, a Mamba-based medication recommendation framework for the MIMIC-IV intensive care cohort equipped with multi-granular safety modeling. Motivated by the clinical need to balance predictive accuracy against DDI control, we asked whether selective state space models can serve as effective sequence encoders for ICU trajectories, and how pharmacological knowledge can be integrated more systematically into the training objective. Both questions admit an affirmative answer: under strictly matched settings, IngMamba improves over a re-implemented MambaHealth baseline in Jaccard, PRAUC, and F1 while roughly halving the drug-level DDI rate. Our contributions are threefold. First, we provide a systematic evaluation of Mamba-style models for medication recommendation on MIMIC-IV, showing that selective state space architectures capture temporal dynamics in long and irregular ICU trajectories. Second, we introduce a unified objective integrating DDI knowledge at two granularities—drug level and ingredient level—alongside an EHR-derived co-occurrence graph, letting the model jointly balance clinical accuracy, pharmacological safety, and empirical prescribing behavior. Third, through controlled experiments with identical preprocessing, vocabulary, and evaluation code, we show that multi-level safety signals can be injected into a Mamba backbone without degrading predictive performance. Several directions follow naturally. Richer pharmacological knowledge graphs— mechanism-of-action networks, pathway-level interactions, or molecular representation learning via SMILES transformers or graph neural networks—could deepen the safety signal. Combining medication recommendation with causal or counterfactual reasoning would better capture treatment effects and individualized risk, potentially improving generalization beyond MIMIC-IV. Multi-task formulations that jointly model diagnoses, procedures, and laboratory results alongside medications may yield more clinically coherent representations. On the architectural side, hybrids of Mamba with attention or retrieval-based memory could further improve long-range reasoning. Finally, real-world evaluation—physician-in-the-loop studies, robustness under distribution shift, and fairness analysis across demographic subgroups—will be essential for assessing clinical viability. In summary, this work combines state space modeling with multi-level pharmacological safety constraints for medication recommendation on MIMIC-IV. By demonstrating consistent gains in both predictive accuracy and DDI reduction, it suggests that selective state space models coupled with structured safety knowledge are a promising direction for practical and trustworthy clinical decision support. 
+
+Ethics Statement 
+
+This study uses MIMIC-IV [Johnson et al., 2023], a de-identified critical care database distributed by PhysioNet. Access requires completion of human-subjects research training and execution of a data use agreement; all authors who accessed the data hold current credentialed access and complied with the 15 agreement. The dataset is de-identified in accordance with HIPAA Safe Harbor provisions, and no attempt was made to re-identify individuals. No protected health information appears in this paper or in any released artifact. IngMamba is a research prototype. It is not a medical device, has not undergone prospective clinical validation, and must not be used to guide patient care. Reported DDI rates measure agreement with specific curated interaction resources and should not be interpreted as a guarantee of pharmacological safety. Retrospective agreement with historically prescribed regimens is a proxy metric that may encode existing prescribing biases, including disparities across demographic subgroups that we have not audited. 
+
+Data and Code Availability 
+
+MIMIC-IV is available to credentialed users at https://physionet.org/content/mimiciv/ . RxNorm is distributed by the U.S. National Library of Medicine, and TwoSIDES [Tatonetti et al., 2012] is publicly available. Code for preprocessing, model training, and both DDI evaluation procedures is released at 
+
+[TODO: public code repository URL] to support reproduction. 
+
+Acknowledgements 
+
+We thank Dr. Shengxin Zhu for his constructive guidance and valuable suggestions throughout this project. 
+
+References 
+
+Anonymous. DATR: DDI-Aware therapeutic structure reconstruction for safer medication recommendation (ICLR 2026 submission). OpenReview, September 2025. URL https://openreview.net/forum? id=6tumuDYeny . OpenReview submission; PDF: https://openreview.net/pdf?id=6tumuDYeny. Rishi Bommasani, Drew A. Hudson, Ehsan Adeli, Russ Altman, Sanjeev Arora, Sydney von Arx, others, and Percy Liang. On the opportunities and risks of foundation models. arXiv, 2021. URL 
+
+https://arxiv.org/abs/2108.07258 .Thiago Nunes Gonzaga de Andrade Santos, Silvia Alves Martins Mendonça, Marcelo Gurgel Carlos da Silva de Oliveira, and Helena Lutescia Luna Coelho. Prevalence of clinically manifested drug interactions in hospitalized patients: A systematic review and meta-analysis. PLOS ONE , 15(7):e0235353, 2020. doi: 10.1371/journal.pone.0235353. URL https://journals.plos.org/plosone/article?id= 10.1371/journal.pone.0235353 .Kin Wah Fung, Jeannine Kapusnik-Uner, Joanna Cunningham, Susan Higby-Baker, and Olivier Bodenreider. Comparison of three commercial knowledge bases for detection of drug–drug interactions in clinical decision support. Journal of the American Medical Informatics Association , 24(4):806–812, 2017. doi: 10.1093/jamia/ocx010. URL https://doi.org/10.1093/jamia/ocx010 .Albert Gu and Tri Dao. Mamba: Linear-time sequence modeling with selective state spaces. arXiv preprint arXiv:2312.00752 , 2023. Albert Gu, Karan Goel, and Christopher Ré. Efficiently modeling long sequences with structured state spaces. arXiv, 2021. URL https://arxiv.org/abs/2111.00396 .16 Alistair E. W. Johnson, Tom J. Pollard, Lu Shen, Li-wei H. Lehman, Mengling Feng, Mohammad Ghassemi, others, and Roger G. Mark. MIMIC-III, a freely accessible critical care database. Scientific Data , 3:160035, 2016. doi: 10.1038/sdata.2016.35. URL https://www.nature.com/articles/ sdata201635 .Alistair E. W. Johnson, Lucas Bulgarelli, Lu Shen, Alvin Gayles, Aya Shammout, Steven Horng, Tom J. Pollard, Sicheng Hao, Benjamin Moody, Benjamin Gow, Li-wei H. Lehman, Leo A. Celi, and Roger G. Mark. MIMIC-IV, a freely accessible electronic health record dataset. Scientific Data ,10(1):1, 2023. doi: 10.1038/s41597-022-01899-x. URL https://www.nature.com/articles/ s41597-022-01899-x .Ziqi Kuang and Junyuan Xie. DrugDoctor: Visit-level training for medication recommendation. In 
+
+Proceedings of the AAAI Conference on Artificial Intelligence , volume 38, pages 8586–8594, 2024. Hung Le, Truyen Tran, and Svetha Venkatesh. Dual memory neural computer for asynchronous two-view sequential learning. In Proceedings of the 24th ACM SIGKDD International Conference on Knowledge Discovery & Data Mining (KDD ’18) , 2018. doi: 10.1145/3219819.3219981. URL 
+
+https://doi.org/10.1145/3219819.3219981 .Chuan Liu, Jia Lin, Jun Wang, Hong Liu, and James Caverlee. Mamba4rec: Towards efficient sequential recommendation with selective state space models. arXiv, 2024. URL https://arxiv.org/abs/ 2403.03900 .Shuang Liu, Xian Wang, Jun Du, Yaqing Hou, Xinyu Zhao, Hongfei Xu, Hao Wang, Yang Xiang, and Buzhou Tang. SHAPE: A sample-adaptive hierarchical prediction network for medication recommendation. arXiv, 2023. URL https://arxiv.org/abs/2309.05675 .Stuart J. Nelson, Kelly Zeng, John Kilbourne, Tamara Powell, and Robin Moore. Normalized names for clinical drugs: RxNorm at 6 years. Journal of the American Medical Informatics Association ,18(4):441–448, 2011. doi: 10.1136/amiajnl-2011-000116. URL https://doi.org/10.1136/ amiajnl-2011-000116 .Karan Singhal, Tulika Tu, Julius Gottweis, Rory Sayres, Ellery Wulczyn, Lily Hou, others, and Vijay Natarajan. Large language models encode clinical knowledge. Nature , 620:172–180, 2023. doi: 10. 1038/s41586-023-06291-2. URL https://www.nature.com/articles/s41586-023-06291-2 .Nicholas P. Tatonetti, Patrick P. Ye, Roxana Daneshjou, and Russ B. Altman. Data-driven prediction of drug effects and interactions. Science Translational Medicine , 4(125):125ra31, 2012. Yuda Wang, Xuxin He, and Shengxin Zhu. Mambahealth: A lightweight foundation model for efficient drug recommendation. In AIM-FM Workshop, 38th Conference on Neural Information Processing Systems (NeurIPS 2024) , 2024. URL https://openreview.net/forum?id=LWXi4leVdV . Workshop paper. World Health Organization. ATC/DDD Toolkit. Web resource, n.d. URL https://www.who.int/ tools/atc-ddd-toolkit . Retrieved December 26, 2025. Rui Wu, Zhibo Qiu, Junzhou Jiang, Guilin Qi, and Xindong Wu. COGNet: A conditional generation network for medication recommendation. In Proceedings of the ACM Web Conference 2022 (WWW ’22) ,17 pages 935–945, 2022. doi: 10.1145/3485447.3511936. URL https://doi.org/10.1145/3485447. 3511936 .Chaoqi Yang, Cao Xiao, Fenglong Ma, Lucas Glass, and Jimeng Sun. SafeDrug: Dual molecular graph encoders for recommending effective and safe drug combinations. In Proceedings of the Thirtieth International Joint Conference on Artificial Intelligence (IJCAI-21) , pages 3735–3741, 2021. doi: 10.24963/ijcai.2021/514. URL https://doi.org/10.24963/ijcai.2021/514 .18
