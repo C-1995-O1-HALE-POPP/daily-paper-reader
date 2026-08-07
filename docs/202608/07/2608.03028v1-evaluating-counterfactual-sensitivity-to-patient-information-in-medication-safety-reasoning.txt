@@ -1,0 +1,523 @@
+Title: Evaluating Counterfactual Sensitivity to Patient Information in Medication-Safety Reasoning
+
+URL Source: https://arxiv.org/pdf/2608.03028v1
+
+Published Time: Wed, 05 Aug 2026 00:23:34 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# Evaluating Counterfactual Sensitivity to Patient Information in Medication-Safety Reasoning 
+
+Zhitian Hou 1, 2 , Yuhang Liu 1, 2 , Pengkai Wang 1, Zeyu Liu 1, Guanghao Zhu 1, Zheng Liu 1, 2 , Shuo Cai 1, Congkai Xie 2, Zhijie Sang 2, Kun Zeng 3, Hongxia Yang 1, 2 ∗
+
+1The Hong Kong Polytechnic University 
+
+2InfiX.ai 
+
+3Sun Yat-sen University zhitian.hou@connect.polyu.hk, hongxia.yang@polyu.edu.hk 
+
+Abstract 
+
+Applying a valid medication-safety rule when its patient-specific conditions are not met can produce an incorrect de-cision. Existing medical evaluations largely use isolated and fixed scenarios. A model may therefore answer correctly by recalling a drug-risk association without showing that it used patient information to decide whether the rule applies. To ad-dress this gap, we introduce MedPIC-Bench, a benchmark of source-verifiable recommendations and expert-validated questions for patient-specific medication-safety reasoning. It combines guideline-following questions with paired counter-factual questions in which a controlled change in patient in-formation changes whether a rule applies. The benchmark contains 467 questions annotated along six clinical and rea-soning dimensions. Across 28 medical-specific, general, and proprietary LLMs, every model performs worse on counter-factual questions, with mean accuracy falling from 63.6% to 45.1%. Models perform well when an explicit patient attribute directly signals a familiar contraindication, but struggle when patient information must narrow or withdraw a safety warn-ing. Model rationales often acknowledge the changed patient information, yet the final answers retain the previous safety judgment. This vulnerability persists among medical-specific LLMs, whose average CF performance trails that of general LLMs. MedPIC-Bench therefore makes conditional rule ap-plication measurable and highlights the limitations of static medication-safety accuracy for assessing patient-specific reli-ability. 
+
+1 Introduction 
+
+Large language models (LLMs) are increasingly evaluated for medical decision-making. Existing benchmarks range from broad medical QA settings such as MultiMedQA (Sing-hal et al. 2023) and Med-PaLM (Singhal et al. 2025) to open-ended clinical assessment frameworks (Arora et al. 2025). However, most medical benchmarks use fixed patient scenar-ios. They test whether a model can identify a risky medication in a given case, but not whether it revises that judgment when relevant patient information changes. In real prescribing, one variable, such as age, syndrome subtype, or comorbidity, can change the appropriate judgment. A model can therefore succeed on a static question while failing to revise its answer when that variable changes, as illustrated in Figure 1. This distinction matters because medication-safety rules are conditional. A drug may be inappropriate within a spe-
+
+> ∗
+
+Corresponding author. Copyright © 2027, Association for the Advancement of Artificial Intelligence (www.aaai.org). All rights reserved. Model Predictions  
+
+> Case 1
+
+Rule : avoid Dabigatran in older adults with CrCl < 30 mL/min          
+
+> Original Case
+> A 79 -year -old
+> man ... His
+> estimated CrCl
+> is 22 mL/min ...
+> Counterfactual Case
+> A 79 -year -old
+> man ... His
+> estimated CrCl is
+> 52 mL/min ...
+> Question: Which of the following oral anticoagulants should be avoided given this patient's
+> renal function?
+> Options
+> A. Warfarin
+> B. None of the above
+> C. Heparin
+> D. Apixaban
+> E. Dabigatran
+> GPT 5.2
+> Gemini 3.1 Pro
+> Claude Sonnet 4.6
+> E
+> EE
+> B
+> EE
+> Model Predictions
+> Options Counterfactual Case
+> Case 2
+
+Rule : Avoid Benzocaine (topical oral) in children < 2 years         
+
+> A4-year -old child
+> is brought to clinic
+> for painful oral
+> irritation and poor
+> feeding ...
+> Question: Which of the following options would be inappropriate for this patient?
+> A. Benzocaine (topical oral)
+> B. None of the above
+> C. Acetaminophen
+> D. Saline oral rinse
+> E. Ibuprofen
+> A
+> AA
+> A
+> AA
+> GPT 5.2
+> Gemini 3.1 Pro
+> Claude Sonnet 4.6
+> Original Case
+> An 18 -month -old
+> toddler is brought
+> to clinic for painful
+> oral irritation and
+> poor feeding ...
+> Ground -truth answer (Original case) Ground -truth answer (Counterfactual case)
+> Incorrect counterfactual response
+> (Model failed to update)
+> Correct counterfactual response (Model
+> updated correctly )
+
+Figure 1: Two paired counterfactual examples from MedPIC-Bench. A change in patient information reverses whether the safety rule applies, yet strong models often retain the original risk judgment. cific age range, below a renal threshold, or in the presence of a particular clinical condition. If evaluation presents only one fixed scenario, strong performance may reflect a mem-orized drug-risk association rather than correct use of the condition that makes the rule applicable. Recent benchmarks have moved beyond exam-style medical QA. MedGuide (Li et al. 2025) evaluates guideline-based clinical decisions, RxSafeBench (Zhao et al. 2025a) tests medication hazards in arXiv:2608.03028v1 [cs.AI] 4 Aug 2026 simulated consultations, and MedEinst (Chen et al. 2026b) probes diagnostic fixation through paired changes in clinical evidence. However, they do not test whether models revise their medication-safety judgments when patient information changes whether the underlying rule applies. MedPIC-Bench addresses this gap through source-verifiable recommendations and expert-validated questions for patient-specific medication-safety reasoning. It combines 
+
+guideline-following (GF) questions with paired counterfac-tual (CF) questions. GF questions test whether a model fol-lows the applicable medication-safety recommendation in a fixed patient case. In each CF pair, a controlled change in patient information changes whether the underlying rule ap-plies, while the remaining case details and answer options are kept fixed whenever possible. MedPIC-Bench contains 467 questions spanning 9 organ systems, 11 clinical depart-ments, 66 drug categories, 8 patient-information types, 3 special populations, and 5 reasoning operations, enabling fine-grained analysis of where models fail. Across 28 medical-specific, general, and proprietary LLMs, mean accuracy falls from 63.6% on GF questions to 45.1% on CF questions, with every model declining. Paired analysis shows that the deficit is not limited to re-calling medication risks. Models frequently preserve a risk judgment after the patient information that triggered it has been removed, even when their rationales acknowledge the change. A within-family comparison indicates that medical adaptation can improve absolute accuracy, but the persistent deactivation gap shows that it does not resolve the underly-ing failure. These results expose a gap between recognizing a medication risk and controlling whether that risk applies to the patient at hand. Our main contributions are as follows. 
+
+• We frame counterfactual sensitivity to patient information as a distinct requirement for medication-safety reasoning. Within this framing, we identify a recurring failure pattern in which models recognize relevant patient information but fail to let it constrain or withdraw a familiar drug-risk judgment. 
+
+• We introduce MedRule2Pair , a source-grounded con-struction pipeline that transforms heterogeneous clinical recommendations into verified, traceable rules and con-trolled GF and CF question variants, supporting repro-ducible evaluation and expansion. 
+
+• We instantiate this pipeline as MedPIC-Bench , an expert-validated benchmark of 467 questions annotated along six dimensions. Across 28 evaluated models, every model declines from GF to CF. Medical-specific LLMs also do not outperform general LLMs on average, achieving a mean CF accuracy of 38.3%, compared with 45.5% for general LLMs. 
+
+2 Related Work 
+
+Medical LLM and guideline-based evaluation. Medical LLM evaluation has expanded from exam-style question an-swering to broader assessments of clinical response quality and decision-making. MultiMedQA (Singhal et al. 2023) and the Med-PaLM studies (Singhal et al. 2025) evaluate medical knowledge and reasoning across multiple question-answering settings, while HealthBench (Arora et al. 2025) evaluates open-ended responses to realistic health conver-sations. MultifacetEval (Zhou et al. 2024) probes medi-cal knowledge from several complementary perspectives, and MedGuide (Li et al. 2025) evaluates clinical decisions against guideline-derived criteria. MedGuideX (Shen et al. 2026) goes further by transforming executable guideline logic into factual and counterfactual supervision for model post-training. These efforts broaden medical evaluation and guideline-based reasoning, but they do not provide a ded-icated benchmark for measuring whether source-grounded medication-safety rules are applied and withdrawn appropri-ately across controlled patient cases. 
+
+Medication-safety and prescribing benchmarks. Re-cent benchmarks have begun to evaluate medication use more directly. Rx-LLM (Zhao et al. 2025b) introduces clinician-annotated tasks covering medication knowledge and safety-critical pharmacy operations. RxSafeBench (Zhao et al. 2025a) embeds contraindications and drug interactions in simulated consultation scenarios to test safe medication selection, while RxEval (Chen et al. 2026a) presents de-tailed patient profiles and longitudinal clinical trajectories for prescription-level medication recommendation. These ef-forts move beyond generic medical QA and show that models can struggle to integrate medication knowledge with patient information. Their evaluation units, however, remain indi-vidual tasks, consultations, or prescriptions. Consequently, a correct response does not by itself establish whether the relevant patient information governed the decision. 
+
+Counterfactual evaluation in clinical reasoning. Coun-terBench (Chen et al. 2026c) evaluates formal counterfactual reasoning over synthetic causal structures. In medicine, Me-diEval (Qu and Färber 2026) jointly tests knowledge ground-ing and contextual consistency using factual and counter-factual statements linked to patient records. Counterfactual Patient Variations (Benkirane, Kay, and Perez-Ortiz 2025) and MEDEQUALQA (Ghosh et al. 2025) use controlled demographic changes to audit bias and reasoning stability, whereas MedEinst (Chen et al. 2026b) changes discrimi-native evidence across paired cases to expose diagnostic fixation. MedPIC-Bench instead asks whether models up-date medication-safety judgments when patient information changes the applicability of a verified prescribing rule. By combining guideline-following evaluation with controlled counterfactual pairs, it measures both rule application in in-dividual cases and whether decisions change in the correct direction across matched cases. 
+
+3 MedPIC-Bench Construction 
+
+MedPIC-Bench is built around two design requirements. First, every answer must be traceable to a verified medication-safety recommendation. Second, each counterfactual com-parison must isolate a targeted change in patient information. We implement these requirements through MedRule2Pair, a two-stage construction pipeline shown in Figure 2. Source recommendations are first converted into structured rules and manually verified, and the verified rules are then used for question generation and expert validation. 1 EVIDENCE COLLECTION AND RAW RULES 
+
+1 AGS 
+
+Beers 
+
+Criteria 
+
+2 PLLR 
+
+TGA 
+
+3 KIDs 
+
+List   
+
+> CrCl <30 mL/min avoid
+
+dabigatran    
+
+> Opioid + benzodiazepine avoid
+> combination
+> Pregnancy isotretinoin contraindicated
+> Age <2 years avoid topical oral
+> benzocaine
+
+Co -medication 
+
+Kidney function 
+
+Pregnancy status 
+
+Age 
+
+... 
+
+2 RULE STRUCTURING AND QA GENERATION 
+
+Rule Structuring 
+
+Transform tables, 
+
+pdf, and natural -
+
+language 
+
+recommendations 
+
+into structured 
+
+rules. 
+
+Rule -Level 
+
+Human Verification 
+
+Every extracted 
+
+rule checked 
+
+against its source 
+
+Question Generation  Expert Validation  
+
+> Guideline Following (GF)
+
+Counterfactual (CF)   
+
+> Fix patient information
+> Static rule application
+> Patient Information Types
+> Kidney function
+> Pregnancy
+> Disease
+> Age
+> An 18 -
+> month -old
+> toddler ...
+
+A 4-
+
+year -old 
+
+child ... 
+
+Risk activation 
+
+Risk deactivation 
+
+Interaction identification 
+
+Risk redistribution 
+
+> --------------------
+> --------------------
+> --------------------
+> --------------------
+> --------------------
+> Medication -Safety
+> Recommendations
+
+Reasoning 
+
+Operations  VALIDATION CHECKLIST 
+
+> Source alignment
+> Patient -context correctness
+> Ground -truth completeness
+> Distractor validity
+> Counterfactual consistency
+
+... Figure 2: Overview of MedRule2Pair, our two-stage pipeline for constructing source-grounded medication-safety questions. First, recommendations collected from authoritative sources yield raw rules linked to explicit patient information. Second, these rules are structured, manually verified against their sources, and used to generate GF questions with fixed patient information and CF questions with controlled changes, followed by expert validation. The pipeline preserves source traceability while isolating the information that changes whether a rule applies. 
+
+3.1 Evidence Collection and Raw Rules 
+
+We compile medication-safety recommendations from au-thoritative resources, including the American Geriatrics So-ciety Beers Criteria (2023 AGS Beers Criteria Update Ex-pert Panel 2023), the Pregnancy and Lactation Labeling Rule (PLLR) 1, the Australian Therapeutic Goods Administration (TGA) Prescribing Medicines in Pregnancy Database 2, and the 2025 KIDs List (McPherson et al. 2025). From these sources, we retain recommendations that state a verifiable medication-safety decision and make its applicability depend on explicit patient information, such as kidney function, con-comitant medication use, age, or pregnancy status. 
+
+3.2 Rule Structuring and Question Generation 
+
+We transform the collected recommendations into a com-mon rule schema that records the medication or class, target population, relevant patient information, recommended ac-tion, and applicable exceptions. Candidate rule fields are first drafted with LLM assistance from source tables, PDFs, and 
+
+> 1
+
+https://www.fda.gov/drugs/labeling-information-drug-products/pregnancy-and-lactation-labeling-drugs-final-rule 
+
+> 2
+
+https://www.tga.gov.au/resources/health-professional-information-and-resources/australian-categorisation-system-prescribing-medicines-pregnancy/prescribing-medicines-pregnancy-database 
+
+natural-language recommendations. Each draft is then ver-ified field by field against its original source and finalized manually. The finalized records preserve the action specified by each source recommendation, such as avoiding a medi-cation or combination, adjusting a dose, or selecting an al-ternative treatment. This process provides a source-traceable ground truth for each generated question. We use deterministic generation scripts to construct ques-tions from the verified rules. The clinical setting and question wording vary across items to reflect the source recommen-dation and decision type, while the rule-relevant patient in-formation and ground truth remain controlled. Each item comprises a patient vignette, a medication-safety question, and a set of answer options. Distractors are selected from other medications in the source tables or from commonly used medications that do not trigger the target rule in the stated context. A “None of the above” option is included when appropriate. GF questions present a fixed patient case and ask which recommendation applies. They cover medication avoidance, interaction checking, renal dose adjustment, and treatment-selection decisions. CF questions are generated from the same rule representation but change targeted patient informa-tion, such as age, pregnancy status, kidney function, disease presence, or an indication-specific exception. Within each linked comparison, the medication candidates and question Nervous System 
+
+> (34.7%)
+> Urinary
+> System
+> (29.6%)
+> Cardiovascular
+> System
+> (13.3%)
+> Reproductive System
+> (10.5%)
+> Digestive System
+> (4.1%)
+> Lymphatic and
+> Immune System
+> (2.4%)
+> Skeletal System
+> (2.1%)
+> Respiratory
+> System
+> (1.7%)
+> Integumentary
+> System
+> (1.6%)
+
+Organ 
+
+System 
+
+9
+
+> Clinical
+> Department
+> 11
+> Nephrology
+> (25.3%)
+> Neurology
+> (23.6%)
+> Pediatrics
+> (14.1%)
+> Cardiology
+> (12.8%)
+> Obstetrics and
+> Gynecology
+> (10.5%)
+> Urology
+> (4.3%)
+> Psychiatry
+> (3.2%)
+> Geriatric Medicine
+> (2.1%)
+> Pain Medicine
+> (1.5%)
+> Gastroenterology
+> (1.3%)
+> Pulmonology
+> (1.3%)
+> Static Risk
+> Recognition
+> (60.8%)
+> Risk
+> Activation
+> (15.2%)
+> Risk
+> Deactivation
+> (14.6%)
+> Interaction
+> Identification
+> (5.6%)
+> Risk Redistribution
+> (3.8%)
+> Reasoning
+> Operation
+> 5
+> Special
+> Population
+> 3
+> Older
+> Adults
+> (75.4%)
+> Pregnancy
+> (10.5%)
+> Pediatric
+> Patients
+> (14.1%)
+> NSAIDs
+> Opioids
+> Antipsychotics
+> Antiarrhythmics
+> Antihistamines
+
+Drug 
+
+Category 
+
+66   
+
+> Each segment represents one drug category, not its
+> frequency. Questions may have multiple labels.
+> Dose Threshold
+> (25.3%)
+> Composite Clinical Context
+> (14.1%)
+> Drug Interaction
+> (9.6%)
+> Age Threshold
+> (9.0%)
+> Gestational -Week
+> Threshold
+> (6.2%)
+> Pregnancy Status
+> (4.3%)
+> Pediatric -Adult
+> Contraindication
+> Contrast
+> (2.4%)
+> Disease Presence
+> (29.1%)
+> Patient
+> Information
+> 8
+
+Figure 3: Distribution of MedPIC-Bench questions across six annotation dimensions. The benchmark spans 9 organ systems, 11 clinical departments, 66 drug categories, 8 patient-information types, 3 special populations, and 5 reasoning operations. Percentages indicate the share of questions in each category. Benchmark Rule grounding Controlled PI change Answer-changing pairs Full expert validation MedGUIDE (Li et al. 2025) ✓ × × △
+
+RxSafeBench (Zhao et al. 2025a) ✓ × × ×
+
+PsiBench (Proulx et al. 2026) ✓ × × ✓
+
+MediEval (Qu and Färber 2026) × × × △
+
+MEDEQUALQA (Ghosh et al. 2025) × ✓ × ×
+
+MedEinst (Chen et al. 2026b) × ✓ ✓ △
+
+MedPIC-Bench ✓ ✓ ✓ ✓
+
+Table 1: Comparison of MedPIC-Bench with representative medical benchmarks. A checkmark, cross, and triangle indicate full support, no support, and partial support, respectively. PI denotes patient information. Rule grounding indicates that gold decisions are derived from explicit clinical guidelines or medication-safety rules. Answer-changing pairs are linked cases in which the gold answer changes. Full expert validation indicates item-level review of the complete benchmark; partial validation denotes subset or indirect review. are held fixed, while non-target clinical details are preserved whenever possible. The correct answer may therefore change from one or more medications to “None of the above,” or from one medication set to another. All generated questions undergo expert validation against the verified rules. Experts follow a shared protocol that as-sesses source alignment, the correctness of patient infor-mation, the completeness of the ground-truth answers, the validity of the distractors, and the consistency of each coun-terfactual comparison. Questions that fail any criterion are excluded, including ambiguous items, counterfactual com-parisons that do not produce a valid contrast, and questions that remain unresolved after expert discussion. Initial inter-reviewer agreement on item validity was 85.3%. After pro-cessing, MedPIC-Bench contains 467 questions, compris-ing 284 GF and 183 CF questions. To support fine-grained analysis, each question is annotated by organ system, clin-ical department, drug category, special population, patient-information type, and reasoning operation, as shown in Fig-ure 3. Initial labels are derived from the structured rules and source metadata and then manually reviewed. Table 1 fur-ther situates MedPIC-Bench among representative medical benchmarks by comparing their source grounding, counter-factual design, and expert validation. 
+
+4 Experiments 
+
+4.1 Experimental Setup 
+
+Evaluation Models. We evaluate 28 models spanning medical-specific, general, and proprietary LLMs. The 12 medical-specific models comprise HealthGPT-Pro (4B and 8B) (Lin et al. 2025), MedGemma (4B and 27B-Text) (Sell-ergren et al. 2025), Lingshu (7B and 32B) (Xu et al. 2025), Model Overall ↑ GF ↑ CF ↑ ∆GF −CF Activation ↑ Deactivation ↑ Pair ↑                                                                                                                                                                                                    
+
+> Medical-specific (M)LLMs
+> HealthGPT-Pro-8B 42.6 51.8 28.4 23.3 42.3 20.6 5.6 MedGemma-4B 39.6 45.4 30.6 14.8 46.5 10.3 5.6 Lingshu-7B 43.3 50.7 31.7 19.0 39.4 32.4 6.7 Hulu-Med-7B 42.0 48.2 32.2 16.0 36.6 38.2 14.6 HealthGPT-Pro-4B 36.0 37.7 33.3 4.3 36.6 41.2 11.2 HuatuoGPT-o1-8B 44.3 50.0 35.5 14.5 49.3 20.6 13.5 Fleming-R1-7B 50.7 59.9 36.6 23.2 53.5 29.4 12.4 Baichuan-M2-32B 47.8 54.6 37.2 17.4 49.3 30.9 11.2 HuatuoGPT-o1-70B 55.2 63.7 42.1 21.7 63.4 23.5 14.6 Fleming-R1-32B 60.6 69.0 47.5 21.5 59.2 44.1 20.2 MedGemma-27B-Text 61.2 67.6 51.4 16.2 76.1 32.4 23.6 Lingshu-32B 59.5 63.7 53.0 10.7 60.6 54.4 25.8
+> General (M)LLMs
+> Gemma-3-12B 39.6 44.0 32.8 11.2 57.7 7.4 3.4 Gemma-3-27B 40.3 44.7 33.3 11.4 53.5 10.3 5.6 Llama-3.1-8B 40.0 44.4 33.3 11.0 54.9 10.3 5.6 Llama-3.1-70B 55.7 61.3 47.0 14.3 63.4 32.4 16.9 GPT-OSS-20B 59.1 66.5 47.5 19.0 52.1 48.5 24.7 Qwen3.5-9B 63.8 73.9 48.1 25.9 54.9 47.1 24.7 Qwen3.5-35B-A3B 68.5 77.5 54.6 22.8 70.4 45.6 30.3 Qwen3.5-27B 69.4 78.2 55.7 22.4 67.6 51.5 31.5 GPT-OSS-120B 70.7 79.6 56.8 22.7 62.0 55.9 30.3
+> Proprietary (M)LLMs
+> Gemini-2.5-Pro 54.4 60.6 44.8 15.8 63.4 27.9 20.2 Claude-Sonnet-4.6 64.2 74.6 48.1 26.6 62.0 35.3 21.3 GPT-5.2 68.1 78.2 52.5 25.7 63.4 42.6 29.2 DeepSeek-V4-Pro 71.7 81.3 56.8 24.5 67.6 50.0 32.6 Qwen3.5-Plus 72.4 81.7 57.9 23.8 66.2 55.9 32.6 GPT-5 75.6 83.5 63.4 20.1 70.4 61.8 38.2 Gemini-3.1-Pro 80.7 87.7 69.9 17.7 74.6 77.9 48.3
+
+Table 2: Performance of 28 models on the MedPIC-Bench. Arrows indicate the direction of better performance. ∆GF −CF is the GF-minus-CF accuracy gap. Activation and Deactivation are computed over the corresponding reasoning operations, and Pair is the percentage of all linked counterfactual pairs for which both cases are answered correctly. For performance metrics other than the GF–CF gap, best and second-best results are shown in bold and underlined, respectively. Hulu-Med-7B (Jiang et al. 2025), HuatuoGPT-o1 (8B and 70B) (Zhang et al. 2023), Fleming-R1 (7B and 32B) (Liu et al. 2026), and Baichuan-M2-32B (Dou et al. 2025). The 9 general models comprise Gemma-3 (12B and 27B) (Team et al. 2025), Llama-3.1 (8B and 70B) (Grattafiori et al. 2024), GPT-OSS (20B and 120B) (Agarwal et al. 2025), and Qwen3.5 (9B, 27B, and 35B-A3B) (Team 2026). We additionally evaluate 7 proprietary models: Gemini-2.5-Pro (Comanici et al. 2025), Gemini-3.1-Pro 3, Claude-Sonnet-4.6 
+
+> 4
+
+, GPT-5 (Singh et al. 2025), GPT-5.2 (Singh et al. 2025), DeepSeek-V4-Pro (Xu et al. 2026), and Qwen3.5-Plus (Team 2026). The evaluated models include both text-only and mul-timodal architectures, all of which receive the same inputs. 
+
+Evaluation Metrics. We use question-level exact-match accuracy, counting a prediction as correct only when its se-lected option set exactly matches the ground truth. We report overall, GF, and CF accuracy, together with the GF–CF gap, defined as Acc GF − Acc CF . For CF questions, we addition-
+
+> 3https://deepmind.google/models/gemini/pro/
+> 4https://www.anthropic.com/news/claude-sonnet-4-6
+
+ally report accuracy on risk activation and risk deactiva-tion, as well as pair accuracy over the 89 linked pairs. A pair is correct only when both of its questions are answered correctly. To quantify statistical uncertainty, we report 95% cluster-bootstrap confidence intervals for the principal ag-gregate results in the Uncertainty Estimation section of the supplementary material. 
+
+Experiment Details. Each model answers every question independently in a zero-shot setting. Members of a CF pair are presented separately without revealing their connection. All models receive the same prompt, which requests a brief rationale followed by the selected option letter or letters in a designated answer field. Open-source inference is conducted on a Linux system with two NVIDIA A800 GPUs, each with 80 GB of memory. We use PyTorch (Paszke et al. 2019), Hugging Face Transformers (Wolf et al. 2020), and SGLang (Zheng et al. 2024) for open-source models, whereas pro-prietary models are queried through APIs. Further details, including the complete prompt and model-specific inference configurations, are provided in the Detailed Experimental Setup section of the supplementary material. (a) Comparison of Activation and Deactivation                       
+
+> Medical -Specific LLMs (n=12 models)
+> General LLMs (n=9 models)
+> Proprietary LLMs (n=7 models)
+> Activation Deactivation
+> Accuracy (%)
+> 0
+> 20
+> 40
+> 60
+> 80
+> 66.8
+> 59.6
+> 51.1 50.2
+> 34.3
+> 31.5
+> (b) Joint Pair Outcomes
+> Proprietary
+> General
+> Medical -Specific
+> Share of model -pair evaluations (%)
+> Both correct Control only
+> Trigger only Neither
+> 020 40 60 80 100
+> 36.9
+> 22.7 37.1 11.8 28.4
+> 30.1 13.6 19.4
+> 16.8 34.6 14.9 33.7
+> (c) Patient -information Breakdown
+> Disease Presence
+> Composite Clinical Context
+> Drug Interaction
+> Age Threshold
+> Dose Threshold
+> Pregnancy Status
+> 020 40 60 80 100
+> CF accuracy (%)
+> 30.0
+> 37.7
+> 39.1
+> 46.8
+> 51.5
+> 84.5
+> Medical -Specific LLMs
+> General LLMs
+> Proprietary LLMs
+> Mean
+
+Figure 4: Fine-grained analysis of counterfactual performance. (a) Activation and deactivation accuracy for individual models (thin lines) and model-group means (thick lines). (b) Joint outcomes across 67 matched activation–deactivation pairs, aggregated over all model–pair evaluations within each group. “Trigger only” and “Control only” indicate that only the rule-triggering or rule-inactive member is answered correctly, respectively. (c) Model-level CF accuracy across six patient-information types, with black diamonds indicating the corresponding means. Gestational-week thresholds occur only in GF questions, while the pediatric–adult contraindication contrast contains only four CF questions and is excluded from the distributional comparison. 
+
+4.2 Main Results 
+
+Guideline-following performance consistently exceeds counterfactual performance. Table 2 reports the complete results for all 28 models. Mean accuracy falls from 63.6% on GF questions to 45.1% on CF questions, and every model declines. The 18.5-point gap remains positive under cluster bootstrap (95% CI [12.6, 24.0] points), showing that the ag-gregate decline is stable to resampling of question clusters. Together with the model-wise decline, this indicates that the deficit is not confined to a small subset of models or rule clusters. Fixed-case accuracy therefore does not fully reflect model performance when the same knowledge must be ap-plied conditionally as patient information changes. Mean pair accuracy is only 20.0%. Because pair accuracy requires both linked cases to be answered correctly, it distinguishes con-sistent conditional application from isolated success on one member of a comparison. A small GF–CF gap does not nec-essarily indicate robustness because it can also result from low accuracy on both task families. Even Gemini-3.1-Pro, the strongest CF model, solves only 48.3% of linked pairs. Con-versely, HealthGPT-Pro-4B has the smallest GF–CF gap but low CF and pair accuracy. These contrasting profiles show why the GF–CF gap must be interpreted jointly with abso-lute CF and pair performance. Inspection of the pairs solved by Gemini-3.1-Pro suggests that its advantage comes from explicitly binding each judgment to the rule’s applicability conditions, rather than retaining familiar drug warnings. 
+
+Models activate medication-safety rules more reliably than they withdraw them. Across the 28 models, mean accuracy falls from 57.7% on activation to 37.1% on de-activation, with 25 models exhibiting this asymmetry. Fig-ure 4(a) shows that the pattern holds across all three model groups rather than being driven by one class of models. Fig-ure 4(b) further separates the joint outcomes of matched comparisons. Trigger-only outcomes, in which only the rule-active case is answered correctly, are more than twice as frequent as control-only outcomes in every group. Because the paired cases differ through a controlled change in patient information, this imbalance reflects a directional difficulty in withdrawing a warning rather than generic question difficulty alone. Models therefore preserve medication warnings more reliably than they retract them. The response analysis below examines why this asymmetry persists even when changed patient information is recognized. 
+
+Medical specialization improves performance but does not resolve counterfactual failures. Medical-specific LLMs average 38.3% on CF questions, compared with 45.5% for general LLMs and 56.2% for proprietary LLMs. Pair accu-racy follows the same ordering at 13.8%, 19.2%, and 31.8%, respectively. These group-level comparisons conflate model scale, architecture, and training data, but MedGemma-27B and Gemma-3-27B provide a closer within-family compari-son. MedGemma raises CF accuracy from 33.3% to 51.4% and pair accuracy from 5.6% to 23.6%, indicating that med-ical adaptation can yield substantial gains. Yet its activa-tion accuracy reaches 76.1% while deactivation remains at 32.4%. Medical adaptation therefore improves absolute per-formance without correcting the central asymmetry. Rep-resentative errors further suggest that the remaining deficit is not simply a lack of medical knowledge. Medical-specific models often preserve a medically plausible risk while broad-ening its threshold, overlooking an indication-specific excep-tion, strengthening the recommended action, or applying a class-level warning inconsistently. Specialization may rein-force familiar drug-risk associations without ensuring con-trol over a rule’s threshold, exceptions, action strength, or drug-class scope. 
+
+4.3 Sensitivity across Dimensions 
+
+Figure 4(c) shows substantial variation across patient-information types. Mean CF accuracy ranges from 30.0% for condition-triggered rules to 84.5% for pregnancy status. Composite clinical contexts (37.7%) and drug interactions (39.1%) are also difficult, while age thresholds (46.8%) and Department Medical General Proprietary Neurology 26.4 31.6 40.7 Cardiology 27.9 33.0 42.9 Pediatrics 42.9 47.4 54.9 Nephrology 41.1 53.0 67.2 Obstetrics & Gynecology 80.0 81.1 96.4 
+
+Table 3: Mean CF accuracy (%) by model group for clinical departments containing at least 20 CF questions. renal or dose thresholds (51.5%) fall between these extremes. Table 3 shows a consistent gap between departments, with obstetrics and gynecology performing best and neurology and cardiology proving most difficult. Rationale analysis pro-vides a common explanation for both patterns. Models are most reliable when an explicit patient attribute maps directly to a familiar contraindication, as in many pregnancy ques-tions. They struggle when patient information must delimit the scope or strength of a broader safety rule, or deactivate it entirely. The central difficulty therefore lies not in recalling drug risks, but in controlling when and how those risks apply. Results for the remaining dimensions are reported in the Full Analysis across Dimensions section of the supplementary material. 
+
+4.4 Rule-Deactivation Failure Analysis 
+
+To distinguish failures of context recognition from failures of rule application, we analyze model responses to incorrect deactivation questions. Models mention the changed patient information in 85.6% of these responses, yet retain the same medication selection in 69.8%. Figure 5 illustrates a clear instance of this disconnect, in which a correct intermediate judgment is overridden before the final answer. Lingshu-32B recognizes the patient’s CrCl of 52 mL/min and explicitly identifies “None of the above” as correct. Yet its final reasoning falls back on a generic concern about tramadol accumulation in renal impairment, extending the verified < 30 mL/min rule to this patient. The model there-fore uses the relevant patient information and reaches a rule-consistent judgment, but allows a broader drug-risk prior to override it before the final answer. This example reflects a broader pattern in which models acknowledge changed pa-tient information without allowing it to govern the final judg-ment. Reducing such failures may require models to bind each safety judgment to its triggering condition and recheck that condition before producing the final answer. 
+
+5 Conclusion 
+
+Using MedRule2Pair, our source-grounded construction pipeline, we created MedPIC-Bench to test whether LLMs apply medication-safety recommendations within their in-tended patient scope. Its guideline-following questions mea-sure rule application in fixed cases, while controlled coun-terfactual pairs test whether judgments change when patient information alters rule applicability. Across 28 LLMs, perfor-mance on static questions consistently overstates counterfac-tual performance. Models activate safety rules more reliably Rule : For older adults with CrCl <  30 mL/min, reduce the dose     
+
+> of tramadol immediate -release.
+> Question: A 73 -year -old man with moderate chronic low back
+> pain has an estimated CrCl of 52 mL/min. His pain is
+> inadequately controlled with non -opioid analgesics alone. He
+> has no history of seizures or substance use disorder. His
+> physician is reviewing which analgesics require dose reduction
+> given his renal function. Which of the following analgesics
+> requires dose reduction given this patient's renal function?
+> Options. (A) Acetaminophen (B) Codeine (C) Hydrocodone
+> (D) None of the above (E) Tramadol immediate -release
+> Gold Answer .(D) None of the above
+> Model Response.
+> The patient has a CrCl of 52 mL/min [...]
+> [...] D. None of the above: Since none of the analgesics listed
+> require dose reduction based on the patient's renal function,
+> this option is correct. [...]
+> In patients with moderate renal impairment, the dose of
+> tramadol should be reduced to avoid accumulation and
+> potential toxicity. Therefore, tramadol immediate -release
+> requires dose reduction in this patient.
+> <answer>E</answer>
+
+Figure 5: A representative rule-deactivation failure by Lingshu-32B. The model initially identifies the rule-consistent answer but then reverts to a broader concern about tramadol accumulation. than they withdraw them and frequently preserve medica-tion warnings even after acknowledging that the triggering condition is absent. Medical-specific LLMs offer no consis-tent robustness advantage, and errors are most pronounced when patient information must constrain, weaken, or deacti-vate a familiar drug-risk association. These results identify control over rule applicability, rather than risk recall alone, as a central weakness in current medication-safety reason-ing. MedPIC-Bench provides a source-traceable testbed for evaluating and developing models whose clinical judgments remain tied to the patient information that justifies them. 
+
+Ethical Statement 
+
+MedPIC-Bench is intended for research evaluation, not clin-ical decision support. Its synthetic vignettes reduce source recommendations to controlled rule-applicability judgments and do not capture the uncertainty, patient preferences, local guidance, or clinician judgment involved in real prescribing. Results should not be interpreted as treatment recommen-dations or evidence of readiness for clinical deployment. The benchmark contains no patient records or personally identifiable information, and its release will include source provenance and documentation of these limitations. References 
+
+2023 AGS Beers Criteria Update Expert Panel. 2023. Amer-ican Geriatrics Society 2023 updated AGS Beers Criteria ®
+
+for potentially inappropriate medication use in older adults. 
+
+Journal of the American Geriatrics Society , 71(7): 2052– 2081. Agarwal, S.; Ahmad, L.; Ai, J.; Altman, S.; Applebaum, A.; Arbus, E.; Arora, R. K.; Bai, Y.; Baker, B.; Bao, H.; et al. 2025. gpt-oss-120b & gpt-oss-20b model card. arXiv preprint arXiv:2508.10925 .Arora, R. K.; Wei, J.; Hicks, R. S.; Bowman, P.; Quiñonero-Candela, J.; Tsimpourlas, F.; Sharman, M.; Shah, M.; Val-lone, A.; Beutel, A.; et al. 2025. Healthbench: Evaluat-ing large language models towards improved human health. 
+
+arXiv preprint arXiv:2505.08775 .Benkirane, K.; Kay, J.; and Perez-Ortiz, M. 2025. How Can We Diagnose and Treat Bias in Large Language Mod-els for Clinical Decision-Making? In Proceedings of the 2025 Conference of the Nations of the Americas Chapter of the Association for Computational Linguistics: Human Lan-guage Technologies (Volume 1: Long Papers) , 2263–2288. Association for Computational Linguistics. Chen, S.; Jiang, W.; Wang, C.; Wu, X.; Shi, X.; Zhang, Y.; and Kwok, J. T. 2026a. RxEval: A Prescription-Level Benchmark for Evaluating LLM Medication Recommendation. arXiv preprint arXiv:2605.14543 .Chen, W.; Huang, G.; Wang, W.; and Zhu, Z. 2026b. MedE-inst: Benchmarking the Einstellung Effect in Medical LLMs through Counterfactual Differential Diagnosis. In Proceed-ings of the 64th Annual Meeting of the Association for Com-putational Linguistics (Volume 1: Long Papers) , 39778– 39798. Chen, Y.; Singh, V. K.; Ma, J.; and Tang, R. 2026c. Counter-Bench: Evaluating and improving counterfactual reasoning in large language models. In Proceedings of the AAAI Con-ference on Artificial Intelligence , volume 40, 30350–30358. Comanici, G.; Bieber, E.; Schaekermann, M.; Pasupat, I.; Sachdeva, N.; Dhillon, I.; Blistein, M.; Ram, O.; Zhang, D.; Rosen, E.; et al. 2025. Gemini 2.5: Pushing the fron-tier with advanced reasoning, multimodality, long context, and next generation agentic capabilities. arXiv preprint arXiv:2507.06261 .Dou, C.; Liu, C.; Yang, F.; Li, F.; Jia, J.; Chen, M.; Ju, Q.; Wang, S.; Dang, S.; Li, T.; et al. 2025. Baichuan-m2: Scaling medical capability with large verifier system. arXiv preprint arXiv:2509.02208 .Ghosh, R.; Gupta, A.; McBride, H.; Vaidya, A. J.; and Mah-mood, F. 2025. MEDEQUALQA: Evaluating Biases in LLMs with Counterfactual Reasoning. In Proceedings of the First Workshop on Human–LLM Collaboration for Ethi-cal and Responsible Science Production , 25–37. Association for Computational Linguistics. Grattafiori, A.; Dubey, A.; Jauhri, A.; Pandey, A.; Kadian, A.; Al-Dahle, A.; Letman, A.; Mathur, A.; Schelten, A.; Vaughan, A.; et al. 2024. The Llama 3 herd of models. In 
+
+Neural Information Processing Systems . Curran Associates. Jiang, S.; Wang, Y.; Song, S.; Hu, T.; Zhou, C.; Pu, B.; Zhang, Y.; Yang, Z.; Feng, Y.; Zhou, J. T.; et al. 2025. Hulu-med: A transparent generalist model towards holistic medical vision-language understanding. arXiv preprint arXiv:2510.08668 .Li, X.; Gao, M.; Hao, Y.; Li, T.; Wan, G.; Wang, Z.; and Wang, Y. 2025. Medguide: Benchmarking clinical decision-making in large language models. arXiv preprint arXiv:2505.11613 .Lin, T.; Zhang, W.; Li, S.; Yuan, Y.; Yu, B.; Li, H.; He, W.; Jiang, H.; Li, M.; Xiaohui, S.; et al. 2025. HealthGPT: A Medical Large Vision-Language Model for Unifying Com-prehension and Generation via Heterogeneous Knowledge Adaptation. In International Conference on Machine Learn-ing , 37975–37995. PMLR. Liu, C.; Shu, Y.; Chen, M.; Piao, H.; Duan, Z.; Li, D.; and Dai, B. 2026. Scaling is Not All You Need: Clinical-Oriented Reinforcement Learning Makes Parameter-Efficient Clinical Reasoning. In Findings of the Association for Computational Linguistics: ACL 2026 , 15056–15068. McPherson, C.; Meyers, R. S.; Thackray, J.; Stutzman, D. L.; Mills, K. P.; Said, S. J.; Patel, K.; Hellinga, R. C.; Potts, A. L.; Lubsch, L.; et al. 2025. Pediatric Pharmacy Association 2025 KIDs List of key potentially inappropriate drugs in pediatrics. 
+
+The Journal of Pediatric Pharmacology and Therapeutics ,30(4): 422–439. Paszke, A.; Gross, S.; Massa, F.; Lerer, A.; Bradbury, J.; Chanan, G.; Killeen, T.; Lin, Z.; Gimelshein, N.; Antiga, L.; et al. 2019. Pytorch: An imperative style, high-performance deep learning library. Advances in neural information pro-cessing systems , 32. Proulx, J.; Daines, B.; Barton, M.; Leonard, M. E.; Gar-cia, J. A.; Young, B.; Snell, Q.; West, T. W.; Watson, S. R.; AlQaseer, M.; et al. 2026. A Three-Tier Operational Bench-mark for Evaluating Large Language Models on Hospital Medication Safety. medRxiv , 2026–06. Qu, Z.; and Färber, M. 2026. MediEval: A Unified Med-ical Benchmark for Patient-Contextual and Knowledge-Grounded Reasoning in LLMs. In Proceedings of the 64th Annual Meeting of the Association for Computational Lin-guistics (Volume 1: Long Papers) , 16150–16164. Sellergren, A.; Kazemzadeh, S.; Jaroensri, T.; Kiraly, A.; Traverse, M.; Kohlberger, T.; Xu, S.; Jamil, F.; Hughes, C.; Lau, C.; et al. 2025. Medgemma technical report. arXiv preprint arXiv:2507.05201 .Shen, Y.; Cao, L.; Du, S.; Wang, Y.; Zhou, J.; Peng, H.; and Guo, Y. 2026. MedGuideX: Internalizing Decision Logic from Executable Guidelines into Large Language Models for Clinical Reasoning. arXiv preprint arXiv:2605.26567 .Singh, A.; Fry, A.; Perelman, A.; Tart, A.; Ganesh, A.; El-Kishky, A.; McLaughlin, A.; Low, A.; Ostrow, A.; Anan-thram, A.; et al. 2025. Openai gpt-5 system card. arXiv preprint arXiv:2601.03267 .Singhal, K.; Azizi, S.; Tu, T.; Mahdavi, S. S.; Wei, J.; Chung, H. W.; Scales, N.; Tanwani, A.; Cole-Lewis, H.; Pfohl, S.; et al. 2023. Large language models encode clinical knowl-edge. Nature , 620(7972): 172–180. Singhal, K.; Tu, T.; Gottweis, J.; Sayres, R.; Wulczyn, E.; Amin, M.; Hou, L.; Clark, K.; Pfohl, S. R.; Cole-Lewis, H.; et al. 2025. Toward expert-level medical question answering with large language models. Nature medicine , 31(3): 943– 950. Team, G.; Kamath, A.; Ferret, J.; Pathak, S.; Vieillard, N.; Merhej, R.; Perrin, S.; Matejovicova, T.; Ramé, A.; Rivière, M.; et al. 2025. Gemma 3 Technical Report. arXiv:2503.19786. Team, Q. 2026. Qwen3. 5-omni technical report. arXiv preprint arXiv:2604.15804 .Wolf, T.; Debut, L.; Sanh, V.; Chaumond, J.; Delangue, C.; Moi, A.; Cistac, P.; Rault, T.; Louf, R.; Funtowicz, M.; et al. 2020. Transformers: State-of-the-art natural language pro-cessing. In Proceedings of the 2020 conference on empirical methods in natural language processing: system demonstra-tions , 38–45. Xu, A.; Lin, B.; Xue, B.; Wang, B.; Xu, B.; Wu, B.; Zhang, B.; Lin, C.; Dong, C.; Ling, C.; et al. 2026. Deepseek-v4: Towards highly efficient million-token context intelligence. 
+
+arXiv preprint arXiv:2606.19348 .Xu, W.; Chan, H. P.; Li, L.; Aljunied, M.; Yuan, R.; Wang, J.; Xiao, C.; Chen, G.; Liu, C.; Li, Z.; et al. 2025. Lingshu: A generalist foundation model for unified multi-modal medical understanding and reasoning. arXiv preprint arXiv:2506.07044 .Zhang, H.; Chen, J.; Jiang, F.; Yu, F.; Chen, Z.; Chen, G.; Li, J.; Wu, X.; Zhiyi, Z.; Xiao, Q.; et al. 2023. Huatuogpt, towards taming language model to be a doctor. In Findings of the association for computational linguistics: EMNLP 2023 ,10859–10885. Zhao, J.; Xu, L.; Tan, M.; Zhang, L.; Argha, A.; Alinejad-Rokny, H.; and Yang, M. 2025a. RxSafeBench: Identify-ing Medication Safety Issues of Large Language Models in Simulated Consultation. In 2025 IEEE International Con-ference on Bioinformatics and Biomedicine (BIBM) , 4491– 4496. IEEE. Zhao, X.; Blotske, K.; Cargile, M.; Tilley, A.; Murray, B.; Gao, Y.; Henry, K.; Smith, S. E.; Barreto, E. F.; Bauer, S.; et al. 2025b. Rx-LLM: a benchmarking suite to evaluate safe large language model performance for medication-related tasks. medRxiv , 2025–12. Zheng, L.; Yin, L.; Xie, Z.; Sun, C.; Huang, J.; Yu, C. H.; Cao, S.; Kozyrakis, C.; Stoica, I.; Gonzalez, J. E.; et al. 2024. Sglang: Efficient execution of structured language model programs. Advances in neural information processing systems , 37: 62557–62583. Zhou, Y.; Liu, X.; Ning, C.; and Wu, J. 2024. MultifacetEval: multifaceted evaluation to probe LLMs in mastering medical knowledge. In Proceedings of the Thirty-Third International Joint Conference on Artificial Intelligence , 6669–6677.

@@ -1,0 +1,293 @@
+Title: Guideline-as-Oracle: Zero-Annotation Training of an Ophthalmic Telephone Triage Agent
+
+URL Source: https://arxiv.org/pdf/2608.04772v1
+
+Published Time: Thu, 06 Aug 2026 01:08:11 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# Guideline-as-Oracle: Zero-Annotation Training of an Ophthalmic Telephone Triage Agent 
+
+## Chenyu Wang 1,3 ∗, Yi Liu 2∗, Baoqing Li 1, Min Tu 1, Diping Song 3†
+
+> 1
+
+Shanghai Institute of Microsystem and Information Technology, Chinese Academy of Sciences 
+
+> 2
+
+ByteDance Inc. 
+
+> 3
+
+Shanghai Artificial Intelligence Laboratory 
+
+Abstract 
+
+Scaling supervision for multi-turn medical agents is difficult because expert dialogue annotation is costly and clinical con-versations are privacy-restricted. We introduce Guideline-as-Oracle (GAO), which compiles American Academy of Oph-thalmology guidance into a 70-row operational rule table and uses it as the sole source of instance-level supervision for 3,000 training dialogues, reserving human labeling for evalu-ation. Because converting rules into dialogues is itself a design problem, we catalog eight construction strategies—including cited-row tier assignment, one-fact boundary pairs, metadata-only repair, and label repair—and characterize the evidential status of each: labeling mechanism, null, confounded, or eval-uated only as a package. Fine-tuning a 9B backbone on this corpus yields GAO-Triage, improving agreement with a 201-case operational reference from 61.7% to 74.1% (exact McNe-mar p=0 .0046 ) and emergent-case recall from 9.5% to 69.0%; the gains persist across a second seed and patient simulator. None of the seven general-purpose systems we test dominates GAO-Triage on both metrics, and GAO-Triage requires no frontier model at inference time. Permuting label–dialogue as-signments collapses the model to a constant-routine predictor, indicating that the signal lies in guideline-derived assignment rather than dialogue surface form. Label repair coincides with the disappearance of a late-training safety degradation. 
+
+## 1 Introduction 
+
+Ophthalmic telephone triage must determine from verbal in-teraction alone, without examination or imaging, whether a caller requires emergent (E), urgent (U), or routine (R) care. Under-triage can delay management of sight-threatening con-ditions; over-triage consumes clinical capacity. An auto-mated triage agent must therefore acquire discriminating ev-idence over multiple turns and emit an auditable disposition, rather than classify a static vignette. Expert annotation of multi-turn call transcripts does not scale, and identifiable clinical conversations are rarely re-leasable as training data. Specialty societies, however, pub-lish structured guidance that maps presentations to dispo-sition tiers. This leaves two questions: what does it take to 
+
+> ∗
+
+These authors contributed equally. 
+
+> †
+
+Corresponding author. Copyright © 2027, Association for the Advancement of Artificial Intelligence (www.aaai.org). All rights reserved. 55 60 65 70 75 80  
+
+> Total agreement (%, n=201)
+> 0
+> 10
+> 20
+> 30
+> 40
+> 50
+> 60
+> 70
+> 80
+> Emergent recall (%, n=42)
+> GAO-Triage (ours)
+> Untuned 9B base
+> Open-weight
+> Closed API
+> Trivial baseline
+> GAO-Triage
+> (ours)
+> Base 9B
+> GPT-5.5 GPT-5.5+R
+> GPT-5.4
+> DeepSeek
+> GLM-5.2
+> Qwen3.5 Kimi-K2.6
+> Qwen3-235B
+> Always ROUTINE (trivial)
+
+Figure 1: Clean-protocol results (n=201 ; clean means the complete-profile heuristic of Section 4 is disabled): operational-reference agreement against recall on 42 emer-gent cases. Dotted crosshairs mark GAO-Triage (red star), and the shaded upper-right quadrant holds any arm that would beat it on both axes. None does. Base and ROUTINE-only anchor the plot; GPT-5.5 +R is GPT-5.5 given the 70-row ta-ble. Remaining checks appear in Table 1 and the supplement. Nonsignificance is not equivalence. compile such a rule table into supervision for a competent multi-turn agent, and what in that supervision carries the re-sulting capability? We study both with an author-compiled operationalization as the sole instance-level supervision for training dialogues, reserving human labeling for evaluation. We compile American Academy of Ophthalmology (AAO) materials into a 70-row operational table and let it supply every instance-level dialogue label ( Guideline-as-Oracle , GAO), writing GAO-Triage for the 9B backbone fine-tuned on the resulting corpus. Both names are narrower than they sound: zero annotation excludes training labels, not the compilation and audit of the policy itself, and Oracle is a construction role, not a clinical gold standard or an AAO endorsement. arXiv:2608.04772v1 [cs.CL] 5 Aug 2026 Figure 2: Guideline-as-Oracle (Section 3). (1) Authors compile AAO-informed guidance into a 70-row table; a profile cites a nonempty row set J and receives Φ( J), the maximum tier over the cited rows only. (2) Eight construction strategies turn that table into 3,000 multi-turn dialogues carrying no instance-level human labels; the quality gates are an intended taxonomy, not a verified property. (3) Class-weighted resampling and nurse-token cross-entropy yield GAO-Triage, which then runs as an interactive nurse and states a disposition directly. Human labels enter only at evaluation. Because the compiled policy is author-defined rather than a clinical gold standard, downstream scores measure policy conformance. We evaluate full-parameter supervised fine-tuning (SFT) of that backbone on a 201-case operational reference, which also informed rule coverage and model selection— so the scores below measure conformance to a policy un-der development, not held-out clinical generalization (Sec-tion 4). Auditing our own evaluation pipeline surfaced benchmark-derived paraphrases among repaired dialogues and a complete-profile heuristic that could overwrite a ver-dict from hidden case data; every primary claim rests on clean comparisons with that heuristic disabled (Section 5.1). This paper makes three contributions: 
+
+• A design space for rule-to-dialogue construction. We systematize eight strategies for converting a rule table into training dialogues: cited-row labels, one-fact boundary pairs, metadata-only repair, phrasing diversity, replace-ment, evidence gating, train–serve alignment, and label repair. We further characterize the evidential status of each strategy. Although their individual effects are not separately identified, the resulting null findings and con-founds delineate what can—and cannot—be concluded from the available evidence (Section 3.3). 
+
+• A nurse-role agent competitive with frontier models. 
+
+SFT increases agreement from 61.7% to 74.1% (exact McNemar p=0 .0046 ) and emergent recall from 9.5% to 69.0%. Across eight external nurse arms, none dominates GAO-Triage on both agreement and emergent recall (Sec-tion 5.1). 
+
+• A controlled localization of the learned capability. Per-muting labels across dialogues while preserving the dia-logue texts collapses the model to a constant routine pre-diction ( 112 /201 ), with emergent recall falling to 0/42 .This intervention shows that the learned capability de-pends on the assignment between dialogues and labels, rather than on dialogue surface form alone (Section 6). 
+
+## 2 Related Work 
+
+Supervision without per-instance labels. Data program-ming replaces per-instance annotation with user-authored la-beling functions, aggregated by a generative label model (Ratner et al. 2016, 2017), while a parallel line derives su-pervision from written principles or model outputs (Bai et al. 2022; Wang et al. 2023; Taori et al. 2023) and recent medical work synthesizes agent trajectories from structured domain knowledge (Yu et al. 2025). Our setting differs in what plays the role of the labeling function. A specialty guideline is not a noisy heuristic to be denoised: it is the operative decision rule, so a single compiled table can carry every instance-level label without a label model or majority vote over weak sources. What we give up is the correctness guarantee a vali-dated clinical rule would provide, and because our labels are generated rather than aggregated, the failure mode differs— instead of noisy-but-independent votes, we face internally contradictory rules, which is why label repair appears as a construction strategy in its own right (Section 3.3). Com-piling from guidance is attractive here precisely because the data that make multi-turn triage hard to supervise are the data that cannot be released: openly available clinical resources are records, waveforms, or summaries rather than conversa-tions (Goldberger et al. 2000; Johnson et al. 2023; Zhao et al. 2023), and telephone triage calls are rarely shareable even de-identified. 
+
+Learning to ask, and learning from outcomes. When interaction data are unavailable, task-oriented dialogue sys-tems train against simulated users (Schatzmann et al. 2007; Kreyssig et al. 2018), and recent LLM work trains proactive questioning under missing information (Huang et al. 2025; Li et al. 2025). Our boundary-pair strategy pursues the same goal by a different route: instead of rewarding information gain, it derives local contrasts from an operational rule, so that two dialogues differing in one decision-critical fact carry different tiers. Removing these pairs is null on our reference (Section 5.2), so we present it with a stated null rather than a demonstrated mechanism. Rewarding the outcome directly is the other obvious route: preference optimization and policy-gradient methods align models to outcome or preference signals (Ouyang et al. 2022; Rafailov et al. 2023; Shao et al. 2024), but triage exposes a credit-assignment gap for them, since the rewarded quantity is the final disposition whereas the behavior that produces it is what gets asked and when to stop. Our post-training arm is consistent with that gap— rewarding the outcome degrades the behavior that earns it 
+
+Interactive clinical agents and their evaluation. Med-ical LLM evaluation has emphasized diagnostic QA and static vignettes (Nori et al. 2023; Singhal et al. 2023; Thirunavukarasu et al. 2023), with self-play used to elicit richer behavior (Tu et al. 2024); triage benchmarks, includ-ing ophthalmic ones, remain full-information (Lee et al. 2025; Mittal and Aggarwal 2026). Agents that withhold findings until queried move closer to the telephone setting (Schmidgall et al. 2024; Nori et al. 2025), and one deployed telephone agent restricts its LLM to scripted preparation under per-call nurse review (Kini et al. 2026). None tar-gets ophthalmic triage, and none audits its own evaluation pipeline for the paths we found necessary to check—which is where the rest of this paper’s caution comes from. Synthetic-data pipelines can transmit benchmark content into training through repair and regeneration (Xu et al. 2024; Zhou et al. 2023), which is why our repair strategy is specified on meta-data alone; where a destructive recorder overwrote direct verdicts, reconstruction is not identified from retained meta-data, so we bound the affected quantity instead, following work on coarsened and contaminated data (Heitjan and Ru-bin 1991; Horowitz and Manski 1995; Manski 2003). Our labeling workflow also uses rule-conditioned LLM audits, whose known biases as judges (Zheng et al. 2023) are the reason they propose rather than assign labels. 
+
+## 3 Method: Guideline-as-Oracle 
+
+We model guideline-anchored triage as sequential evidence acquisition under an author-defined construction policy, not a validated clinical rule. 
+
+3.1 Compiling the Guideline 
+
+The compiled artifact is an ordered table of rules T =
+
+{(qj , s j , y j )}mj=1 , each pairing a textual trigger qj and symp-tom family sj with the tier yj it warrants. We expanded an initial 64-row AAO-informed table (American Academy of Ophthalmology 2026) to m = 70 after benchmark analy-sis, so coverage is benchmark-informed though no case text was copied; the table carries neither independent clinician validation nor a mapping to source passages. Labeling is by citation rather than by matching. Each gen-erated profile records the nonempty set J of rows its gener-ator invoked and inherits the most severe tier among them, 
+
+Φ( J), so a label is only ever as good as the rows the genera-tor names. The same handle drives two further strategies: a one-fact boundary pair edits a designated fact together with its target row, which moves Φ by construction, and repair regenerates a dialogue from its rule, family, tier, and fail-ure tag alone, withholding the rejected text, the evaluation narrative, and the case identity. Validators enforce row mem-bership, the maximum-cited-tier rule, and limited explicit consistency, but not semantic coverage of every trigger, and audits later found historical violations of the repair specifica-tion. Admissible dialogues close at Φ( J), and the Reason 
+
+field the nurse emits alongside its tier may cite only findings the caller supplied; training weights the classes by determin-istic resampling and scores cross-entropy on nurse tokens only. The diagnostics of Section 4.2 need one further, de-liberately weaker object. A 39-entry subset over a 25-key schema forms an executable matcher ˆΦ( x) = r(g(x)) : g
+
+extracts whichever schema fields a case narrative x men-tions, and r runs the corresponding rule subset over them. Being incomplete, ˆΦ never labels a training row or supplies an evaluation label; it exists so that a case can be read three ways—the disposition v(h) a system states from the tran-script h it elicited, and ˆΦ on that transcript versus on the complete narrative. 
+
+3.2 From Table to Corpus 
+
+Because Φ supplies every disposition, the corpus carries no instance-level dialogue labels (Figure 2). It was not built in one pass: class ratio, quality gates, coverage, provider mix, and upsampling all moved adaptively across successive corpora, so what follows is a development trace that on its own identifies no intervention effect. 
+
+Generation pipeline. Profiles span eight symptom fam-ilies, some of them abstracted from public Reddit narra-tives, and dialogue is generated in a separate pass. Distinct roles produce the profile, the patient replies, and the nurse turns, with family-specific system blocks supervising every nurse turn. Beyond the validators of Section 3.1, seven gates screen the output for coverage, decisive-fact support, consis-tency, format, grounding, diversity, and leakage; they evolved across batches and describe an intended taxonomy rather than a verified property. For the primary base–SFT comparison, the corpus con-tains 3,000 dialogues with a median of 11 nurse turns (625 emergent, 746 urgent, and 1,629 routine) after within-stratum replacement of 160 urgent-boundary dialogues. Resampling with class weights 2.0, 1.5, and 1.0 yields 3,998 exposures (Figure 3); training runs for three epochs with nurse-token supervision and caller-token masking (Section 5.1). Two cor-pora sit outside this main line: the optional Group Relative Policy Optimization (GRPO) stage adds no labels but its starting SFT weights were not retained (Section 5.3), and the three-view analysis uses a distinct 5,177-dialogue lineage whose genealogy is in the supplement. 
+
+Audits: leakage and grounding. Repair and regeneration are the paths by which benchmark content can reach training data, so we audited them. A non-exhaustive sweep of four known-risk packages recovers paraphrase clusters of 12–19 dialogues, each traceable to a development error; in one con-dition 59 of 3,360 source dialogues recur as 118 of 4,517 E U R            
+
+> 0
+> 500
+> 1000
+> 1500
+> count
+> 625
+> 1250
+> 746
+> 1119
+> 1629 1629
+> (a) Safety-weighted exposure
+> unique dialogues
+> training exposures
+> 8910 11 12 13
+> nurse turns per dialogue
+> 0
+> 200
+> 400
+> 600
+> dialogues
+> median 11
+> (b) Interaction depth
+> 020 40 60 80 100
+> share of cases (%)
+> evaluation
+> (n=201)
+> training
+> (exposures) E 31%
+> E 21%
+> U 28%
+> U 23%
+> R 41%
+> R 56%
+> (c) Train vs. evaluation mix
+
+Figure 3: Primary boundary-revised corpus. (a) Unique dialogues and safety-weighted training exposures. (b) Nurse-turn depth (median 11). (c) Class mix of the training exposures against that of the evaluation reference, which differ by design: resampling upweights the severe tiers. E/U/R denote emergent/urgent/routine. exposures, and a three-seed removal rerun was too unstable to identify an overlap effect. The separate 5,177-dialogue lin-eage contributes 112 dialogues sharing an eight-word span with five development cases. These are lexical screens rather than semantic classifiers, and they demonstrably missed tar-geted paraphrases, so they establish neither isolation nor de-contamination. Grounding was audited separately: roughly 19% of earlier Reason fields asserted findings the caller never supplied, which a verdict-preserving pass corrected, and a later sweep removed 222 dialogues and regenerated 219 label-matched replacements for them, leaving three re-moved outright. 
+
+3.3 Construction Strategies and Their Evidence 
+
+A rule table admits many dialogue corpora, and which one gets built is a design decision at every step. We describe what each strategy was meant to do and what the records can say about it. None of the eight is separately identified: two specify the labeling mechanism rather than add a testable component, two return nulls, three are confounded with a co-occurring change, and one is evaluated only at package level. The space itself, with its nulls and confounds, is the finding here—not a per-strategy effect estimate. 
+
+Compiled labels, boundary pairs, and repair. The three strategies of Section 3.1 carry different evidential weight. Cited-row assignment is the labeling mechanism itself, so it admits no ablation. One-fact pairs target tier boundaries, yet removing or replacing the 160 tagged dialogues moves agreement by at most 2 of 201 cases, which establishes no separate effect. Metadata-only repair remains a specification rather than a verified property, because historical batches violated it. 
+
+Coverage without prior drift. A 309-sample phrasing in-crement rotated six styles across the nine symptom cate-gories that increment’s own log recorded—a finer partition than the eight generation families—without populating ev-ery category–style cell. On a separate 191-case development set, accuracy rose from 69.8% to 71.2% and emergent recall from 59.0% to 83.0%, while routine recall fell and over-triage rose. The increment also added 136 emergent examples, so this was never a style-only intervention, and a later one-for-one replacement held corpus size fixed but yielded no isolated accuracy gain. 
+
+Evidence gating and prompt alignment. One configura-tion gated family-specific control behind posterior support and, in the same change, aligned training with the deploy-ment prompt. Two question-quality scores logged by that harness both rose (51.9% →63.5% and 35.9% →53.2%), but the rubric behind them was not retained, so neither quantity is defined here and we read only their direction. The two changes were likewise never separated. 
+
+Label repair and negative results. Label repair neutral-ized 491 dialogues whose stated tier contradicted their symp-tom family, corrected 91 carrying three mutually inconsistent labels, and removed dialogues in which the target tier was recoverable from the prompt rather than the caller’s answers; on its filtered clean subset, epoch 2 reached 71.8% agreement and 76.0% emergent recall (Section 6). The remaining strate-gies show how easily a corpus change trades one property for another. Aggressive pruning shifted the tier prior. A thresh-old change shipped together with a routing fix, so no separate effect is identified for either; Figure 5 Section 6 plots them as successive variants because that is the order the corpora were built, not because the changes were isolated. Case-bank augmentation—adding 236 guideline-derived cases—raised early emergent recall to 82.6% while lowering accuracy to 63.7% and pushing over-triage to 27.4%. 
+
+## 4 Experimental Setup 
+
+4.1 Benchmark and Reference Labels 
+
+Human judgment is absent from training and concentrated in evaluation. The internal benchmark converts 201 public, patient-authored ophthalmic Reddit narratives into interac-tive profiles, omitting handles and URLs. The narratives and the final reference were fixed before any comparison was run, but the same cases had informed rule-table revision, corpus development, and model selection. Labels were reviewed by exception rather than case by case. The workflow flagged 25 original labels and retained the other 176 by default, making the outcome a candidate checklist rather than 201 independent decisions. Two rule-conditioned LLM audits, prompted without the original la-bels, converged on the same alternative for eight cases, and author adjudication revised 12, leaving 42 emergent, 47 ur-gent, and 112 routine references. We call the result the op-erational reference to keep its provenance visible: it was adjudicated by the authors, not by an independent panel of clinicians, and its dependencies run one way—the bench-mark informed Φ, which informed both adjudication and training. Internal agreement therefore tests the construction recipe for policy conformance, not for clinical validity. 
+
+4.2 Scoring the Three Views 
+
+Because the questions a system asks determine which ev-idence exists at all, a single case supports three readings against the same reference: the disposition v(hi) the sys-tem states, ˆΦ( hi) on the transcript it elicited, and ˆΦ( xi)
+
+on the complete narrative. We score all three on a sepa-rate dialogue-revised condition—an earlier corpus revision, also n=201 but distinct from Table 1, on which GAO-Triage matches the reference on 147 of 201 cases—chosen because it is free of the defect audited below. The two rule views al-ready disagree on 52 cases. Agreement on urgent-reference cases is higher from elicited transcripts than from complete narratives (42.6% versus 38.3%), since the extra fields ex-traction recovers can trigger emergent rules. The 72 matcher– reference disagreements separate by cause: the model is right on 29 of 33 extraction faults but on only 19 of 39 compiled-policy shortfalls. Since the reference is policy-coupled, this audits a lossy matcher under two information views and es-timates neither an SFT effect nor generalization. 
+
+4.3 Historical Protocols and Their Defects 
+
+Several historical base–SFT comparisons carry a defect se-rious enough to disqualify them as evidence. Retained code shows that the complete-profile heuristic read the caller open-ing together with the hidden profile and, whenever its own tier disagreed with the model’s verdict, silently overwrote both the final nurse turn and the stored disposition. In one archived historical protocol (Protocol B; the others are described in the supplement) we detect 31 base and 18 SFT overwrites, and an exact-template audit spanning 5,427 case-runs finds 19 to 44 overwritten cases per run. A milder issue affects the same runs: they share the simulator’s identifier and temperature yet sometimes ran days apart with no immutable provider snap-shot. Since no pre-overwrite verdict survives, the metadata supports only bounds on direct agreement, nothing sharper. 
+
+Bounding pre-overwrite agreement. What the records still permit is a bound. The heuristic only ever fired on dis-agreement, so an overwritten case that now agrees must pre-viously have been wrong, whereas an overwritten disagree-ment may have been right. Writing C for stored agreement and M+, M− for the overwritten agreements and disagree-ments, direct agreement lies in [C − M+, C − M+ + M−],assuming overwriting was the only record change, that de-tection is exact, and that cases factorize. Binary labels would identify the direct confusion matrix outright; three tiers generally do not, and detection cannot be verified from the very records it overwrote, so relaxing that assumption widens the range (general bound and proofs in the supple-ment). One further asymmetry limits these runs: training used symptom-family-specific prompts, while the retained evaluation prompts were generic and unversioned. 
+
+Metrics and uncertainty. Against the operational ref-erence we report exact agreement, reference-class recall, and confusion matrices, with Cohen’s κ (Cohen 1960) and balanced accuracy in the supplement. Every triage error we count, severe under-triage ( Emergent →Routine , Ur-gent →Routine ) included, is policy-relative rather than a clinical outcome. Only one comparison is primary—base against SFT—with endpoints and decision rules fixed in a written plan before scoring; that plan carries no external timestamp, making it pre-specified rather than registered. Every other p-value, in Table 1 and the supplementary one-factor checks alike, is secondary, uncorrected, and descrip-tive. The design is also underpowered for small effects: at 
+
+n=201 and the observed discordance rates, paired differ-ences below roughly 10 points go undetected at 80% power. We repeated the primary contrast once with a second seed and once with a second patient simulator, not in a crossed design, and every other contrast rests on a single seed and simulator. Supplementary three-seed intervals resample seed and case jointly and are descriptive, not confidence intervals over a seed population. 
+
+## 5 Results 
+
+5.1 The Primary Comparison 
+
+The primary estimate pairs SFT against the untuned back-bone in a same-day clean evaluation. The original SFT weights were not retained, so we retrained the 3,000-dialogue condition from its archived configuration and SHA-256– verified corpus under one seed, disabling the complete-profile heuristic for both arms. Agreement rises from 61.7% to 74.1% (exact McNemar p=0 .0046 ; paired difference 12.4 points; asymptotic paired risk-difference 95% CI 4.3–20.6 percentage points). The gain is concentrated rather than dif-fuse: emergent recall carries it, moving from 9.5% to 69.0% (26 versus 1 discordant; unadjusted p=4 .2×10 −7, which re-mains significant under Holm correction across the three class-level tests), while urgent and routine differences cancel. Severe under-triage falls from 24 to 17 cases, a descriptive count we did not test, and per-tier confusion breakdowns are in the supplement. Two checks bound how far this estimate depends on the particular run that produced it. A second same-recipe seed reproduces the effect (73.1%), and repeating the pair with a second vendor’s caller model (DeepSeek-V4-Pro, tempera-ture 0), everything else fixed, again preserves the gap through emergent recall (71.4% versus 7.1%). 
+
+General-purpose models as nurses. Table 1 and Figure 1 place GAO-Triage beside eight external arms spanning seven general-purpose models, all under the same nurse role, ref-erence, and patient protocol. Only zero-shot Qwen3-235B agrees on significantly fewer cases ( p=0 .0043 ); a 9B model trained on compiled guidance is otherwise not separated from frontier systems here. Two confounds bound that reading: the Nurse E rec. No v. Agr. p                                                         
+
+> % (hit/42) n%vs. ours
+> GAO-Triage (ours) 69.0 (29) 174.1 —
+> ,→rerun, seed 2 78.6 (33) 073.1 0.878
+> Base 9B 9.5 (4) 061.7 0.0046
+> ROUTINE-only (floor) 0.0 (0) 055.7 3.8e-5
+> Post-training: outcome GRPO ( †)
+> Outcome GRPO 42.9 (18) 80 45.3 1.9e-9
+> GPT-5.5 64.3 (27) 075.1 0.899
+> ,→given the rule table 66.7 (28) 067.7 0.130
+> GPT-5.4 64.3 (27) 070.6 0.464
+> DeepSeek-V4-Pro 40.5 (17) 071.6 0.590
+> GLM-5.2 45.2 (19) 069.2 0.295
+> Qwen3.5-397B 73.8 (31) 068.2 0.141
+> Kimi-K2.6 76.2 (32) 271.1 0.532
+> Qwen3-235B 35.7 (15) 062.2 0.0043
+
+Table 1: Clean results on 201 cases (42 emergent). Rows marked ,→ are variants of the row above them, not separate systems: rerun, seed 2 retrains GAO-Triage under an identi-cal recipe with a different random seed, and given the rule table supplies GPT-5.5 with the same 70 rules our corpus was compiled from. E rec. is emergent recall (%, hit/42); No v. counts dialogues ending without a disposition; Agr. is ex-act agreement; p compares each row against GAO-Triage. No external arm dominates GAO-Triage on (Agr., E rec.); GPT-5.5’s 75.1% versus 74.1% is null ( p=0 .899 ), not equivalent. ROUTINE-only always answers routine—a majority-class floor, not a system. Per-tier confusion breakdowns, including catastrophic emergent-to-routine misses, are in the supple-ment. ( †) GRPO descends from original SFT weights that were not retained, so it is not comparable to the seed-matched run above. arms differ in interaction length (means 3.8–20.9 messages), and GPT-5.5 shares a model family with the patient simu-lator. The ordering is also reference-specific—it reverses on an external set, though not robustly (Section 6). 
+
+5.2 Ablating the Construction Strategies 
+
+These strategy-level checks are underpowered, and we re-port them as such. The boundary-pair null of Section 3.3 neither proves the strategy useless nor detects a separate effect: at n=201 with one seed per arm, any effect below the roughly ten-point threshold of Section 4 would go unre-solved. Supplying the rule table to GPT-5.5 likewise yields no improvement—the point estimate in fact falls, 67.7% against 75.1%—and repair has no on/off arm. Exact one-factor re-sults and comparators appear in Supplementary Section C. 
+
+5.3 Post-Training with Outcome GRPO 
+
+Rewarding the disposition directly is the obvious next step, and it fails in an instructive way. The GRPO checkpoint adds no human dialogue labels and was re-evaluated clean, but it descends from original SFT weights that were not retained, whereas Table 1 reports a same-recipe retrain, so the contrast compares checkpoints rather than interventions from a com-mon initialization. Agreement falls to 45.3% ( p=1 .9×10 −9), and the cause is not misrouting but silence: 39.8% of dia-logues end with no disposition, against at most two cases for every other arm. These are early terminations rather than dialogues that ran to the turn cap without deciding, and we count them as failures. The reward also carried rule, format, and judged-process components, so the collapse cannot be pinned on the outcome term alone. Heuristic-enabled logs had masked this failure entirely. 
+
+## 6 What Carries the Signal 
+
+Where the signal lives. A corpus built this way could teach two things: the surface form of a triage dialogue, or the guideline’s mapping from evidence to tier. Shuffling tells them apart. Permuting only which dialogue receives which label, holding class marginals fixed, collapses the model onto 
+
+Routine for every case—agreement 112 /201=55 .7% , re-call 0/42 for Emergent and 0/47 for Urgent , exactly the majority-class rate. Format, length, and tier frequency are therefore insufficient alone. The control is not strict, since it used a 2,635-sample corpus rather than the headline arm’s 3,998 weighted exposures. 
+
+What the gain looks like case by case. Figure 4 shows the same mechanism on one paired Emergent case: what SFT buys is not better guessing from the same evidence but the acquisition of the decisive evidence. One transcript illustrates the mechanism without establishing it for the 4/42 
+
+versus 29 /42 gap. 
+
+Safety is not read off agreement. The two axes of Figure 1 come apart at the checkpoint level too. On the same clean pro-tocol, catastrophic Emergent →Routine counts vary widely among arms of comparable agreement, and between two same-recipe seeds. Even within one lineage the most accurate checkpoint is not the safest: case-bank augmentation (Sec-tion 3.3; “More cases” in Figure 5) posts epoch-wise counts of 0/23 , 3/24 , and 1/27 on separately filtered subsets, and its 72.7% peak accuracy falls on the middle epoch—the one that misses most. Total agreement therefore does not order systems by safety, and the aggregate base–SFT difference is pinned down far better than any checkpoint’s operating point. 
+
+What the development record cannot show. The variants in Figure 5 are historical development records, not same-denominator main-protocol results: the gated baseline used all 201 cases, whereas in each later variant the complete-profile heuristic had touched 19% to 44% of cases in at least one of the three epoch runs (per-run counts are lower; Section 4.3), and every touched case was dropped, leaving unequal 
+
+n=111 –161 subsets with 17–27 emergent cases. Each step also bundles co-occurring changes—the routing fix shipped with a threshold change, and label repair moved several edits at once—so directions are more trustworthy than magnitudes. Related diagnostics stay in the supplement. 
+
+Late-checkpoint misses and label repair. Along that line, every threshold and coverage change we tried left the catastrophic-miss count elevated, and case-bank augmenta-tion bought emergent recall at the price of accuracy and Base 9B — 14 turns              
+
+> Caller: Seeing floaters again in my left eye after the gas bubble went away. . . sometimes a gray or black dot.
+> Nurse: How long ago did the gas bubble go away?
+> Nurse: Any sudden increase in flashes, a dark curtain, or loss of side vi-sion?
+> Nurse: Did you notice flashes. . . around the time the floaters appeared?
+> Never asks about recent surgery.
+> Urgent — “new onset floaters following recent vitrectomy/gas bubble re-moval”
+> GAO-Triage (ours) — 19 turns
+> Caller: (identical opening)
+> Nurse: Any shadow, curtain, or loss of side vision?
+> Nurse: Is your central vision reduced, missing, or different?
+> Nurse: Have you had any eye surgery or procedures within the last six weeks?
+> Caller: Yes. . . pneumatic retinopexy on October 16 for a retinal de-tachment.
+> Emergent — “recently had eye surgery. . . seek emergency eye care now”
+
+Figure 4: One paired case under the clean protocol (reference tier Emergent ); excerpts are verbatim, shortened by ellipses. The trained arm screens for recent intraocular surgery and elicits the decisive fact; the untuned arm never asks, yet cites surgery in its own reason. The gain is in what gets asked. Bold marks the decisive exchange. 60      
+
+> 70
+> 80
+> Performance (%)
+> 76.0
+> 71.8
+> Recall peak 82.6
+> Accuracy trough 63.7
+> Only joint gain
+> vs. baseline
+> Accuracy
+> Emergent recall
+> Gated
+> baseline
+> Tight
+> threshold
+> Routing
+> fix
+> More
+> cases
+> Label
+> repair
+> E→R misses —
+> (ep.1) 6241
+> Development protocol; not Table 1
+
+Figure 5: Late-checkpoint diagnostics across five successive development variants; E →R totals span three epochs, except the gated baseline, for which only an epoch-1 count survives. Only label repair lowers the miss total and raises agreement together. These are successive variants on unequal filtered sets, not controlled replications. over-triage. Only label repair, applied to the otherwise fixed routing-fix recipe (Section 3.3), lowered the miss total and raised agreement at once. The evidence is package-level: the edits were never separately ablated, and the two miss counts rest on different denominators (2/64 versus 1/71). 
+
+External stress tests. Every result so far is scored against a reference our own policy informed, so we also tested against labels we did not write. On Oxford-40, an externally authored expert-reviewed vignette set (Mittal and Aggarwal 2026), a trained precursor of our lineage—not the Table 1 condition— and the untuned backbone agree with its 40 labels on 62.5% and 50.0%, while zero-shot GPT-5.5 reaches 82.5% and re-verses the within-reference ordering. The contrast carries lit-tle weight either way: neither difference is robust ( p=0 .383 ,trained versus base; p=0 .077 Holm-adjusted, GPT-5.5 ver-sus trained), the prompts differ, a constant-emergent baseline already attains 57.5%, and Oxford-40 scores static vignettes rather than elicitation. 
+
+Limitations and ethics. The reference is the weakest link in every number above. Two rule-conditioned LLM reviewers agreed on only 44.1% of 930 citation-to-tier recomputations (κ=0 .285 ), and nine of twelve label revisions were down-grades, so it may systematically under-call emergent cases. Audited packages also contain paraphrase clusters, verdict parsing is permissive, and most arms rest on one seed and one simulator. Frozen multi-clinician labels and an interactive external benchmark are prerequisites for any patient-facing use. The data raise a separate concern. Training dialogues are synthetic, but an unrecorded fraction of profile seeds and the benchmark derive from public, patient-authored Red-dit posts, and public posting is not consent to machine-learning use. We retain no platform agreement, acquisition record, or de-identification audit, leaving re-identification risk unassessed; post-derived text reached remote endpoints whose retention policies we did not record, and no IRB re-view was sought. The artifact withholds case text; the system must not guide care. 
+
+## 7 Conclusion 
+
+We show that a compiled specialty guideline can stand in for instance-level dialogue annotation when training a multi-turn triage agent. A 70-row guideline table labels 3,000 dialogues without human judgments, improving operational-reference agreement from 61.7% to 74.1% and emergent recall from 9.5% to 69.0%. These gains require no frontier model at inference time, and none of the seven general-purpose sys-tems we test dominates GAO-Triage on both metrics. Across eight guideline-to-dialogue strategies, two constitute the la-beling mechanism itself, two yield null results, three remain confounded, and one is evaluated only as a package. Shuf-fling label–dialogue assignments collapses performance to the majority class, indicating that the capability comes from guideline-derived assignment rather than dialogue realism. Guideline compilation therefore offers a practical alterna-tive to per-instance annotation where published guidance is available but annotated conversations are scarce. These re-sults establish policy conformance, not clinical accuracy; in-dependent multi-clinician labels and an interactive external benchmark are what would turn them into a clinical claim. References 
+
+American Academy of Ophthalmology. 2026. Preferred Practice Pattern Guidelines. https://www.aao.org/education/ preferred-practice-patterns. Accessed 2026. Bai, Y.; Kadavath, S.; Kundu, S.; Askell, A.; Kernion, J.; et al. 2022. Constitutional AI: Harmlessness from AI Feedback. 
+
+arXiv preprint arXiv:2212.08073 .Cohen, J. 1960. A Coefficient of Agreement for Nominal Scales. Educational and Psychological Measurement , 20(1): 37–46. Goldberger, A. L.; Amaral, L. A. N.; Glass, L.; Hausdorff, J. M.; Ivanov, P. C.; Mark, R. G.; Mietus, J. E.; Moody, G. B.; Peng, C.-K.; and Stanley, H. E. 2000. PhysioBank, PhysioToolkit, and PhysioNet: Components of a New Re-search Resource for Complex Physiologic Signals. Circula-tion , 101(23): e215–e220. Heitjan, D. F.; and Rubin, D. B. 1991. Ignorability and Coarse Data. The Annals of Statistics , 19(4): 2244–2253. Horowitz, J. L.; and Manski, C. F. 1995. Identification and Robustness with Contaminated and Corrupted Data. Econo-metrica , 63(2): 281–302. Huang, T.; Chen, S.; Chen, M.; May, J.; Yang, L.; Wan, M.; and Zhou, P. 2025. Teaching Language Models To Gather Information Proactively. In Findings of the Association for Computational Linguistics: EMNLP 2025 , 15588–15599. Association for Computational Linguistics. Johnson, A.; Bulgarelli, L.; Pollard, T.; Celi, L. A.; Horng, S.; and Mark, R. 2023. MIMIC-IV-ED Demo (version 2.2). PhysioNet. https://doi.org/10.13026/jzz5-vs76. Kini, A.; Vengrenyuk, A.; Pineda, D.; Vengrenyuk, Y.; et al. 2026. Conversational Artificial Intelligence for Pre-Procedural Patient Preparation: Implementation, Validation and Patient Satisfaction. npj Digital Medicine .Kreyssig, F.; Casanueva, I.; Budzianowski, P.; and Gašić, M. 2018. Neural User Simulation for Corpus-based Policy Opti-misation of Spoken Dialogue Systems. In Proceedings of the 19th Annual SIGdial Meeting on Discourse and Dialogue ,60–69. Association for Computational Linguistics. Lee, J.; Shang, T.; Baik, J. Y.; Duong-Tran, D.; Yang, S.; Li, L.; and Shen, L. 2025. From Promising Capability to Perva-sive Bias: Assessing Large Language Models for Emergency Department Triage. arXiv preprint arXiv:2504.16273. Li, S. S.; Mun, J.; Brahman, F.; Hosseini, P.; Thomas, B. G.; Sin, J. M.; Ren, B.; Ilgen, J. S.; Tsvetkov, Y.; and Sap, M. 2025. ALFA: Aligning LLMs to Ask Good Questions—A Case Study in Clinical Reasoning. In Second Conference on Language Modeling .Manski, C. F. 2003. Partial Identification of Probability Dis-tributions . Springer Series in Statistics. New York: Springer. Mittal, S.; and Aggarwal, Y. 2026. Evaluation of Large Language Models in the Diagnosis, Urgency Triage, and Initial Management of Ophthalmic Emergencies. Cureus ,18(1): e101433. CC-BY 4.0. Nori, H.; Daswani, M.; Kelly, C.; Lundberg, S.; et al. 2025. Sequential Diagnosis with Language Models. arXiv preprint arXiv:2506.22405 .Nori, H.; King, N.; McKinney, S. M.; Carignan, D.; and Horvitz, E. 2023. Capabilities of GPT-4 on Medical Chal-lenge Problems. arXiv preprint arXiv:2303.13375 .Ouyang, L.; Wu, J.; Jiang, X.; Almeida, D.; Wainwright, C. L.; et al. 2022. Training Language Models to Follow Instructions with Human Feedback. In Advances in Neural Information Processing Systems (NeurIPS) .Rafailov, R.; Sharma, A.; Mitchell, E.; Manning, C. D.; Er-mon, S.; and Finn, C. 2023. Direct Preference Optimization: Your Language Model is Secretly a Reward Model. In Ad-vances in Neural Information Processing Systems (NeurIPS) .Ratner, A.; Bach, S. H.; Ehrenberg, H.; Fries, J.; Wu, S.; and Ré, C. 2017. Snorkel: Rapid Training Data Creation with Weak Supervision. Proceedings of the VLDB Endowment ,11(3): 269–282. Ratner, A. J.; De Sa, C.; Wu, S.; Selsam, D.; and Ré, C. 2016. Data Programming: Creating Large Training Sets, Quickly. In Advances in Neural Information Processing Systems , vol-ume 29, 3567–3575. Schatzmann, J.; Thomson, B.; Weilhammer, K.; Ye, H.; and Young, S. 2007. Agenda-Based User Simulation for Boot-strapping a POMDP Dialogue System. In Human Language Technologies 2007: The Conference of the North American Chapter of the Association for Computational Linguistics; Companion Volume, Short Papers , 149–152. Association for Computational Linguistics. Schmidgall, S.; Ziaei, R.; Harris, C.; Reis, E.; Jopling, J.; and Moor, M. 2024. AgentClinic: A Multimodal Agent Bench-mark to Evaluate AI in Simulated Clinical Environments. 
+
+arXiv preprint arXiv:2405.07960 .Shao, Z.; Wang, P.; Zhu, Q.; Xu, R.; Song, J.; et al. 2024. DeepSeekMath: Pushing the Limits of Mathemati-cal Reasoning in Open Language Models. arXiv preprint arXiv:2402.03300 .Singhal, K.; Azizi, S.; Tu, T.; Mahdavi, S. S.; Wei, J.; et al. 2023. Large Language Models Encode Clinical Knowledge. 
+
+Nature , 620: 172–180. Taori, R.; Gulrajani, I.; Zhang, T.; Dubois, Y.; Li, X.; Guestrin, C.; Liang, P.; and Hashimoto, T. B. 2023. Stanford Alpaca: An Instruction-Following LLaMA Model. https: //github.com/tatsu-lab/stanford_alpaca. Thirunavukarasu, A. J.; Ting, D. S. J.; Elangovan, K.; Gutier-rez, L.; Tan, T. F.; and Ting, D. S. W. 2023. Large Language Models in Medicine. Nature Medicine , 29: 1930–1940. Tu, T.; Palepu, A.; Schaekermann, M.; Saab, K.; Freyberg, J.; et al. 2024. Towards Conversational Diagnostic AI. arXiv preprint arXiv:2401.05654 .Wang, Y.; Kordi, Y.; Mishra, S.; Liu, A.; Smith, N. A.; Khashabi, D.; and Hajishirzi, H. 2023. Self-Instruct: Align-ing Language Models with Self-Generated Instructions. In 
+
+Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics .Xu, C.; Guan, S.; Greene, D.; and Kechadi, M.-T. 2024. Benchmark Data Contamination of Large Language Models: A Survey. arXiv preprint arXiv:2406.04244. Yu, A.; Yao, L.; Liu, J.; Chen, Z.; Yin, J.; Wang, Y.; Liao, X.; Ye, Z.; Li, J.; Yue, Y.; Xiao, H.; Zhou, H.; Guo, C.; Wei, P.; Liu, J.; and Gu, J. 2025. MedResearcher-R1: Expert-Level Medical Deep Researcher via a Knowledge-Informed Trajectory Synthesis Framework. arXiv preprint arXiv:2508.14880. Zhao, Z.; Jin, Q.; Chen, F.; Peng, T.; and Yu, S. 2023. A Large-Scale Dataset of Patient Summaries for Retrieval-Based Clinical Decision Support Systems. Scientific Data ,10: 909. Dataset release used: PMC-Patients-V2, Hugging Face zhengyun21/PMC-Patients .Zheng, L.; Chiang, W.-L.; Sheng, Y.; Zhuang, S.; Wu, Z.; et al. 2023. Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena. In Advances in Neural Information Process-ing Systems (NeurIPS), Datasets and Benchmarks Track .Zhou, K.; Zhu, Y.; Chen, Z.; Chen, W.; Zhao, W. X.; Chen, X.; Lin, Y.; Wen, J.-R.; and Han, J. 2023. Don’t Make Your LLM an Evaluation Benchmark Cheater. arXiv preprint arXiv:2311.01964 .

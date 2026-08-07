@@ -1,0 +1,285 @@
+Title: DiagLoop: A Counterfactual Data Flywheel with Stage-Localized Reinforcement for Diagnostic LLMs
+
+URL Source: https://arxiv.org/pdf/2608.03674v1
+
+Published Time: Wed, 05 Aug 2026 01:07:18 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# DiagLoop: A Counterfactual Data Flywheel with Stage-Localized Reinforcement for Diagnostic LLMs 
+
+## Jian Zhang, Bingyi Wang, Yizhi Liu 
+
+Zhejiang University 
+
+Abstract 
+
+Causal diagnostic models must justify how their conclusions follow from the evidence because diagnoses guide repairs and treatments. Sensitive data and latency constraints also favor local deployment. Training a locally deployable LLM is dif-ficult, however: serious cases are scarce, records rarely con-tain reasoning paths, and data from one configuration transfer poorly to another. We present DiagLoop, which turns codified physical relations or clinical guidelines, authored once per mechanism family, into supervision beyond recorded cases. A training-only teacher proposes counterfactual worlds by vary-ing causes, contexts, and observations, while a separate hy-brid checker decides which worlds are admissible. A student model then answers each world through symptom abstraction, causal-chain construction, and root-cause attribution. Criteria attached to these stages locate the student’s earliest failure; for a nonterminal failure, a bounded repair probes the model’s downstream competence, and the resulting weakness pro-file routes subsequent generation. Stage-localized reinforce-ment learning rewards only the model-generated continuation, while replay and preservation limit forgetting. The same stage criteria govern admission, attribution, reward, and regenera-tion through operationally separate checks that the proposer never performs. Trained only on synthesized scenarios and without case-level expert reasoning annotations, the resulting 8B model improves strict path correctness by 11.6 and 5.5 points over the strongest conventional baseline across eight industrial systems and ten disease categories, and by 3.9 and 2.3 points over a deranged-routing control. It also exceeds the evaluated proprietary references in path correctness in both domains, even when those references receive few-shot exam-ples or the specification in context. 
+
+## 1 Introduction 
+
+Industrial fault diagnosis and clinical diagnosis share one core task: inferring the hidden cause behind the observed evidence, and LLMs are increasingly applied to both (Zhang et al. 2025; Lin et al. 2025; Zhang et al. 2026; Singhal et al. 2023; McDuff et al. 2025). A diagnosis is acted on: equip-ment is repaired and treatment is started on the strength of the reasoning behind the conclusion, so the reasoning path must be right, not only the final label. Diagnostic data are also sensitive and often processed under network-isolation and la-tency constraints (Dennstädt et al. 2025); practice therefore needs a readily deployable open LLM whose conclusions are supported by checkable reasoning. Training such a model runs into the data first. Serious faults are rare, can disrupt the very streams that record them, and cannot be induced safely; clinical records are constrained by privacy and limited sharing. Each archive is also bound to one installation or cohort, so models trained on it learn setting-specific patterns rather than knowledge that transfers (Liu et al. 2021). Most records, moreover, keep only the diagnostic conclusion, not the reasoning that established it. An experienced engineer or physician, however, can of-ten diagnose a device or a patient never seen before. Expert reasoning runs on the relations between manifestations and faults or diseases, and these relations are far more stable across installations and cohorts than the surface patterns of any single archive. Given a candidate cause, an expert asks which manifestations should follow and checks them against the case; look-alike causes are told apart by what should dif-fer, and changed conditions by how the observations should shift. This is counterfactual reasoning in the practical sense: comparing the case at hand against controlled alternative worlds, the same fault under a different condition, a different fault behind similar evidence. This capability is exactly what we want the model to acquire: the mechanism-grounded path from evidence, through a causal chain, to a cause, and the ability to tell such alternative worlds apart. The supervision it requires follows directly: families of controlled scenario variants that differ in one cause or one condition at a time, with reasoning paths checkable stage by stage—symptom abstraction, causal-chain construction, and root-cause attri-bution. Supervision of this form is hardly found in records and has to be synthesized. Earlier augmentation, such as GAN-based generation, enlarges the dataset around the recorded distribution (Shao, Wang, and Yan 2019; Ma et al. 2021) but rarely creates scenarios beyond it, let alone the reasoning behind them. Recent work therefore uses LLMs to write the training data itself, from instructions and rationales to pro-gressively harder tasks (Wang et al. 2023; Zelikman et al. 2022; Xu et al. 2024; Gunasekar et al. 2023). The trou-ble is that the generating model itself makes causal errors: a generated scenario or its reasoning chain may contradict the physical or clinical relations, omit the evidence needed for diagnosis, or leave a look-alike cause equally supported. The usual filters—answer agreement, consensus, outcome correctness, or task-level rubrics (Lyu et al. 2026b,a)—are arXiv:2608.03674v1 [cs.LG] 4 Aug 2026 themselves model judgments prone to the same causal errors, so flawed worlds pass. What training needs, then, is synthetic supervision whose scenarios and reasoning are checked for consistency with the governing mechanism itself, a check that existing pipelines have yet to provide, the verification gap .At the same time, a trustworthy corpus alone does not fin-ish the job, because training keeps changing the model. Mas-tered scenarios provide diminishing signal; rollout-based training draws its signal precisely from what the model still gets wrong (Shao et al. 2024; Lyu et al. 2026a). Further progress depends on finding where the current model fails and aiming new data exactly there, and locating that place is the hard part: whether an answer is right or wrong is too coarse a signal, since in chain-shaped diagnosis one early mistake can invalidate every later stage, and the final result reveals neither the stage that broke nor the kind of variation that exposed it. Existing tools do not close this loop either: process supervision scores intermediate steps, but the scores end there (Lightman et al. 2024; Wang et al. 2024); curric-ula reorder examples that already exist (Bengio et al. 2009); error-driven generation expands failed tasks without locating the failing stage (Lyu et al. 2026b). What is still missing is a path from an observed weakness to new data that targets it, the attribution gap ; and once targeted updates are made, shared parameters let progress on a weak stage erode stages that were already right, the consolidation gap (Kirkpatrick et al. 2017). We therefore propose DiagLoop , which trains a locally deployable diagnostic LLM by coupling counterfactual data construction, causal weakness mining, and stage-localized reinforcement learning in one closed loop. Its central design is criterion reuse: a training-only teacher proposes worlds and bounded repairs but never certifies its own output, while the same three-stage criterion semantics, implemented through operationally separate checks, govern admission, failure at-tribution, reward, and regeneration. At inference, only the model and output schema remain. Our contributions are: 
+
+• Counterfactual world flywheel. It turns codified domain specifications into diverse counterfactual scenarios, and admits a scenario only when its reasoning path passes checks against the same codified mechanism, so training needs no case-level expert reasoning annotations. 
+
+• Causal weakness flywheel. The same stage criteria locate the earliest observable failure in each model trajectory; a checker-admitted bounded repair followed by the model’s own continuation shows whether the failure stays local or propagates, and the resulting weakness profile decides which scenarios are generated next. 
+
+• Stage-localized RL. The located failure then sets where the rollout starts and which criteria are rewarded on the model’s own continuation, while replay, preservation tra-jectories, and a reference anchor keep mastered skills intact. Trained solely on synthesized scenarios, the re-sulting 8B model surpasses the strongest conventional baseline, the deranged-routing control, and the evaluated zero-shot proprietary references in strict path correctness across eight industrial systems and ten disease categories. 
+
+## 2 Related Work 
+
+2.1 LLMs for Industrial and Clinical Diagnosis 
+
+Applied LLM diagnosis increasingly targets locally deploy-able open models, since evidence often cannot leave iso-lated networks, monitoring bounds latency, and conclusions should be auditable on site (Lin et al. 2025; Zhang et al. 2025, 2026; Singhal et al. 2023; McDuff et al. 2025; Dennstädt et al. 2025). The prevailing recipe fine-tunes on fault or disease la-bels, at most using diagnosis accuracy to trigger further data generation (Zhang et al. 2025, 2026). The cost of this label focus is documented: a model can return the correct fault label with an incorrect explanation, and improving diagno-sis accuracy does not ensure inference correctness (Zhang et al. 2025). Augmentation and transfer learning reduce label scarcity (Shao, Wang, and Yan 2019; Ma et al. 2021; Liu et al. 2021), yet labels neither block setting-specific short-cuts (Geirhos et al. 2020) nor recover unrecorded reasoning paths. What this line lacks is supervision over how the model reasons; the codified rules and guidelines these domains al-ready maintain (Katipamula and Brambley 2005; Sutton et al. 2020) are a natural standard for such supervision, yet current LLM diagnosis training leaves them unused. 
+
+2.2 Counterfactual and Verifiable Synthetic Data 
+
+Diagnosis needs specific synthetic supervision: scenarios that vary causes and conditions, each with a reasoning path trustworthy enough to train on. Existing synthesis scales volume and difficulty, creating instructions, ratio-nales, tasks, and corpora for smaller models (Wang et al. 2023; Zelikman et al. 2022; Xu et al. 2024; Gunasekar et al. 2023), expanding failed tool-use tasks under answer agreement (Lyu et al. 2026b), and scoring generated ecosys-tems with task-level rubrics (Lyu et al. 2026a). None of this makes the reasoning reliable: generators commit causal er-rors, and agreement- or rubric-based filters—model judg-ments often from related families—pass many errors on, so the paths that reach training cannot be presumed correct. Rule-derived benchmarks and causal probes carry more re-liable structure (Fansi Tchango et al. 2022; Frohberg and Binder 2022; Kıcıman et al. 2024) yet serve evaluation rather than training, and counterfactually edited examples improve robustness in training (Kaushik, Hovy, and Lipton 2020) but rely on human editing of recorded cases rather than mechanism-checked synthesis. A synthesis route that de-livers mechanism-checked, trustworthy reasoning paths at training scale is still missing, the verification gap .
+
+2.3 Process Supervision and Adaptive Updating 
+
+A further line of work concerns where a model fails and how training should respond. Outcome rewards give a reli-able end-of-chain signal (Uesato et al. 2022), process reward models score intermediate steps (Lightman et al. 2024; Wang et al. 2024; Setlur et al. 2025), curricula order examples from easy to hard (Bengio et al. 2009), and error-driven flywheels grow the corpus around failed tasks (Lyu et al. 2026b). These signals are designed for generic steps and whole tasks; con-necting a located failure to the next round of generation lies outside their scope, the attribution gap . On the train-ing side, critique-and-revision uses self-feedback (Madaan et al. 2023), on-policy distillation follows the model’s own errors (Hinton, Vinyals, and Dean 2015; Agarwal et al. 2024), verifiable-reward RL optimizes checkable tasks (Shao et al. 2024; Guo et al. 2025), and replay or weight regularization stabilizes updates (Rolnick et al. 2019; Kirkpatrick et al. 2017). These methods optimize the trajectory as a whole; for a chain whose stages share one network, conditioning updates on the located failure while protecting the rest is not addressed jointly by these methods, the consolidation gap .
+
+Summary. Prior work advances synthetic data, process feedback, adaptive generation, and verifiable optimization separately, connecting them through different signals. The central contribution of DiagLoop is a criterion-reuse in-terface : shared stage-criterion semantics govern admission, locate the earliest failure, score the model-generated con-tinuation, route subsequent generation, and select passing trajectories for preservation, while the corresponding checks remain operationally separate. 
+
+## 3 Formalization and Working Hypotheses 
+
+Within a codified mechanism family, how a condition man-ifests is governed far more by the codified relations than by the surface patterns of any particular installation or patient, and practice has already written these relations down. This yields our first hypothesis: (H1) the codified relations be-tween manifestations and conditions are formalizable and compositional, so holding the relations fixed while varying conditions, contexts, and observations yields candidate coun-terfactual worlds whose validity the same codified relations can check. Concretely, let F denote the codified conditions, C
+
+the contexts (system forms, sensor suites, operating regimes, or patient profiles), and V a set of bounded variation opera-tors on worlds and their observations. Composing at most K
+
+operators over a base world yields the counterfactual space 
+
+ΩK = {vk◦· · ·◦ v1(ω0(f, c )) : f ∈ F , c ∈ C , v i ∈ V , k ≤ K},
+
+(1) where ω0(f, c ) is a base world, composition operators inter-vene on the condition or context, and the remaining operator families perturb the observations. The number of candidate sequences grows exponentially with K; deduplication and admission set the realized scale (Section 5), while any single archive records a sparse slice. Over this space the two directions of answering differ sharply in difficulty. Asking an LLM to diagnose directly is hard: it must weigh every candidate in F against overlap-ping evidence and discharge the differentials among look-alikes. Constructing with the answer in hand is far more constrained, though not error-free: given the condition, lay-ing out its manifestations and the connecting reasoning path follows the codified relations Rf , a substantially narrower construction problem even when multiple valid derivations exist. This asymmetry mirrors expert practice and is an em-pirical matter, stated as our second hypothesis: (H2) for the same LLM, constructing a scenario and its reasoning path with the condition known is substantially more reliable than inferring the condition by direct diagnosis. Section 5 tests both directions for the same teacher. 
+
+## 4 Method 
+
+DiagLoop turns the knowledge that a domain already records into training for a locally deployable diagnostic student: ad-mitted counterfactual worlds supply the data, the earliest failure supplies the target, and stage-localized reinforcement learning supplies the update. The teacher and checker see this knowledge and the intended cause; the student sees only ob-servations x, and only the student and output schema remain at inference. One set of stage criteria, defined next, governs admission, attribution, reward, and regeneration through op-erationally separate checks (Figure 1); generalization claims are limited to new configurations and compositions within the codified family. 
+
+4.1 World Specification and Stage Criteria 
+
+A world specification W records the system structure (com-ponents, topology, and observable variables), its operating logic, and the codified relations Rf from each condition to its manifestations. Logic and mechanisms are authored once per domain; structural fields instantiate each setting. An admit-ted world ω = ( f, c, x ω ) binds a condition, a context, and its teacher-proposed observations to the specification. The spec-ification encodes physical constraints in the industrial domain and guideline relations in the clinical domain; the method requires a codified mechanism family and an observation-to-field mapping (authoring costs in Appendix A). Given observations x, the student produces τ =(z1, z 2, z 3): symptom abstraction forms an evidence set, causal-chain construction links it to candidate conditions, and root-cause attribution selects a cause while exclud-ing alternatives. Five binary criteria are assigned by stage: 
+
+K1 = {evidence faithfulness, symptom layering }, K2 =
+
+{causal-chain validity }, and K3 = {root-cause adequacy, differential exclusion }. Stage g passes when Pg (τ ; ω, W) = Q 
+
+> κ∈K g
+
+κ(z1: g ; ω, W) = 1 ; each criterion is assigned to one stage but may read the preceding stages. For a cooling-coil valve stuck closed, for example, the checks reject an invented flow reading or a conclusion that retains a fouled coil even though fouling cannot explain valve-position feedback that still reads closed despite an opening command. The checker is hybrid: specification lookup resolves struc-tured questions, and an LLM only maps free-form spans to fields in a context separate from the teacher’s proposal pass. Each violation cites its field and supporting span. This bounded checker is not a formal verifier, so consistency claims are conditioned on expert-audited false-acceptance and false-rejection rates. When scoring a student trajectory, it receives the intended cause and alternatives, so it maps, compares, and looks up rather than diagnoses. Test evalua-tion uses independent gold chains and a frozen scorer; the training checker never scores test outputs. 
+
+4.2 Counterfactual World Flywheel 
+
+Following H2 (Section 3), the world-construction loop fixes the cause, and hence the intended label, first. DiagLoop there-DiagLoop 
+
+① Counterfactual World Flywheel 
+
+② Causal Weakness Mining ③ Stage-Localized RL                   
+
+> Shared stage criteria
+> z1- Symptom abstraction
+> z2- Causal-chain construction
+> z3- Root-cause attribution
+> Teacher (training-only)
+> The teacher never certifies its own worlds
+> Counterfactual worlds
+> Vary causes, contexts, observations
+> Repair-state GRPO
+> Preservation & replay
+> Targeted regeneration
+> Composition
+> Visibility
+> Confounder injection
+> Occlusion
+> Reward only the student-generated suffix
+> g*
+> Keep mastered stages intact
+> z1z2z3
+> New worlds aimed at weak cells
+> Teacher & Checker see worlds and the cause
+> Hybrid checker
+> Admitted only if every stage passes
+> Admitted corpus D
+> Revise or discard
+> z1z2z3
+> Student
+> πS
+> Five binary criteria: evidence faithfulness, symptom layering, chain validity, adequacy, differential exclusion
+> One definition: operationally separate checks
+> Locates g* Earliest failing stage
+> 3z，
+> Fresh worlds each round
+> Passes ↓Fails ↓Variation  v
+> Stage g
+> x
+> z2
+> Bounded repair
+> stage g* only
+> no new facts, no revealed answer
+> Updated student
+> z1z2z3
+> Weakness profiles Scores and routes
+
+Figure 1: DiagLoop overview: one set of stage criteria connects admission, attribution, reward, and regeneration. fore never asks the teacher to diagnose within this loop; it asks the teacher to construct the cause’s consequences. The student sees only xω and still solves the full inverse problem. The four operators in V instantiate the space ΩK of Eq. (1). Composition creates a new anchor by placing f in a rare con-text or replacing it with intervention-defined f ′; the label-changing subset, its target fixed before generation, feeds the intervention-sensitivity evaluation (Section 5). Visibility, confounder injection, and occlusion preserve the underlying condition and diagnosis while changing which readings are exposed, added, or hidden, with controlled pairs otherwise fixed. We use counterfactual for these world interventions and observation perturbations, without claiming unit-level causal counterfactuals (Pearl 2009). Later allocation under budget K follows the weakness profile, not k alone. For world ω, teacher policy πT proposes observations xω
+
+and reference trajectory τω . The admitted corpus is 
+
+D = {(xω , τ ω ) ∼ πT (· | ω, W) : ω ∈ ΩK , τ ω |= K} , (2) where τω |= K means that every stage passes. Failed drafts are minimally revised and rechecked, and irreparable worlds are discarded. Admission jointly requires a diagnos-able world, evidence sufficient for a valid derivation, a fully passing reference path, and explicit exclusion of relevant look-alikes. Clinical checks enforce guideline-supported ad-missibility rather than physical necessity. The training pair is 
+
+(xω , τ ω ); audit records additionally store the intended cause, variation metadata, and criterion results. 
+
+4.3 Causal Weakness Flywheel 
+
+The student first answers without assistance. The checker then identifies its earliest failing stage, 
+
+g∗(τ ) = min  { g : Pg (τ ; ω, W) = 0 } ∪ {∞} . (3) Attribution stops at the earliest observable failure, since an earlier violation invalidates the premises of every later stage. If all stages pass, g∗ = ∞ and no repair is made. This local-ization is criterion-relative, not a claim about the parameter-level origin of the error. For g∗ < 3, chain repair rewrites only the failing stage and is admitted only if that stage passes; it may not add unobserved facts, reveal the intended cause, or provide a complete answer, with field–span checks screening leakage. The retained student prefix is z1: g∗−1 (empty when g∗ = 1 ), the admitted repair replaces zg∗ , and the student generates 
+
+z′
+
+> g∗+1:3
+
+. The repair enters the prompt but never the loss. A passing continuation is consistent with a stage-local bot-tleneck; a failed continuation enters the post-repair failure profile. Further repairs are profiling probes only and never enter the reinforcement-learning rollout, so each episode has one failure boundary. At terminal g∗ = 3 , no repair is sup-plied and the student regenerates z′ 
+
+> 3
+
+from z1:2 . We aggregate first-failure and post-repair failure rates by stage g and varia-tion family v: wt(g, v ) = α FF t(g, v ) + (1 − α) PRF t(g, v ),with α ∈ [0 , 1] . This profile allocates the next generation round. 
+
+4.4 Stage-Localized Reinforcement Learning 
+
+Training starts with one SFT pass over D, then alter-nates failure-boundary-conditioned reinforcement learning, preservation, and regeneration; stage-localized names the rollout boundary, not stage-specific parameters. For g∗ < 3,recovery at the failing stage is not assumed and is measured on later unassisted answers. 
+
+Reinforcement learning from the repaired boundary. 
+
+Multiple continuations may be valid, so we optimize the criterion-scored suffix with GRPO (Shao et al. 2024). For 
+
+g∗ < 3, the prompt contains the student’s stages before the failure and the admitted replacement for zg∗ ; the student generates only the later stages. For g∗ = 3 , it receives no repair and regenerates stage 3. With b(g∗) = min {g∗ +1 , 3},the reward is 
+
+R(τ ′) = 
+
+> 3
+
+X
+
+> g=b(g∗)
+
+X
+
+> κ∈K g
+
+λκ κ(z′ 
+
+> g
+
+; ω, W) − μ U (τ ′). (4) Only student-generated stages receive credit: repaired stages are excluded and terminal stage 3 is included; both g∗ = 2 and g∗ = 3 reward only stage 3, differing in whether a re-pair conditions the prompt. λκ weights the criteria and is frozen before training, largest on causal-chain validity and root-cause adequacy; the vector and an equal-weight sen-sitivity appear in the appendix. U (τ ′) penalizes assertions unsupported by x or W, scored by the same checking pass as the criteria. GRPO normalizes advantages within groups against the post-SFT KL reference; rounds stop when the development gain falls below a frozen threshold, capped at eight rounds, and both domains stopped after six. The pri-mary stream is on-policy: fresh unassisted rollouts from πθt
+
+and their repair-conditioned continuations rebuild the round-
+
+t failure pool and wt; earlier rollouts enter only through replay. 
+
+Preservation. Each batch also includes full trajectories from cells below a frozen weakness threshold, replay from earlier rounds, and a small SFT term on checker-admitted teacher references, limiting cross-stage interference, drift, and format collapse. Full preservation trajectories ( g∗ = ∞)score all three student-generated stages directly. 
+
+Regeneration. Before training, we freeze an executable map ρ(g, v ) for every stage–variation cell, specifying the target criterion or mixture, operator and subtype, invariant fields, and admission check. After each update, 
+
+qt+1 (g, v ) = (1 − ϵ) exp( η w t(g, v )) 
+
+P 
+
+> g′,v ′
+
+exp( η w t(g′, v ′)) + ϵ q 0(g, v ),
+
+(5) where η controls concentration, ϵ ∈ [0 , 1] , and uniform q0
+
+preserves support for every cell. The generator samples a cell, applies ρ(g, v ), and rechecks the variant, creating new supervision rather than resampling a static pool (Lyu et al. 2026a). Admitted reference trajectories from these newly routed worlds enter the next round’s SFT-anchor stream: this loss covers the full path and is targeted only through data routing, and it supplies the located weak stage the direct supervision that repair-conditioned rollouts withhold. Admission, failure localization, and reward scoring use separate calls with role-specific prompts under shared cri-terion definitions; test scoring uses a frozen, independently constructed scorer. Appendix A provides specifications, op-erators, ρ, prompts, model versions, hyperparameters, the stopping rule, and seeds. 
+
+## 5 Experiments 
+
+5.1 Experimental Setup 
+
+Benchmarks and data separation. The LBNL industrial fault benchmark (Granderson et al. 2022) contains 26,175 cases covering 91 fault types in eight heterogeneous sys-tems; our DDXPlus evaluation subset (Fansi Tchango et al. 2022) contains 128,800 cases grouped into ten disease cat-egories. Results are macro-averaged at the group level, with per-group breakdowns in Appendix D; paired values read in-dustrial/clinical throughout. Neither benchmark contributes cases to synthesis or training: world specifications derive from separately frozen standards or guidelines, both evalua-tions hold out cases, and LBNL adds a configuration-held-out split fixed before synthesis. A disjoint synthetic development set fixes prompts, thresholds, hyperparameters, stopping tar-gets, and checkpoints before either test set or the locked audit is accessed. Selection rules, distributions, provenance, and ontology overlap appear in Appendix B; specification ver-sions and authoring effort appear in Appendix A. 
+
+Models. The student is Qwen3-8B, trained and served on the same 4 ×NVIDIA H200 cluster; a single card suffices for deployment at 3.6 s per case (bf16, 2,048-token cap). Frozen Qwen3.7-Max (Qwen Team 2026) proposes and re-pairs training scenarios; at evaluation it serves only as a zero-shot reference without the intended cause or specifica-tion; its undisclosed parameter count precludes model-size claims. Claude-Sonnet-4.6 is a second reference (API details in Appendix B). Algorithm, stage schema, and optimization hyperparameters are shared across domains; only the spec-ification, field mapping, and criterion instantiation change. Counterfactual training worlds are enumerated forward from the frozen specifications: four perturbation operators (occlu-sion, confounder, visibility, composition) at depth K=3 over 99 industrial conditions (91 faults plus eight normals; ∼30 sensors, nine operating contexts) and 49 clinical conditions (223 symptoms, demographic grid) yield 176,891/131,742 deduplicated combinations, of which physical and clinical filtering retains 30,614/49,876 generable worlds (operator combinatorics and per-round yields in Appendix B). Training runs six flywheel rounds per domain over these worlds, ad-mitting 14,302/21,744 scenarios at 218/342 aggregate GPU-hours, of which 12,874/19,566 (excluding development and profiling reserves) supply cold-start SFT answers. 
+
+Evaluation and statistics. Gold reasoning chains are inde-pendent of training: clinical chains derive from benchmark evidence and differential annotations, and domain profes-sionals annotate every industrial evaluation case. A sealed 1,500-scenario audit, stratified across admitted and rejected drafts and excluded from prompt tuning, estimates the train-ing checker’s error and g∗-localization rates. Test paths are scored by a frozen gold-chain-conditioned scorer whose agreement is measured against method-blinded experts; the training checker never grades test output, and expert g∗ labels agree at Cohen’s κ = 0 .81 on a 300-case double-annotated subset (Appendices B and C). We report top-1 accuracy (Acc), strict all-stage path cor-rectness (Path), and stage-level scores, each averaged over five sampled completions per case at temperature 0.6 for trained models; macro-F1 appears in Appendix D. Main comparisons average three seeds, the two prespecified facto-rials use five paired seeds each, paired bootstrap preserves method pairing, and test families with Holm correction were fixed before evaluation (resampling details in Appendix B). 
+
+Baselines and budgets. At evaluation, all models share evidence, candidate space, schema, parser, and tool access. Data baselines fine-tune Qwen3-8B on unfiltered, answer-agreement-filtered, or constraint-admitted teacher scenar-ios; plain GRPO on uniformly sampled fresh worlds is the compute-matched optimization baseline. The routing abla-tion adds a uniform-regeneration arm: the proposal distribu-tion is frozen to uniform while fresh worlds are still gen-LBNL (8 sys.) DDXPlus (10 cat.)                                        
+
+> Method Acc Path Acc Path
+> Proprietary references (zero-shot)
+> Qwen3.7-Max 77.80 70.47 78.74 54.08 Claude-Sonnet-4.6 86.05 72.60 82.34 57.08
+> Student: Qwen3-8B
+> Qwen3-8B (zero-shot) 46.86 14.31 51.24 16.48 SFT (teacher, unfiltered) 83.94 70.07 75.14 60.59 SFT (+answer agreement) 86.55 74.50 77.24 61.78 SFT (constraint-admitted) 90.26 80.37 78.85 64.78 Plain GRPO (uniform fresh) 89.53 79.05 78.44 64.08 DiagLoop (deranged routing) 92.45 88.07 78.37 67.98
+> DiagLoop (full) 94.66 91.97 79.84 70.23
+
+Table 1: Main results (%): top-1 accuracy (Acc) and strict all-stage path correctness (Path), macro-averaged over eight systems or ten disease categories; best trained method in bold. Trained methods use matched budgets (Section 5.1); per-group results appear in Appendices D–G. erated, with calls, tokens, and GPU-hours matched (Ap-pendix D). A type-compatible derangement of complete ρ
+
+entries forms the deranged-routing control, which decouples measured weaknesses from their assigned generation opera-tions (staleness robustness in Appendix G). Main-table com-parisons match generated and admitted scenarios, student tokens and updates, teacher and checker calls, and replay settings; the admission ablation instead equalizes admitted counts to isolate quality from size. 
+
+5.2 Teacher Premise and Main Results 
+
+Forward construction. Testing H2, Qwen3.7-Max per-forms both directions on the matched development sets: direct diagnosis passes the stage criteria in 41.6%/38.2% of cases. Given the intended cause, first drafts pass in 78.4%/74.9% and revise–recheck reaches admission within 3 rounds in 93.1%/90.6%; expert audit preserves this order-ing, supporting H2 (revision and call costs in Appendix C). Admission rates stay within 5.1 points of the depth-one rate through k = K, an operational feasibility check for H1 (Ap-pendix C); the operator and head–tail results below assess the utility of the resulting variations. 
+
+End-to-end performance. Table 1 yields three findings. First, DiagLoop reaches 94.66/91.97 Acc/Path on LBNL and 79.84/70.23 on DDXPlus: Path improves by 11.6 and 5.5 points over constraint-admitted SFT, the strongest conven-tional baseline (paired 95% CIs [8.9, 13.6] and [4.7, 7.9]), and by 3.9/2.3 points over the deranged-routing control, the closest arm overall. Second, the gains are broad rather than driven by a few groups: improvements occur in 8/8 systems and 9/10 categories, and the worst-group changes are +2 .3
+
+(industrial) and −1.4 (clinical) percentage points, with the single clinical regression in the symptom/sign category (re-versal analysis in Appendix D). Third, on the configuration-held-out LBNL split, the Acc/Path gains over constraint-admitted SFT and plain GRPO are 3.4/8.2 and 3.9/8.8 points, so the closed loop adds capability beyond admission quality alone and beyond familiarity with seen configurations (every arm degrades on this split, ordered by configuration expo-sure; Appendix D). These orderings are not a scorer-family artifact: a Claude-based scorer preserves the ranking exactly, per-arm 200-case blinded expert audits (separate from the sealed 1,500-scenario audit) agree with the frozen scorer on 91.5%/88.5% of cases, and full-arm scorer bias is statistically indistinguishable from zero (Appendix E). The proprietary APIs serve as capability references under the same output schema, not budget-matched comparisons; GPU memory and latency, rather than API accuracy, char-acterize deployability. On DDXPlus, Claude keeps a higher top-1 accuracy (82.34 vs. 79.84) yet trails by 13.2 Path points; its Acc–Path gap of 25.3 points, against 9.6 for DiagLoop, quantifies the right-label, wrong-path failure that motivates this work. The margin over the teacher reflects H2, not model size: the student distills the teacher’s reliable fixed-cause con-structions into inverse-task competence that the teacher itself lacks in the zero-shot setting; few-shot and specification-in-context references narrow but do not close the gap, remaining 11.3/7.8 Path points below under the pooled protocol (Ap-pendix E). 
+
+5.3 Component Analyses 
+
+Constraint-based admission. Table 2 prices each reuse of the stage criteria by its own control; the estimands are not additive. The deranged control retains every component and budget and breaks only the weakness-to-operation alignment, so its 3.9/2.3-point margin isolates the coupling itself, on top of the 11.6/5.5-point margin over the strongest conventional baseline. Every admission rule sees the same raw candidate pool; downstream sets are cut to the smallest admitted count and matched in tokens and updates, separating quality from size, with yield analyzed separately. Relative to answer agree-ment, constraint-based admission increases expert-audited validity by 7.8/6.4 points and downstream Path by 5.9/3.0 points. On the sealed 1,500-scenario audit, the checker falsely accepts 4.25/5.11% and falsely rejects 6.83/7.98% of sce-narios, without amplification across training rounds (Ap-pendix C), and locates g∗ correctly in 87.35/84.63% of cases; the frozen test scorer matches method-blinded experts on 91.17/89.50%. Replacing the training checker with a disjoint model costs 1.4/1.2 admission-rate and 1.2/1.0 retrained Path points; replacing the proposer with the weaker Qwen3.6-Plus costs only 3.8/4.5 admission-rate and 1.4/1.5 Path points de-spite an 8.6/9.2-point first-draft drop: the loop absorbs quality differences on either side (Appendices C and E). 
+
+Weakness-directed regeneration. Under the same max-imum resource envelope, stage ×family routing reaches the prespecified stage-pass target on the development set with 64.1/58.0% fewer generated scenarios than uniform regen-eration (resource coordinates in Appendix E). At the shared final checkpoint (equal student-update tokens), it finishes 2.8/2.3 Path points higher. The admitted corpus covers 91.4%/88.8% of prespecified condition–context cells and, under the frozen protocol, contains 137/84 valid combina-tions absent from recorded benchmark configurations. Gains concentrate where records are thinnest: the LBNL head–tail Criterion reuse Control Ind. Clin. Admission vs. answer agreement +5 .9 +3 .0              
+
+> Attribution repair-state episode +4 .6+3 .8
+> Reward criterion scope +3 .1+2 .6
+> Regeneration vs. deranged routing +3 .9+2 .3
+> Coupling 2×2interaction ∆int +2 .4+1 .9
+
+Table 2: Each reuse of the stage criteria, priced by its own control ( ∆Path, points); estimands are not additive. Admis-sion and routing rows are macro-averaged (recomputable from Table 1); factorial rows follow the pooled five-seed protocol (Appendices F–G). Path gap narrows from 18.9 points to 8.4, and removing any single operator family lowers Path—confounder injection the most (4.2 points), occlusion the least (1.9) (with routing vari-ants, per-round profiles, component ablations, and α sensi-tivity, Appendices D and E). Figure 2 shows stage ×family routing leading at every checkpoint, while the deranged arm, ahead of uniform regeneration at mid-training, falls behind by the end. 
+
+Localized updating and retention. The episode-type ×reward-scope factorial (Table 2) crosses the rollout start (case versus repair state) with the reward scope (out-come versus criteria): repair-state episodes add 4.6/3.8 Path points, criterion rewards 3.1/2.6, and their interaction 1.9/1.5. All paired 95% CIs exclude zero; the interaction CIs are 
+
+[0 .4, 3.5] /[0 .2, 2.9] (full intervals in Appendix F). Because a repair-state episode changes both the information-bounded context and the generated continuation, the first contrast is a bundled episode effect rather than a pure start-position ef-fect. The advantage is positive at every g∗, including 6.2/5.1 points for terminal attribution, where no repair is provided. Continuation SFT from the same repair states, matched in examples, tokens, and updates, recovers 71%/66% of the gain that repair-conditioned GRPO adds over its SFT start-ing point: repair-state supervision itself carries most of the signal, and reinforcement learning contributes the remaining margin ( +1 .35 points on LBNL, 95% CI [0 .4, 2.3] ) where multiple continuations are admissible. No reward-hacking signature appears in length, stuffing, or parroting checks, and equal criterion weights cost 0.6 points (Appendix F). When repair is removed at evaluation, pass recovery at the orig-inally failing stage is 79%/74%, 65%/61%, and 53%/49% for initial g∗ = 1 , 2, 3 (answer-exposure and repair-content controls in Appendix F). Preservation reduces forgetting on non-replayed strong worlds, measured per cell as the decline off its historical-best pass rate, from 9.4/7.8 to 3.4/2.9 points (component removals and the mixture sweep in Appendix F). 
+
+Coupling generation and updating. To test whether a measured weakness must be connected to the correspond-ing generation operation, we keep both flywheels intact but replace the aligned map ρ(g, v ) with a prespecified zero-fixed-point, type-compatible derangement across cells. Mea-sured weights and target counts stay at their original cells while each complete ρ entry moves as a unit; the entries themselves, the validity standard, and the budgets are un-changed. Aligned routing improves Path over this control 0.6 1.2 2.4 3.6     
+
+> Update tokens (M)
+> 70
+> 80
+> 90
+> Path (%)
+> Industrial (LBNL)
+> Stage ×family
+> Static uniform
+> Deranged ρ
+> 0.6 1.2 2.4 3.6
+> Update tokens (M)
+> 50
+> 60
+> 70
+> Path (%)
+> Clinical (DDXPlus)
+
+Figure 2: Path versus cumulative student-update tokens (pooled over cases; Table 1 reports group-macro results). “Static uniform” denotes the uniform-regeneration arm; markers denote frozen checkpoints; y-axis ranges differ. (Table 2). On DDXPlus the deranged arm still lifts Path yet leaves Acc at baseline level (78.37 vs. 78.44), consistent with misdirected cells still disciplining paths while no longer tar-geting the confusable conditions behind top-1 errors. We next cross uniform-fresh versus weakness-targeted genera-tion with plain full-trajectory GRPO versus stage-localized updating. The interaction contrast ∆int , the double difference across the four arms, is +2 .4 [95% CI 0.8, 4.1] on LBNL and 
+
++1 .9 [0.5, 3.4] on DDXPlus for Path. The four arms share frozen cell-specific admission rules, validity standard, and budgets; the expanded definition and interaction estimates appear in Appendix G. 
+
+Counterfactual generalization. On 100 real clinical case reports rewritten to the input schema, expert-judged Path is 64% versus 57% for constraint-admitted SFT, direction-ally consistent with the synthetic benchmarks (Appendix B). For observation perturbations, IC c requires correct answers on both members of a same-diagnosis pair; for indepen-dently constructed, training-disjoint label-changing compo-sitions, IS c additionally requires the predicted change to match the prespecified intervention. Relative to constraint-admitted SFT, DiagLoop increases IC c by 8.7/7.2 points and 
+
+IS c by 6.3/5.4 points (conditional and excess-over-marginal analyses, with accuracy-matched and label-agnostic variants, in Appendix G). 
+
+## 6 Conclusion 
+
+DiagLoop turns codified diagnostic mechanisms into checked training worlds without per-case expert traces; shared stage criteria govern admission, failure localization, regeneration, and reward. Across eight industrial systems and ten disease categories, the resulting 8B model improves strict path correctness by 11.6/5.5 points over the strongest conventional baseline and 3.9/2.3 over the deranged-routing control, and exceeds the evaluated proprietary references in path correctness in both domains. The method shifts rather than removes domain engineering; its benefits depend on specification coverage and checker reliability, and generaliza-tion is limited to configurations and compositions within the codified family. DDXPlus does not establish clinical readi-ness without a prospective clinician-in-the-loop study, and domains governed only by uncodified statistical regularities remain out of scope. References 
+
+Agarwal, R.; Vieillard, N.; Zhou, Y.; Stanczyk, P.; Ramos, S.; Geist, M.; and Bachem, O. 2024. On-Policy Distillation of Language Models: Learning from Self-Generated Mis-takes. In The Twelfth International Conference on Learning Representations .Bengio, Y.; Louradour, J.; Collobert, R.; and Weston, J. 2009. Curriculum Learning. In Proceedings of the 26th Interna-tional Conference on Machine Learning , 41–48. Dennstädt, F.; Hastings, J.; Putora, P. M.; Schmerder, M.; and Cihoric, N. 2025. Implementing Large Language Models in Healthcare While Balancing Control, Collaboration, Costs and Security. npj Digital Medicine , 8(1): 143. Fansi Tchango, A.; Goel, R.; Wen, Z.; Martel, J.; and Ghosn, J. 2022. DDXPlus: A New Dataset for Automatic Medical Diagnosis. In Advances in Neural Information Processing Systems , volume 35, 31306–31318. Frohberg, J.; and Binder, F. 2022. CRASS: A Novel Data Set and Benchmark to Test Counterfactual Reasoning of Large Language Models. In Proceedings of the Thirteenth Lan-guage Resources and Evaluation Conference , 2126–2140. Geirhos, R.; Jacobsen, J.-H.; Michaelis, C.; Zemel, R.; Bren-del, W.; Bethge, M.; and Wichmann, F. A. 2020. Shortcut Learning in Deep Neural Networks. Nature Machine Intelli-gence , 2(11): 665–673. Granderson, J.; Lin, G.; Chen, Y.; Casillas, A.; Im, P.; Jung, S.; Benne, K.; Ling, J.; Gorthala, R.; Wen, J.; Chen, Z.; Huang, S.; and Vrabie, D. 2022. LBNL Fault Detection and Diagnostics Datasets. Open Energy Data Initiative (OEDI), Lawrence Berkeley National Laboratory. Gunasekar, S.; Zhang, Y.; Aneja, J.; Mendes, C. C. T.; Del Giorno, A.; Gopi, S.; Javaheripi, M.; Kauffmann, P.; de Rosa, G.; Saarikivi, O.; et al. 2023. Textbooks Are All You Need. arXiv preprint arXiv:2306.11644 .Guo, D.; Yang, D.; Zhang, H.; Song, J.; Wang, P.; Zhu, Q.; Xu, R.; Zhang, R.; Ma, S.; Bi, X.; et al. 2025. DeepSeek-R1 Incentivizes Reasoning in LLMs through Reinforcement Learning. Nature , 645(8081): 633–638. Hinton, G.; Vinyals, O.; and Dean, J. 2015. Distill-ing the Knowledge in a Neural Network. arXiv preprint arXiv:1503.02531 .Katipamula, S.; and Brambley, M. R. 2005. Methods for Fault Detection, Diagnostics, and Prognostics for Building Systems—A Review, Part I. HVAC&R Research , 11(1): 3– 25. Kaushik, D.; Hovy, E.; and Lipton, Z. C. 2020. Learning the Difference that Makes a Difference with Counterfactually-Augmented Data. In The Eighth International Conference on Learning Representations .Kıcıman, E.; Ness, R.; Sharma, A.; and Tan, C. 2024. Causal Reasoning and Large Language Models: Opening a New Frontier for Causality. Transactions on Machine Learning Research .Kirkpatrick, J.; Pascanu, R.; Rabinowitz, N.; Veness, J.; Des-jardins, G.; Rusu, A. A.; Milan, K.; Quan, J.; Ramalho, T.; Grabska-Barwinska, A.; et al. 2017. Overcoming Catas-trophic Forgetting in Neural Networks. Proceedings of the National Academy of Sciences , 114(13): 3521–3526. Lightman, H.; Kosaraju, V.; Burda, Y.; Edwards, H.; Baker, B.; Lee, T.; Leike, J.; Schulman, J.; Sutskever, I.; and Cobbe, K. 2024. Let’s Verify Step by Step. In The Twelfth Interna-tional Conference on Learning Representations .Lin, L.; Zhang, S.; Fu, S.; and Liu, Y. 2025. FD-LLM: Large Language Model for Fault Diagnosis of Complex Equipment. 
+
+Advanced Engineering Informatics , 65: 103208. Liu, J.; Zhang, Q.; Li, X.; Li, G.; Liu, Z.; Xie, Y.; Li, K.; and Liu, B. 2021. Transfer Learning-Based Strategies for Fault Diagnosis in Building Energy Systems. Energy and Buildings , 250: 111256. Lyu, Y.; Wang, C.; Shen, L.; Huang, J.; and Xu, T. 2026a. Mock Worlds, Real Skills: Building Small Agentic Language Models with Synthetic Tasks, Simulated Environments, and Rubric-Based Rewards. In Proceedings of the 64th Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) , 12529–12545. Lyu, Y.; Wang, C.; Zheng, H.; Yue, Y.; Yan, J.; Wang, M.; and Huang, J. 2026b. AgenticQwen: Training Small Agentic Language Models with Dual Data Flywheels for Industrial-Scale Tool Use. arXiv preprint arXiv:2604.21590 .Ma, L.; Ding, Y.; Wang, Z.; Wang, C.; Ma, J.; and Lu, C. 2021. An Interpretable Data Augmentation Scheme for Ma-chine Fault Diagnosis Based on a Sparsity-Constrained Gen-erative Adversarial Network. Expert Systems with Applica-tions , 182: 115234. Madaan, A.; Tandon, N.; Gupta, P.; Hallinan, S.; Gao, L.; Wiegreffe, S.; Alon, U.; Dziri, N.; Prabhumoye, S.; Yang, Y.; et al. 2023. Self-Refine: Iterative Refinement with Self-Feedback. In Advances in Neural Information Processing Systems , volume 36. McDuff, D.; Schaekermann, M.; Tu, T.; Palepu, A.; Wang, A.; Garrison, J.; Singhal, K.; Sharma, Y.; Azizi, S.; Kulkarni, K.; et al. 2025. Towards Accurate Differential Diagnosis with Large Language Models. Nature , 642: 451–457. Pearl, J. 2009. Causality: Models, Reasoning, and Inference .Cambridge University Press, 2nd edition. Qwen Team. 2026. Qwen3.7: The Agent Frontier. https: //qwen.ai/blog?id=qwen3.7. Accessed July 25, 2026. Rolnick, D.; Ahuja, A.; Schwarz, J.; Lillicrap, T.; and Wayne, G. 2019. Experience Replay for Continual Learning. In 
+
+Advances in Neural Information Processing Systems , vol-ume 32. Setlur, A.; Nagpal, C.; Fisch, A.; Geng, X.; Eisenstein, J.; Agarwal, R.; Agarwal, A.; Berant, J.; and Kumar, A. 2025. Rewarding Progress: Scaling Automated Process Verifiers for LLM Reasoning. In The Thirteenth International Con-ference on Learning Representations .Shao, S.; Wang, P.; and Yan, R. 2019. Generative Adver-sarial Networks for Data Augmentation in Machine Fault Diagnosis. Computers in Industry , 106: 85–93. Shao, Z.; Wang, P.; Zhu, Q.; Xu, R.; Song, J.; Bi, X.; Zhang, H.; Zhang, M.; Li, Y. K.; Wu, Y.; and Guo, D. 2024. DeepSeekMath: Pushing the Limits of Mathemati-cal Reasoning in Open Language Models. arXiv preprint arXiv:2402.03300 .Singhal, K.; Azizi, S.; Tu, T.; Mahdavi, S. S.; Wei, J.; Chung, H. W.; Scales, N.; Tanwani, A.; Cole-Lewis, H.; Pfohl, S.; et al. 2023. Large Language Models Encode Clinical Knowl-edge. Nature , 620(7972): 172–180. Sutton, R. T.; Pincock, D.; Baumgart, D. C.; Sadowski, D. C.; Fedorak, R. N.; and Kroeker, K. I. 2020. An Overview of Clinical Decision Support Systems: Benefits, Risks, and Strategies for Success. npj Digital Medicine , 3: 17. Uesato, J.; Kushman, N.; Kumar, R.; Song, F.; Siegel, N.; Wang, L.; Creswell, A.; Irving, G.; and Higgins, I. 2022. Solving Math Word Problems with Process- and Outcome-Based Feedback. arXiv preprint arXiv:2211.14275 .Wang, P.; Li, L.; Shao, Z.; Xu, R.; Dai, D.; Li, Y.; Chen, D.; Wu, Y.; and Sui, Z. 2024. Math-Shepherd: Verify and Re-inforce LLMs Step-by-Step without Human Annotations. In 
+
+Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics , 9426–9439. Wang, Y.; Kordi, Y.; Mishra, S.; Liu, A.; Smith, N. A.; Khashabi, D.; and Hajishirzi, H. 2023. Self-Instruct: Align-ing Language Models with Self-Generated Instructions. In 
+
+Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics , 13484–13508. Xu, C.; Sun, Q.; Zheng, K.; Geng, X.; Zhao, P.; Feng, J.; Tao, C.; Lin, Q.; and Jiang, D. 2024. WizardLM: Empower-ing Large Pre-Trained Language Models to Follow Complex Instructions. In The Twelfth International Conference on Learning Representations .Zelikman, E.; Wu, Y.; Mu, J.; and Goodman, N. D. 2022. STaR: Bootstrapping Reasoning with Reasoning. In Ad-vances in Neural Information Processing Systems , vol-ume 35, 15476–15488. Zhang, J.; Wang, F.; Zhang, C.; Liu, Y.; Lu, J.; and Zhao, Y. 2026. LightLLM4FDD: Domain-Specific Lightweight Large Language Models for Fault Detection and Diagnosis in Building HVAC Systems. Advanced Engineering Infor-matics , 74: 104794. Zhang, J.; Zhang, C.; Lu, J.; and Zhao, Y. 2025. Domain-Specific Large Language Models for Fault Diagnosis of Heat-ing, Ventilation, and Air Conditioning Systems by Labeled-Data-Supervised Fine-Tuning. Applied Energy , 377: 124378.

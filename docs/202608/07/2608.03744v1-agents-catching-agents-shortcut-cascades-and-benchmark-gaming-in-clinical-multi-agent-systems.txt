@@ -1,0 +1,251 @@
+Title: Agents Catching Agents: Shortcut Cascades and Benchmark Gaming in Clinical Multi-Agent Systems
+
+URL Source: https://arxiv.org/pdf/2608.03744v1
+
+Published Time: Wed, 05 Aug 2026 01:11:18 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# Agents Catching Agents: Shortcut Cascades and Benchmark Gaming in Clinical Multi-Agent Systems 
+
+Sebasti´ an Andr´ es Cajas Ord´ o˜ nez 1, Agastya Munnangi 1,2, Aldo Marzullo 3, Felipe Ocampo Osorio 1, Quang Bui 4, Mohammad Shahin 1,5, Armaan Grewal 6, Emmanuel Paul Kwesiga 7, Anqi Peter Li 8, Josephine Nanyonjo 9, Aaditya Panchal 1,10 , Arshnoor Bhutani 1,11 , Nikhil Jaiswal 12 ,Milit S. Patel 13 , Maximin Lange 14 , and Leo Anthony Celi 1,15 
+
+> 1
+
+MIT Critical Data, Massachusetts Institute of Technology, Cambridge, Massachusetts, United States 
+
+> 2
+
+Georgia State University, Atlanta, Georgia, United States 
+
+> 3
+
+Politecnico di Milano, Milan, Italy 
+
+> 4
+
+American International School Vienna, Vienna, Austria 
+
+> 5
+
+School of Public Health, Boston University, Boston, Massachusetts, United States 
+
+> 6
+
+Northwestern University, Evanston, Illinois, United States 
+
+> 7
+
+Technische Hochschule L¨ ubeck, L¨ ubeck, Germany 
+
+> 8
+
+Substrate Labs 
+
+> 9
+
+School of Nursing, University of British Columbia, Vancouver, British Columbia, Canada 
+
+> 10
+
+Dartmouth College, Hanover, New Hampshire, United States 
+
+> 11
+
+Department of Computer Science, University of Maryland, College Park, Maryland, United States 
+
+> 12
+
+McGill University, Montreal, Quebec, Canada 
+
+> 13
+
+Department of Molecular Biosciences, University of Texas at Austin, Austin, Texas, United States 
+
+> 14
+
+King’s College London, London, United Kingdom 
+
+> 15
+
+Division of Pulmonary, Critical Care and Sleep Medicine, Beth Israel Deaconess Medical Center, Boston, Massachusetts, United States 
+
+Abstract 
+
+Clinical decision support is moving toward committees of language-model agents deliberating on a shared workspace. We ask whether such committees can be gamed by shortcuts , cues a benchmark rewards but a clinician would ignore. Across seven cohorts on six public datasets spanning text (MedQA-USMLE, MedMCQA, MIMIC-CXR reports), imaging (NIH ChestX-ray14, MIMIC-CXR-JPG, CheXpert) and tabular ICU records (SUPPORT2), Gemini committees resist these cues in isolation (flip 5–16%), yet a socially plausible shortcut spreads: when two peers assert the same wrong answer, the holdout under test adopts it in 38% of cases, as does a false “pre-screen” system flag, on both capability tiers. Of three oversight agents, a gate cannot separate adoption from honest agreement (false-positive rate 100%); a same-lineage judge reading only the transcript flags adoption on text (precision 100%, recall 93%) but collapses onto the gate in imaging; a referee that privately re-queries the holdout transfers to imaging (77–88% precision, 13–21% false-positive rate). Tripling a cue’s visual salience does not move contagion, whereas a second peer voice raises it by half again. Gaming a hidden rubric is near-silent: only 1 /10 text and 1 /134 imaging drifters name the rubric they moved toward. What games a committee is social plausibility, and only a referee independent of self-report catches it. Code: https://github.com/criticaldata/benchmaxxing 
+
+This work is licensed under a Creative Commons Attribution 4.0 International (CC BY 4.0) licence. 
+
+1arXiv:2608.03744v1 [cs.AI] 4 Aug 2026 1 Introduction 
+
+Agents may satisfy a benchmark’s formal requirements while bypassing its intended objective, a behaviour we call benchmaxxing [16, 1]: a patient-safety risk that is not self-correcting, since models cannot reliably identify the shortcuts behind their own predictions [19] and detection needs structural evaluation. Shortcut learning, a spurious correlation exploited instead of the intended signal, is a general deep-network failure mode [6] and is best documented in medical imaging: pneumonia from acquisition artifacts [22], COVID-19 from markers outside the lung fields [4], failures hidden inside aggregate metrics [17], and embedding-space auditing [3]. Each concerns one model against a fixed benchmark. Agentic deployment extends this to correlated failure. On a shared blackboard, agents observe one another’s outputs, so an early shortcut-based response can drive convergence toward the same error [2], and oversight may fail when evaluators share a blind spot, consistent with correlated-failure risks from common evaluation standards [14]. Existing methods identify an incorrect answer; none, to our knowledge, asks whether it changed after observing a peer. We address both with the referee agent , the named contribution of the DOJO (Distributed Open Justice Oversight) framing [21]: an oversight agent evaluating other agents rather than doing the clinical task. Practitioner grader taxonomies are single-agent and cannot ask whether an agent would have answered differently had a peer not spoken [8]; the private re-query is that signal. It carries three duties, shortcut detection ,
+
+conformity monitoring and hierarchy monitoring ; we instantiate the first two across seven cohorts. 
+
+# 2 Related work 
+
+Multi-agent LLM populations converge on shared conventions, producing collective biases absent in isolation [2]. Clinically that is the vector: medical committees substitute authority for verification and override correct dissent [24], amplifying an initial error rather than correcting it, which is socially mediated shortcut learning [24, 23]. Cross-checking and LLM-as-a-judge inherit the blind spots of the agents they supervise [23], so an oversight signal must come from outside the transcript. In imaging a second bias compounds it, the blind faith vision-language models place in text over conflicting pixels [5]. Populations fail in ways single-agent analyses of spurious correlation [22] miss [9], and prompt-template effects are not strategic metric exploitation. 
+
+# 3 Materials and methods 
+
+3.1 Datasets and models 
+
+All experiments were performed on publicly available clinical datasets, and every analysis set below is a subset of a larger staged cohort; no model was fine-tuned. The text experiments used MedQA-USMLE [12], questions from the United States Medical Licensing Examination (train/dev/test 10 ,178 /1,272 /1,273), restricted to items whose recorded correct option agreed with the reference answer; the analysis sets were 100 cases for cue sensitivity, 50 for the cross-cohort comparison, 40 for the cascade and detection arms and 120 hard cases for the framing ladder. Replications used MedMCQA [18] (50, 20 and 110 cases for cue sensitivity, the single-peer arm and the anchored-rationale arm) and free-text MIMIC-CXR reports reformulated as multiple-choice questions over CheXpert findings (600, 40, 20 and 60 for the same four purposes). The imaging experiments used NIH ChestX-ray14 [20], of which one batch of 4 ,999 radiographs was staged and a cascade cohort of 35 drawn as the first eligible finding-present images in patient-identifier order, so the 35 images come from only ten patients, one contributing 12 and another 8; MIMIC-CXR-JPG [13, 7] from a 2different institution (834 images from 600 studies, fixed in advance under a seeded manifest with per-image checksums recorded before any model query, cascade subsets of 48, 91 and 183); and CheXpert [11], used without modification (150 films naturally carrying a support device, 35 for the hidden rubric). SUPPORT2 [15, 10] carries the same paired design on structured intensive-care records (120 cases), its cue an information-identical restatement of the same variables. Every MIMIC-CXR finding-present case was independently confirmed as positive, so the read designated as incorrect did not depend on the model’s own output. Visual cues were local overlays leaving anatomy unaltered, preserving the reference diagnosis by construction. All agents were Gemini 2.5 Flash or Flash-Lite, two tiers of one family, at temperature 0, every call served from a content-addressed cache so a rerun replays; the noise floors are the one resampled exception. 
+
+3.2 Experimental design 
+
+Cue sensitivity. Each case was evaluated with the original input and with a modified input pre-serving the reference answer. Text cues altered option order, the correct option’s relative length, or stem-option lexical overlap. Imaging cues were a cable-like overlay, a corner tag, a laterality marker and a watermark, each outside the clinically relevant anatomy and occupying 0 .13% to 3 .17% of the 1024 2 frame (1 ,349 to 33 ,220 pixels), the watermark also rendered at opacities of 0 .15, 0 .30 and 0 .45. A cue-induced flip was a case whose prediction differed between the two inputs; since predictions may differ for unrelated reasons, the original input was queried twice and the disagreement taken as the noise floor . These repeated queries were the only quantity resampled above temperature 0 and with the cache bypassed, so the floor overestimates temperature-0 instability. That understates cue effects, making our solo nulls easier to reach, and is not reliably conservative either way: on the one cohort run at both temperatures the watermark reads −0.029 at temperature 1 against +0 .114 at temperature 0, whose floor is 0 by construction. We report flip rate, noise floor and their difference, flip above noise , a descriptive quantity, not an adjusted causal effect. 
+
+Peer endorsement. A paired design determined whether an answer rejected in isolation is ac-cepted once a peer asserts it. A holdout agent received the same clinical input in both conditions, observing one or two peers committing to a predefined incorrect response, the peer-endorsed an-swer , in the shared condition and not in the isolated one. The adoption rate was the proportion of holdout responses equal to that answer and the contagion their difference between conditions, with case-level adoption scored only where agreement followed exposure, 
+
+Ai = ⊮
+
+h
+
+ˆyshared  
+
+> i
+
+= ypeer  
+
+> i
+
+∧ ˆyisolated 
+
+> i
+
+̸ = ypeer 
+
+> i
+
+i
+
+. (1) An adoption whose isolated response was correct is additionally harmful . This endpoint identifies a response change associated with the deliberation, not the model’s reasoning. Four factors were varied independently: peer count (one or two); message content (committed answer alone, generic rationale, or vignette-anchored); confidence (categorical against hedged, holding source and as-serted answer fixed); and deliberation framing (unframed, collaborative, independent, or critical review). In a further condition the peers were replaced by an incorrect automated pre-screening flag attributed to an upstream system, separating institutional authority from peer pressure. Imaging repeated the design across the four cues, the three opacities, and unmodified CheXpert images with naturally occurring support devices. 
+
+Referee agents and baselines. The referee is an oversight agent that does not answer the clinical question, but determines whether another agent’s response was produced by the deliberation. It infers the answer endorsed by the peers, privately re-queries the holdout with the same input and no transcript, and flags ˆ yshared  
+
+> i
+
+= ypeer  
+
+> i
+
+∧ ˆyshared 
+
+> i
+
+̸ = ˆ yprivate  
+
+> i
+
+. The private re-query substitutes for 3the isolated condition of Eq. 1, which a deployed monitor cannot observe. It requires neither the reference answer nor model parameters. Two baselines: the gate , flagging every shared-condition agreement irrespective of the holdout’s isolated response, and a same-lineage judge , reading the deliberation without a private re-query. All three are scored against Eq. 1 by precision, recall and FPR. One intervention was applied during rather than after deliberation: a warning that peers may be incorrect. 
+
+What the design can and cannot identify. In the text and tabular experiments the incorrect answer was chosen to differ from the holdout’s isolated response, so on the planted arm the answer inferred from the peers’ modal assertion is that answer by construction and the referee flag reduces algebraically to the label it is scored against. We therefore add an honest-peer clean control : the same cascade with both peers asserting the correct answer, making adoption false by construction, so a flag there is a genuine false positive. That makes precision and the false-positive rate measurable, but not recall. Imaging needs no such arm, its incorrect answer being fixed against the reference diagnosis. Recall of 1 .0 is likewise a subset relation for referee and gate, the flagged set containing every adoption by definition. 
+
+Hidden rubric. A separate experiment replaced the social channel with an evaluation rule: ahidden rubric awarded full marks to a predefined incorrect option, the decoy , each case paired with a control run without the rubric. Because the decoy was defined as an option other than the response given without the rubric, the control cannot select it and its rate is structurally 0 on all 291 committed rows; the intended rubric-minus-control contrast is void, and we report decoy uptake as a raw rate under the rubric. Whether the response named the rubric was recorded separately, scored by one detector across both modalities; an earlier modality contrast that scored the two lanes with different detectors is withdrawn ( §4.6). We describe this as drift toward the rewarded option rather than reward-hacking, since the design does not establish intent. 
+
+3.3 Response processing and statistical analysis 
+
+Each completion was classified as an answer option, a refusal , or unparseable , taking the final explicit answer where several appeared. Refusals and parsing failures were kept separate, since conflating them inflates the cascade. Paired binary outcomes were compared using exact McNemar tests and independent proportions using Fisher’s exact tests. Risk differences carry nonparametric bootstrap 95% confidence intervals over 20 ,000 resamples, at case level except the NIH cascade, whose 35 images cluster within ten patients and are resampled as such. Multiple comparisons were controlled at α = 0 .05 using both Benjamini–Hochberg and Holm. No patient-level sign test is reported for the NIH cascade, since shared adoption is at ceiling in nine of ten patients and the test admits a single attainable value. 
+
+# 4 Results 
+
+Figure 1 summarises both headline results across all seven cohorts: the cue-versus-committee con-trast that the rest of this section builds up cohort by cohort, and the false-alarm gap between the two baselines and the referee. 
+
+4.1 Individual models are largely insensitive to the cues 
+
+On MedQA (100 cases) the cues barely move competent models: per-cue rates are 0 .05/0 .05/0 .06 for gemini-2.5-flash and 0 .12/0 .09/0 .16 for flash-lite (longest-option, option-order, lexical-overlap), so flash’s rate is not separable from its floor, while flash-lite’s is. Image cues move X-rays less: 4(a)                                                
+
+> MedQA .38
+> MedMCQA .03 flag +.53
+> MIMIC-CXR text .00 flag +.50
+> NIH .54
+> MIMIC-CXR img .42
+> CheXpert .61 raw
+> SUPPORT2 .71 info-id.
+> 0.25 .50 .75
+> isolated in committee
+> (b)
+> Naive gate .94
+> flags honest agreement too
+> Judge, imaging .94
+> transcript only, no re-query
+> Referee, imaging .13
+> transcript +private re-query
+> Referee, MedQA .11
+> honest-peer control arm
+> 01.0
+> false-alarm rate
+> Imaging drifters naming the rubric
+> 1of 134
+
+Figure 1: All seven cohorts, temperature 0, real API runs. (a) Flip above each cohort’s own noise floor in isolation, against contagion under two seeded peers asserting one wrong answer. Hollow markers are the two cohorts where a bare peer is null; a wrong system flag still cascades there. (b) The gate and the transcript-only judge false-alarm almost everywhere a referee, needing only the transcript and one private re-query, does not. Isolated values are the weaker tier. CheXpert is a raw shared-adoption rate, its no-cue arm having no isolated comparator. a diagnosis-neutral cue flips a multimodal yes/no read 0 .20 to 0 .34 of NIH cases ( n = 35), but against a 0 .23 floor only the watermark clears it (+0 .11; laterality +0 .03, corner tag 0 .00, cable 
+
+−0.03). On MIMIC-CXR at n = 834 every cue lands within 0 .029 of a 0 .17 floor, so the solo lane is weakest in imaging. On MedMCQA ( n = 50) and MIMIC-CXR report text as CheXpert-finding MCQs ( n = 600) the per-cue rates are indistinguishable from MedQA (option-order 0 .08 /0.08 /0.04, longest-option 0 .10 /0.16 /0.11, lexical-overlap 0 .08 /0.16 /0.09; all Fisher exact p ≥ 0.27), so the susceptibility belongs to the cue, not one benchmark. 
+
+4.2 Two endorsing peers propagate an incorrect answer 
+
+Seed design decides the outcome: one peer asserting an arbitrary distractor gives a clean null (0 .0over 20 cases), whereas two asserting the same wrong answer are adopted on 15 of 40, a contagion of 0 .375 against an isolated rate fixed at 0 by construction, so the imaging lane below, with an observed isolated rate of 0 .43, is the stronger test (Fig. 1). A peer is rendered as its committed answer alone, so what propagates in text is agreement, not argument; varying only hedging, a confident assertion is adopted on 0 .42 of 100 cases against 0 .14 hedged (29 /1, p = 6 × 10 −8). Abreak-it sweep varies the mechanism (Table 1): a case-anchored rationale and a trusted-system signal each move the committee, a hidden longest-option decoy does not, and licensing dissent cuts adoption fivefold. What carries (C) is the second voice, not the rationale: dropping to one anchored peer falls back to the unanchored baseline on both datasets (0 .85 → 0.73, p = 0 .006; 0 .82 → 0.72, 
+
+p = 0 .001), and one anchored voice is indistinguishable from two unanchored ( p = 1 .0). Both mechanisms replicate on MedMCQA and MIMIC-CXR report text. 
+
+A tabular lane makes the cue design exact. On a table “answer-preserving” stops being a judgement call: SUPPORT2 gives 120 seriously ill adults balanced 60 /60 on in-hospital mortality, nineteen leakage columns excluded, and five of six cues are information-identical re-renderings (field order, unit rescaling, precision, redundancy, missingness) against a whitespace control. Solo it is underpowered rather than flat: unit rescaling ( p = 0 .035) and field order ( p = 0 .049) clear the control nominally, neither survives Benjamini-Hochberg, and two ran at achieved power below 5Table 1: Break-it: adoption of the wrong answer, MedQA hard cases, two replication cohorts. A’s MedQA column is a difference against a misdirected control, which flags a different wrong option while still scoring whether the model picked the target; because it fires on flash-lite (2 /23), flash’s 0 is an observed null. A on MedMCQA and C on MIMIC-CXR are raw rates, their controls being structurally 0. C is the same longest-option rubric on all three ( n = 17, 13, 31) and null throughout. B is a difference over a generic rationale ( p = 0 .041; MedMCQA p = 0 .019; MIMIC-CXR text p = 0 .625). For D, every level against unframed has p ≤ 1.1 × 10 −4 at n = 120, and 
+
+p = 4 .9 × 10 −5 at n = 60 on MIMIC-CXR text.                                 
+
+> Channel, and the contrast it varies MedQA MedMCQA MIMIC-CXR flash / lite flash / lite text, flash / lite
+> Drivers: the committee adopts the wrong answer more
+> A. system pre-screen flag vs none +0 .26 /+ 0 .22 +0 .27 /+ 0 .53 +0 .40 /+ 0 .50 B. vignette-anchored vs generic +0 .12 +0 .10 +0 .03 (n.s.)
+> C is a null; D is protective, not a null
+> C. hidden rubric rewards longest option 0.24 →0.24 0.31 →0.31 0.16 →0.10 D. deliberation, unframed to critical 0.64 →0.12 0.74 →0.28 0.72 →0.37
+
+0.25. In committee two scripted senior peers drive shared adoption to exactly 1 .0, zero resisters of 115; that saturation collapses contagion, clean accuracy and the gate’s precision to one number, 0.713. Its worth is the negative result: information-identical cues do not move a model measurably even where the manipulation is provably content-free. 
+
+4.3 Detecting peer-driven adoption requires an interventional signal 
+
+On the anchored-cascade transcripts (40 cases, 15 adoptions the holdout would not have made in isolation, 12 ending in harm) the signal decides everything (Table 2): the gate flags every case, two colluders always agreeing. The judge reaches precision 1 .0, recall 0 .93 on both cohorts. The warning is a mitigation, not a detector: run during deliberation on 120 hard MedQA cases it prevents adoptions outright, 0 .64 to 0 .37. The two imaging columns use different cohort rules: NIH unrestricted at n = 35, MIMIC-CXR restricted to the 91 read correctly in isolation. On all 417 cases the gate reads 0 .19 /1.0/0.96 and the referee 0 .48 /0.64 /0.16, so the restriction, not the modality, carries much of the difference. Table 2: Referee agents: precision / recall / false-positive rate. The judge reads the transcript only; the referee infers the shortcut from the peers’ modal answer plus one private re-query, no key. 
+
+n = 40 (15 adoptions), 40 (14), 35 (19), MIMIC-CXR imaging restricted to 91 read correctly in isolation. All four text and tabular deployable cells carry an honest-peer clean control, so a flag there is a genuine false positive: 7 of 65 on MedQA, 12 of 66 on MIMIC-CXR text, 33 of 148 on SUPPORT2, MedMCQA 0 .74 ( §3.2); the blank cell was not run.                       
+
+> Text Imaging Tabular Detector MedQA MIMIC-CXR NIH MIMIC-CXR SUPPORT2 gate 0.38/1.0/1.0 0.35/1.0/1.0 0.56/1.0/0.94 0.54/1.0/0.81 0.71/1.0/1.0 judge 1.0/0.93/0.0 1.0/0.93/0.0 0.56/1.0/0.94 –0.75/0.96/0.79 referee 0.68/1.0/0.11 0.54/1.0/0.18 0.88/0.79/0.13 0.77/0.75/0.21 0.71/1.0/0.22
+
+4.4 The cascade is stronger in imaging 
+
+Two peer radiologists asserting a wrong yes/no read move the multimodal holdout far more on a shared board than isolated, for all four cues, including the three inert solo (Table 3; exact McNemar 6p < 4 × 10 −6). Cable and corner-tag, at or below the solo floor, still give +0 .54, matching the watermark that clears it in isolation: the shortcut is social plausibility, not artifact strength. The NIH interval is patient-clustered, +0 .54, [0 .36 , 0.68] against [0 .37 , 0.71] unclustered. This replicates on MIMIC-CXR, cues inert in isolation at n = 834: the opacity dose-response is flat to mildly declining across a threefold change in artifact strength, our sharpest evidence that the peer carries it. Table 3: Imaging-lane cascade: adoption of the cued (wrong) read, shared vs isolated, the peer always asserting the definitely-false read; positive shared-minus-isolated = contagion. The MIMIC-CXR block is restricted to cases whose clean read was already correct, so excluded cases inflate isolated adoption and this is conservative.                         
+
+> Cue / setting Shared adopt Isolated adopt Contagion n
+> NIH ChestX-ray14
+> all four cues 0.97–1.0 0.40–0.46 +0 .54 to +0 .57 35
+> MIMIC-CXR, cases read correctly in isolation
+> watermark cascade 0.96 0.54 +0 .42 48 watermark, referee cohort 0.90 0.43 +0 .47 91 opacity sweep 0.15–0.45 0.99–1.00 0.40–0.46 +0 .53 to +0 .60 183 system flag, no peer 0.70 0.40 +0 .30 183
+
+The strongest version drops the injected cue entirely. On 150 CheXpert [11] films naturally carrying a support device, asked for that finding with nothing added, the model reads it correctly on 143 in isolation, yet two peers presented as senior radiologists move it to the wrong read on 0.61 (92 /150), and on 0 .59 (85 /143) of the films it had right. Both are raw shared-adoption rates, not contagion: this arm’s isolated re-read is served the unmodified image and returns the clean read on all 150 films, leaving no independent comparator. No pixels altered, separating the peer’s contribution from the cue’s as cleanly as the design allows, and a wrong pre-screen flag with no peer moves it on 0 .007 (1 /150). In imaging the referee-versus-gate contagion is 0 .26, [0 .03 , 0.49], and 0 .25 on an 80-image su-perset. The judge collapses onto the gate there because its prompt never carries the film, so only the private re-read earns the separation. That collapse follows from the transcript-only prompt, not from same-lineage judging: the peer’s asserted read is constant here, so the judge matches the gate on all 35 NIH cases and all 80 of the superset. A judge given the film is a different detector, not measured here. 
+
+4.5 Decoy uptake toward a hidden rubric is almost never self-reported 
+
+A rubric awarding full marks to a wrong option induces substantial drift, larger in imaging than text: decoy uptake is +0 .275 (11 /40) on MedQA against +0 .83 (29 /35) on clean NIH X-rays, +0 .53 (75 /141) on MIMIC-CXR and +0 .86 (30 /35) on CheXpert. Telling the model it is being evaluated suppresses drift everywhere, by +0 .125, +0 .46, +0 .28 and +0 .69. Almost no drifter admits it: under one common detector only 1 /10 text and 1 /134 imaging drifters name the rubric they moved toward (Fisher p = 0 .13), confabulating a clinical rationale instead, so self-report is not a usable oversight channel. 
+
+4.6 Statistical robustness 
+
+Correcting one primary test per experiment across both lanes (24 tests), 17 survive both cor-rections at α = 0 .05, including the imaging system-flag-versus-peer contrast (raw Fisher p =3.3 × 10 −6); the seven dropouts are exactly the nulls and underpowered tests reported as such. 7MedQA, NIH, CheXpert and SUPPORT2 replay from the committed cache; the MIMIC-CXR lanes cannot under PhysioNet terms, releasing de-identified per-case rows instead. 
+
+Cue determinism. Two cues rasterise text through the default font, whose glyphs track the imaging library’s version, and our call cache is keyed on the cued bytes, so a version change silently invalidates it and re-queries instead of flagging a mismatch. An independent re-run of the MIMIC-CXR referee cohort disagreed with our per-case outcomes on roughly half of 417 cases while agreeing with itself twice, the signature of this defect rather than sampling noise. We therefore report the imaging cue arms as reproducible only under a pinned imaging-library version, and treat the per-case rows, not the rendered cues, as the artefact of record. The release vendors a fixed face, checksums it on load, refuses to substitute another, and exposes a pixel digest to assert against; it renders cues slightly larger than the runs quoted above. 
+
+Construct validity. We screened every reported metric for a predicate that cannot fail by construction, withdrawing five arms rather than caveating them, among them two referee flags reducing algebraically to their own label. Four more are relabelled raw rates, and a near-constant predicate would escape the screen, so this list is likely incomplete. 
+
+# 5 Discussion and conclusion 
+
+One principle is earned here: mandatory pluralism , since oversight fails when overseers share a blind spot. Log the referee’s private re-query as a standing check, run during deliberation; do not trust the judge across modalities (Table 2); do not rely on an agent’s stated justification to catch reward-hacking; and treat an upstream system signal as untrusted (Table 1). Two of the referee’s three duties are instantiated here; hierarchy monitoring and a cross-lineage arm remain. 
+
+# References 
+
+[1] Amodei, D., Olah, C., Steinhardt, J., Christiano, P., Schulman, J., Man´ e, D.: Concrete prob-lems in AI safety. arXiv preprint arXiv:1606.06565 (2016) [2] Ashery, A.F., Aiello, L.M., Baronchelli, A.: Emergent social conventions and collective bias in LLM populations. Science Advances 11 (2024). https://doi.org/10.1126/sciadv.adu9368 [3] Cajas Ordo˜ nez, S., Marzullo, A., Kapadia, S., Santos, F., Ocampo Osorio, F., Kong, Q., Quarta, A., Kuo, P.C., Patel, M., Rojas Sillery, R.I., Celi, L.A.: ShortKit-ML: A unified multi-perspective framework for detecting shortcut learning in medical imaging embeddings. medRxiv (2026). https://doi.org/10.64898/2026.04.29.26352053 [4] DeGrave, A.J., Janizek, J.D., Lee, S.I.: AI for radiographic COVID-19 detec-tion selects shortcuts over signal. Nature Machine Intelligence 3, 610–619 (2021). https://doi.org/10.1038/s42256-021-00338-7 [5] Deng, A., Cao, T., Chen, Z., Hooi, B.: Words or vision: Do vision-language models have blind faith in text? In: Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR). pp. 3867–3876 (2025). https://doi.org/10.1109/cvpr52734.2025.00366 [6] Geirhos, R., Jacobsen, J.H., Michaelis, C., Zemel, R., Brendel, W., Bethge, M., Wichmann, F.A.: Shortcut learning in deep neural networks. Nature Machine Intelligence 2(11), 665–673 (2020). https://doi.org/10.1038/s42256-020-00257-z 8[7] Goldberger, A.L., Amaral, L.A.N., Glass, L., Hausdorff, J.M., Ivanov, P.C., Mark, R.G., Mietus, J.E., Moody, G.B., Peng, C.K., Stanley, H.E.: PhysioBank, PhysioToolkit, and Phy-sioNet: Components of a new research resource for complex physiologic signals. Circulation 
+
+101 (23), e215–e220 (2000). https://doi.org/10.1161/01.CIR.101.23.e215 [8] Grace, M., Hadfield, J., Olivares, R., De Jonghe, J.: Demystifying evals for AI agents. Anthropic Engineering Blog (2026), https://www.anthropic.com/engineering/ demystifying-evals-for-ai-agents 
+
+[9] Hammond, L., Chan, A., Clifton, J., et al.: Multi-agent risks from advanced AI. Cooperative AI Foundation Technical Report #1, arXiv:2502.14143 (2025) [10] Harrell, F.E.: SUPPORT2. UCI Machine Learning Repository, dataset 880 (1995), 9,105 seri-ously ill hospitalised adults, 42 features [11] Irvin, J., Rajpurkar, P., Ko, M., et al.: CheXpert: A large chest radiograph dataset with un-certainty labels and expert comparison. In: Proceedings of the AAAI Conference on Artificial Intelligence. vol. 33, pp. 590–597 (2019) [12] Jin, D., Pan, E., Oufattole, N., Weng, W.H., Fang, H., Szolovits, P.: What disease does this patient have? A large-scale open domain question answering dataset from medical exams. Applied Sciences 11 (14), 6421 (2021). https://doi.org/10.3390/app11146421 [13] Johnson, A.E.W., Pollard, T.J., Berkowitz, S.J., Greenbaum, N.R., Lungren, M.P., Deng, C.y., Mark, R.G., Horng, S.: MIMIC-CXR, a de-identified publicly available database of chest radio-graphs with free-text reports. Scientific Data 6, 317 (2019). https://doi.org/10.1038/s41597-019-0322-0 [14] Kleinberg, J., Raghavan, M.: Algorithmic monoculture and social welfare. Pro-ceedings of the National Academy of Sciences 118 (22), e2018340118 (2021). https://doi.org/10.1073/pnas.2018340118 [15] Knaus, W.A., Harrell, F.E., Lynn, J., Goldman, L., Phillips, R.S., Connors, A.F., Daw-son, N.V., Fulkerson, W.J., Califf, R.M., Desbiens, N., Layde, P., Oye, R.K., Bellamy, P.E., Hakim, R.B., Wagner, D.P.: The SUPPORT prognostic model: Objective estimates of sur-vival for seriously ill hospitalized adults. Annals of Internal Medicine 122 (3), 191–203 (1995). https://doi.org/10.7326/0003-4819-122-3-199502010-00007 [16] Krakovna, V., Uesato, J., Mikulik, V., Rahtz, M., Everitt, T., Kumar, R., Kenton, Z., Leike, J., Legg, S.: Specification gaming: the flip side of AI ingenuity. DeepMind Blog (2020) [17] Oakden-Rayner, L., Dunnmon, J., Carneiro, G., R´ e, C.: Hidden stratification causes clinically meaningful failures in machine learning for medical imaging. In: Proceed-ings of the ACM Conference on Health, Inference, and Learning. pp. 151–159 (2020). https://doi.org/10.1145/3368555.3384468 [18] Pal, A., Umapathi, L.K., Sankarasubbu, M.: MedMCQA: A large-scale multi-subject multi-choice dataset for medical domain question answering. In: Proceedings of the Conference on Health, Inference, and Learning (CHIL). pp. 248–260 (2022) [19] Sharma, M., Tong, M., Korbak, T., Duvenaud, D., Askell, A., Bowman, S.R., Durmus, E., Hatfield-Dodds, Z., Johnston, S.R., Kravec, S., Maxwell, T., McCandlish, S., Ndousse, K., 9Rausch, O., Schiefer, N., Yan, D., Zhang, M., Perez, E.: Towards understanding sycophancy in language models. arXiv preprint arXiv:2310.13548 (2023) [20] Wang, X., Peng, Y., Lu, L., Lu, Z., Bagheri, M., Summers, R.M.: ChestX-ray8: Hospital-scale chest X-ray database and benchmarks on weakly-supervised classification and localization of common thorax diseases. In: Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR). pp. 2097–2106 (2017). https://doi.org/10.1109/CVPR.2017.369 [21] Xiang, A.Q., Tohyama, T., Bank, A.C., Bui, Q., Gorijavolu, R., Garcia Henao, J.A., Jaiswal, N., Kelshiker, A., Madapati, K., Cajas Ordo˜ nez, S.A., Patel, M., Prakash, N., Celi, L.A.: Distributed open justice oversight (DOJO): A community-driven, modality-agnostic platform for adversarial evaluation of health AI (2026), sSRN preprint 6676818 [22] Zech, J.R., Badgeley, M.A., Liu, M., Costa, A.B., Titano, J.J., Oermann, E.K.: Variable generalization performance of a deep learning model to detect pneumonia in chest radiographs: A cross-sectional study. PLOS Medicine 15 (11), e1002683 (2018). https://doi.org/10.1371/journal.pmed.1002683 [23] Zhou, J., Sheng, Y., Lou, H., Yang, Y., Fu, J.: Formaljudge: A neuro-symbolic paradigm for agentic oversight. arXiv preprint arXiv:2602.11136 (2026), https://doi.org/10.48550/ arxiv.2602.11136 
+
+[24] Zhu, Y., Gu, L., Wang, Z., Sang, H., Sui, D., Tang, W., Mi, L., Wang, Y., Gao, J., Yao, L., Fu, T., Harrison, E.M., Yu, L.: Auditing medical multi-agent ai reveals risks of false consensus. arXiv preprint arXiv:2510.10185 (2025), https://doi.org/10.48550/arxiv.2510.10185 
+
+10

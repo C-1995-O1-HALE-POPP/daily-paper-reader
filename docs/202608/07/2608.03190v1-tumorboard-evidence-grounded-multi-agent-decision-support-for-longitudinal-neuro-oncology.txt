@@ -1,0 +1,284 @@
+Title: TumorBoard: Evidence-Grounded Multi-Agent Decision Support for Longitudinal Neuro-Oncology
+
+URL Source: https://arxiv.org/pdf/2608.03190v1
+
+Published Time: Wed, 05 Aug 2026 00:42:41 GMT
+
+Number of Pages: 16
+
+Markdown Content:
+# TumorBoard: Evidence-Grounded Multi-Agent Decision Support for Longitudinal Neuro-Oncology 
+
+## Yantong Liu 1,∗, Zheyu Zhang 1, Runpeng Liu 1, Muxitang 2,Seong-Yoon Shin 1,∗, and Hyun-Ae Lee 1,∗
+
+> 1
+
+Department of Computer Information Engineering, Kunsan National University, Gunsan 54150, Republic of Korea 
+
+> 2
+
+School of Vehicle and Mobility, Tsinghua University, Beijing 100084, China 
+
+> ∗
+
+Correspondence: lyt1994@kunsan.ac.kr 
+
+Abstract. Neuro-oncology decisions require coordinated interpretation of serial MRI, pathology, molecular markers, treatment history, performance status, and evolving guidelines. We present TumorBoard, a multi-agent decision-support system built around a shared longitudinal case state and an auditable claim-evidence ledger. Specialist agents for radiology, neuropathology, molecular diagnosis, guidelines, and therapy planning produce atomic claims with provenance; an adversarial critic exposes contradictions; and a safety governor releases, qualifies, or defers recommendations according to evidence sufficiency and temporal validity. On a 360-case hidden benchmark at a matched token budget, TumorBoard achieved an action F1 of 0.772 and evidence entailment of 0.914. It exceeded the strongest typed-council baseline by 3.1 percentage points (95% CI 1.6 to 4.7, adjusted p=0.0012), while recommendation-to-evidence coverage reached 0.927. Under evidence deletion, the system deferred 84.2% of unsafe cases and limited harmful recommendations to 5.8%. The safety governor reduced harmful release by 7.8 percentage points at a 4.3-point false-deferral cost. Ledger, critic, and governor ablations produced the predicted failure pattern, establishing structured coordination as the source of the measured multi-agent advantage. 
+
+# 1 1. Introduction 
+
+Language agents combine reasoning with external actions, tool calls, memory, and iterative critique [ 1 , 2 , 3]. Multi-agent frameworks extend this pattern through conversational coor-dination, role specialization, and explicit workflow structure [ 4, 5, 6, 7]. Clinical agent proposals argue that real tasks require evidence acquisition, temporal synthesis, and account-able action boundaries [ 8]. These capabilities match the struc-ture of multidisciplinary neuro-oncology, where no single information source resolves the case. The clinical opportunity carries a sharp evaluation trap. A larger prompt, more tokens, or repeated sampling can make a multi-agent system appear better than a single model. Fluent consensus can also conceal circular agreement. TumorBoard therefore treats coordination as an experimental variable. Ev-ery system variant uses the same backbone, retrieval corpus, case information, and total inference budget. The only manip-ulated factor is the communication protocol. Medical language models demonstrate strong knowledge and summarization performance, while systematic evalua-tions expose errors in evidence use, calibration, and high-stakes recommendations [ 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 ]. Retrieval-augmented clinical models improve access to cur-rent knowledge [ 18 , 19 , 20 , 21 ]. Reporting and gover-nance work further requires transparent evaluation, human review, fairness analysis, and explicit uncertainty commu-nication [ 22 , 23 , 24 , 25 , 26 , 27 , 28 , 29 ]. Neuro-oncology guidelines and response criteria create a suitable test bed because decisions depend on molecular classification, lon-gitudinal imaging, prior therapy, and versioned evidence [30, 31, 32, 33, 34, 35, 36, 37, 38]. TumorBoard introduces four mechanisms. A timeline cura-tor converts heterogeneous records into an event graph. Spe-cialist agents read task-limited views and submit atomic claims. A claim-evidence ledger records support, contradiction, tem-poral scope, and source version. A safety governor applies prerequisite and risk rules before a chair agent synthesizes the final response. This design exposes each reasoning depen-dency to audit. The main scientific risk is pseudo-collaboration. Multiple agents may restate the same model belief, amplify an early error, and spend additional tokens without adding independent evidence. TumorBoard addresses this attack directly. Roles have disjoint information duties, messages follow a typed schema, and consensus is computed over claims with source links rather than over prose. The evaluation matches total inference budget across variants and measures unsupported agreement. A multi-agent gain is credited only when it per-sists after controlling for model, retrieval corpus, context, and generated tokens. Neuro-oncology offers a stringent longitudinal environment. A recommendation can be correct for newly diagnosed disease and wrong after progression, correct under one molecular classification and obsolete after reclassification, or technically supported but unsafe because performance status and prior toxicity changed. The system therefore represents temporal validity and prerequisites as graph structure. The resulting output is a decision record that preserves what is known, what conflicts, what remains missing, and what requires human escalation. 
+
+# 2 2. Related Work 
+
+## 2.1 2.1 Language agents and multi-agent coor-dination 
+
+ReAct, Toolformer, and Reflexion establish action, tool-use, and self-critique primitives [ 1 , 2 , 3]. AutoGen, CAMEL, arXiv:2608.03190v1 [cs.AI] 4 Aug 2026 Figure 1: Longitudinal TumorBoard workflow. Heterogeneous patient records enter a timeline curator, shared case state, specialist council, safety governor, and provenance-preserving output. 
+
+MetaGPT, and AgentBench provide orchestration patterns and evaluation lessons [ 4, 5, 6, 7]. TumorBoard replaces free-form conversation with a typed protocol. Messages contain claims, evidence pointers, confidence, prerequisites, contradiction tar-gets, and requested actions. This restriction turns coordination failures into observable graph defects. 
+
+## 2.2 2.2 Medical large language models 
+
+Clinical knowledge benchmarks and clinician-facing studies show rapid progress [ 9, 10 , 11 , 12 , 13 , 14 , 15 , 16 , 17 ]. Evi-dence summarization and retrieval systems motivate the use of source-bound generation [ 18 , 19 , 20 , 21 ]. TumorBoard focuses on longitudinal decision construction. A case can contain temporally incompatible facts, such as preoperative pathology, post-treatment enhancement, a later molecular re-classification, and an outdated treatment recommendation. The shared state represents validity intervals and superses-sion edges. 
+
+## 2.3 2.3 Neuro-oncology decision structure 
+
+Diffuse glioma management depends on WHO-integrated di-agnosis, EANO and SNO-EANO guidance, CNS oncology practice recommendations, and RANO response assessment [ 30 , 31 , 32 , 33 , 34 , 35 ]. These documents supply versioned decision constraints. TumorBoard stores their decision clauses as retrievable evidence units while retaining document identity, release date, section, and recommendation strength. General agent frameworks supply useful primitives, yet clin-ical coordination needs stronger boundaries. Tool calls must return versioned evidence. Memory must distinguish source events from derived conclusions. Critique must identify a claim and its violated prerequisite. Termination must depend on unresolved risk rather than conversational agreement. Tu-morBoard operationalizes these requirements in a protocol that can be ablated field by field. Medical retrieval systems improve factual access but still permit unsupported synthesis when retrieved passages conflict or fall outside the patient state. Guideline recommendations are conditional rules with population, disease-state, prior-treatment, and evidence-strength qualifiers. The guideline agent preserves these qualifiers and attaches them to each rec-ommendation edge. The safety governor then checks whether the patient state satisfies the edge prerequisites before release. 
+
+# 3 3. Task Definition 
+
+Given a patient record D = {d_1, ..., d_T} ordered by event time, the system must produce a structured tumor-board note containing current disease state, unresolved questions, differ-ential interpretation, recommended next actions, contraindi-cations, evidence citations, confidence, and deferral triggers. The answer is evaluated against expert adjudication and source documents. The coordination protocol P defines agent roles, visible state fields, message schema, communication edges, stopping criteria, and risk rules. The experimental question is whether P improves utility U under a fixed model M, retrieval corpus K, and inference budget B. Utility includes decision accuracy, evidence entailment, contradiction resolution, safe deferral, latency, and token cost. The gold standard is an adjudicated action graph rather than a single reference paragraph. Nodes encode current disease state, required investigations, acceptable treatment options, monitoring actions, contraindications, and deferral decisions. Directed edges encode prerequisite, alternative, exclusion, and temporal order. This representation credits clinically valid alternatives and penalizes recommendations that omit decisive prerequisites. Text generation is scored after it is mapped back to the graph, keeping fluency separate from decision correctness. 
+
+# 4 4. TumorBoard Architecture 
+
+## 4.1 4.1 Timeline curator and shared case state 
+
+The curator extracts events with event time, documentation time, source, certainty, and supersession links. It normalizes medication, procedure, imaging, pathology, and molecular entities. A temporal consistency checker flags impossible sequences and unresolved date ambiguity. The shared state contains immutable raw evidence pointers plus a derived layer. Agents can propose derived facts, yet cannot modify source evidence. 
+
+## 4.2 4.2 Specialist agents 
+
+The radiology agent compares serial examinations and sep-arates progression, treatment effect, pseudoprogression, and uncertainty. The neuropathology agent interprets morphology and integrated diagnosis. The molecular agent checks IDH, 1p/19q, ATRX, TP53, TERT, EGFR, chromosome 7/10, and MGMT evidence. The guideline agent retrieves applicable clauses based on age, performance status, disease state, prior therapy, and source version. The therapy planner converts accepted evidence into ranked options with prerequisites and monitoring plans. 
+
+## 4.3 4.3 Typed communication and claim-evidence ledger 
+
+Each message follows a schema: claim_id, claim_text, claim_type, evidence_ids, temporal_scope, confidence, pre-requisites, conflicts, and proposed_action. The ledger is a directed graph. Support edges connect evidence to claims. Conflict edges connect mutually incompatible claims. Supers-ession edges encode updated pathology or guideline versions. Dependency edges connect recommendations to required find-ings. Circular support is rejected because a claim cannot serve as its own upstream evidence. 
+
+## 4.4 4.4 Adversarial critic 
+
+The critic receives the case state and draft claim graph, not the other agents’ hidden reasoning. It searches for missing evidence, outdated recommendations, category errors, con-traindications, and overconfident language. It then proposes targeted challenges. A specialist must respond with new evi-dence, lower confidence, revise the claim, or request human review. The debate terminates when the graph has no unre-solved high-risk contradiction or when the iteration budget is exhausted. 
+
+## 4.5 4.5 Safety governor and chair 
+
+The governor evaluates every recommendation against prereq-uisite completeness, evidence entailment, guideline currency, contradiction status, and risk class. Release states are sup-ported, qualified, deferred, and blocked. The chair summa-rizes accepted claims, preserves disagreement, and produces an action-oriented note. It cannot override a blocked state. Hu-man escalation is a first-class output with an explicit reason. The timeline curator resolves duplicate events and distin-guishes event time from documentation time. A pathology amendment supersedes an earlier diagnosis without deleting the historical record. A radiology comparison inherits the referenced examination date. Medication exposure includes start, stop, cumulative dose when available, and documented toxicity. Ambiguous dates create interval-valued events and an uncertainty flag. Downstream agents see both the normalized state and immutable evidence pointers. Specialist prompts are compact and role-limited. The ra-diology agent cannot issue treatment recommendations. The therapy planner cannot reinterpret pathology slides. The guide-line agent cannot invent patient facts. These boundaries reduce cross-role contamination and make missing expertise visible. Each agent returns atomic claims with calibrated confidence, temporal scope, evidence identifiers, and prerequisite fields. Empty evidence lists are permitted only for explicit questions or deferrals. The ledger enforces graph invariants before debate. Evi-dence nodes are immutable. Derived claims cannot support their own ancestors. Conflicting claims remain active until one is superseded, qualified, or deferred. A recommendation inherits the weakest confidence among its required upstream claims. The ledger also records agent identity and message cost, enabling analysis of whether a role contributes unique evidence or redundant prose. The critic executes a fixed challenge library covering miss-ing prerequisite, stale source, temporal inconsistency, popula-tion mismatch, unsupported dose, overlooked contraindication, and false consensus. It can also request a targeted retrieval query. The challenged agent must point to new evidence, nar-row the claim, reduce confidence, or accept deferral. This response taxonomy prevents debate from expanding into un-structured argument. Safety rules are stratified by action risk. Descriptive sum-maries require evidence entailment. Diagnostic statements additionally require contradiction resolution. Treatment rec-ommendations require current guideline support, prerequisite completeness, and a monitoring plan. High-risk failures are blocked, while lower-risk ambiguity produces a qualified re-lease. The chair renders accepted claims into a concise tumor-board note and lists unresolved issues in priority order. Figure 2: Specialist communication network. Every proposal enters a claim-evidence ledger, and contradictions remain explicit until resolved by the chair. 
+
+Table 1: Cohort composition after quality control.            
+
+> Cohort or stratum Role NInitial diagnosis benchmark stratum 72 Postoperative plan-ning benchmark stratum 72 Surveillance benchmark stratum 84 Recurrence benchmark stratum 60 Safety set benchmark stratum 72
+
+# 5 5. Experimental Protocol 
+
+## 5.1 5.1 Case set 
+
+The benchmark contains public-data cases and expert-authored vignettes spanning newly diagnosed diffuse glioma, postopera-tive integrated diagnosis, adjuvant therapy selection, suspected progression, treatment effect, recurrent disease, and incom-plete workup. Each case includes a chronological evidence packet and a frozen guideline date. Case authors and adjudica-tors are separated. 
+
+## 5.2 5.2 Controlled system variants 
+
+The primary comparison includes direct single-model prompt-ing, single-agent retrieval, single-agent plan-and-critique, free-chat multi-agent, typed-protocol multi-agent without a safety governor, and full TumorBoard. All variants receive identical evidence, retrieval access, model version, temperature, and total token budget. A budget-normalized secondary analy-sis varies the number of agents while fixing total generated tokens. 
+
+Table 2: System variants and isolated mechanisms.                                  
+
+> Variant Retrieval Role sepa-ration Typed ledger Critic Safety gate Direct LLM No No No No No RAG agent Yes No No No No Plan-critique Yes No Partial Yes No Free-chat council Yes Yes No Yes No Typed council Yes Yes Yes Yes No TumorBoard Yes Yes Yes Yes Yes
+
+## 5.3 5.3 Metrics 
+
+Decision quality is scored against an adjudicated action graph, allowing partial credit for valid alternatives. Evidence fidelity measures citation precision, citation recall, entailment, tempo-ral validity, and recommendation-to-evidence coverage. Safety measures harmful recommendation rate, missed deferral rate, and false deferral rate. Process measures contradiction detec-tion, contradiction resolution, unsupported consensus, mes-sage redundancy, latency, and token cost. Expert raters assess correctness, completeness, actionability, uncertainty commu-nication, and trust. 
+
+## 5.4 5.4 Perturbation tests 
+
+Evidence deletion removes a decisive finding. Evidence con-flict injects a plausible but incompatible note. Guideline shift replaces a current clause with an older version. Role corrup-tion gives one specialist an erroneous claim. Prompt injection places an instruction inside an untrusted document. The ex-pected behavior is localized degradation plus explicit deferral, rather than confident propagation. Figure 3: Claim-evidence ledger and safety gate. Atomic claims pass retrieval, entailment, conflict resolution, and risk checks before release. 
+
+## 5.5 5.5 Statistical analysis 
+
+Primary comparison uses paired case-level bootstrap confi-dence intervals for action-graph F1 and a mixed-effects ordinal model for expert ratings. Harmful recommendation rates use exact paired tests. Inter-rater reliability uses weighted kappa and intraclass correlation as appropriate. Holm correction cov-ers the prespecified primary and safety endpoints. All prompts, retrieved passages, messages, ledger states, and outputs are retained for audit. Cases are built with a two-pass process. One clinical au-thor constructs the chronological packet from source material. A second author independently creates the action graph and marks decisive evidence. Disagreement is adjudicated before any model run. The benchmark balances common and difficult states, includes incomplete workups, and separates validation from a hidden test set. Templates preserve clinical realism while preventing patient identity leakage. Budget matching is implemented at the generated-token and retrieval-call levels. A single-agent baseline can use the same total number of tokens as the full council. The free-chat coun-cil uses identical roles without the ledger schema. The typed council removes only the safety governor. These comparisons isolate parallel specialization, structured communication, ad-versarial critique, and gated release. Model temperature and sampling count remain fixed. Evidence attacks are parameterized by severity. Deletion removes one decisive fact or a redundant supporting fact. Con-flict inserts an outdated note, incompatible imaging interpre-tation, or superseded pathology statement. Guideline shift changes the corpus cutoff. Role corruption forces one agent to submit a high-confidence false claim. Prompt injection is placed inside an untrusted retrieved document. Metrics track whether the error remains localized, spreads through the ledger, or reaches the final plan. Expert review uses neuro-oncology, neuroradiology, neu-ropathology, and pharmacy perspectives. Raters score action validity, missing prerequisites, evidence support, uncertainty, and potential harm. The primary harm label requires a plausi-ble path to patient-level adverse consequence. Mixed-effects models account for case and rater. Cost analysis reports la-tency, input and output tokens, retrieval calls, and peak parallel requests. 
+
+# 6 6. Results 
+
+## 6.1 6.1 Decision quality 
+
+TumorBoard achieved an action F1 of 0.772 (95% CI 0.754 to 0.790) and evidence entailment of 0.914 (95% CI 0.897 to 0.931) on the 360-case hidden test set. The strongest budget-matched typed council reached 0.741 action F1. The paired gain was 0.031 (95% CI 0.016 to 0.047, Holm-adjusted p = 0.0012), and gains remained positive across initial diagnosis, postoperative planning, surveillance, recurrence, and the safety set. Recommendation-to-evidence coverage reached 0.927. Figure 4: Evaluation matrix separating decision quality, evidence fidelity, process safety, and operational cost. 
+
+Figure 5: Paired action-F1 gain over the strongest budget-matched baseline across case strata. 
+
+## 6.2 6.2 Safety under evidence and guideline per-turbation 
+
+Under evidence deletion, TumorBoard deferred 84.2% of cases and limited harmful recommendations to 5.8%. Harmful rec-ommendation rates were 7.2% under guideline-version shift and 6.1% under role corruption. Enabling the safety governor reduced harmful release by 7.8 percentage points (95% CI 5.1 to 10.5, adjusted p = 0.0010), with a 4.3-point increase in false deferral (95% CI 2.1 to 6.5, adjusted p = 0.0060). The threshold curve exposes this operational trade-off directly. 
+
+Table 3: Hidden-test decision quality and cost.                                   
+
+> Method Action F1 Entailment Harmful Deferral F1 Cost Direct LLM 0.612 0.674 0.142 0.501 0.180 RAG agent 0.659 0.781 0.113 0.566 0.270 Plan-critique 0.694 0.824 0.091 0.622 0.430 Free-chat council 0.708 0.807 0.087 0.647 0.720 Typed council 0.741 0.883 0.068 0.713 0.780 TumorBoard 0.772 0.914 0.039 0.786 0.840
+
+Table 4: Coordination and safety-controller comparison.                             
+
+> Variant Action F1 Contradiction Safe deferral Harmful release Clean 0.772 0.901 0.786 0.039 Evidence deletion 0.716 0.927 0.842 0.058 Evidence conflict 0.704 0.891 0.816 0.067 Guideline version shift 0.688 0.872 0.801 0.072 Role corruption 0.697 0.918 0.827 0.061 Prompt injection 0.726 0.936 0.804 0.049
+
+## 6.3 6.3 Mechanism ablations and efficiency 
+
+Removing the claim-evidence ledger reduced action F1 by 0.039 and increased unsupported consensus by 0.054. Remov-ing the adversarial critic reduced contradiction resolution by 0.112. Removing the safety governor increased harmful re-lease by 0.078. Full TumorBoard generated 14,220 tokens per case and required 21.8 seconds median latency, establishing the measured quality-safety gain at a quantified inference cost. Figure 6: Harmful-release and false-deferral rates across safety release thresholds. 
+
+Table 5: Mechanism ablations and inference budget.                              
+
+> Variant Action F1 Coverage Unsupported Harmful Tokens Full TumorBoard 0.772 0.927 0.025 0.039 14220.000 No ledger 0.733 0.841 0.079 0.073 14050.000 No critic 0.749 0.889 0.061 0.069 11380.000 No governor 0.776 0.918 0.044 0.117 13310.000 Unrestricted chat 0.708 0.751 0.132 0.128 14560.000
+
+# 7 7. Discussion 
+
+TumorBoard’s advantage arose from structured coordination. The full system improved action F1, evidence entailment, and recommendation binding under a fixed token budget. Ledger removal increased unsupported consensus, critic removal im-paired contradiction resolution, and governor removal in-creased harmful release. This ordered failure pattern gives the architecture explanatory control over the measured gain. The safety controller exposes an actionable threshold trade-off. Enabling the governor reduced harmful release by 7.8 percentage points and increased false deferral by 4.3 points. Threshold selection can therefore be tied to deployment risk tolerance rather than hidden inside a single aggregate score. The 84.2% deferral rate under evidence deletion shows that the system recognized missing prerequisites instead of silently completing a recommendation from prior model beliefs. Inference cost remains material. TumorBoard used 14,220 generated tokens and 21.8 seconds per case. The matched-budget design prevents this cost from explaining the accuracy result, while operational deployment will require caching, spe-cialist parallelism, and institution-specific latency testing. Hu-man escalation remains the terminal authority for unresolved conflicts and high-risk recommendations. 
+
+Figure 7: Paired mechanism-ablation effects on decision quality and safety. 
+
+# 8 8. Reproducibility, Governance, and Human Oversight 
+
+The release will contain case templates, adjudication rules, prompt versions, retrieval snapshots, agent schemas, message logs, ledger graphs, scoring code, and perturbation genera-tors. Every generated recommendation remains research out-put. Expert review is mandatory for benchmark labels and deployment-facing interpretation. The system records model version, corpus version, and complete provenance for each run. Released traces will remove protected health information and retain stable synthetic identifiers. Each run records model hash, prompt hash, retrieval snapshot, random seed, token budget, agent messages, ledger transitions, and governor de-cisions. Governance documentation separates benchmark re-search from clinical deployment and defines the human roles required for any prospective study. 
+
+# 9 9. Conclusion 
+
+TumorBoard converts longitudinal multi-specialty reasoning into an auditable claim-evidence process. Matched-budget evaluation and component ablations show that the ledger, critic, and safety governor jointly improve decision quality while controlling harmful release. The resulting system provides a measurable coordination architecture for high-stakes medical agents. 
+
+# Author Contributions 
+
+Conceptualization, Y.L., Z.Z., and S.-Y.S.; methodology, Y.L., Z.Z., R.L., and M.; software, Y.L., R.L., and M.; validation, Y.L., Z.Z., R.L., and H.-A.L.; formal analysis, Y.L. and Z.Z.; investigation, Y.L., R.L., and M.; data curation, Y.L. and R.L.; writing - original draft, Y.L. and Z.Z.; writing - review and editing, all authors; visualization, Y.L. and M.; supervision, S.-Y.S. and H.-A.L.; project administration, S.-Y.S.; funding acquisition, S.-Y.S. and H.-A.L. All authors reviewed and approved the final manuscript. 
+
+# Funding 
+
+This research was supported by the MSIT (Ministry of Science and ICT), Korea, under the National Program for Excellence in Software, supervised by the IITP (Institute of Information & Communications Technology Planning & Evaluation) in 2026 (No. 2023-0-00065), and by the Kunsan National University Industry-University Cooperation Foundation Research Fund (2023H052). 
+
+# Institutional Review Board Statement 
+
+Not applicable. 
+
+# Informed Consent Statement 
+
+Not applicable. 
+
+# Conflicts of Interest 
+
+The authors declare no conflicts of interest. 
+
+# References 
+
+[1] Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik Narasimhan, et al.. ReAct: Synergizing Reasoning and Acting in Language Models. International Conference on Learning Representations, 2023. https://arxiv.org/ abs/2210.03629 
+
+[2] Timo Schick, Jane Dwivedi-Yu, Roberto Dessi, Roberta Raileanu, Maria Lomeli, Luke Zettlemoyer, et al.. Tool-former: Language Models Can Teach Themselves to Use Tools. Advances in Neural Information Processing Systems, 2023. 
+
+https://arxiv.org/abs/2302.04761 
+
+[3] Noah Shinn, Federico Cassano, Ashwin Gopinath, Karthik Narasimhan, Shunyu Yao. Reflexion: Language Agents with Verbal Reinforcement Learning. Advances in Neural Infor-mation Processing Systems, 2023. https://arxiv.org/ abs/2303.11366 
+
+[4] Qingyun Wu, Gagan Bansal, Jieyu Zhang, Yiran Wu, Beibin Li, Erhan Yilmaz, et al.. AutoGen: Enabling Next-Gen LLM Ap-plications via Multi-Agent Conversation. arXiv, 2023. https: //arxiv.org/abs/2308.08155 
+
+[5] Guohao Li, Hasan Abed Al Kader Hammoud, Hani Itani, Dmitrii Khizbullin, Bernard Ghanem. CAMEL: Communica-tive Agents for Mind Exploration of Large Scale Language Model Society. Advances in Neural Information Process-ing Systems, 2023. https://arxiv.org/abs/2303. 17760 
+
+[6] Sirui Hong, Mingchen Zhuge, Jonathan Chen, Xiawu Zheng, Yuheng Cheng, Jinlin Wang, et al.. MetaGPT: Meta Pro-gramming for Multi-Agent Collaborative Framework. Interna-tional Conference on Learning Representations, 2024. https: //arxiv.org/abs/2308.00352 
+
+[7] Xiao Liu, Hao Yu, Hanchen Zhang, Yifan Xu, Xuanyu Lei, Hanyu Lai, et al.. AgentBench: Evaluating LLMs as Agents. International Conference on Learning Representations, 2024. 
+
+https://arxiv.org/abs/2308.03688 
+
+[8] Paul Hager, Friederike Jungmann, Roberto Holland, Keno Bhagat, Irina Hubrecht, Michael Knauer, et al.. Large Lan-guage Models as Agents in the Clinic. arXiv, 2023. https: //arxiv.org/abs/2309.10895 
+
+[9] Tiffany H. Kung, Morgan Cheatham, Arielle Medenilla, Cza-rina Sillos, Lorie De Leon, Camille Elepaño, et al.. Perfor-mance of ChatGPT on USMLE: Potential for AI-assisted med-ical education using large language models. PLOS Digital Health, 2023. https://doi.org/10.1371/journal. pdig.0000198 
+
+[10] Karan Singhal, Shekoofeh Azizi, Tao Tu, S. Sara Mahdavi, Jason Lee, Hyung Won Chung, et al.. Large language models encode clinical knowledge. Nature, 2023. https://doi. org/10.1038/s41586-023-06291-2 
+
+[11] Professor Gary S. Collins, Karel G.M. Moons, Paula Dhiman, Richard D Riley, Andrew L. Beam, Ben Van Calster, et al.. TRIPOD+AI statement: updated guidance for reporting clin-ical prediction models that use regression or machine learn-ing methods. BMJ, 2024. https://doi.org/10.1136/ bmj-2023-078378 
+
+[12] Michael Weller, Martin J. van den Bent, Matthias Preusser, Émilie Le Rhun, Jörg C. Tonn, Giuseppe Minniti, et al.. EANO guidelines on the diagnosis and treatment of diffuse gliomas of adulthood. Nature Reviews Clinical Oncology, 2020. https: //doi.org/10.1038/s41571-020-00447-z 
+
+[13] Michael Moor, Oishi Banerjee, Zahra Shakeri Hossein Abad, Harlan M. Krumholz, Jure Leskovec, Eric J. Topol, et al.. Foundation models for generalist medical artificial in-telligence. Nature, 2023. https://doi.org/10.1038/ s41586-023-05881-4 
+
+[14] Tirth Dave, Sai Anirudh Athaluri, Satyam Singh. ChatGPT in medicine: an overview of its applications, advantages, lim-itations, future prospects, and ethical considerations. Fron-tiers in Artificial Intelligence, 2023. https://doi.org/ 10.3389/frai.2023.1169595 
+
+[15] Patrick Y. Wen, Michael Weller, Eudocia Q. Lee, Brian M. Alexander, Jill S. Barnholtz-Sloan, Floris P Barthel, et al.. Glioblastoma in adults: a Society for Neuro-Oncology (SNO) and European Society of Neuro-Oncology (EANO) consen-sus review on current management and future directions. Neuro-Oncology, 2020. https://doi.org/10.1093/ neuonc/noaa106 [16] Jan Clusmann, Fiona R. Kolbinger, Hannah Sophie Muti, Zunamys I. Carrero, Jan-Niklas Eckardt, Narmin Ghaffari Laleh, et al.. The future landscape of large language mod-els in medicine. Communications Medicine, 2023. https: //doi.org/10.1038/s43856-023-00370-1 
+
+[17] Bertalan Meskó, Eric J. Topol. The imperative for regulatory oversight of large language models (or generative AI) in health-care. npj Digital Medicine, 2023. https://doi.org/10. 1038/s41746-023-00873-0 
+
+[18] K. K. Singhal, Tao Tu, Juraj Gottweis, Rory Sayres, Ellery Wulczyn, Mohamed Amin, et al.. Toward expert-level medical question answering with large language models. Nature Medicine, 2025. https://doi.org/10.1038/ s41591-024-03423-7 
+
+[19] Yunfan Gao, Yun Xiong, Xinyu Gao, Kangxiang Jia, Jinliu Pan, Yuxi Bi, et al.. Retrieval-Augmented Generation for Large Language Models: A Survey. arXiv (Cornell University), 2023. 
+
+https://doi.org/10.48550/arxiv.2312.10997 
+
+[20] Dave Van Veen, Cara Van Uden, Louis Blankemeier, Jean-Benoit Delbrouck, Asad Aali, Christian Bluethgen, et al.. Adapted large language models can outperform medical experts in clinical text summarization. Nature Medicine, 2024. https: //doi.org/10.1038/s41591-024-02855-5 
+
+[21] John Dagdelen, Alexander Dunn, Sang-Hoon Lee, Nicholas Walker, Andrew Rosen, Gerbrand Ceder, et al.. Structured infor-mation extraction from scientific text with large language mod-els. Nature Communications, 2024. https://doi.org/ 10.1038/s41467-024-45563-x 
+
+[22] Wenqi Fan, Yujuan Ding, Liangbo Ning, Shijie Wang, Hengyun Li, Dawei Yin, et al.. A Survey on RAG Meeting LLMs: Towards Retrieval-Augmented Large Language Models. conference-paper, 2024. https://doi.org/10.1145/ 3637528.3671470 
+
+[23] Paul Hager, Friederike Jungmann, Robbie Holland, Kunal Bhagat, Inga Hubrecht, Manuel Knauer, et al.. Evaluation and mitigation of the limitations of large language models in clinical decision-making. Nature Medicine, 2024. https: //doi.org/10.1038/s41591-024-03097-1 
+
+[24] Burt Nabors, Jana Portnow, Manmeet S. Ahluwalia, Joachim M. Baehring, Henry Brem, Steven Brem, et al.. Central Ner-vous System Cancers, Version 3.2020, NCCN Clinical Prac-tice Guidelines in Oncology. Journal of the National Com-prehensive Cancer Network, 2020. https://doi.org/10. 6004/jnccn.2020.0052 
+
+[25] Peter G. Pappas, Carol A. Kauffman, David R. Andes, Daniel K. Benjamin, Thierry Calandra, John E. Edwards, et al.. Clinical Practice Guidelines for the Management Candidiasis: 2009 Update by the Infectious Diseases Society of America. Clinical Infectious Diseases, 2009. https://doi.org/10.1086/ 596757 
+
+[26] Jack Gallifant, Majid Afshar, Saleem Ameen, Yindalon Aphinyanaphongs, Shan Chen, Giovanni Cacciamani, et al.. The TRIPOD-LLM reporting guideline for studies using large language models. Nature Medicine, 2025. https://doi. org/10.1038/s41591-024-03425-5 
+
+[27] Elizabeth Huynh, Ahmed Hosny, Christian V. Guthier, Danielle S. Bitterman, Steven Petit, Daphne A. Haas-Kogan, et al.. Artificial intelligence in radiation oncology. Nature Reviews Clinical Oncology, 2020. https://doi.org/10.1038/ s41571-020-0417-8 
+
+[28] Siru Liu, Aileen P. Wright, Barron L. Patterson, Jonathan P. Wanderer, Robert W. Turer, Scott D. Nelson, et al.. Using AI-generated suggestions from ChatGPT to optimize clinical deci-sion support. Journal of the American Medical Informatics As-sociation, 2023. https://doi.org/10.1093/jamia/ ocad072 
+
+[29] Liyan Tang, Zhaoyi Sun, Betina Idnay, Jordan G. Nestor, Ali Soroush, Pierre Elias, et al.. Evaluating large lan-guage models on medical evidence summarization. npj Digital Medicine, 2023. https://doi.org/10.1038/ s41746-023-00896-7 
+
+[30] Cyril Zakka, Rohan Shad, Akash Chaurasia, Alex R. Dalal, Jennifer L. Kim, Michael Moor, et al.. Almanac - Retrieval-Augmented Language Models for Clinical Medicine. NEJM AI, 2024. https://doi.org/10.1056/aioa2300068 
+
+[31] Thomas Yu Chow Tam, Sonish Sivarajkumar, Sumit Kapoor, Alisa V Stolyar, Katelyn Polanska, Karleigh R McCarthy, et al.. A framework for human evaluation of large language models in healthcare derived from literature review. npj Digital Medicine, 2024. https://doi.org/10.1038/ s41746-024-01258-7 
+
+[32] Yan Hu, Qingyu Chen, Jingcheng Du, Xueqing Peng, Vipina K. Keloth, Xu Zuo, et al.. Improving large language models for clinical named entity recognition via prompt engineering. Jour-nal of the American Medical Informatics Association, 2024. 
+
+https://doi.org/10.1093/jamia/ocad259 
+
+[33] Shubo Tian, Qiao Jin, Lana Yeganova, Po-Ting Lai, Qingqing Zhu, Xiuying Chen, et al.. Opportunities and challenges for ChatGPT and large language models in biomedicine and health. Briefings in Bioinformatics, 2023. https://doi.org/10. 1093/bib/bbad493 
+
+[34] Rui Yang, Ting Fang Tan, Wei Lu, Arun James Thirunavukarasu, Daniel Shu Wei Ting, Nan Liu. Large lan-guage models in health care: Development, applications, and challenges. Health care science, 2023. https://doi.org/ 10.1002/hcs2.61 
+
+[35] Stefan Harrer. Attention is not all you need: the complicated case of ethically using large language models in healthcare and medicine. EBioMedicine, 2023. https://doi.org/ 10.1016/j.ebiom.2023.104512 
+
+[36] Peng Zhang, Maged N. Kamel Boulos. Generative AI in Medicine and Healthcare: Promises, Opportunities and Chal-lenges. Future Internet, 2023. https://doi.org/10. 3390/fi15090286 
+
+[37] Zabir Al Nazi, Wei Peng. Large Language Models in Healthcare and Medical Domain: A Review. In-formatics, 2024. https://doi.org/10.3390/ informatics11030057 [38] Nikita Mehandru, Brenda Y. Miao, Eduardo Rodriguez Al-maraz, Madhumita Sushil, Atul J. Butte, Ahmed M. Alaa. Evaluating large language models as agents in the clinic. npj Digital Medicine, 2024. https://doi.org/10.1038/ s41746-024-01083-y Table A1: Appendix Table A1. Field completeness. 
+
+Field Non-null N Rate section 143 100.0\% table_id 94 65.7\% figure_id 58 40.6\% cohort 143 100.0\% method_or_variant 138 96.5\% condition 64 44.8\% metric 143 100.0\% value 143 100.0\% unit 143 100.0\% ci_low 28 19.6\% ci_high 28 19.6\% p_adjusted 16 11.2\% n 59 41.3\% placeholder_key 25 17.5\% 
+
+Table A2: Appendix Table A2. Cohort accounting. 
+
+Cohort Condition N Key Initial diagnosis benchmark stra-tum 72 N1 Postoperative plan-ning benchmark stra-tum 72 N2 Surveillance benchmark stra-tum 84 N3 Recurrence benchmark stra-tum 60 N4 Safety set benchmark stra-tum 72 N5 
+
+# A Data Integrity and Result Reconcili-ation 
+
+The locked export contains 143 rows and 14 fields. Metric names are complete, exact duplicate rows are absent, and the composite analysis key is unique. Confidence intervals and adjusted p values are populated only for prespecified inferen-tial comparisons. The export contains 0 undefined value(s), retained as N/A where cross-scale expert plausibility is struc-turally unavailable for a method without an explicit correspon-dence map. 
+
+# B Extended Numerical Results 
+
+Table A3: Appendix Table A3. Inference-ready results with confi-dence intervals. 
+
+Cohort Method Metric Value Low High Adj. p Hidden test Typed council Action F1 0.741 0.720 0.761 N/A Hidden test TumorBoard Action F1 0.772 0.754 0.790 0.001 Hidden test TumorBoard Evidence entail-ment 0.914 0.897 0.931 0.001 Hidden test TumorBoard Harmful recom-menda-tion rate 0.039 0.024 0.059 0.002 Hidden test TumorBoard Action F1 0.772 0.754 0.790 0.001 Hidden test TumorBoard Evidence entail-ment 0.914 0.897 0.931 0.001 Hidden test Typed council Action F1 0.741 0.720 0.761 N/A Hidden test TumorBoard vs Typed council Action F1 differ-ence 0.031 0.016 0.047 0.001 Hidden test TumorBoard vs Typed council Action F1 CI lower bound 0.016 0.016 0.047 0.001 Hidden test TumorBoard vs Typed council Action F1 CI upper bound 0.047 0.016 0.047 0.001 Hidden test TumorBoard Recommendation-to-evidence coverage 0.927 0.910 0.943 0.001 Perturbation set TumorBoard deferral rate 84.2 79.8 88.0 N/A 
+
+Table A4: Appendix Table A4. Ablation and robustness rows. 
+
+Variant Condition Metric Value No ledger vs Full TumorBoard paired Action F1 change -0.039 No ledger vs Full TumorBoard paired Unsupported con-sensus change 0.054 No critic vs Full Tu-morBoard paired Contradiction res-olution change -0.112 No governor vs Full TumorBoard paired Harmful release change 0.078 Table A5: Appendix Table A5. Narrative placeholder reconciliation. 
+
+Key Metric Value Cohort N1 cases 72 Initial diagnosis N2 cases 72 Postoperative planning N3 cases 84 Surveillance N4 cases 60 Recurrence N5 cases 72 Safety set ACTION_F1 Action F1 0.772 Hidden test ENTAIL Evidence entail-ment 0.914 Hidden test BEST_BASELINE_F1 Action F1 0.741 Hidden test DELTA_F1 Action F1 differ-ence 0.031 Hidden test CI_LOW Action F1 CI lower bound 0.016 Hidden test CI_HIGH Action F1 CI up-per bound 0.047 Hidden test P_VALUE adjusted p value 0.001 Hidden test EVID_COV Recommendation-to-evidence cover-age 0.927 Hidden test DEFER_DELETE deferral rate 84.2 Perturbation set 
+
+# C Extended Result Figures Figure A1: Extended data-derived diagnostic 1. Figure A2: Extended data-derived diagnostic 2. 
+
+Figure A3: Extended data-derived diagnostic 3. 
+
+Figure A4: Extended data-derived diagnostic 4. 
+
+Figure A5: Extended data-derived diagnostic 5. Figure A6: Extended data-derived diagnostic 6. 
+
+Figure A7: Extended data-derived diagnostic 7. 
+
+Figure A8: Extended data-derived diagnostic 8. 
+
+Figure A9: Extended data-derived diagnostic 9. Figure A10: Extended data-derived diagnostic 10. D Reproducibility Record 
+
+The appendix source directory contains the locked CSV export, generated tables, all figure assets, and the executed analysis notebook. Every numeric statement in the main paper maps to an export row through cohort, method, condition, metric, and optional placeholder key.
