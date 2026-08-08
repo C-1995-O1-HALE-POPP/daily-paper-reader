@@ -1,0 +1,1005 @@
+Title: DoctorAgents: an agentic framework to iteratively refine AutoML pipeline for small clinical temporal data
+
+URL Source: https://arxiv.org/pdf/2608.05375v1
+
+Published Time: Fri, 07 Aug 2026 00:16:57 GMT
+
+Number of Pages: 34
+
+Markdown Content:
+# DoctorAgents: Iterative Agentic Refinement for Small Clinical Temporal Data 
+
+# Ruilin Wang 1,2 , Bo-Hong Wang 1,2 , Elizabeth Kourbatski 1,2 , Jun Bai 1,2 , Hegang Chen 1,2 ,Ziyang Song 1,2 , Gilles Boire 4,5 , Marie Hudson 3,* , Yue Li 1,2,* 
+
+> 1
+
+School of Computer Science, McGill University, Montreal, Canada 
+
+> 2
+
+Mila – Quebec AI Institute, Montreal, Canada 
+
+> 3
+
+Division of Rheumatology, Department of Medicine, McGill University, Montreal, Canada 
+
+> 4
+
+Centre intégré universitaire de santé et de services sociaux de l’Estrie – Centre hospitalier universitaire de Sherbrooke (CIUSSSE-CHUS), Sherbrooke, Canada 
+
+> 5
+
+Division of Rheumatology, Faculty of Medicine and Health Sciences, University of Sherbrooke, Sherbrooke, Canada 
+
+# Abstract 
+
+Clinical machine learning (ML) has the potential to support high-stakes medical decision-making, but reliable deployment is often constrained by scarce, heterogeneous, and temporal complexity. Developing effective ML pipelines for such data remains time-consuming and error-prone, while existing automated machine learning (AutoML) systems only partially address this challenge be-cause they largely rely on brute-force search over predefined spaces and lack explicit reasoning and memory. We therefore reformulate AutoML for small clinical data from exhaustive search to reasoning-driven refinement. We propose DoctorAgents , an agentic AI frame-work that autonomously constructs and optimizes end-to-end ML pipelines through specialized large language model (LLM) agents for generation, validation, and refinement. DoctorAgents back-propagates natural-language feedback through textual gradient descent to perform targeted updates without exhaustive search. Experiments across diverse clinical tasks show that DoctorAgents 
+
+consistently outperforms established AutoML baselines while pro-ducing more interpretable task-specific representations. 
+
+# Keywords 
+
+Agentic AI, automated machine learning, small clinical data, LLMs 
+
+# 1 Introduction 
+
+Existing clinical prediction tasks are often built from small cohorts, such as rare-disease registries, single-center studies, and narrowly defined treatment populations [25, 34]. Unlike standard tabular benchmarks, these datasets are often high-dimensional, sparse, and temporally irregular. More specifically, temporal clinical records are not simply static tables augmented with timestamps but asyn-chronous and incomplete observations of an evolving patient state where patients may be observed at different frequencies and over substantially different durations, such that the available temporal resolution varies across individuals and variables [16, 29]. The same clinical value may therefore carry different predictive meaning de-pending on its observation time, recency relative to the prediction time, and the trajectory preceding it. Moreover, the observed record reflects both the underlying dis-ease process and the clinical observation process, making it difficult to distinguish true physiological change from variation induced by monitoring and care delivery. Naive aggregation into static patient 
+
+> *Corresponding authors: yueli@cs.mcgill.ca and marie.hudson@mcgill.ca
+
+vectors may fail to preserve temporal ordering, rates of change, persistence, and duration-related signals that are central to clinical progression [41]. Conversely, modeling the raw sequence requires careful alignment to task-specific index times and observation win-dows to avoid incorporating information unavailable at prediction time [28]. Clinical records are also shaped by care processes: mea-surement timing, frequency, recency, and missingness may reflect both patient state and clinical attention [8]. Reliable prediction therefore requires more than selecting a clas-sifier. Because the relevant temporal structure varies with the clini-cal endpoint, observation window, and prediction horizon, effective pipelines require leakage-safe, task-specific patient representations that capture temporal changes, variability, recency, and missing-ness [4]. Constructing such robust end-to-end pipelines remains labor-intensive and requires substantial statistical, computational, and clinical expertise [10]. To alleviate this burden, automated ML (AutoML) has emerged to automate pipeline construction, including data preprocessing, model selection, and hyperparameter searching. Early systems typ-ically relied on predefined search spaces and black-box optimiza-tion, including Bayesian optimization, evolutionary strategies, and bandit-based methods [12, 13, 17, 32]. Although empirically effec-tive, they often require substantial compute, provide limited in-sight into why a pipeline works, and remain less suitable for small datasets, rapid prototyping, or domain-specific tasks with subtle statistical pitfalls. Recent advances in large language models (LLMs) have enabled AutoML systems that synthesize executable ML pipelines from natural language specifications [5, 22, 37]. Beyond static code gen-eration, LLMs can perform data analysis, scientific reasoning, tool use, and iterative self-revision, allowing them to act as autonomous agents [9, 19, 38]. Recent work on agentic AI further shows that decomposing complex tasks into collaborative roles, such as plan-ning, execution, critique, and optimization, improves reasoning depth and efficiency [1, 21, 23, 35, 40]. These advances have moti-vated LLMs as autonomous ML engineers. For instance, AutoML-Agent [33] and ERA [3] generate, execute, and iteratively refine ML pipelines toward user-defined objectives. Related works also explored tool-augmented LLMs for data science workflows and notebook automation [26, 44], including systems such as SciToolA-gent [11], which orchestrates domain-specific tools via a curated 
+
+> 1arXiv:2608.05375v1 [cs.AI] 5 Aug 2026
+
+scientific knowledge graph but focuses on tool selection rather than end-to-end ML pipeline optimization. Despite these advances, existing LLM-based AutoML systems remain constrained by trial-and-error regime, limited persistent memory, weak reasoning over data properties such as leakage risk and evaluation validity, and reliance on wholesale regeneration rather than targeted, incremental refinement . These limitations lead to unstable optimization, inefficient compute use, repetitive errors, and shallow exploration, echoing broader challenges in agentic systems with limited structured memory and feedback propagation [27, 42]. A more deliberate paradigm is therefore needed, treating pipeline development as a stateful, reasoning-driven process rather than a sequence of independent generations. We introduce DoctorAgents , a multi-agent framework for au-tonomous ML pipeline optimization that replaces brute-force search with reasoning-driven iteration. Briefly, DoctorAgents employs a team of specialized LLM agents to analyze data, generate and val-idate executable pipelines, analyze failures, and refine solutions using structured memory of prior changes and outcomes. As a re-sult, the generated ML pipeline are grounded in feature semantics and rigor. During the iterative pipeline refinement, we use adapted Textual Gradient Descent (TGD) [43] to convert natural-language feedback into localized code updates without regenerating entire pipelines. We further devise two sets of domain-specialized agents that decompose optimization into dedicated data preprocessing and model development agents, enabling deeper exploration of task-specific temporal representations while preserving explicit, editable code. Beyond predictive performance, we assess gener-ated features for technical validity, semantic consistency, temporal appropriateness, and clinical justification. Across diverse clinical tasks, DoctorAgents achieves stronger performance, stability, ro-bustness, and feature quality than existing AutoML and agentic baselines. In summary, our contributions include 
+
+• a reasoning-driven agentic AutoML framework for small clini-cal temporal datasets, combining dataset reasoning, execution validation, memory, and refinement, 
+
+• a memory-aware optimization that enables long-term learning and prevents repeated failures, 
+
+• a design of domain-specialized data preprocessing for irregularly observed temporal clinical data, enabling richer task-specific patient representations, 
+
+• automatically composing clinically meaningful variable from temporal data, and 
+
+• extensive empirical validation using MIMIC-IV and in-house clinical data, demonstrating robustness, efficiency, and inter-pretability beyond existing methods. 
+
+# 2 Related Work 
+
+Temporal Clinical Prediction Methods. Existing methods for tem-poral clinical prediction typically rely on standardized prepro-cessing pipelines or task-specific temporal architectures. MIMIC-Extract [36] supports reproducible ICU time-series preprocessing, while ML models such as DeepCare [24] and TrajGPT [31] en-code visit importance, irregular intervals, and sparse observations through specialized LSTM or transformer-attention layers, respec-tively. Although effective, these methods usually assume a fixed representation strategy or model family, leaving limited flexibility to adapt preprocessing, feature construction, and model selection jointly across heterogeneous small clinical datasets. 
+
+Foundation Models for Small Tabular Data. TabPFN [15] is a pretrained foundation model that performs well on small tabular classification problems with minimal task-specific tuning. How-ever, its monolithic prediction interface provides limited control over preprocessing, feature construction, evaluation design, and task-specific constraints. This limits its suitability for small clinical datasets, where leakage prevention, temporal aggregation, missing-ness handling, and interpretable patient-level representations often require explicit pipeline decisions. 
+
+LLM-Based AutoML Agents. AutoML-Agent [33] generates and iteratively improves pipelines using LLMs, while ERA [3] combines LLM generation with tree-based search to explore a broader solu-tion space. However, these systems still rely on repeated pipeline generation, with limited persistent memory and weak propagation of evaluation feedback into localized code changes. As a result, opti-mization can remain unstable and sample-inefficient under limited budgets, especially for small clinical datasets. 
+
+# 3 DoctorAgents 
+
+We first describe the overall multi-agent framework of DoctorAgents 
+
+with details on how the designated agents handle task initialization, validation, memory log, and pipeline refinement (Fig. 1). We then describe the domain specialized (DS) agents in Sec. 3.7. 
+
+# 3.1 Agent Designs 
+
+Each agent is an LLM instructed to complete a specific task: 
+
+Consultant ( A𝑐 ) acts as the high-level analytical expert, responsible for analyzing and transforming raw inputs into a predefined struc-tured task specification with domain knowledge to guide down-stream pipeline synthesis. 
+
+Generator ( A𝑔 ) translates the Consultant’s outputs into an initial ML pipeline code, including data preprocessing, model selection, training, and evaluation. The resulting implementation forms the starting point for the optimization workflow. 
+
+Repairer ( A𝑟 ) restores executability when the current pipeline fails and ensures minimal correction on the code for re-validation until success before proceeding to the Logger. 
+
+Logger ( A𝑙 ) records long-term memory for the refinement pro-cess. The Logger records inter-step notes that capture meaningful changes and manages memory context through summarization and cleaning at every checkpoint to maintain effective memory log. 
+
+Evaluator ( A𝑒 ) evaluates the quality of the pipeline and proposes improvement strategies. It produces natural language evaluation, which serve as the basis for updating the pipeline in the downstream backprop-optimization process. 
+
+Optimizer ( A𝑜 ) converts the backpropagated evaluator feedback into concrete code modifications while preserving expected pipeline output format to maintain iterative stability. The resulting pipeline implementation is then forwarded to the next optimization loop. 
+
+> 2
+
+Figure 1: Overview of DoctorAgents . (a) Initialization produces a solid starting pipeline from user metadata and profiled data statistics using the provided tool environment. (b) Execution validates the given code and returns performance results. (c) Memory records long-term information across optimization iterations. (d) Refinement iteratively improves the pipeline through evaluation-driven updates. The final output to the user is an optimized pipeline with the best observed performance. Algorithm 1 Overall Workflow of DoctorAgents 
+
+Initialization: Consultant A𝑐 , Generator A𝑔 , Logger A𝑙 , Evaluator 
+
+A𝑒 , Optimizer A𝑜 , and system step 𝑆 
+
+Input: Dataset metadata 𝑀 and max optimization step 𝑇 
+
+Output: Optimized Pipeline 𝑃  
+
+> 1:
+
+if 𝑀 ≠ ∅ then  
+
+> 2:
+
+𝐼 ← A𝑐 (𝑀 ) ⊲ parse raw inputs  
+
+> 3:
+
+𝑃 ∗ ← A𝑔 (𝐼, 𝑀 ) ⊲ generate initial code  
+
+> 4:
+
+𝑅 ∗ ← Exec (𝑃 ∗) ⊲ validate 𝑃 ∗ (Alg. 2)  
+
+> 5:
+
+𝐿 ← A𝑙 (𝑅 ∗) ⊲ initialize memory log  
+
+> 6:
+
+else  
+
+> 7:
+
+return 𝑚𝑠𝑔 ⊲ error msg for invalid inputs  
+
+> 8:
+
+end if  
+
+> 9:
+
+while 𝑆 ≤ 𝑇 do  
+
+> 10:
+
+𝐸 ← A𝑒 (𝑃 ∗, 𝑀, 𝐿 ) ⊲ evaluate 𝑃 ∗ (Sec. 3.6)  
+
+> 11:
+
+𝐹 ← ∇ 𝑃 ∗ (𝐸 ) ⊲ gradient computation (Eq. 1)  
+
+> 12:
+
+𝑃 ← A𝑜 (𝑃 ∗, 𝐹 ) ⊲ update 𝑃 ∗ (Eq. 2)  
+
+> 13:
+
+𝑅 ← Exec (𝑃 ) 
+
+> 14:
+
+𝑛𝑜𝑡𝑒 ← A𝑙 (𝑃 ∗, 𝑃, 𝑅 ∗, 𝑅 ) ⊲ create note (Sec. 3.5)  
+
+> 15:
+
+𝐿 ← 𝐿 + 𝑛𝑜𝑡𝑒  
+
+> 16:
+
+if 𝐶𝑃 (𝐿 ) = true then  
+
+> 17:
+
+𝐿 ← SUMMA (A𝑙 , 𝐿 ) ⊲ summarize L (Sec. 3.5)  
+
+> 18:
+
+end if  
+
+> 19:
+
+𝑃 ∗ ← 𝑃  
+
+> 20:
+
+𝑅 ∗ ← 𝑅  
+
+> 21:
+
+𝑆 ← 𝑆 + 1 
+
+> 22:
+
+end while  
+
+> 23:
+
+return 𝑃 
+
+# 3.2 Overall workflow 
+
+The workflow of DoctorAgents is depicted in Fig. 1 and Alg. 1, which consists of two main stages: 
+
+Initialization. As illustrated in Fig. 1a, Consultant (A𝑐 ) is prompted to receive validated user-provided information and metadata of the dataset (Line 2) and transforms them into a structured task speci-fication with explicit requirements. These data are then passed to 
+
+Generator (A𝑔 ), which is prompted to produce an initial end-to-end full-pipeline implementation followed by validation (Lines 3–4). The resulting data are added to the memory log for subsequent downstream optimization (Line 5). 
+
+Optimization. The framework iteratively refines the pipeline to search for an improved implementation by cycling through 3 steps. Step 1 - code execution (Fig. 1b): Repairer (A𝑟 ) receives er-ror traces upon execution failure and attempts to minimally fix the code before re-validating it (Alg. 2). Successful execution returns performance results (Lines 4, 13). Step 2 - memory composition (Fig. 1c): given both the previous and updated pipelines together with the execution results, Logger (A𝑙 ) appends notes that capture important changes to the log (Lines 14–15). Log summarization and cleaning are periodically triggered at predefined checkpoints to minimize the in-context length and memory storage (Line 17). Step 3 - pipeline refinement (Fig. 1d): Evaluator (A𝑒 ) assesses the pipeline using both the latest performance records and the history log (Line 10). Its feedback is backpropagated to Optimizer (A𝑜 )through TextGrad [43], which updates the pipeline accordingly (Lines 11–12). The updated pipeline is then validated for the next 
+
+> 3
+
+optimization iteration (Line 19) and returned to the user once the stopping criterion is met. The following subsections provide details of the key steps includ-ing Pipeline Initialization (Sec. 3.3), Implementation Verification (Sec. 3.4), Memory Composition (Sec. 3.5), Pipeline Refinement (Sec. 3.6), and Domain-Specific Specialization (Sec. 3.7). 
+
+# 3.3 Pipeline Initialization 
+
+The system begins with an initialization phase to ensure a valid base pipeline (Fig. 1a). As the performance of an autonomous system is highly sensitive to its starting point, a good initialization can achieve the optimal performance at substantially fewer iterations. 
+
+Metadata. To enhance data exploration and improve downstream generation quality, we derive a set of descriptive statistics from the input dataset 𝐷 . Specifically, a small subset of representative samples, feature statistics (computed by LLM-based profiling if not provided), and user-provided background information of the task are combined into a unified metadata representation 𝑀 , which is provided to both A𝑐 and A𝑔 to support robust, data-informed pipeline initialization and task understanding. 
+
+Task Specification. The Consultant A𝑐 takes as input the meta-data 𝑀 and produces a structured output 𝐼 = A𝑐 (𝑀 ) as strictly pre-defined in the prompt (Sec. A.4.1), consisting of two parts (Example output in Sec. A.6.1): 
+
+• Task Description : a concise and unambiguous description of the target ML task, intended to serve as a stable reference for downstream agents. 
+
+• Task Suggestion : task-specific recommendations for data preprocessing and model search strategies, including candi-date algorithms, normalization schemes, and missing-value handling, which guide subsequent agent decisions. 
+
+Pipeline Synthesis. Conditioned on 𝐼 and 𝑀 , A𝑔 synthesizes the initial executable pipeline 𝑃 ∗. Specifically, it translates the task description, variable statistics, and reference suggestions into a complete pipeline implementation, including data loading , prepro-cessing , model construction , training , evaluation , and result reporting .
+
+A𝑔 is encouraged to follow the suggestion by A𝑐 , but it is not con-strained to a fixed template, enabling flexibility across diverse tasks and datasets. The resulting 𝑃 ∗ = A𝑔 (𝐼, 𝑀 ) serves as the initial node in the downstream optimization trajectory. 
+
+# 3.4 Implementation Verification 
+
+Given a pipeline code 𝑃 𝑒 , DoctorAgents validates both the exe-cutability and efficiency. This stage integrates program execution with an autonomous repair mechanism (Fig. 1b; Alg. 2), forming a closed-loop safeguard before downstream optimization. Execution validation ( Exec ) attempts to execute the pipeline code through a program runner 𝑓 𝑒 within a fixed time budget and produces an execution signal 𝑓 𝑙𝑎𝑔 , an error message 𝑒𝑟𝑟 , and re-sults 𝑅 𝑒 . Successful execution ( 𝑓 𝑙𝑎𝑔 = PASS) yields concrete out-puts 𝑅 𝑒 , involving training , validation , and test performance of the model with its name and hyperparameter matrix , or metadata such as decision-oriented strategies and variable-level information , which will be subsequently consumed by the downstream agents. Program failures ( 𝑓 𝑙𝑎𝑔 = FAIL) may arise from a variety of sources, including runtime errors, incompatible library usage, or resource exhaustion. When execution fails, the error trace 𝑒𝑟𝑟 (either an execution er-ror or a timeout resulting from the time budget being exceeded), together with 𝑃 𝑒 , is passed to A𝑟 , which is prompted (Sec. A.4.3) to minimally modify the program to restore executability of 𝑃 𝑒 via 
+
+A𝑟 (𝑃 𝑒 , 𝑒𝑟𝑟 ) while preserving the original algorithmic intent. Typical repair actions include correcting method misuse, resolving variable scope or type errors, and mitigating runtime exceptions. After pro-ducing a repaired version of 𝑃 𝑒 , re-validation is performed. This procedure repeats until either the program executes successfully or a predefined retry limit is reached (which is rare). By incorporat-ing execution validation into optimization, DoctorAgents resolves execution-level issues for successful execution. 
+
+# 3.5 Memory Composition 
+
+A key challenge in designing an autonomous code optimization system is the lack of a persistent state across iterations. Without explicit memory, agents may repeatedly revisit identical or simi-lar failures, reintroduce previously corrected errors, or overlook insights obtained from earlier iterations. To address this issue, A𝑙 
+
+maintains a structured, long-term memory throughout the opti-mization process (Fig. 1c). 
+
+Memory Log. Following pipeline initialization (Sec. 3.3), A𝑙 ini-tializes the memory log 𝐿 using the initial results 𝑅 ∗ obtained from Exec( 𝑃 ∗). Thereafter, A𝑙 records, organizes, and maintains inter-iteration information 𝑛𝑜𝑡𝑒 generated during pipeline refinement. Given the updated pipeline 𝑃 and results 𝑅 = Exec( 𝑃 ), rather than storing raw module outputs, A𝑙 is prompted (Sec. A.4.4) to ex-tract meaningful structured inter-iteration pipeline differences (e.g., changes in preprocessing logic, model configurations, or hyper-parameters) and associate them with performance outcome differ-ences. Hence 𝑛𝑜𝑡𝑒 = A𝑙 (𝑃 ∗, 𝑃, 𝑅 ∗, 𝑅 ). These 𝑛𝑜𝑡𝑒 s are appended to 
+
+𝐿 and made accessible to downstream agents as historical context that informs subsequent decisions. 
+
+Checkpoint ( 𝐶𝑃 ) and Summarization (SUMMA). As optimization progresses, unbounded accumulation of notes can lead to excessive context length and degrade reasoning quality. To mitigate this con-text explosion problem, A𝑙 incorporates a checkpoint-based memory management strategy. At the predefined checkpoints such as every 15 optimization iterations or at the 5000-token limit ( 𝐶𝑃 (𝐿 ) = true), 
+
+A𝑙 triggers a cleaning procedure SUMMA that summarizes its mem-ory following the instruction prompts (Sec. A.4.4). This involves distilling notes from earlier iterations, discarding low-priority or redundant entries, and retaining only salient insights (e.g., changes in codes that significantly improved or degraded performance; an example shown in Sec. A.6.6) along with a small set of most recent observations. With this knowledge summarization strategy, the resulting log 𝐿 = SUMMA( A𝑙 , 𝐿 ) preserves long-term memory and maintains concise information. 
+
+# 3.6 Pipeline Refinement 
+
+Once the initial pipeline 𝑃 ∗ is validated (Sec. 3.4) to initialize the optimizer and the first 𝑛𝑜𝑡𝑒 , derived from the execution result 𝑅 ∗
+
+= Exec (𝑃 ∗), which is cached into 𝐿 , DoctorAgents enters the core 
+
+Refinement phase, where pipeline quality is iteratively improved 
+
+> 4
+
+through evaluation-driven program refinement. This phase follows a closed-loop structure consisting of two primary steps: Evaluation 
+
+and Optimization (Fig. 1d). 
+
+Evaluation. Given the current pipeline 𝑃 ∗, dataset metadata 𝑀 ,and the memory log 𝐿 , A𝑒 produces an assessment 𝐸 that typically covers three aspects (Sec. A.4.5): 
+
+• Correctness : check if 𝑃 ∗ correctly implements the intended task and evaluation protocol, and suggest corrections other-wise; 
+
+• Identified Flaws : detect weaknesses such as overfitting, inefficient preprocessing, or inappropriate model choices with respect to 𝐿 and suggest a mitigation plan; 
+
+• Improvement Opportunities : provide suggestions to im-prove performance, robustness, and efficiency. Unlike numerical optimization in traditional ML, 𝐸 = A𝑒 (𝑃 ∗, 𝑀 ,
+
+𝐿 ) is expressed in natural language, capturing fine-grained and context-aware judgments about pipeline behavior and enabling more informative downstream updates. 
+
+Optimization via Backpropagating TGD. The backpropagation component translates 𝐸 into localized instructions for code modifi-cation. Analogous to the numerical gradient backpropagation, it propagates the high-level evaluation signal backward through the 
+
+program representation with respect to 𝑃 ∗, identifying components that need to be improved, replaced, or discarded [43]. This produces an actionable feedback signal: 
+
+𝐹 = ∇𝑃 ∗ (𝐸 ), (1) which A𝑜 receives as input to update the pipeline as follows: 
+
+𝑃 = A𝑜 (𝑃 ∗, 𝐹 ), (2) where it incorporates changes to preprocessing plan, model config-uration, hyperparameters, training procedures, and/or evaluation protocols. A𝑜 performs incremental, targeted modifications while preserving previously successful components, avoiding costly full regeneration. After optimization, the revised pipeline 𝑃 is executed to obtain new results 𝑅 for memory logging, and then both are forwarded back as 𝑃 ∗ and 𝑅 ∗ to close one optimization iteration. This iterative process continues until the termination criterion is met (e.g., predefined optimization steps 𝑇 ). 
+
+# 3.7 Domain-Specific Specialization 
+
+Building upon the DoctorAgents framework, we introduce a spe-cialized variant that decomposes the pipeline into two domain-specific subtasks—Data Preprocessing ( DP ) and Model Develop-ment ( MD )—and assigns them to dedicated agents as Generator agents, A𝑑𝑝 𝑔 and A𝑚𝑑 𝑔 , and Evaluator agents, A𝑑𝑝 𝑒 and A𝑚𝑑 𝑒 (Fig. 2). This decomposition allows agents to operate within focused search domains: DP Agents focus on identifying feature engineering strate-gies, while MD Agents explore a richer spectrum of model families and training configurations. 
+
+Initialization. A𝑑𝑝 𝑔 first generates a preprocessing-only pipeline 
+
+𝑃 ∗ 
+
+> 𝑑𝑝
+
+= A𝑑𝑝 𝑔 (𝐼, 𝑀 ) (Sec. A.4.6) given the task specification 𝐼 and metadata of the dataset 𝑀 . Intermediate data 𝑅 ∗ 
+
+> 𝑖
+
+are produced via Exec (𝑃 ∗ 
+
+> 𝑑𝑝
+
+), including enriched feature representations, metadata describing applied transformations, and a preprocessed dataset, 
+
+Figure 2: DoctorAgents Domain-Specific (DS) Design. Both Generator and Evaluator are specialized into Data Prepro-cessing (DP) and Model Development (MD) to enable deeper DS exploration and targeted implementation. 
+
+thereby supporting broader exploratory behavior in the preprocess-ing domain. The data 𝑅 ∗ 
+
+> 𝑖
+
+are then forwarded to A𝑚𝑑 𝑔 to synthesize the model-development pipeline 𝑃 ∗ 
+
+> 𝑚𝑑
+
+= A𝑚𝑑 𝑔 (𝐼, 𝑅 ∗ 
+
+> 𝑖
+
+) (Sec. A.4.6). Exe-cuting 𝑃 ∗ 
+
+> 𝑚𝑑
+
+produces results 𝑅 ∗ which include information about top features ranked by importance (computed with SHapley Additive ex-Planations (SHAP) [20]) and the initial memory log 𝐿 = A𝑙 (𝑅 ∗ 
+
+> 𝑖
+
+, 𝑅 ∗).
+
+Optimization. A𝑑𝑝 𝑒 evaluates 𝑃 ∗ 
+
+> 𝑑𝑝
+
+(Sec. A.4.6) using 𝑀 and 𝐿 
+
+(𝐸 𝑑𝑝 = A𝑑𝑝 𝑒 (𝑃 ∗ 
+
+> 𝑑𝑝
+
+, 𝑀, 𝐿 ), an example shown in Sec. A.6.2) to backprop-agate domain-specific feedback 𝐹 𝑑𝑝 = ∇𝑃 ∗ 
+
+> 𝑑𝑝
+
+(𝐸 𝑑𝑝 ) (e.g., Sec. A.6.3), following an evaluation scheme tailored to the data preprocessing domain. The updated pipeline is then produced as 𝑃 𝑑𝑝 = A𝑜 (𝑃 ∗ 
+
+> 𝑑𝑝
+
+, 𝐹 𝑑𝑝 ).Executing 𝑃 𝑑𝑝 yields new intermediate data 𝑅 𝑖 = Exec (𝑃 𝑑𝑝 ), which are passed to generate assessment 𝐸 𝑚𝑑 = A𝑚𝑑 𝑒 (𝑃 ∗ 
+
+> 𝑚𝑑
+
+, 𝑅 𝑖 , 𝐿 ) (prompt described in Sec. A.4.6) for 𝑃 ∗ 
+
+> 𝑚𝑑
+
+(e.g., Sec. A.6.4). The resulting feed-back 𝐹 𝑚𝑑 = ∇𝑃 ∗ 
+
+> 𝑚𝑑
+
+(𝐸 𝑚𝑑 ) (e.g., Sec. A.6.5) produces refined 𝑃 𝑚𝑑 via 
+
+A𝑜 (𝑃 ∗ 
+
+> 𝑚𝑑
+
+, 𝐹 𝑚𝑑 ). Memory log is computed between original and up-dated pipelines ( 𝑃 ∗s and 𝑃 s) along with the execution results after optimizing 𝑃 ∗ 
+
+> 𝑚𝑑
+
+by Logger A𝑙 , and then cached to 𝐿 for future eval-uations. Executing 𝑃 𝑚𝑑 produces updated performance results 𝑅 
+
+for the current iteration. In the end, 𝑃 𝑑𝑝 , 𝑃 𝑚𝑑 , 𝑅 𝑖 , 𝑅 are forwarded back for the next iteration. Together, the DP and MD updates form one complete optimization loop. 
+
+# 4 Experiments 4.1 Benchmark Datasets 
+
+We evaluated DoctorAgents on four temporal clinical datasets (Table A2), including three tasks derived from the public MIMIC-IV database [18] and one rheumatoid arthritis (RA) dataset from the Early Undifferentiated PolyArthritis (EUPA) cohort [6, 7]. The MIMIC-IV tasks are: (1) ICU mortality prediction, which predicts in-ICU mortality using the first 48 hours of data; (2) ICU readmission prediction, which predicts readmission within seven days after the first ICU discharge using all pre-discharge observations; and (3) ICU length-of-stay (LOS) prediction, which predicts whether an 
+
+> 5
+
+ICU stay exceeds 3 days using the first 24 hours of data. These datasets include irregular temporal laboratory measurements from 
+
+labevents and selected vital signs from chartevents .The EUPA dataset contains 1–9 years of sparsely sampled lon-gitudinal rheumatoid arthritis (RA) patient records and is used to predict anti-TNF treatment response from pre-treatment clinical trajectories, distinguishing responders from non-responders. For all datasets, temporal observations were retained with their raw irregular timestamps within each task-specific observation win-dow, without fixed binning or manual visit selection. This design preserves the original temporal structure and allows DoctorAgents 
+
+to determine suitable aggregation, recency, and change-based rep-resentations during pipeline construction. We adopted task-specific evaluation metrics according to the class distributions. We report the area under the receiver operat-ing characteristic curve (AUROC) for the approximately balanced RA treatment-response prediction task and the area under the precision–recall curve (AUPRC) for the three MIMIC-IV tasks, for which the outcome labels are imbalanced. 
+
+# 4.2 Baseline Methods 
+
+We evaluated TabPFN as a traditional ML competitor for small-sample tabular learning [15]. We also compared against three LLM-based few-shot baselines: a state-of-the-art (SOTA) general-purpose proprietary model GPT-5 [30], and two open-source LLMs GPT-oss-20b and Llama-8b [2, 14]. To evaluate SOTA agentic approaches, we benchmarked AutoML-Agent [33] and ERA [3]. GPT-5 was used as the backbone LLM for all agentic frameworks including ours. The prompt details are provided in Sec. A.5. 
+
+# 4.3 Evaluation Design 
+
+To ensure rigorous evaluation, each dataset was partitioned into a meta-train and meta-test split under a stratified five-fold cross-validation design. The final results were reported on the meta-test split as the mean and standard deviation across the five folds. In order to evaluate the agents’ ability to reason over and leverage dataset information during preprocessing, all datasets were only minimally processed to prevent data leakage and were otherwise kept as close to their raw form as possible. For DoctorAgents , the meta-train split was further divided into train, validation, and internal test subsets, where machine learn-ing models were trained on the train split. Optimization decisions were driven by performance on the validation split, while the best pipeline selection was based on the internal test split. For a fair comparison, in each fold, DoctorAgents and ERA were limited to a maximum of 20 optimization steps and search nodes, respectively, whereas DoctorAgents -DS was limited to 15 optimization steps. The retry limit for both DoctorAgents and AutoML-Agent was set to 5. Since TabPFN does not support time-series inputs, we applied an additional compatibility-only preprocessing step for TabPFN, representing each feature by its last observed value within the ob-servation window. TabPFN was then directly trained on the entire meta-train split and evaluated on the meta-test split, while all other baselines leveraged the meta-train’s train-valid-test partitions to synthesize their ML pipelines. All experiments were run on an NVIDIA 4x RTX PRO 6000 Blackwell Max-Q workstation. 
+
+# 5 Results 5.1 Iterative ML Pipeline Optimization 
+
+We first validated the iterative refinement behavior of DoctorAgents 
+
+(Fig. 3). Across all benchmarks, validation performance showed a generally improving trajectory, indicating that successive agen-tic iterations apply consistently beneficial refinements. In paral-lel, DoctorAgents dynamically revised its choice of learning algo-rithms, as reflected by the model annotations on the curve. For mor-tality prediction (Fig. 3a), DoctorAgents started from a regularized linear model and progressively explored alternative configurations, including boosting and ensemble-based variants, while validation AUPRC improved through subsequent preprocessing and hyper-parameter refinements. A similar pattern was observed for read-mission prediction and RA anti-TNF response prediction (Fig. 3b,d), where the best-performing models across iterations were mainly selected from regularized logistic regression and histogram-based gradient boosting. Notably, DoctorAgents evaluated a broader can-didate model space at each iteration, including XGBoost, Random Forest, LightGBM, and ensemble variants. The repeated selection of linear and boosting-based models suggests that they provide strong inductive biases for high-dimensional, sparse, and imbal-anced small clinical datasets. In contrast, LOS prediction (Fig. 3c) involved transitions among linear, boosting, and extra-tree mod-els, indicating that non-linear tree ensembles may better capture interaction patterns associated with prolonged ICU stays. 
+
+# 5.2 Method Comparison 
+
+The domain-specific DoctorAgents -DS achieves the strongest mean performance across all benchmarks, while DoctorAgents remains competitive against the established agentic and LLM-based base-lines (Table 1). For mortality prediction, DoctorAgents -DS obtains the highest AUPRC, surpassing TabPFN and ERA. DoctorAgents -DS also outperforms all baselines by constructing richer temporal representations for readmission prediction task. On the prolonged LOS task, both DoctorAgents variants perform competitively, with 
+
+DoctorAgents -DS achieving the highest AUPRC. DoctorAgents -DS also attains the highest AUROC on the small longitudinal RA cohort. These results demonstrate that the framework adapts its preprocessing and model-selection strategies to heterogeneous pre-diction horizons, feature distributions, and sample sizes without relying on manually designed task-specific pipelines or modality-specific foundation models. 
+
+# 5.3 Ablation Study 
+
+We conducted an ablation study on the contribution of the Consul-tant and persistent Memory to the iterative optimization process (Fig. 4), which are designed to improve initialization quality, op-timization stability, and long-term refinement over the essential backbone of DoctorAgents . The full DoctorAgents exhibits the most consistent overall improvement and achieves the highest vali-dation AUPRC among ten iterations on ICU readmission prediction. Removing the Consultant primarily weakens pipeline initializa-tion: the corresponding variant started from a lower validation AUPRC and remained below the full system during most early it-erations, although subsequent refinement partially closed the gap. 
+
+> 6
+
+Figure 3: Validation and internal test performance over iteration for DoctorAgents . Each iteration was labelled with the model name if a new model was selected. The unlabeled iterations indicate that the best model remains the same although there could be preprocessing or hyperparameter updates. For illustration purposes, only 10 iterations are shown although DoctorAgents 
+
+can reach higher validation performance for more iterations. A table for model name explanation is provided in Table A3. Table 1: Performance benchmarking on the meta-test data, reported as mean ± std across 5 cross-validation folds. 
+
+Method / Task (Metrics) mortality (AUPRC) readmission (AUPRC) LOS (AUPRC) RA treatment response (AUROC) TabPFN [15] 0.509 ± 0.034 0.163 ± 0.039 0.688 ± 0.022 0.539 ± 0.163 GPT-oss [2] 0.443 ± 0.046 0.149 ± 0.033 0.675 ± 0.023 0.471 ± 0.139 Llama-8B [14] 0.447 ± 0.035 0.142 ± 0.042 0.664 ± 0.037 0.453 ± 0.106 GPT-5 [30] 0.456 ± 0.043 0.154 ± 0.020 0.678 ± 0.026 0.498 ± 0.161 AutoML-Agent [33] 0.475 ± 0.022 0.145 ± 0.010 0.689 ± 0.020 0.520 ± 0.122 ERA [3] 0.476 ± 0.014 0.192 ± 0.044 0.692 ± 0.024 0.564 ± 0.121 
+
+DoctorAgents (ours) 0.482 ± 0.051 0.190 ± 0.017 0.696 ± 0.028 0.505 ± 0.060 
+
+DoctorAgents -DS (ours) 0.520 ± 0.076 0.212 ± 0.047 0.704 ± 0.019 0.577 ± 0.088 
+
+Figure 4: Ablation study on ICU readmission prediction as an example, comparing validation AUPRC across optimization iterations for the full DoctorAgents and variants without the Consultant or Memory module. 
+
+This suggests that the Consultant provided a better-informed initial task specification and preprocessing direction, reducing the amount of exploration required in later steps. Without Memory, the opti-mization trajectory became substantially less stable, with transient improvements followed by pronounced performance degradation. Although DoctorAgents without Memory achieved a high valida-tion score in the early iterations, it failed to retain and exploit the corresponding successful strategy in subsequent refinements. This behavior indicates that persistent records of previous modifications and outcomes help prevent the optimizer from revisiting ineffective strategies or overwriting previously successful components. All ablated variants attain a lower maximum validation AUPRC than the complete system. In particular, the full version reached approximately 0.255, compared with 0.246 without the Consultant and 0.215 without Memory. These results demonstrate that these modules play distinct but complementary roles in the optimization process: the Consultant supports effective initialization whereas Memory stabilizes prolonged iterative refinement. 
+
+# 6 Interpretability 6.1 In-code Feature Composition 
+
+Besides selecting suitable models, DoctorAgents -DS autonomously constructs task-specific representations measured by mean absolute SHAP values from temporal clinical data (Fig. A1, Table A1). For mortality prediction, the leading features characterize early ICU physiological instability across the first 48 hours and base-line clinical vulnerability (Fig. A1a, Sec. A.7.1). They include meta-bolic and acid-base dynamics ( bicarbonate_blood_delta_per_hr ), neurological status (e.g. gcs_eye_last ), and hemodynamic condition (mean_arterial_pressure_mean_24_48h ). The inclusion of n_glucose_ 
+
+> 7
+
+blood_meas_48h further reflects clinical observation intensity. To-gether, these features align with mortality prediction as an acute deterioration task by combining baseline vulnerability, evolving physiology, and monitoring patterns. For the readmission task, DoctorAgents -DS constructs features describing residual instability and clinical attention near ICU dis-charge (Fig. A1b, Sec. A.7.2), including recent monitoring intensity through heart-rate counts over the last 6 hours ( heart_rate_count_ log1p_last6h ) and short-window physiological trajectories through the 6-hour respiratory-rate slope ( respiratory_rate_slope_last6h_ per_hr ). These features align with readmission risk, which is tied to unresolved instability immediately before discharge rather than only to early ICU severity. For prolonged ICU LOS prediction, respiratory support, oxygena-tion, neurological function, and measurement recency are promi-nent (Fig. A1c, Sec. A.7.3). Features such as fio2_mean_last6h and 
+
+spo2_fio2_ratio summarize oxygenation status and respiratory sup-port requirements. lactate_blood_recency_hours distinguishes re-cent clinical evidence from stale observations, while gcs -related features capture neurological status and assessment intensity. This representation matches the LOS task by encoding persistent organ-support needs and delayed recovery signals. For RA treatment-response prediction, DoctorAgents -DS con-verts variable pre-treatment visits into a patient-level representa-tion that includes baseline genetic and serological risk factors, re-cent disease activity, longitudinal variability and discrete treatment choices (Fig. A1d, Sec. A.7.4). Some of the leading features, includ-ing the presence of 2 shared epitope alleles ( SE_2.0 ), anti-CCP anti-bodies ( antiCCP_max_pre ) and fair functional status ( GrFonct_2.0 ), provide baseline indicators of disease severity. Recent disease ac-tivity is represented by patient and evaluator global assessments (PGA_last_pre and EGA_last_pre ). Meanwhile, longitudinal variabil-ity in fatigue ( Fatigue_std_365d ) and temporal change in platelet count ( FscPLQ_delta_365d ) reflect more distant variation in levels of function and inflammation. Finally, the specific type of anti-TNF drug ( AntiTNF_or_JAK_First_3 , which refers to etanercept as op-posed to other anti-TNF drugs) provides treatment level prediction information. The importance of both static genetic and immuno-logical markers and longitudinal pre-treatment changes shows that 
+
+DoctorAgents -DS preserves complementary information about patient background, disease trajectory, and current clinical status. Overall, these results demonstrate that DoctorAgents -DS com-poses predictive features according to each task’s temporal struc-ture, clinical context, and non-random missing pattern rather than relying on a fixed preprocessing template. 
+
+# 6.2 Reasoning Validation 
+
+To validate the features composed by DoctorAgents -DS, we as-sessed the reasonability of features using GPT-5.4. We used GPT-5.4 as an independent judge because of its consistent semantic reason-ing over feature names, mathematical operations, and task context with the caveat that GPT-5.4 is not perfect. Features were classified into five levels: Invalid , Weakly Justified , Plausible but Uncertain ,
+
+Well Justified , and Clinically Reasonable , based on clinical validity, mathematical correctness, semantic compatibility, and consistency with the task setting (prompt details in Sec. A.5.2). 
+
+Figure 5: Distribution of high-quality feature proportions composed by DoctorAgents -DS, ERA, and AutoML-Agent across all tasks. For each method and task, the distribution comprises 10 observations from two independent runs over five folds, each denoting the proportion of Well Justified or 
+
+Clinically Reasonable features. P-values were obtained from one-sided paired Wilcoxon signed-rank tests. 
+
+DoctorAgents -DS produced the highest proportion of Well Jus-tified features across all four tasks (Fig. A2). Although its proportion of Clinically Reasonable features was slightly lower than that of ERA in three tasks, this likely reflects its broader use of temporal representations, including changes across observation periods, mea-surement recency, and visit-level differences. In contrast, ERA and AutoML-Agent relied more heavily on conventional transforma-tions such as last values, means, and missingness indicators, which may be more readily judged as Clinically Reasonable as they are widely established in prior work. To evaluate overall feature quality, we grouped Well Justified and 
+
+Clinically Reasonable features as high-quality features . Across the paired evaluations, DoctorAgents -DS generated a higher overall proportion of high-quality features than both ERA and AutoML-Agent (Fig. 5), with mean improvements of 7 .10% and 8 .33%, respec-tively. One-sided paired Wilcoxon signed-rank tests [39] confirmed that both improvements were significant ( 𝑝 = 4.61 × 10 −8 and 8.00 × 10 −11 , respectively). 
+
+# 7 Discussion 
+
+We developed DoctorAgents , a reasoning-driven agentic frame-work for constructing reliable ML pipelines for small clinical datasets. Across all benchmarks, DoctorAgents achieves competitive per-formance while adapting to heterogeneous prediction settings. Ab-lation results show that its components jointly improve initializa-tion and optimization stability, while DoctorAgents -DS produces interpretable, task-specific representations with stronger perfor-mance and significantly more high-quality features than competing agentic methods. Notably, performance on RA treatment response prediction remains modest across methods, likely due to the limited availability of strong predictive biomarkers, with the small cohort further increasing fold-level sensitivity to individual patients. Fu-ture work will include extending DoctorAgents to multimodal data and improving agent specialization through instruction fine-tuning. 
+
+> 8
+
+# References 
+
+[1] Deepak Bhaskar Acharya, Karthigeyan Kuppan, and B. Divya. 2025. Agentic AI: Autonomous Intelligence for Complex Goals—A Comprehensive Survey. IEEE Access 13 (2025), 18912–18936. doi:10.1109/ACCESS.2025.3532853 [2] Sandhini Agarwal, Lama Ahmad, Jason Ai, Sam Altman, Andy Applebaum, Edwin Arbus, Rahul K. Arora, Yu Bai, Bowen Baker, Haiming Bao, et al. 2025. gpt-oss-120b & gpt-oss-20b Model Card. arXiv:2508.10925 [cs.CL] doi:10.48550/arXiv. 2508.10925 [3] Eser Aygün, Anastasiya Belyaeva, Gheorghe Comanici, Marc Coram, Hao Cui, Jake Garrison, Renee Johnston, Anton Kast, Cory Y McLean, Peter Norgaard, et al. 2026. An AI system to help scientists write expert-level empirical software. 
+
+Nature 654 (2026), 909–916. doi:10.1038/s41586-026-10658-6 [4] Vadim Borisov, Tobias Leemann, Kathrin Seßler, Johannes Haug, Martin Pawel-czyk, and Gjergji Kasneci. 2022. Deep neural networks and tabular data: A survey. 
+
+IEEE transactions on neural networks and learning systems 35, 6 (2022), 7499–7519. [5] Tom B. Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D. Kaplan, Prafulla Dhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. 2020. Language Models are Few-Shot Learners. In Advances in Neural Information Processing Systems , Vol. 33. Curran Associates, Inc., Red Hook, NY, USA, 1877–1901. [6] Nathalie Carrier, Javier Marrugo, Misti L Paudel, Sophie Roux, Hugues Allard-Chamard, Artur J de Brum-Fernandes, Patrick Liang, and Gilles Boire. 2026. Longitudinal changes in patient characteristics as drivers of clinical outcomes in the Early Undifferentiated PolyArthritis (EUPA) cohort. Rheumatology (Oxford, England) 65, 1 (2026), keaf650. [7] Nathalie Carrier, Sophie Roux, Ariel Masetto, Artur J de Brum-Fernandes, Patrick Liang, Meryem Maoui, and Gilles Boire. 2025. Changes at presentation in patients with early rheumatoid arthritis: a 24-year study of the early undifferentiated polyarthritis (EUPA) cohort. The Journal of Rheumatology 52, 2 (2025), 119–127. [8] Zhengping Che, Sanjay Purushotham, Kyunghyun Cho, David Sontag, and Yan Liu. 2018. Recurrent neural networks for multivariate time series with missing values. Scientific reports 8, 1 (2018), 6085. [9] Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde de Oliveira Pinto, Jared Kaplan, Harri Edwards, Yuri Burda, Nicholas Joseph, Greg Brock-man, et al. 2021. Evaluating Large Language Models Trained on Code. arXiv:2107.03374 [cs.LG] doi:10.48550/arXiv.2107.03374 [10] Gary S Collins, Karel GM Moons, Paula Dhiman, Richard D Riley, Andrew L Beam, Ben Van Calster, Marzyeh Ghassemi, Xiaoxuan Liu, Johannes B Reitsma, Maarten Van Smeden, et al. 2024. TRIPOD+ AI statement: updated guidance for reporting clinical prediction models that use regression or machine learning methods. BMJ 385 (2024), e078378. doi:10.1136/bmj-2023-078378 [11] Keyan Ding, Jing Yu, Junjie Huang, Yuchen Yang, Qiang Zhang, and Huajun Chen. 2025. Scitoolagent: a knowledge-graph-driven scientific agent for multitool integration. Nature Computational Science 5, 10 (2025), 962–972. [12] Matthias Feurer, Aaron Klein, Katharina Eggensperger, Jost Tobias Springenberg, Manuel Blum, and Frank Hutter. 2015. Efficient and Robust Automated Machine Learning. In Advances in Neural Information Processing Systems , Vol. 28. Curran Associates, Inc., Red Hook, NY, USA, 2962–2970. [13] Daniel Golovin, Benjamin Solnik, Subhodeep Moitra, Greg Kochanski, John Karro, and D. Sculley. 2017. Google Vizier: A Service for Black-Box Optimization. In 
+
+Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery and Data Mining (Halifax, NS, Canada) (KDD ’17) . Association for Computing Machinery, New York, NY, USA, 1487–1495. doi:10.1145/3097983.3098043 [14] Aaron Grattafiori, Abhimanyu Dubey, Abhinav Jauhri, Abhinav Pandey, Abhishek Kadian, Ahmad Al-Dahle, Aiesha Letman, Akhil Mathur, Alan Schelten, Alex Vaughan, et al. 2024. The llama 3 herd of models. arXiv:2407.21783 doi:10.48550/ arXiv.2407.21783 [15] Noah Hollmann, Samuel Müller, Lennart Purucker, Arjun Krishnakumar, Max Körfer, Shi Bin Hoo, Robin Tibor Schirrmeister, and Frank Hutter. 2025. Accurate predictions on small data with a tabular foundation model. Nature 637, 8045 (2025), 319–326. [16] Max Horn, Michael Moor, Christian Bock, Bastian Rieck, and Karsten Borgwardt. 2020. Set functions for time series. In Proceedings of the 37th International Con-ference on Machine Learning (Proceedings of Machine Learning Research, Vol. 119) .PMLR, Virtual, 4353–4363. [17] Frank Hutter, Holger H. Hoos, and Kevin Leyton-Brown. 2011. Sequential Model-Based Optimization for General Algorithm Configuration. In Proceedings of the International Conference on Learning and Intelligent Optimization (LION) (Lecture Notes in Computer Science, Vol. 6683) . Springer, Berlin, Heidelberg, 507–523. doi:10. 1007/978-3-642-25566-3_40 [18] Alistair E W Johnson, Lucas Bulgarelli, Lu Shen, Alvin Gayles, Ayad Shammout, Steven Horng, Tom J Pollard, Sicheng Hao, Benjamin Moody, Brian Gow, Li-Wei H Lehman, Leo A Celi, and Roger G Mark. 2023. MIMIC-IV, a freely accessible electronic health record dataset. Sci. Data 10, 1 (Jan. 2023), 1. [19] Yujia Li et al. 2022. Competition-Level Code Generation with AlphaCode. Science 
+
+378, 6624 (2022), 1092–1097. [20] Scott M Lundberg and Su-In Lee. 2017. A unified approach to interpreting model predictions. In Advances in Neural Information Processing Systems , Vol. 30. Curran Associates, Inc., Red Hook, NY, USA, 4765–4774. [21] Aman Madaan, Niket Tandon, Prakhar Gupta, Skyler Hallinan, Luyu Gao, Sarah Wiegreffe, Uri Alon, Nouha Dziri, Shrimai Prabhumoye, Yiming Yang, et al. 2023. Self-refine: Iterative refinement with self-feedback. Advances in Neural Information Processing Systems 36 (2023), 46534–46594. [22] OpenAI. 2023. GPT-4 Technical Report. arXiv:2303.08774 doi:10.48550/arXiv. 2303.08774 [23] Joon Sung Park, Joseph O’Brien, Carrie Jun Cai, Meredith Ringel Morris, Percy Liang, and Michael S Bernstein. 2023. Generative agents: Interactive simulacra of human behavior. In Proceedings of the 36th annual acm symposium on user interface software and technology (UIST ’23) . Association for Computing Machinery, New York, NY, USA, Article 2, 22 pages. doi:10.1145/3586183.3606763 [24] Trang Pham, Truyen Tran, Dinh Phung, and Svetha Venkatesh. 2016. Deepcare: A deep dynamic memory model for predictive medicine. In Pacific-Asia conference on knowledge discovery and data mining (Lecture Notes in Computer Science, Vol. 9652) . Springer, Cham, Switzerland, 30–41. doi:10.1007/978-3-319-31750-2_3 [25] Richard D Riley, Kym IE Snell, Joie Ensor, Danielle L Burke, Frank E Harrell Jr, Karel GM Moons, and Gary S Collins. 2019. Minimum sample size for developing a multivariable prediction model: PART II-binary and time-to-event outcomes. 
+
+Statistics in medicine 38, 7 (2019), 1276–1296. [26] Timo Schick, Jane Dwivedi-Yu, et al. 2023. Toolformer: Language Models Can Teach Themselves to Use Tools. In Advances in Neural Information Processing Systems (NeurIPS) , Vol. 36. Neural Information Processing Systems Foundation, Inc., New Orleans, LA, USA, 68539–68551. doi:10.52202/075280-2997 [27] Noah Shinn et al. 2023. Reflexion: Language Agents with Verbal Reinforcement Learning. In Advances in Neural Information Processing Systems (NeurIPS) , Vol. 36. Neural Information Processing Systems Foundation, Inc., New Orleans, LA, USA, 8634–8652. doi:10.52202/075280-0377 [28] Satya Narayan Shukla and Benjamin M. Marlin. 2019. Interpolation-Prediction Networks for Irregularly Sampled Time Series. In International Conference on Learning Representations . OpenReview.net, New Orleans, LA, USA, 14 pages. arXiv:1909.07782 doi:10.48550/arXiv.1909.07782 [29] Satya Narayan Shukla and Benjamin M Marlin. 2021. Multi-time attention net-works for irregularly sampled time series. In International Conference on Learning Representations . OpenReview.net, Virtual Conference, 15 pages. arXiv:2101.10318 doi:10.48550/arXiv.2101.10318 [30] Aaditya Singh, Adam Fry, Adam Perelman, Adam Tart, Adi Ganesh, Ahmed El-Kishky, Aidan McLaughlin, Aiden Low, AJ Ostrow, Akhila Ananthram, et al. 2025. OpenAI GPT-5 System Card. [31] Ziyang Song, Qincheng Lu, He Zhu, David Buckeridge, and Yue Li. 2026. TrajGPT: Irregular Time-Series Representation Learning of Health Trajectory. IEEE Journal of Biomedical and Health Informatics 30, 5 (2026), 3888–3899. doi:10.1109/JBHI. 2025.3620205 [32] Chris Thornton, Frank Hutter, Holger H. Hoos, and Kevin Leyton-Brown. 2013. Auto-WEKA: Combined Selection and Hyperparameter Optimization of Clas-sification Algorithms. In Proceedings of the ACM SIGKDD International Con-ference on Knowledge Discovery and Data Mining (Chicago, IL, USA) (KDD ’13) . Association for Computing Machinery, New York, NY, USA, 847–855. doi:10.1145/2487575.2487629 [33] Patara Trirat, Wonyong Jeong, and Sung Ju Hwang. 2025. AutoML-Agent: A Multi-Agent LLM Framework for Full-Pipeline AutoML. In Forty-second Interna-tional Conference on Machine Learning (Proceedings of Machine Learning Research, Vol. 267) . PMLR, Vancouver, BC, Canada, 60099–60146. [34] Maarten Van Smeden, Karel GM Moons, Joris AH de Groot, Gary S Collins, Douglas G Altman, Marinus JC Eijkemans, and Johannes B Reitsma. 2019. Sample size for binary logistic prediction models: beyond events per variable criteria. 
+
+Statistical methods in medical research 28, 8 (2019), 2455–2474. [35] Lei Wang, Chen Ma, Xueyang Feng, Zeyu Zhang, Hao Yang, Jingsen Zhang, Zhiyuan Chen, Jiakai Tang, Xu Chen, Yankai Lin, et al. 2024. A survey on large language model based autonomous agents. Frontiers of Computer Science 18, 6 (2024), 186345. [36] Shirly Wang, Matthew BA McDermott, Geeticka Chauhan, Marzyeh Ghassemi, Michael C Hughes, and Tristan Naumann. 2020. Mimic-extract: A data extraction, preprocessing, and representation pipeline for mimic-iii. In Proceedings of the ACM conference on health, inference, and learning (CHIL ’20) . Association for Com-puting Machinery, New York, NY, USA, 222–235. doi:10.1145/3368555.3384469 [37] Xingyao Wang, Yangyi Chen, Lifan Yuan, Yizhe Zhang, Yunzhu Li, Hao Peng, and Heng Ji. 2024. Executable code actions elicit better llm agents. In Forty-first International Conference on Machine Learning (Proceedings of Machine Learning Research, Vol. 235) . PMLR, Vienna, Austria, 50208–50232. [38] Xuezhi Wang, Jason Wei, Dale Schuurmans, et al. 2023. Self-Consistency Im-proves Chain of Thought Reasoning in Language Models. In International Con-ference on Learning Representations . OpenReview.net, Kigali, Rwanda, 24 pages. arXiv:2203.11171 [39] Frank Wilcoxon. 1945. Individual comparisons by ranking methods. Biometrics bulletin 1, 6 (1945), 80–83. 
+
+> 9
+
+[40] Zhiheng Xi, Wenxiang Chen, Xin Guo, Wei He, Yiwen Ding, Boyang Hong, Ming Zhang, Junzhe Wang, Senjie Jin, Enyu Zhou, et al. 2025. The rise and potential of large language model based agents: A survey. arXiv 2023. Science China Information Sciences 68, 2 (2025), 121101. doi:10.1007/s11432-024-4222-0 [41] Feng Xie, Han Yuan, Yilin Ning, Marcus Eng Hock Ong, Mengling Feng, Wynne Hsu, Bibhas Chakraborty, and Nan Liu. 2022. Deep learning for temporal data representation in electronic health records: A systematic review of challenges and methodologies. Journal of biomedical informatics 126 (2022), 103980. [42] Shunyu Yao et al. 2023. ReAct: Synergizing Reasoning and Acting in Language Models. In International Conference on Learning Representations . OpenReview.net, Kigali, Rwanda, 33 pages. arXiv:2210.03629 [43] Mert Yuksekgonul, Federico Bianchi, Joseph Boen, Sheng Liu, Pan Lu, Zhi Huang, Carlos Guestrin, and James Zou. 2025. Optimizing generative AI by backpropa-gating language model feedback. Nature 639, 8055 (2025), 609–616. [44] Chunting Zhou, Pengfei Liu, Puxin Xu, Srinivasan Iyer, Jiao Sun, Yuning Mao, Xuezhe Ma, Avia Efrat, Ping Yu, Lili Yu, Susan Zhang, Gargi Ghosh, Mike Lewis, Luke Zettlemoyer, and Omer Levy. 2023. LIMA: Less Is More for Alignment. In Advances in Neural Information Processing Systems (New Orleans, LA, USA), Vol. 36. Curran Associates, Inc., Red Hook, NY, USA, 55006–55021. doi:10.52202/ 075280-2400 
+
+> 10
+
+# A Appendix A.1 Supplementary Figures 
+
+Figure A1: Beeswarm plots of top 10 features generated by DoctorAgents -DS for each task. A detailed explanation of feature names is provided in Table A1. 
+
+> 11
+
+Figure A2: Task-specific distributions of reasonability assigned by GPT-5.4 to features generated by DoctorAgents -DS, ERA, and AutoML-Agent, aggregated across two independent runs and five cross-validation folds. 
+
+> 12
+
+# A.2 Supplementary Tables 
+
+Table A1: Detailed information of the top features in the beeswarm plots generated by DoctorAgents -DS for each task. Derived Feature Originated From Description 
+
+(a) mortality 
+
+bicarbonate_blood_ delta_per_hr bicarbonate_blood Rate of change in blood bicarbonate over the 48-hour observation window, computed as the last observed bicarbonate value minus the first observed value divided by the elapsed hours between the first and last measurements. This feature is only defined when at least two bicarbonate measurements are available. anchor_age_static anchor_age_static Static patient age, aggregated at the subject level from the available rows. gcs_eye_last gcs_eye Last observed Glasgow Coma Scale eye-opening component within the 48-hour observation window, reflecting the most recent eye-response neurologic status. mean_arterial_pressure_ mean_24_48h mean_arterial_pressure Mean arterial pressure averaged over the 24–48 hour segment of the obser-vation window. This summarizes blood pressure status during the later half of the 48-hour window. gcs_verbal_std gcs_verbal Standard deviation of the Glasgow Coma Scale verbal component across the 48-hour observation window. It is defined only when at least two verbal GCS measurements are available and reflects variability in verbal neurologic assessment. anion_gap_blood_worst anion_gap_blood Worst observed anion gap value within the 48-hour observation window. Since higher anion gap is treated as worse in this preprocessing logic, this corresponds to the maximum observed anion gap. rass_last rass Last observed Richmond Agitation-Sedation Scale score within the 48-hour observation window, reflecting the most recent sedation or agitation status. heart_rate_last heart_rate Last observed heart rate within the 48-hour observation window, represent-ing the most recent cardiovascular status. gcs_total_max gcs_total Maximum observed total Glasgow Coma Scale score within the 48-hour observation window, reflecting the best recorded overall neurologic status during the window. n_glucose_blood_meas_48h glucose_blood Number of non-missing blood glucose measurements recorded within the 48-hour observation window, reflecting glucose-monitoring frequency rather than glucose level itself. 
+
+(b) readmission 
+
+heart_rate_count_ log1p_last6h heart_rate Log-transformed number of non-missing heart-rate measurements recorded within the final 6 hours before ICU discharge. heart_rate_count_ capped_last6h heart_rate Capped number of non-missing heart-rate measurements recorded within the final 6 hours before ICU discharge. For vitals in the 6-hour window, the count is capped before being retained as a measurement-frequency feature. platelet_count_blood_ delta_last48h platelet_count_blood Change in platelet count over the final 48 hours before ICU discharge, com-puted as the last observed platelet value minus the first observed platelet value within the 48-hour window. It is defined only when at least two platelet measurements are available. Continued on next page 
+
+> 13
+
+Table A1 – continued from previous page 
+
+Derived Feature Originated From Description 
+
+respiratory_rate_ slope_last6h_per_hr respiratory_rate Per-hour slope of respiratory rate during the final 6 hours before ICU dis-charge, computed from the difference between the last and first respiratory-rate values divided by the elapsed time between those measurements. It is defined only when at least two measurements are available. diastolic_bp_last _in_last24h diastolic_bp Last observed diastolic blood pressure within the final 24 hours before ICU discharge. mean_arterial_pressure_ count_capped_last6h mean_arterial_pressure Capped number of non-missing mean arterial pressure measurements recorded within the final 6 hours before ICU discharge. mean_arterial_pressure_ count_log1p_last6h mean_arterial_pressure Log-transformed number of non-missing mean arterial pressure measure-ments recorded within the final 6 hours before ICU discharge. respiratory_rate_last_ in_last6h respiratory_rate Last observed respiratory rate within the final 6 hours before ICU discharge. hemoglobin_blood_count_ capped_last24h hemoglobin_blood Capped number of non-missing hemoglobin measurements recorded within the final 24 hours before ICU discharge. hemoglobin_blood_count_ log1p_last24h hemoglobin_blood Log-transformed number of non-missing hemoglobin measurements recorded within the final 24 hours before ICU discharge. 
+
+(c) LOS 
+
+fio2_mean_last6h fio2 Mean fraction of inspired oxygen (FiO 2) during the final 6 hours before prediction, reflecting recent oxygen-support intensity. gcs_verbal_last gcs_verbal Last observed Glasgow Coma Scale verbal component within the 24-hour observation window, after intubation-related verbal assessments are treated as missing. lactate_blood_recency_hours lactate_blood Number of hours between the prediction time and the most recent lactate measurement within the observation window. po2_blood_recency_hours po2_blood Number of hours between the prediction time and the most recent arterial oxygen pressure (PaO 2) measurement within the observation window. spo2_fio2_ratio spo2 & fio2 SpO 2/FiO 2 ratio, used as a non-invasive oxygenation index. When available, it is derived from the paired SpO 2–FiO 2 mean ratio over the final 6 hours. po2_blood_mean_last6h po2_blood Mean arterial oxygen pressure (PaO 2) during the final 6 hours before predic-tion. gcs_total_count_log1p gcs_total Log-transformed count of observed total Glasgow Coma Scale measurements within the 24-hour observation window, reflecting neurologic monitoring frequency. sf_ratio_paired_ mean_last6h spo2 & fio2 Mean paired SpO 2/FiO 2 ratio during the final 6 hours before prediction, where SpO 2 is paired with the most recent prior FiO 2 measurement within the allowed temporal gap. gcs_total_last gcs_total Last observed total Glasgow Coma Scale score within the 24-hour observa-tion window, reflecting latest neurologic status. gcs_verbal_mean_last6h gcs_verbal Mean Glasgow Coma Scale verbal component during the final 6 hours before prediction, summarizing recent valid verbal neurologic status. 
+
+(d) RA treatment response 
+
+Continued on next page 
+
+> 14
+
+Table A1 – continued from previous page 
+
+Derived Feature Originated From Description 
+
+GrFonct_2.0 GrFonct Indicator that the patient’s baseline functional status category is encoded as 2.0 (range 0=good to 4=wheelchair). This captures membership in one specific functional status group rather than using 2.0 as a numeric threshold. Fatigue_std_365d Fatigue Variability of the patient’s fatigue scores across visits within the 365-day pre-treatment window. A higher value indicates more fluctuation in fatigue before treatment initiation, while a value near zero indicates more stable fatigue scores. SE_2.0 SE Indicator that the patient carries two shared epitope alleles. antiCCP_max_pre antiCCP Highest anti-cyclic citrullinated peptide (CCP) antibody level observed before treatment. This identifies the strongest recorded serologic signal prior to treatment initiation. PGA_last_pre PGA Patient global assessment of disease activity at the closest available pre-treatment visit. This reflects the patient’s own assessment of disease activity immediately before treatment. AntiTNF_or_JAK_First_3 AntiTNF_or_JAK_First Indicator that the patient’s first biologic is encoded as 3. This represents etan-ercept as opposed to other anti-TNF drugs namely adalimumab, infliximab, certolizumab and golimumab. FscPLQ_delta_365d FscPLQ Change in the platelet count over the 365-day pre-treatment window, com-puted as the last observed value minus the first observed value within that window. A positive value indicates that the platelet count increased before treatment initiation, while a negative value indicates that it decreased. SE_1.0 SE Indicator that the patient carries one shared epitope allele. EGA_last_pre EGA Evaluator global assessment of disease activity at the closest available pre-treatment visit. This feature reflects the clinician/evaluator’s assessment of disease activity before treatment. FscPMN_last_pre FscPMN Baseline value of the absolute neutrophil count in the complete blood count, selected from the closest available pre-treatment visit. This feature reflects the patient’s neutrophil count immediately before treatment initiation. 
+
+Table A2: Characteristics and evaluation settings of the four temporal clinical prediction tasks. Data Source Prediction task Observation Window Patients Features Positive Rate Evaluation Metrics 
+
+MIMIC-IV mortality first 48 hours 4763 420 0.132 AUPRC MIMIC-IV readmission at 1st discharge 6891 482 0.087 AUPRC MIMIC-IV length-of-stay first 24 hours 7975 399 0.392 AUPRC EUPA drug response before treatment 105 82 0.504 AUROC 
+
+> 15
+
+Table A3: Full names of the models used in each optimization step generated by DoctorAgents in Fig. 3. Model name Full setting 
+
+hgb HistGradientBoostingClassifier extra_tree ExtraTreeClassifier ensemble Ensemble of multiple models logreg LogisticRegression logreg_ela LogisticRegression with penalty=elasticnet 
+
+logreg_l1 LogisticRegression with penalty=l1 
+
+logreg_l2 LogisticRegression with penalty=l2 
+
+> 16
+
+# A.3 Supplementary Pseudo-code Algorithm 
+
+Algorithm 2 Pipeline Execution Procedure of DoctorAgents 
+
+Initialization: Repairer A𝑟 , retry counter 𝑘 , and code execution function 𝑓 𝑒 
+
+Input: Pipeline code 𝑃 𝑒 and retry limit 𝐾 
+
+Output: Result 𝑅 𝑒  
+
+> 1:
+
+𝑓 𝑙𝑎𝑔, 𝑒𝑟𝑟, 𝑅 𝑒 ← 𝑓 𝑒 (𝑃 𝑒 ) 
+
+> 2:
+
+while 𝑓 𝑙𝑎𝑔 ≠ PASS and 𝑘 ≤ 𝐾 do  
+
+> 3:
+
+𝑃 𝑒 ← A𝑟 (𝑃 𝑒 , 𝑒𝑟𝑟 ) 
+
+> 4:
+
+𝑓 𝑙𝑎𝑔, 𝑒𝑟𝑟, 𝑅 𝑒 ← 𝑓 𝑒 (𝑃 𝑒 ) 
+
+> 5:
+
+𝑘 ← 𝑘 + 1 
+
+> 6:
+
+end while  
+
+> 7:
+
+return 𝑅 𝑒 
+
+# A.4 Prompt Details for DoctorAgents 
+
+In this subsection, we provide details of the prompts for each agent in DoctorAgents , including Consultant (A.4.1), Generator (A.4.2), Repairer (A.4.3), Logger (A.4.4), Evaluator (A.4.5), and Domain-specific Agents (A.4.6). 
+
+A.4.1 Consultant. 
+
+System Prompt for Consultant 
+
+You are an expert data analyst specialized in ML datasets. You will be given some information about a dataset and some sam-ple data from the dataset. You do not generate code. Your job is to analyze the dataset with the given information and MUST produce a structured summary strictly in the following exact tags: 1.<TASK_DESCRIPTION>: Describe in one concise sentence the machine-learning task of this dataset including the column name of groundtruth (if available), e.g. classification, regres-sion, clustering, etc.</TASK_DESCRIPTION> 2.<SUGGESTION>: Based on your analysis, give practical rec-ommendations for downstream ML tasks, covering: Data preprocessing (cleaning, dropping, handling missing data, normalization, encoding, etc.) Feature engineering ideas (feature selection, dimension reduc-tion, feature creation etc.) Experiment settings (train/validation splits, cross-validation etc.) Suitable model families or baseline models </SUGGESTION> Do not include any other text, explanations, or symbols outside of these tags. 
+
+A.4.2 Generator. 
+
+System Prompt for Generator 
+
+You are an ML Code Generator operating within an agentic machine learning system. You will be given a task description, task background, feature statistics and metadata, evaluation metrics, and suggestions from a consultant agent. Your responsibility is to generate one complete, executable Python program that supports the full machine-learning workflow: data loading, machine-learning-oriented data analysis, adaptive preprocessing, model search, hyperparameter exploration, training, evaluation, and artifact generation. Important columns of the dataset: ID column: {id_col}; label column: {label_col}; time column: {time_col} Output Constraints: (1) You must output only one executable Python code. (2) Do not include explanations, comments outside code, markdown, or multiple codes. In-code Requirements: (1) Ignore warnings. If you are using OneHotEncoder, Do Not use ’sparse’ as a keyword argument. (2) Load raw train set from {raw_train}; raw validation set from {raw_val}; raw test set from {raw_test}. All data-dependent preprocessing must be **based on the train set only**, then applied to the rest sets using the same preprocessing methods. You must strictly avoid any feature engineering or preprocessing operation that uses, derives from, or is conditioned on the target label. Do not create, modify, or select features based on the label distribution, label correlations, or label-specific statistics. Any form of label-dependent transformation, leakage, or information encoding is strictly prohibited. (3) At the end, MUST save (Replace if exists) a STRUC-TURED **json file** to {training_stats_json_path} which contains at least four sections: (i). train_performance (a single float value reporting the best model training performance), (ii). val_performance (a single float value reporting the best model validation performance), (iii). test_performance (a single float value reporting test performance by re-training the best model on train + val set and testing on test set), and (iv). best_model (ONLY hyperparameters and name of the best model, no other models should be included). You can include other metrics as well. (4) Avoid using any ’Random Guessing’ type of model. (5) Use the specified metrics to evaluate the performance. (6) Make sure your results are reproducible. 
+
+A.4.3 Repairer. 
+
+System Prompt for Repairer 
+
+You are a code engineer that deals with bugs in codes. Your job is to fix the bugs in a given code with its error message. Instructions: - ONLY fix the error, and nothing else. - ONLY if necessary, otherwise DO NOT make changes to imported packages. - Return ONLY the corrected Python code. 
+
+A.4.4 Logger. 
+
+> 17
+
+System Prompt for Inter-iteration 𝑛𝑜𝑡𝑒 Creation. 
+
+System Prompt for Logger 
+
+You are an expert ML engineer and code reviewer. Your job is to compare two versions of code for the same task and dataset and describe their meaningful differences. You should: Provide a concise, structured comparison. - How the two versions differ in dataset preprocessing (e.g., preprocessing, feature engineering, data exploration etc.). - How they differ in model searching (e.g., algorithm selection, hyperparameter tuning, evaluation methods etc.). 
+
+Do not restate the code. Do not describe general ML concepts. Focus only on concrete differences. Be concise, structured, and analytical. 
+
+System Prompt for Log Cleaning. 
+
+System Prompt for Summarization (SUMMA) 
+
+You are an Optimization Notes Curator for an iterative ML code optimization loop. You will be given a large set of notes describing successive code changes with metadata and performance differences across iterations. Your only task is to reduce note explosion by selecting some important information to keep and summarizing the rest into a compact, high-signal record. Output Rules: 1. Output only the curated notes text. Do not include any meta commentary, rationale, or explanations. 2. The output must be derived strictly and exclusively from the provided notes. Do NOT introduce, infer, assume, or add any information that is not explicitly present in the input notes. 3. Preserve concrete facts such as numeric performance changes, important hyperparameters, step indices and etc. Preserve information that is most useful for future optimiza-tion decisions: 1. Largest performance improvements/regressions and the changes that caused them 2. Repeated failure modes 3. High-impact preprocessing/training strategy shifts 4. Evidence of overfitting/leakage/instability 5. Decisions that narrowed or expanded the search space Remove or compress: 1. Minor refactors with no measurable impact 2. Redundant observations repeated across iterations 
+
+A.4.5 Evaluator. 
+
+System Prompt for Evaluator 
+
+You are an expert clinical ML engineer and code reviewer acting as an evaluator for an agentic machine learning system. You will be given the task description, task background infor-mation, raw feature statistics and metadata, the current code, the specified evaluation metrics, and the history optimization notes. You must not write or rewrite code, but you may provide pseudocode as suggestions. Your goal is to critically evaluate the current ML pipeline and provide actionable feedback to improve downstream validation performance. Your evaluation should be organized into three parts: PART 1, History Analysis 
+
+• Evaluate the optimization history notes for actionable and meaningful insights, and identify potential reasons for performance increases, drops, stagnation, or abnor-mal results. PART 2, Pipeline Assessment 
+
+• Evaluate whether the preprocessing part uses clinically meaningful and task-relevant features, applies justified and leakage-safe feature preprocessing. 
+
+• Evaluate whether the training part fulfills the task, uses the specified metrics correctly, and applies reasonable training strategy while detecting overfitting, underfit-ting, metric inconsistency, or model-feature mismatch. PART 3, Improvement Strategy and Next-Step Recommenda-tion 
+
+• Identify concrete opportunities for improvement, in-cluding alternative preprocessing strategies, feature en-gineering directions, model choices, and hyperparame-ter search. 
+
+• If validation performance does not show relatively ob-vious improvement over 5 steps, analyze likely reasons and consider changing the preprocessing or training strategy. 
+
+A.4.6 Domain-specific Experts. 
+
+Data Preprocessing (DP) Generator. 
+
+System Prompt for DP Generator 
+
+You are a Data Preprocessing Code Generator designed for an agentic ML system. You will be given a task description, task background, feature statistics, and suggestions from a consultant agent. Your sole responsibility is to generate one complete, executable code program that performs data loading, machine-learning-oriented data analysis, adaptive preprocessing, and artifact generation for downstream model-training agent. Role Boundary: - You should not perform any model training for performance evaluation, unless the purpose is to do feature-related 
+
+> 18
+
+operations (e.g., train a random forest to obtain feature gains to do selection). Output Constraints: 1. You must output only one executable Python code. 2. Do not include explanations, comments outside code, markdown, or multiple codes. In-code Requirements: 1. Do Not use ’sparse’ as a keyword argument for OneHotEn-coder. 2. (Strict) Load raw train set from {raw_train}; raw valida-tion set from {raw_val}; raw test set from {raw_test}. The raw datasets have exactly the same feature space. All data-dependent preprocessing must be based on the train set only , then applied to the validation and test sets using the same preprocessing methods. Ensure that the final prepro-cessed train/validation/test sets have exactly the same feature space (same column names and number of features), even if some values or categories do not appear in validation or test. 3. Label column existence: ({label_col}). If exists, You must strictly avoid any feature engineering or preprocessing oper-ation that uses, derives from, or is conditioned on the target label. Do not create, modify, or select features based on the label distribution, label correlations, or label-specific statistics. Any form of label-dependent transformation, leakage, or in-formation encoding is strictly prohibited. 4. (Strict) At the end, MUST save as {csv} files (Replace if exists) the final preprocessed train set to {prep_train_path}; the final preprocessed validation set to {prep_val_path}; the final prepro-cessed test set to {prep_test_path}. Keep ID ({id_col})/Label ({la-bel_col})/Time ({time_col}) column names and case unchanged. Validate your output files are non-empty. 5. At the end, MUST save a (Replace if exists) concise and 
+
+decision-oriented metadata JSON file to {stats_json_path}, intended for downstream LLM-based agents. The metadata JSON should satisfy: - MUST contain a section have_same_feature_space: (Yes or No) Checks whether the preprocessed train/validation/test sets have exactly the same feature space (same column names and number of features). - Total length no longer than 100 lines - Any feature-level information MUST be summarized using Top-K or grouped aggregates - Be able to communicate key preprocessing decisions, data risks, and modeling-relevant signals to downstream agents 
+
+DP Evaluator. 
+
+System Prompt for DP Evaluator 
+
+You are an expert in clinical ML engineering and temporal clinical data analysis acting as a code reviewer and evaluator for data preprocessing only. You will be given the task description, the task background information, the feature statistics of the raw dataset, the data preprocessing code for evaluation, and the history optimization notes. You must not write or rewrite code, but you may provide pseudocode as a suggestion. Your goal is to critically evaluate the current preprocessing pipeline and provide actionable feedback to improve downstream validation performance. Your evaluation should be organized into three parts: 
+
+PART 1: History Analysis 
+
+* Evaluate the optimization history notes for actionable and meaningful insights, and identify potential reasons for increases or drops in performance. 
+
+PART 2: Feature Preprocessing Assessment 
+
+* Evaluate whether the selected feature set is clinically meaningful, relevant to the prediction task, and appropriate for the intended clinical objective, instead of indiscriminately using available features. * Evaluate any composition, creation, selection, or aggregation of features in the current data preprocessing pipeline to determine whether such operations are justified and aligned with the task intent and clinical insights. 
+
+PART 3: Quality, Generalizability, and Risk As-sessment 
+
+* Evaluate whether the current data preprocessing code fulfills the intended task, and assess it comprehensively beyond correctness, including quality, robustness, generalization, interpretability, and scalability. * Evaluate whether the current preprocessing can generalize to new or unseen data and adapt to potential distribution shifts. * Detect potential data leakage and preprocessing-induced overfitting risks. * Identify opportunities for improvement, alternative prepro-cessing strategies, and potential risks. * Important: If the validation performance does not show relatively obvious improvements over 5 steps, analyze the potential reasons and consider changing the preprocessing strategies. 
+
+Model Development (MD) Generator. 
+
+System Prompt for MD Generator 
+
+You are a Model Development Code Generator operating within an agentic machine learning system. You will be given a task description, task background, a preprocessed dataset path, the evaluation metrics, and suggestions from a consultant agent. You are responsible for generating one complete, executable training program that consumes a preprocessed dataset and its accompanying metadata, performs appropriate model search, hyperparameter 
+
+> 19
+
+exploration, and training, evaluates performance using strictly constrained metrics to select the best model, and writes structured training artifacts for downstream use. Role Boundary: - You should not perform any general preprocessing (e.g., imputation, feature creation or removal). - You should not modify the dataset schema except for model-required transformations (e.g., standardization, normalization, model-specific scaling). Output Constraints: 1. You must output only one executable Python code. 2. Do not include explanations, comments outside code, markdown, or multiple codes. In-code Requirements: 1. Do Not use ’sparse’ as a keyword argument for OneHotEn-coder. 2. Load train set from {prep_train_path}; validation set from {prep_val_path}; test set from {prep_test_path}. The datasets have exactly the same feature space. Use the train set for model training. Use the validation set for tuning hyperparameters, evaluating performance, and selecting the best model. After selecting the best model, refit it on the combined training + validation data, then perform a single final evaluation on the test set. 3. The capitalization of ID ({id_col})/Label ({label_col})/Time ({time_col}) column names in the preprocessed dataset could vary, identify them regardless of case. 4. (Strict) At the end, MUST save (Replace if exists) a STRUCTURED json file to {training_stats_json_path} which contains at least four sections: (i) train_performance (a single float value reporting the best model training performance), (ii) val_performance (a single float value reporting the best model validation performance), (iii). test_performance (a single float value reporting the best model test performance), and (iv) best_model (ONLY hyperparameters and name of the best model). 5. At the end, MUST use the trained best model (IMPORTANT: This should NOT influence the selection scheme of best model above) to compute the SHAP values on validation set (if validation set size ≥ 300, then use maximum 300 stratified subsamples for computation) for each feature (check: If SHAP computation failed, use another trained model for computation instead. If all models failed, output empty CSV), and save as a csv file to shap_csv_path with two columns: 1. feature_name (the name of each feature in the dataset), 2. abs_mean_shap (the mean value of absolute SHAP), the CSV file should be ordered by descending abs_mean_shap. You should also compute a beeswarm plot of the top 10 (if number of features ≤ 10, plot all features) important features (ranked by abs_mean_shap) and save to shap_beeswarm_path. 6. Avoid using any ’Random Guessing’ type of model. 7. Use the specified metrics to evaluate the performance. 8. Make sure your results are reproducible. 
+
+MD Evaluator. 
+
+System Prompt for MD Evaluator 
+
+You are an expert ML engineer acting as a code reviewer and evaluator for model training only. You will be given the task description, the specified evaluation metrics, the metadata generated from data preprocessing, the model training code for evaluation, and the history optimization notes. The given model training code will load preprocessed data. You must not write or rewrite code, but you may provide pseudocode as a suggestion. Your goal is to critically evaluate the current model training pipeline and provide actionable feedback to improve downstream validation performance. Your evaluation should be organized into four parts: 
+
+PART 1: History Analysis 
+
+* Evaluate the optimization history notes for actionable and meaningful insights. * Detect any failure modes from the history records, such as abnormally low or zero performance scores, incorrect evaluation metrics, divergence, vanishing gradients, class imbalance, improper normalization, or other training issues. 
+
+PART 2: Training Pipeline Correctness and Qual-ity 
+
+* Evaluate whether the current model training code fulfills the intended task, and assess it comprehensively beyond correctness, including code quality, robustness, generalization, interpretability, and scalability. * Evaluate whether the current model training pipeline uses appropriate and correctly applied feature scaling and transformations required by the chosen model type. 
+
+PART 3: Model Selection, Hyperparameters, and Training Behavior 
+
+* Evaluate whether the current hyperparameter settings are appropriate and whether the model selection criteria are appropriate, consistent, and justified. * Detect potential overfitting or underfitting issues. 
+
+PART 4: Improvement Strategy and Next-Step Recom-mendation 
+
+* Identify opportunities for improvement, including alterna-tive model choices, hyperparameter search directions, and potential risks. * Important: If the validation performance does not show relatively obvious improvements over 5 steps, analyze the potential reasons and consider changing the choice of model family. 
+
+> 20
+
+# A.5 Experimental Details 
+
+A.5.1 Temporal Clinical Prediction Tasks. All four clinical tasks were represented as temporal data with multiple observations per patient. The three MIMIC-IV cohorts included only adults and were constructed using task-specific eligibility criteria. For mortality prediction, we included adult patients with a first eligible ICU stay and used observations from the first 48 hours to predict in-ICU mortality, excluding patients who died within this observation window. For readmission prediction, we used all observations before discharge from the first eligible ICU stay to predict ICU readmission within seven days and excluded patients who died before or at discharge. For LOS prediction, we used observations from the first 24 hours of the first eligible ICU stay to predict whether the total ICU stay exceeded three days, excluding stays that did not contain the complete observation window. After cohort selection and restriction to the corresponding observation windows, no manual aggregation, imputation, scaling, or feature engineering was applied. The RA task involved 105 biologic-naïve patients initiating anti– TNF therapy. The in-house dataset contained longitudinal pre-treatment clinical assessments. Empty rows and features that were constant across all patients were removed, resulting in 82 features; no additional preprocessing or feature engineering was performed manually. For all LLM-based methods, the agents were allowed to au-tonomously determine how to preprocess the temporal observa-tions and construct patient-level representations. TabPFN was the only exception because it does not support temporal input directly; it therefore received the last available value within the observation window for each feature for the MIMIC tasks, corresponding to the last pre-treatment visit for the RA task. 
+
+A.5.2 Prompts for other LLM-based baselines. 
+
+Instruction prompt for GPT-5, GPT-oss, and Llama-8B. For testing GPT-5, GPT-oss, and Llama-8B, we simply used the same prompt and input as Generator (A.4.2) in DoctorAgents for each dataset to generate the pipeline. 
+
+Instruction prompt for AutoML-Agent. The following provides the prompt details for running AutoML-Agent on each task. The contents in BOLD will change according to current task. 
+
+AutoML-Agent prompt details 
+
+Output ONE executable Python program only to fulfill the following Machine Learning Task. TASK: Binary classification to predict LABEL_COL (1/0) using tabular clinical data. BACKGROUND: 
+
+TASK_METADATA 
+
+FILES: - Train CSV: TRAIN_CSV_PATH 
+
+- Val CSV: VAL_CSV_PATH 
+
+- Test CSV: TEST_CSV_PATH 
+
+COLUMNS: - ID column: ID_COL (must NOT be used as a feature) - Label column: LABEL_COL 
+
+- Optional time column: TIME_COL 
+
+CRITICAL: Observation deduplication (MUST EXACTLY FOLLOW) Implement a function dedup_visits(df): - Use appropriate aggregation method and apply to all 
+
+ID_COL .- After dedup, output must have exactly one row per ID_COL .MODEL SELECTION & EVALUATION (MUST): - Use ONLY training data for data preprocessing. - Select the best pipeline by validation METRICS .- Refit the best pipeline on train + val data. - Evaluate ONCE on the test set. METRICS TO REPORT ON TEST (MUST): accuracy, auroc, auprc, f1_score, precision, recall OUTPUT FILE (MUST): Write outer_test_metrics.json containing: 
+
+> {"accuracy": float, "auroc": float, "auprc": float, "f1_score": float, "precision": float, "recall": float, "n_test": int }
+
+HARD CONSTRAINTS: - After dedup: train and test each have unique ID_COL .- Do not use LABEL_COL for any feature engineering, feature selection, or preprocessing decisions (no target-dependent transforms). IMPLEMENTATION REQUIREMENTS: - Build a robust preprocessing pipeline. - Model search should try multiple reasonable candidates. - Hyperparameter exploration should be performed. PROGRAM OUTPUT (MUST save to OUTPUT_PATH ): - Print the best model name and performance. - Print test metrics. - Save outer_test_metrics.json. Return only the Python code, no markdown, no explanation. 
+
+Instruction prompt for ERA. The following provides the prompt details for running ERA on each task. The contents in BOLD will change according to current task. 
+
+> 21
+
+ERA prompt details TASK_OBJECTIVE 
+
+Here is a preview of the training data: 
+
+DATA_PREVIEW 
+
+The following information provides metadata for the task, including dataset shape, number of unique patients, and positive rate: 
+
+TASK_METADATA 
+
+The goal is to predict ’ LABEL_COL ’. The metric is METRICS .(Higher / Lower) is better. The previous solution had a score of: SCORE 
+
+Previous Solution Code: “‘python 
+
+PARENT_CODE 
+
+“‘ Meta columns in the dataset: Subject ID column: ’ ID_COL ’; Label column: ’ LABEL_COL ’; Time column: ’ TIME_COL ’Please generate a NEW, IMPROVED Python function named ‘train_and_predict‘ that: 1. Accepts ‘train_path‘ and ‘test_path‘ as strings. 2. Before training machine learning models, convert the data (this dataset is sparse and provided in time-series format, with time column = ’ TIME_COL ’) into a clinically meaningful tabular representation using appropriate feature preprocessing strategies guided by clinical insight and the task objective. The same preprocessing strategy should not be blindly applied to all features. Instead, evaluate which preprocessing methods are appropriate for each feature based on its clinical meaning, temporal behavior, and relevance to the prediction task. Possible strategies include, but are not limited to: - **Feature aggregation**: For time-varying clinical features, consider aggregation methods such as mean, minimum, maximum, standard deviation, last observed value, and missingness indicators. Select only the aggregation(s) that are clinically meaningful for each feature. For example, some features may be best represented by their most recent value, while others may be better summarized by their maximum, variability, or missingness pattern. - **Feature selection**: You are allowed to manually select clinically meaningful features for the task based on domain knowledge and task intent, rather than using all available features indiscriminately. - **Feature composition**: You may create derived or compos-ite features, such as clinically relevant biomarkers, scores, ratios, trends, or interactions, if they are meaningful for the prediction task. You are not limited to the above strategies. Use any clinically justified preprocessing approach that helps transform the time-series data into an informative tabular feature set for machine learning. Note that any of your preprocessing should be based on the train set ONLY, and then applied to the test set, otherwise it’s considered as data leakage and your result will not be meaningful. Also make sure that after preprocessing both sets should have the exact same feature space (same columns). 3. Trains a set of classification models to select the best one. 4. Returns the probability predictions for the test set as a numpy array or list. 5. You can use pandas, numpy, scikit-learn, or other packages as needed. IMPORTANT: DO NOT use ‘xgboost‘ or ‘lightgbm‘. Your code must look like this:         
+
+> import pandas as pd
+> import numpy as np # ... other imports
+> def train_and_predict(train_path, test_path): # Load data train = pd.read_csv(train_path) test = pd.read_csv(test_path) # ... Feature Engineering ... # ... Training ... # Predict predictions = ...
+> return predictions
+
+Provide the full, runnable code including imports. IMPORTANT CONSTRAINTS FOR SPEED: 1. DO NOT use GridSearchCV or RandomizedSearchCV. 2. If using RandomForest or Boosting, set ‘n_estimators‘ to maximum 50. 3. Keep the model lightweight (execution time limit is 60 sec-onds). 
+
+Instruction prompt for classifying Feature Reasonability. The fol-lowing provides the prompt details for feature reasonability judg-ment on each task. The contents in BOLD will change according to current task. 
+
+> 22
+
+Prompt for GPT-5.4 as reasonability judge 
+
+You are evaluating the reasonableness of composed features generated by an automated data-preprocessing agent. Your task is to classify every supplied feature into exactly one of five levels. Evaluate each feature internally using the dataset background, prediction task, temporal setting, and preprocessing code. Do not assess a feature only from its name when its exact definition can be identified from the preprocessing code. You must assess each feature independently. DATASET BACKGROUND AND TASK SETTING ———————————– 
+
+DATASET_BACKGROUND_AND_TASK_SETTING 
+
+All input rows have already been restricted to the valid observation window before this preprocessing code is executed. CLASSIFICATION STANDARD ———————– Level 1 — Invalid The feature has a clear and serious defect and should not be used. Assign this level when any of the following applies: - It’s clinically irrational or unreasonable. - Its mathematical definition is incorrect. - Its source variables are semantically incompatible. - It cannot be calculated at the intended deployment time. - It’s produced from identifiers or other inappropriate variables. - Its construction contradicts the stated task setting or observation window. Level 2 — Weakly Justified The feature can technically be calculated and has no obvious leakage, but its clinical, mathematical, or task-specific justification is weak. Assign this level when: - The relationship between the source variables is unclear. - The arithmetic operation appears arbitrary. - The feature lacks an interpretable clinical or statistical meaning. - Its units or scale are difficult to justify. - It appears to be an opportunistic interaction without a credible mechanism. - There is insufficient rationale to support its construction. Level 3 — Plausible but Uncertain The feature has a potentially reasonable clinical or statistical interpretation, but important uncertainty remains. Assign this level when: - The general relationship is plausible, but the exact formula is not well supported. - The feature may be sensitive to missingness, outliers, irregular measurement frequency, small denominators, or unstable values. - It’s meaningful only for a subset of patients. - Its relevance to the task is plausible but requires empirical validation. - Its construction is defensible but not clearly established. Level 4 — Well Justified The feature has a clear clinical, physiological, statistical, or task-specific interpretation and is appropriately constructed for the given prediction problem. Assign this level when: - The operation is mathematically and semantically appropri-ate. - The feature clearly represents a meaningful state, trend, change, duration, recency, burden, variability, or interaction. - The feature is relevant to the stated prediction task. - It’s not encoded from identifier features. - Its interpretation is clear even if it is not a formally established clinical measure. Level 5 — Clinically Reasonable The feature corresponds to an established or well-recognized clinical construct, medical formula, score component, physiological relationship, or strongly supported biomarker relationship. Assign this level when: - The construction is clinically recognized or strongly supported. - Its mathematical definition follows an established medical concept. - Its inputs and timing are valid for the current task. Examples may include established ratios, clinical indices, standard differences, recognized physiological relationships, or components of validated clinical scores. FEATURES TO BE CLASSIFIED ———————— 
+
+FEATURE_LIST 
+
+> 23
+
+PREPROCESSING CODE —————— 
+
+PREPROCESSING_CODE 
+
+REQUIRED OUTPUT FORMAT ———————-Return exactly one JSON object and nothing else. Each key must be one feature name copied exactly from the supplied feature list. Each value must be exactly one of these level names: ["Invalid", "Weakly Justified", "Plausible but Uncertain", "Well Justified", "Clinically Reasonable", ]Example output format: 
+
+> {"feature_a": "Well Justified", "feature_b": "Invalid", "feature_c": "Plausible but Uncertain" }
+
+# A.6 Examples of intermediate output for RA dataset 
+
+This section presents representative examples of intermediate out-puts produced by the agents. These include outputs from Consultant (A.6.1) and the summarized note logs from Logger (A.6.6), which are shared by both the default DoctorAgents and DoctorAgents -DS. In addition, we show DoctorAgents -DS-specific outputs, including data preprocessing (DP) evaluation (A.6.2) from DP Evaluator and its corresponding backpropagated feedback (A.6.3), as well as model development (MD) evaluation (A.6.4) from MD Evaluator and its corresponding backpropagated feedback (A.6.5). 
+
+A.6.1 Consultant Output. 
+
+Task Description 
+
+Predict whether a rheumatoid arthritis patient will respond to their first anti-TNF treatment (binary label column: Respon-der) using pre-treatment longitudinal clinical/lab/demographic data, with patient identifier NPatient and irregular visit time DReelle. 
+
+Suggestion 
+
+Data preprocessing (including keeping ONLY one visit per patient): 
+
+• Patient-level unit of analysis: ensure exactly 1 row per NPatient to avoid leakage across visits and to match label definition. 
+
+– Define an “index date” for each patient as the anti-TNF start/baseline anchoring date; if an explicit treat-ment start date is not available, approximate us-ing the closest pre-treatment visit captured by base-line_time_to_DateDeb or by selecting the visit with minimum baseline_time_to_DateDeb (closest to treat-ment initiation) subject to being pre-treatment. 
+
+– Primary single-visit strategy (recommended base-line): choose the last pre-treatment visit closest to treatment initiation (max DReelle among eligible pre-treatment visits), because it best reflects baseline sta-tus at decision time. 
+
+– Alternative single-visit strategies to compare in vali-dation: 
+
+∗ Earliest qualifying baseline visit within the allowed window (to reduce “sicker-at-start” bias if late visits are triggered by flare). 
+
+∗ Clinically stable window: if multiple visits occur very close to initiation, take median/mean within a short window (e.g., 30–90 days) and retain as a single baseline snapshot. 
+
+– After selecting the visit, drop DReelle from features (or keep only derived time deltas already provided) to prevent the model learning calendar-time artifacts. 
+
+• Missing data / sparsity handling (feature-type specific): 
+
+– Separate feature groups: labs (Fsc*, Crp, Esr, _1433eta_*), disease activity/PROs (DAS28CRP_4, PGA, EGA, Fatigue, Sommeil, M_HAQ, Raideur), comorbidities (many 0/1), serologies (FR, an-tiCCP), treatments/meds (Pred_before_TNF, MTX_before_TNF, plaquenil_atbaseline), de-mographics (Age_V1, Sexe, IMC, ruralur-ban, Scolar), durations (Duree_symp_mois, time_first_symptom_to_DateDeb, base-line_time_to_DateDeb). 
+
+– For sparse continuous labs: avoid blanket imputation; use (a) missingness indicator per lab and (b) robust imputation (median) or clinically meaningful “not measured” category via indicator. Consider dropping labs with extremely high missingness (e.g., >80–90%) unless clinically critical. 
+
+– For binary comorbidity flags: treat missing as “un-known” rather than 0 when appropriate; add an “un-known” indicator or impute conservatively depend-ing on how data were recorded. 
+
+– For ordinal/categorical variables (e.g., StatFum, Stat-Mar, Emploi, SE, AntiTNF_or_JAK_First): check cod-ing (numeric codes vs true numeric); encode as cate-gorical (one-hot or target/ordinal encoding depend-ing on cardinality and sample size). 
+
+> 24
+
+– Outliers: winsorize/heavy-tail robust scaling for Cr-p/Esr and other inflammatory markers; check implau-sible IMC, blood counts. 
+
+– Normalization: standardize continuous predictors (ro-bust scaler) for linear models; tree-based models can use raw scales but still benefit from outlier handling. 
+
+• Leakage checks: 
+
+– Ensure all features are truly pre-treatment; exclude any columns that could encode post-baseline out-come timing. 
+
+– Avoid using any follow-up DAS28 information be-yond baseline (label is derived from follow-up DAS28). Feature engineering (clinically guided, sparse-aware): 
+
+• Baseline-focused features (from the chosen single visit): 
+
+– Core RA severity set (high priority): DAS28CRP_4, Crp, Esr, PGA, EGA, M_HAQ, Raideur, Fa-tigue, Sharp_total (damage), IMC, Age_V1, Sexe, Duree_symp_mois. 
+
+– Serostatus: antiCCP (consider positive/negative thresholding + titer if reliable), FR (often skewed; log-transform or categorize), plus “seropositive” com-posite (antiCCP or FR positive). 
+
+– Inflammation composite: log(Crp+1), log(Esr+1), and/or a simple z-score sum; consider interaction with serostatus. 
+
+– Medication/context: Pred_before_TNF, MTX_before_TNF, plaquenil_atbaseline, An-tiTNF_or_JAK_First (treatment class/choice), time_first_symptom_to_DateDeb and base-line_time_to_DateDeb as timing/diagnostic delay proxies. 
+
+• Missingness as signal: for key labs (Crp, Esr, blood counts, 14-3-3 𝑛 ), include “measured vs not measured” indicators; in sparse EHR-like settings this can be pre-dictive. 
+
+• Dimensionality reduction/selection: 
+
+– Prefer a curated feature subset over all 84 columns; re-move near-constant binary flags and highly collinear measures (e.g., overlapping activity measures). 
+
+– Consider stability selection or L1-regularized logistic regression for embedded feature selection, but keep clinically essential variables regardless. Experiment settings (AUROC; small N; repeated visits): 
+
+• Split at patient level only (grouped by NPatient) to pre-vent leakage. 
+
+• Because only ~105 patients, use repeated stratified GroupKFold (e.g., 5 folds, repeated) or nested CV (in-ner tuning, outer evaluation) to get stable AUROC esti-mates. 
+
+• Maintain class balance per fold (positive rate ~0.5). 
+
+• Report mean AUROC with confidence intervals (boot-strap at patient level) due to small sample. Suitable model families / baselines: 
+
+• Baselines: (1) regularized logistic regression (L1/L2/elastic net) on curated features; (2) gradient-boosted trees (XGBoost/LightGBM/CatBoost) with careful handling of missingness; (3) random forest as a secondary baseline. 
+
+• If using categorical-heavy features with missingness, CatBoost is a strong candidate; if using linear models, ensure proper encoding and scaling. 
+
+• Keep models simple to reduce overfitting; calibrate prob-abilities (Platt/isotonic) if decision thresholds matter, while still optimizing AUROC for comparison. 
+
+A.6.2 DP Evaluator Output (DoctorAgents-DS). 
+
+DP Evaluation 
+
+PART 1 — History analysis (why performance moved) * Step 6 → Step 7 preprocessing likely caused a large signal collapse: your own QA shows 55/58 train patients have an-chor_mode="missing" and no_prestart=55, forcing static-only features for almost everyone. That explains: * SHAP being dominated by socioeconomic/education + drug choice (SE/Scolar/AntiTNF) rather than disease activity/in-flammation. * Validation AUROC staying mediocre ( ∼0.57) and not improv-ing despite more careful leakage controls. * The Step 7 anchoring is too strict for this dataset as currently encoded: requiring BTT within [0,365] and enough points basically eliminates longitudinal data for most patients, so the model can’t benefit from the clinically most relevant predictors (baseline disease activity, CRP/ESR, trajectory). * Net: you reduced leakage risk but over-pruned usable pre-treatment information, causing underfitting on clinical signal and over-reliance on demographic proxies. PART 2 — Feature preprocessing assessment (clinical align-ment) What is good / clinically aligned * Chosen domains are appropriate: baseline disease ac-tivity (DAS28/PGA/EGA), inflammation (CRP/ESR), CBC, HAQ/PROs, serology (RF/anti-CCP), meds (MTX/pred), co-morbidity. Two windows (0–90, 91–365) are clinically sensible. What is currently misaligned / losing clinical value 1. Anchoring logic prevents using those clinically meaningful features for most patients, so the “intended” feature set rarely materializes. 2. Static-only fallback discards meds/comorbidities entirely (Pred_before_TNF, MTX_before_TNF, etc. set to NaN). Those are not time-series in the same sense and are often known at/around start; dropping them when anchor fails is unneces-sary information loss. 3. Binary coercion is too strict: _coerce_binary drops any-thing not exactly 0,1. This dataset historically contains ‘un-known” encodings (e.g., -1) (you even saw Mpoc_-1 show up in Step 6 SHAP). Current handling likely turns informative 
+
+> 25
+
+‘unknown/NA-coded” states into missing and then median-imputes them away. 4. Serology quantile bin feature is computed but effectively unused: * _add_serology_bins() adds FR__latest_pre__qbin / an-tiCCP__latest_pre__qbin * but _fit_preprocessor() determines keep_num from train_pat before those columns exist, so they never enter feature_cols. * Net: extra complexity without benefit. Clinically important missing engineered signals (given spar-sity) * For sparse labs, often the most predictive features are (a) baseline/nearest-to-start value, (b) ‘ever measured” and (c) time-to-start of that value. You attempted this, but anchoring failure removes it. Also consider explicitly keeping ‘baseline vs older” indicators rather than dropping them. PART 3 — Quality, generalizability, risk assessment (and how to improve) A) Highest-impact issue: anchoring/generalizability failure * Your strict plausibility filter (0 ≤BTT ≤365) is causing system-atic missing anchors and therefore systematic missing longi-tudinal features. This is the main reason you’re not getting 
+
+>3-step improvements. * Strong suspicion: baseline_time_to_DateDeb is not per-row “days-to-start”, or is constant/misaligned across visits. The preview shows implausibly large constants (e.g., 1797 days), which would trip your plausibility gate even if the patient truly has pre-treatment visits. Actionable fix (conceptual/pseudocode) * Estimate a patient-level start date even when BTT is >365, then compute visit-level days_to_start from dates: * start_date_i = robust_median(DReelle + base-line_time_to_DateDeb) using all non-missing rows (or a trimmed median), without restricting BTT to ≤365. * then days_to_start = (start_date_i - DReelle).days * define pre-treatment rows as days_to_start ≥ 0; then windows apply as usual ( ≤365 etc.). * Add an anchor quality score (spread of candidate start dates) but do not zero-out all longitudinal features unless quality is truly unusable; instead, downweight by adding a feature like anchor_uncertainty_days and let the model learn. This change alone should turn QA from ‘55 static-only” to ‘most patients have some prestart rows”, unlocking the core predictors. B) Leakage/overfitting risks to keep in check * Process/measurement density features (n_measured, n_visits) can encode care patterns/site practice. They can help but harm transportability. Prefer keeping them but: * restrict to a small set (you did), and * consider expressing them as coarse bins (0/1/2+) rather than raw counts. * AntiTNF_or_JAK_First: if the clinical objective is ‘predict response after clinician has chosen agent”, it’s fine; if the ob-jective is ‘predict response to first anti-TNF irrespective of which is chosen”, this becomes a treatment-assignment proxy and can inflate internal performance while reducing causal interpretability. C) Robustness/scalability issues * Current pipeline is computationally fine for this dataset. * But it’s brittle to encoding quirks: * handle -1,0,1 explicitly for “binary” clinical flags (unknown vs no). * avoid treating “unknown-coded numeric” as missing and then median-imputing to 0. D) Concrete improvement checklist (preprocessing only) 1. Rework anchoring to recover pre-treatment rows for most patients (patient-level start date from DReelle + base-line_time_to_DateDeb, then derive days_to_start). 2. Do not drop meds/comorbidities in static_only mode; keep them as baseline static (with missing indicators if needed). 3. Relax binary coercion to preserve “unknown” state (e.g., map -1 to a separate category or a separate indicator). 4. Either remove serology __qbin or include it properly in the kept numeric/categorical set (right now it’s dead code). 5. Given extreme sparsity, avoid dropping engineered features solely due to missingness when missingness is expected; in-stead keep a smaller number of high-value engineered fea-tures (baseline/last + measured_any + days_to_start_last) for CRP/ESR/DAS28/HAQ, and drop the rest (std/mean in tiny windows often becomes mostly noise). If you implement only one change: fix anchoring so you’re not static-only for ∼95% of patients—that’s the bottleneck cur-rently limiting validation AUROC. 
+
+A.6.3 DP Backpropagation Output (DoctorAgents-DS). 
+
+DP Feedback 
+
+1. Fix the core failure mode: anchoring is eliminating longitu-dinal signal for ∼95% of patients Your own QA (patients_anchor_missing=55/58, no_prestart=55/58) implies almost everyone becomes “static-only”, so the pipeline can’t leverage the clinically strongest predictors (DAS28/CRP/ESR/HAQ). This is likely the dominant reason AUROC is stuck ∼0.57 and SHAP is dominated by SE/Scolar/AntiTNF. What to change in code behavior * Stop requiring baseline_time_to_DateDeb (BTT) to be within [0,365] to estimate the anchor. In this dataset, BTT appears often >> 365 (preview shows 1797), so your plausibility gate systematically fails. * Compute a patient-level start date using robust aggrega-tion of DReelle ± BTT even when BTT is large, then derive days_to_start = start_date - DReelle. Only after you have days_to_start should you restrict to pre-treatment windows (0–365d). * Keep anchor_quality features (spread/IQR of candidate start dates, #rows supporting) rather than hard “missing anchor →
+
+drop everything”. Why it helps the metric 
+
+> 26
+
+You’ll move from ‘static-only majority” to ‘most patients have at least one pre-start row”, unlocking baseline/recency features that are plausibly predictive of response. —2. Remove unnecessary information loss in static_only fallback (currently harms AUROC) When no pre-start rows are found, you set meds and comor-bidities to NaN: 
+
+> if static_only > 0.0: for c in meds_binary + comorb: row[c] = np.nan
+
+But these are not truly time-series dependent on anchoring; they’re baseline-known covariates (and were useful histori-cally). Change * Always populate meds/comorbidities from the chosen “base” row (or any available row), even if anchor is uncertain. * Add missingness indicators for them if you’re worried about contamination/availability, rather than nulling them. Why You’re throwing away stable signal precisely for the hardest patients (no reconstructed pre-start), increasing noise and reliance on socio-demographic proxies. —3. Binary coercion is too strict; you’re silently deleting “un-known/other” states _coerce_binary only accepts exact 0,1; everything else becomes NaN and then median-imputed. If the raw data uses -1 or other sentinel codes (seen in prior steps), this collapses informative ‘unknown” vs ‘no”. Change * For “binary-like with unknown codes”, represent as 3-state (0/1/Unknown) either: * categorical with OHE, or * numeric with an explicit __unknown indicator. * At minimum, treat -1 distinctly from missing (don’t coerce to NaN). Why Preserving “unknown” often helps in sparse EHR-like data; deleting it can flatten predictive structure. —4. Your serology quantile bins are dead code (adds complexity, no signal) You create FR__latest_pre__qbin / antiCCP__latest_pre__qbin in _add_serology_bins() inside _transform(), after _fit_preprocessor() decides keep_num. So those bins never enter feature_cols. Change * Either (a) remove this feature engineering to reduce noise/bugs, or (b) generate the bins before fitting and include them as categorical (preferred) so the model can use them. Why Avoids wasted complexity and ensures any intended discretiza-tion signal is actually available to the model. —5. Reconsider missingness pruning for engineered longitudinal features (currently self-defeating under sparsity) Dropping engineered __* features when missingness > 0.80 is too aggressive given the extreme sparsity—especially when anchoring is fragile. It causes a feedback loop: fewer anchored patients → higher missingness → more drops → less clinical signal. Change * Switch from missing-rate thresholds to a value-based shortlist for longitudinal features: * Keep for key variables (DAS28, CRP, ESR, HAQ): last, days_to_start_last, measured_any, maybe max (CRP/ESR), and one windowed mean if enough measurements. * Drop high-variance low-support features (std in 0–90d) unless measurement count ≥2 and coverage is adequate. * Gate window statistics by n_measured (e.g., set std to NaN unless ≥2) to reduce noise. Why This preserves the few longitudinal summaries that can gener-alize and avoids the “everything missing → everything pruned” collapse. —6. Reduce dominance of treatment-choice & socioeconomic proxies (improves generalization, often helps val AUROC) Current SHAP shows AntiTNF_or_JAK_First, SE, Scolar dom-inate. That can happen when clinical disease activity features are missing, but it can also reflect proxy learning that doesn’t validate well. Change (preprocessing-level) * Once anchoring is fixed, ensure disease activity/inflammation features are reliably emitted (baseline + last-pre + recency). * Consider coarsening high-cardinality socioeconomic variables (merge rare levels more aggressively than MIN_CAT_FREQ=5, or map to ordered bins if truly ordinal) to reduce overfitting. Why Shifts model capacity toward clinically causal-ish predictors (baseline disease state), which typically validates better. —7. Add diagnostics that directly optimize for “usable longitudi-nal coverage” To prevent repeating Step7’s failure mode, add metadata coun-ters like: * %patients with ≥1 pre-start row * %patients with baseline_gap_days within 0–30/31–90/91–365 * distribution of inferred start_est spread (anchor uncertainty) Why These are leading indicators for downstream AUROC in this task; you can’t improve the metric if preprocessing zeroes out the key signal again. —If you only change two things for the biggest expected AUROC gain: (1) relax/replace anchoring to recover pre-treatment rows for most patients, and (2) stop nulling meds/comorbidities in static-only mode. 
+
+> 27
+
+A.6.4 MD Evaluator Output (DoctorAgents-DS). 
+
+MD Evaluation 
+
+PART 1 — History Analysis * Performance volatility + collapse events indicate data/feature instability more than model choice. * Step 3 “all-zero SHAP / AUROC 0.5” strongly suggests de-generate features (near-constant after preprocessing, or leak-age/QA features removed leaving almost no signal) and/or broken scaling/selection (e.g., extremely small C). * Step 4 “train 1.0 / val 0.238” is classic high-leakage / high-variance behavior (tiny n=58, many features, plus time-alignment features that can accidentally encode outcomes/care pathway). * Anchoring strategy is the dominant failure mode. * Step 7 strict anchoring produced 55/58 “anchor missing / no prestart / static-only fallback”, so the model learned mostly socioeconomic / treatment-choice proxies (SHAP: Scolar/Em-ploi/SE, AntiTNF_or_JAK_First), not clinical trajectory. * Step 8 swings to anchor success 100%, which is good for coverage but risky: removing plausibility gates can reintroduce post-start contamination unless pre-start identification is rock solid. * Feature engineering sparsity is biting hard. * Step 8 metadata shows multiple __std_0_90d features with missing rate 1.0 (across all patients). That’s either: * a bug in window extraction (no rows fall in 0–90), or * nearly everyone has <2 visits in that window so std is unde-fined, and you’re emitting all-NaN columns. PART 2 — Training Pipeline Correctness and Quality * Pipeline is “correct” mechanically, but it is likely misaligned with the preprocessing output. * Your preprocessing already does: pruning, median impute, clipping, RobustScaler, OHE, missing indicators. * Training code imputes again, removes variance again, and for LR StandardScales again. Double transforms can: * distort the meaning of already-robust-scaled variables, * change the effective regularization strength, * and amplify noise for tiny datasets. * Potential hard bug masked by current data export: if any column were truly all-NaN, SimpleImputer(median) would normally error. Since it doesn’t, it suggests the exported CSV is already fully imputed—making the training-time imputer unnecessary at best. * Model selection uses validation AUROC to pick the winner after CV shortlisting. With n=58, this can overfit to the single validation split; it’s not “wrong” for a leaderboard-style val metric, but it will be unstable and can reward leakage. PART 3 — Model Selection, Hyperparameters, and Training Behavior * p >> n regime (371 features vs 58 patients): univariate Se-lectKBest (k 10–30) is doing most of the work. This is high-variance and very sensitive to tiny shifts in preprocessing/an-choring. * HGB + f_classif feature selection is a questionable pairing. * Trees don’t need scaling; they also don’t benefit much from a linear univariate filter that can discard interaction features. * Overfitting risk remains high even when train AUROC isn’t 1.0, because: * selection is unstable (small k, many correlated engineered features), * time-alignment features can act as proxies, * and class_weight/sample_weight balancing can increase vari-ance further in tiny samples. PART 4 — Improvement Strategy & Next-Step Recommenda-tions A) Fix anchoring/window feature reliability first (highest ROI) 1. Add sanity gates back, but softer than Step 7. Keep broad coverage, but reject anchors that imply impossible timelines. * Pseudocode idea: * compute anchor candidates; choose one only if it yields a reasonable fraction of visits with days_to_start ≥ 0 and within a max horizon (e.g., 0–730), and if the implied start is not after the earliest visit by a large margin. 2. Stop emitting “always missing” engineered features. * If n_measured < 2 in a window, either: * don’t create std at all, or * set std = 0 and rely on n_measured to indicate reliability (preferable to all-NaN columns that become artifacts after imputation). 3. Revisit the 0–90 / 91–365 split. If most patients have sparse visits, those windows are too granular. Consider: * a single 0–365 window, or * 0–180 and 181–365, or * adaptive windows based on available visits (but be careful to keep it time-safe). B) Reduce care-pattern leakage * In step 6/7/8 you still have measurement density signals (n_measured, recency, sometimes visit counts). These can dom-inate. Try: * removing raw visit-count features, * or restricting them to a single coarse “has_any_measurement” reliability flag per domain. C) Align preprocessing with modeling (avoid double trans-forms) * Either: * export minimally processed features (no scaling/imputation) and keep all transforms in the sklearn Pipeline, or * export fully model-ready features and remove imputer/scaler from the training pipeline. * Also consider producing two feature matrices: one scaled for linear models and one unscaled for trees, to avoid hurting HGB with clipping/scaling choices optimized for LR. D) If val AUROC doesn’t improve in ∼3 iterations: change model family/selection Given tiny n, high-dim, and instability: * Prefer a single strongly-regularized linear model (ridge / elastic net) using all reasonably filtered features, and drop 
+
+> 28
+
+SelectKBest (or set k much higher, e.g., 80–200) to reduce selection variance. * Alternatively, try Bayesian/empirical Bayes logistic regres-sion (conceptually) or at least stronger priors via smaller C with stability selection—because your main issue is variance, not bias. Quick “next run” checklist * Verify (per split) distribution of n_visits_prestart_0_90, n_visits_prestart_91_365, and the fraction with n_measured ≥2for key PROs; if near-zero, remove std features and/or change windows. * Confirm that “pre-treatment rows” are truly pre-treatment: audit a few patients’ inferred start vs actual visit dates. * Run SHAP on a model where clinical activity fea-tures are present; if SHAP is again dominated by socioeconomic/treatment-choice, anchoring/feature availabil-ity is still failing. 
+
+A.6.5 MD Backpropagation Output (DoctorAgents-DS). 
+
+MD Feedback 
+
+Highest-impact issues in the current training code (hurting AUROC) * You’re “preprocessing twice” (and inconsistently): the ex-ported CSV is already heavily processed (imputation/clip-ping/RobustScaler/OHE/missing flags per metadata), yet the training pipeline applies median imputation + variance filter-ing + StandardScaler + SelectKBest again. This can (a) distort already-robust-scaled features, (b) change the effective regu-larization strength, and (c) amplify noise in a tiny-n regime. * Univariate SelectKBest(f_classif) is extremely high-variance at n=58, p=371 and is likely selecting unstable proxies (as seen when anchors were missing, where socioeconomic/treatment-choice dominated SHAP). Even when anchors are fine, k=10– 30 is so small that tiny perturbations swap the chosen set. * HGB + SelectKBest(f_classif) is a mismatched combo: trees don’t need scaling, and a linear univariate filter can delete interaction/threshold signal that trees would otherwise use. If HGB is worth trying here, it should see a broader, less pre-filtered feature set (or a tree-appropriate selector). * CV robustness is brittle given class counts: fixed n_splits=5 can still yield folds with too few positives/negatives depending on imbalance; your logic then skips folds and may invalidate otherwise good configs (cv_score=-1e9). This can silently bias the search toward “configs that happen not to break” rather than best AUROC. —Concrete changes to the code that are likely to improve vali-dation AUROC 1. Make the modeling pipeline consistent with what prepro-cessing exports (choose one owner of transforms). * If the CSV is truly “model-ready” (already imputed/scaled), then drop training-time SimpleImputer and StandardScaler (at minimum for LR) and keep only minimal guards (e.g., constant-column removal). * If you want transforms in-model (preferred), then ex-port less processed data and let the sklearn Pipeline do impute/scale/OHE—right now you’re in an unstable middle. 2. Add train-time dropping of “structurally missing” engi-neered columns (especially window stats). * Your metadata shows many window __std_0_90d are missing rate 1.0. Even if imputation makes them constants, they waste degrees of freedom and add selector noise. * Add a simple filter before model search: drop columns with missing-rate ≥ (e.g.) 0.98 or with “unique after impute” ≤ 1. This directly reduces SelectKBest variance. 3. Replace or de-emphasize SelectKBest (or at least make it much less aggressive). * Try no KBest for LR and rely on ridge/elasticnet regulariza-tion (much more stable in p >> n). * If you keep KBest, push k much higher (think 80–250) and/or use stability selection: compute selection frequency across CV folds and keep features that recur (this often beats picking a single brittle top-k). 4. Expand the LR regularization grid (current grid likely misses good regimes). * Your step history already found useful solutions at C ≈3 (Step 6), but Step 7’s search tops out at C=0.3 for L2 and elastic. That’s an unnecessary ceiling. * Also consider solver choices tailored for tiny data (e.g., liblin-ear for L1/L2) to reduce convergence quirks vs saga in small n. 5. Fix HGB to be tree-native (if you keep it). * Let HGB consume more features: remove SelectKBest (or use a very high k) and remove StandardScaler (not used now, good). * Consider using HGB’s native NaN handling by not imputing for HGB at all (your current SimpleImputer erases informative missingness patterns that can matter in longitudinal “mea-sured vs not measured” data). * Tune parameters that actually control overfit in small n: max_leaf_nodes, min_samples_leaf, max_depth, learning_rate, l2_regularization. Right now the HGB grid is narrow and may not find a good bias/variance point. 6. Make CV split settings adaptive to class counts to avoid fold skipping and invalidation. * Set n_splits = min(5, min(n_pos, n_neg)) (or even 3 if minority class is tiny), and/or switch to repeated stratified shuffle split for scoring robustness. * Also: clone the pipeline inside each fold (sklearn.base.clone) instead of reusing the same instance; this avoids subtle state carryover issues and makes results more reproducible. 7. Use ensembling to reduce variance (very effective at n=58). * Instead of selecting a single ‘best” spec, average predicted probabilities from the top-N diverse specs (e.g., ridge LR + elastic LR + HGB) weighted by CV score. This often improves AUROC in exactly this ‘small sample, unstable feature selec-tion” regime. 
+
+> 29
+
+8. Guard against proxy-dominance as a model-selection crite-rion (to improve hidden/generalization AUROC). * Add an optional ‘proxy blacklist” experiment (education/employment/treatment-choice columns) and treat it as a separate candidate family; select between ‘full” vs “no-proxy” by CV. This helps when anchoring/window coverage is imperfect and the model otherwise latches onto non-clinical correlates that don’t generalize. —One “tell” to act on immediately If Step 8 still has many columns with missing rate 1.0 (or near-constant after impute), your current SelectKBest(k=10– 30) is effectively doing feature roulette. Any change that (a) removes those columns and (b) reduces reliance on aggressive univariate selection is very likely to move AUROC more than tweaking HGB depth or learning rate. 
+
+A.6.6 Logger Output. 
+
+Note Log of DoctorAgents -DS after Summarization (SUMMA) 
+
+Step 0 →1: Major feature reduction; start inferred from earliest DReelle + median baseline_time_to_DateDeb; baseline latest eligible within 365d; rare categories →Other; all-numeric clipping; train-schema reindex; CV-ranked/val-shortlisted LR/HGB with weights/early stopping. Perf: GradientBoost-ingClassifier train/val AUROC 1.0/0.69 (Step 0) → best LogisticRegression_l2 train/val 1.0/0.571 (Step 1). Step 1 →2: Enforced baseline_time_to_DateDeb-based start (median per-row DateDeb_i); baseline closest pre-start (+ outside-365d flag); separated strict 365d summaries from baseline/serology max; added timing/consistency flags + comorbidity burden; label-consistency collapse + flag; refined clipping/scaling (exclude binary/counts; data-driven missing indicators); leakage-reduced Pipeline LR(L2)+HGB with fold-wise weighting and penalized CV selection. Perf unchanged: train 1.0, val 0.571. Step 2 →3: Two-stage start inference with start_method; removed leakage/QA flag features in favor of recency; simplified longitudinal markers; curated missing indicators; broadened LR(ElasticNet/L2)+expanded HGB search with optional blending. Features 199 →111 (OHE 43 →19). Perf collapse: best LR_elasticnet C=1e-5, train/val 0.5/0.5; SHAP all-zero. Step 3 →4: Added start_confidence + anti-contamination gate (longitudinal features forced missing/0 when start_confidence <2); baseline closest pre-start with baseline_stale/baseline_gap_bin; trajectory features (last/delta/slope_per_day; CRP/ESR log1p); binned visit intensity; moved meds/comorbidities/serology and many counts to categorical/OHE; missing indicators for numeric 
+
+>5% missingness; standardized prune+median-impute; always-balanced weighting (class_weight="balanced" +sample_weight); stricter CV penalties/degeneracy filtering; no ensembling + fallback guardrail. Perf: best LR_l2 C=1.0, train/val 1.0/0.238 (instability/overfitting signal). Step 4 →5: Dropped confidence-gated date reconstruction; used baseline_time_to_DateDeb as sole anchor with always-emitted baseline snapshots + sparse window summaries; meds/comorbidities numeric with pre-scaling numeric pruning; k-best feature-selected LR with revised weight-ing/CV/selection and SHAP mapping. Perf improvement: LR_kbest_ridge k=15 val AUROC 0.619 (from 0.238). Step 5→6: Reconstructed robust anchor btt_used with anchor_mode + baseline_gap_bin; broader 365d coverage; added visit/trend/mean features and ‘time-safe” last-prestart fallback values; stronger category canonicalization; modeling simplified to LR/HGB ‘views” with hard no-NaN inputs and StratifiedShuffleSplit scoring. Perf regression: 0.819/0.619 →
+
+0.983/0.524 (lr_elastic). Step 6 →7: Moved from flexible anchoring with single 0–365d window and manual-view LR/HGB (StratifiedShuffleSplit; train/val 0.983/0.524) to strict pre-treatment anchoring with static-only fallback and two windows (0–90/91–365d; mean/std/max/log1p; latest-pre serology + optional quantile bins), engineered-feature drop >0.80, explicit QA (anchor missing/no-prestart/static-only for 55/58), and sklearn Pipelines (imputation/near-constant removal/scaling/Selec-tKBest) tuned under RepeatedStratifiedKFold. Perf: train/val 0.893/0.571. Step 7→8: Switched to robust-consensus anchor without [0,365] gate (dt_plus_btt for 58/58; an-chor_n_support/anchor_iqr_days); static covariates from latest row regardless of pre-start; meds/comorbidities ternary categoricals even when anchoring fails; missingness drop re-laxed to >0.95; categorical missing = “Missing”; serology qbins categorical one-hot; modeling changed to direct array training after one-time filtering with StratifiedShuffleSplit and simpler penalties. Perf jump: val AUROC 0.571 (lr_l2 C=0.3,k=15) →
+
+0.905 (lr_elastic_saga C=0.1,l1_ratio=0.9); train/val 0.867/0.905. Step 8→9: Changed to earliest-3-visit, prestart-only, monotonic-consistency–scored anchor (anchor_dt_btt_corr) removing fallback leakage; used decayed means, stricter std rules, added deltas/support gates; tighter pruning (missingness >0.90), higher missing-indicator threshold; serology __measured/__positive_proxy; broader CV with overfit/degeneracy filtering and no HGB early stopping. Perf drop: LR elastic C=0.01,l1_ratio=0.1, train/val 0.588/0.738 (from 0.867/0.905). 
+
+> 30
+
+Step 9 →10: Switched to correlation-gated/reconstructed anchoring with validity/shifted-late suppression of window features; dual baseline snapshots+deltas; invariant-any-row categoricals and any-row latest serology; looser/always-keep pruning; sparse-friendly window summaries; single validation-split search; selected early-stopped HGB. Perf: train/val 0.8/0.595. Step 10 →11: Moved to two-candidate ( ±) median start es-timator with anchor uncertainty/availability flags; broader baseline/recency indicators; 0–180/181–365d windows with NaN/window_available_*; added 0–365d aggregates; tighter leakage/invariant handling and stricter pruning; CV-penalized model screening with pipeline imputation/feature filtering. Perf regression: val AUROC 0.595 (HGB) → 0.464 (LR L1 saga C=0.003). 
+
+# A.7 Examples of code snippet generated by 
+
+# DoctorAgents -DS 
+
+This section presents examples of generated code snippets empha-sizing the feature-engineering capabilities of DoctorAgents -DS. 
+
+A.7.1 Mortality Prediction. 
+
+"bicarbonate_blood_delta_per_hr" (L63-66 and L353-361) 
+
+TRAJ_LABS = [ "creatinine_blood", "urea_nitrogen_blood", " lactate_blood", "bicarbonate_blood", ... ]...... if c in TRAJ_LABS: delta = pd.to_numeric(last_s, errors="coerce") - pd. to_numeric(first_s, errors="coerce") elapsed_hr = (last_t - first_t).dt.total_seconds() / 3600.0 dph = safe_div(delta, elapsed_hr.replace(0.0, np. nan)) out[f"{c}_first"] = first_s out[f"{c}_delta_last_minus_first"] = delta.where( n_meas >= 2.0, np.nan).astype("float32") out[f"{c}_delta_per_hr"] = dph.where(n_meas >= 2.0, np.nan).astype("float32") out[f"{c}_trend_defined"] = (n_meas >= 2.0).astype ("int8") 
+
+"gcs_eye_last" (L35-38 and L283-294) 
+
+VITALS = [ ... "gcs_total", "gcs_eye", "gcs_motor", "gcs_verbal", "rass" ]...... val_nonnull = dfw.loc[dfw[c].notna(), [ID_COL, c, EVENT_TIME_COL]] if len(val_nonnull): first_s = val_nonnull.groupby(ID_COL, sort=False)[c ].first().reindex(subjects) last_s = val_nonnull.groupby(ID_COL, sort=False)[c]. last().reindex(subjects) first_t = val_nonnull.groupby(ID_COL, sort=False)[ EVENT_TIME_COL].min().reindex(subjects) last_t = val_nonnull.groupby(ID_COL, sort=False)[ EVENT_TIME_COL].max().reindex(subjects) ... out[f"{c}_last"] = last_s 
+
+"mean_arterial_pressure_mean_24_48h" (L75, L270-272, and L307-315) 
+
+BIN_VITALS = ["mean_arterial_pressure", "heart_rate", " respiratory_rate", "spo2", "fio2", "temperature"] ...... dt_from_start = (dfw[EVENT_TIME_COL] - dfw[T0_COL]).dt. total_seconds() / 3600.0 recent = (dt_from_start >= 0.0) & (dt_from_start <= 24.0) early = (dt_from_start > 24.0) & (dt_from_start <= 48.0) ...... for c in BIN_VITALS: if c in dfw.columns: g_recent = dfw.loc[recent].groupby(ID_COL, sort =False)[c].mean().reindex(subjects) g_early = dfw.loc[early].groupby(ID_COL, sort= False)[c].mean().reindex(subjects) ... out[f"{c}_mean_0_24h"] = g_recent out[f"{c}_mean_24_48h"] = g_early 
+
+"n_glucose_blood_meas_48h" (L41-45 and L265-268) 
+
+LABS = [ ... 
+
+> 31
+
+"urea_nitrogen_blood", "creatinine_blood", " glucose_blood", "calcium_total_blood", ... ]...... count_vars = sorted (set ([c for c in (vitals_present + labs_present) if c in (set (VITALS) | set (TRAJ_LABS) | 
+
+set (LAB_RECENCY) | set (VITAL_TRENDS) | set (BIN_VITALS) | set (BIN_LABS) | {"gcs_total","gcs_eye", "gcs_motor","gcs_verbal"})])) 
+
+for c in count_vars: out[f"n_{c}_meas_48h"] = dfw[c].notna().groupby(dfw [ID_COL], sort=False). sum (min_count=1).reindex( subjects).fillna(0.0).astype("float32") out[f"{c}_measured_any_48h"] = (out[f"n_{c} _meas_48h"] > 0.0).astype("int8") 
+
+A.7.2 Readmission Prediction. 
+
+"heart_rate_count_log1p_last6h" (L69, L529-535, and L763-775) 
+
+CORE_VITALS_6H = set(["heart_rate", "respiratory_rate", "systolic_bp", "mean_arterial_pressure", "spo2", " fio2", "temperature"]) ...... if concept in core_vitals_6h_keep: w2 = float(vital_small_h) last2, rec2, first2, first_rec2 = _first_last_in_window(ev, src_col, concept, w2) cnt2 = _count_in_window(ev, src_col, concept, w2) dyn[f"{concept}__last_in_last{int(w2)}h"] = last2 dyn[f"{concept}__last_in_last{int(w2)} h_hours_before_discharge"] = rec2 dyn[f"{concept}__count_last{int(w2)}h"] = cnt2 ...... for c in cnt_cols: base, win = _parse(c) ... if base in curated_concepts: out[f"{base}__measured_any_last{win}h"] = (s > 0).astype("int8") cap = float(labs_cap) if base in VITAL_RANGES: cap = float(vitals_caps[1] if win == vitals_caps[0] else vitals_caps[3]) out[f"{base}__count_capped_last{win}h"] = np. minimum(s, float(cap)).astype("float32") out[f"{base}__count_log1p_last{win}h"] = np. log1p(s).astype("float32") kept += 1 
+
+"respiratory_rate_slope_last6h_per_hr" (L69, L505, and L529-553) 
+
+CORE_VITALS_6H = set(["heart_rate", "respiratory_rate", "systolic_bp", "mean_arterial_pressure", "spo2", " fio2", "temperature"]) ...... vital_slope_keep_6h = set(["heart_rate", " mean_arterial_pressure", "systolic_bp", " respiratory_rate", "spo2", "fio2", "temperature"]) ...... if concept in core_vitals_6h_keep: w2 = float(vital_small_h) last2, rec2, first2, first_rec2 = _first_last_in_window(ev, src_col, concept, w2) cnt2 = _count_in_window(ev, src_col, concept, w2) ... if (concept in vital_slope_keep_6h) and (not last2. empty) and (not first2.empty): delta2 = (last2 - first2).replace([np.inf, -np. inf], np.nan).astype("float32") span2 = (first_rec2 - rec2).replace([np.inf, -np.inf], np.nan).astype("float32") span2 = span2.where(cnt2 >= 2, np.nan) slope2 = (delta2 / span2.replace(0, np.nan)). replace([np.inf, -np.inf], np.nan).astype("float32") dyn[f"{concept}__slope_last{int(w2)}h_per_hr"] = slope2 dyn[f"{concept}__n_ge2_last{int(w2)}h"] = (cnt2. reindex(dyn.index).fillna(0).astype("float32") >= 2). astype("int8") 
+
+A.7.3 LOS Prediction. 
+
+"fio2/po2_blood"_mean_last6h,and"lactate_blood_ recency_hours" (L1120-1124, L257-281, and L492-516) 
+
+workflow_keys_small = [c for c in [ "fio2", "spo2", "gcs_total", "gcs_verbal", " gcs_motor", "lactate_blood", "ph_blood", "po2_blood", " pco2_blood", "chloride_blood", "rdw_blood", "ptt_blood", " base_excess_blood", "creatinine_blood" ] if c in train_raw.columns] 
+
+> 32
+
+...... def first_last6h_means_counts(dfv: pd.DataFrame, col: str): ... last_start = tmp["_pred"] - pd.to_timedelta(6.0, unit="h") last_end = tmp["_pred"] ... s_last = last_blk.groupby(ID_COL, sort=False)[col]. mean().astype("float64") if not last_blk.empty else pd.Series(dtype="float64") ... ...... workflow_keys_small = [c for c in workflow_keys_small if c in dfv.columns] ... for c in workflow_keys_small: ... s_first, s_last, c_first, c_last = first_last6h_means_counts(dfv, c) ... wf = pd.DataFrame({ ... f"{c}__mean_last6h": s_last_r, ... }, index=cnt.index) 
+
+"spo2_fio2_ratio" (L332-400, L598-604, and L744-753) 
+
+def paired_ratio_aggregates(dfv: pd.DataFrame, numer_col: str, denom_col: str, prefix: str, max_gap_hours: float = 2.0): ... ratio = (g[numer_col] / denom_ff).where(ok, np.nan). astype("float64") ... out[f"{prefix}__paired_mean_last6h__defined"] = res. apply(lambda x: float(x[3]) if isinstance(x, tuple) else 0.0).astype("float64") ...... pr_parts = [] if "spo2" in dfv.columns and "fio2" in dfv.columns: pr_parts.append(paired_ratio_aggregates(dfv, "spo2", "fio2", "sf_ratio", float(PAIR_MAX_GAP_HOURS))) ...... elif has("spo2__last") and has("fio2__last"): denom = fnum(out["fio2__last"]).replace(0.0, np.nan) out["spo2_fio2_ratio"] = fnum(out["spo2__last"]) / denom out["spo2_fio2_ratio__defined"] = ((fnum(out.get(" spo2__measured", np.nan)).fillna(0.0) > 0) & (fnum( out.get("fio2__measured", np.nan)).fillna(0.0) > 0)). astype("float64") 
+
+A.7.4 RA Anti-TNF Response Prediction. 
+
+"SE_2.0","GrFonct_2.0",and"AntiTNF_or_JAK_First_ 3" (L131, L260-263, and L299-323) 
+
+cats = ["Sexe", "Scolar", "SE", "Emploi", "StatFum", " StatMar", "ruralurban", "AntiTNF_or_JAK_First", " ACR2010", "Activity", "GrFonct"] ...... for c in cats: if c in g.columns: v = base.get(c, np.nan) row[c] = str(v) if pd.notna(v) else "Unknown" ...... cat_cols = [c for c in train_pat.columns if c not in protected and train_pat[c].dtype == "object"] ... enc = OneHotEncoder(handle_unknown="ignore", sparse_output=False, dtype=np.float32) enc.fit(train_cat.values) ohe_names = list(enc.get_feature_names_out(cat_cols)) 
+
+"PGA_last_pre" and "EGA_last_pre" (L124-L128 and L244-L247) 
+
+baseline_like_numeric = [ "DAS28CRP_4", "Crp", "Esr", "PGA", "EGA", "M_HAQ", "Raideur", "Fatigue", "Sommeil", "FscGB", "FscHb", "FscPLQ", "FscPMN", "IMC", " Sharp_total", "Duree_symp_mois", "Age_V1", " time_first_symptom_to_DateDeb" ]...... for c in baseline_like_numeric: if c in g.columns: v = _as_numeric(base.get(c, np.nan)) 
+
+> 33
+
+row[f"{c}__last_pre"] = float(v) if pd.notna(v) else np.nan 
+
+"FscPLQ_delta_365d" (L134, L71-L117, and L265-L266) 
+
+window_vars = ["DAS28CRP_4", "Crp", "Esr", "PGA", "EGA", "M_HAQ", "Raideur", "Fatigue", "Sommeil", "FscPLQ"] ...... def _summarize_window(elig, tcol, vars_list): ... for c in vars_list: ... first_v = x.loc[first_i] last_v = x.loc[last_i] res[f"{c}__delta_365d"] = float(last_v -first_v) if (pd.notna(first_v) and pd.notna(last_v)) else np.nan return res ...... win_summ = _summarize_window(elig_365 if has_365 else elig_365, "_t", window_vars) row.update(win_summ)

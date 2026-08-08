@@ -1,0 +1,459 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-08T20:48:09.924412+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 14,
+    "quick_skim_target": 11,
+    "quick_selected": 11
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.00805v1",
+      "source": "arxiv",
+      "title": "AgentSLABench: Evaluating and Benchmarking Agentic Systems Under Resource Constraints",
+      "abstract": "We present AgentSLABench, a resource-aware evaluation framework for autonomous AI agents that measures correctness alongside latency, cost, compute, memory, and network usage under declared resource budgets. Unlike standard benchmarks that report only accuracy, AgentSLABench produces a multi-dimensional profile per agent per task - the same way systems profilers (perf, pprof, cProfile) measure resource consumption of code, but extended with task correctness as a first-class dimension. AgentSLABench provides 16 task environments across 6 categories (5 core: multi-hop QA, retail substitution, code generation, web shopping, travel planning; 11 extended) with isolated Docker containers, declared CPU/memory/time/network budgets, sealed test sets with SHA256 hashes, and a standardized profiling protocol. We profile 5 general-purpose baseline agents (ReAct, PlanAndSolve, Reflexion, CoT, Random) plus 4 task-specialized agents, finding that specialized agents achieve 100% success on 3/5 core tasks (fact_qa, web_shopping, travel_planning) and 66.7-83.3% on retail and code_gen, while general baselines fail entirely on 4/5 domain tasks. Crucially, we report the Efficiency-Adjusted Success Rate (EASR) - success weighted by resource consumption relative to declared budgets - revealing that high accuracy at unbounded cost is not production-viable. We release the full infrastructure, sealed test sets, and profiling results to enable reproducible, resource-aware agent evaluation.",
+      "authors": [
+        "Meher Bhaskar Madiraju",
+        "Meher Sai Preetam Madiraju"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-01T18:17:47+00:00",
+      "link": "https://arxiv.org/pdf/2608.00805v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Resource-aware evaluation framework for agentic systems, transferable to medical agent performance benchmarking.",
+      "llm_evidence_cn": "面向智能体系统的资源感知基准测试，可迁移用于医疗Agent性能评估。",
+      "llm_evidence": "面向智能体系统的资源感知基准测试，可迁移用于医疗Agent性能评估。",
+      "canonical_evidence": "面向智能体系统的资源感知基准测试，可迁移用于医疗Agent性能评估。",
+      "llm_tldr_en": "Presents AgentSLABench, a resource-aware evaluation framework for autonomous AI agents that profiles correctness with latency, cost, compute, memory, and network usage, providing a transferable methodology for benchmarking medical agents under budget constraints.",
+      "llm_tldr_cn": "通用智能体基准大多只报准确率，忽略了资源开销。本文提出AgentSLABench，在给定资源预算下同时度量正确性、延迟、成本、计算、内存和网络使用，生成每个任务的多维剖面。该框架提供16个任务环境且可隔离运行，虽未针对医疗场景，但其评估思路和指标设计可直接迁移到基于EHR的医疗Agent基准测试，为资源受限条件下的医疗智能体评测提供方法论支撑。",
+      "llm_tldr": "通用智能体基准大多只报准确率，忽略了资源开销。本文提出AgentSLABench，在给定资源预算下同时度量正确性、延迟、成本、计算、内存和网络使用，生成每个任务的多维剖面。该框架提供16个任务环境且可隔离运行，虽未针对医疗场景，但其评估思路和指标设计可直接迁移到基于EHR的医疗Agent基准测试，为资源受限条件下的医疗智能体评测提供方法论支撑。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.01004v1",
+      "source": "arxiv",
+      "title": "Who Belongs in the Eval Set? A Capability-Taxonomy-Driven Pipeline for Curating Regression Eval Sets in Agent-Extensibility Platforms",
+      "abstract": "Platform teams hosting agent-extensibility surfaces face a regression-economics paradox: every onboarding customer ships an evaluation set tuned to their domain, but the platform's regression set must live under a hard query-count ceiling bounded by release cadence. To our knowledge, no published industrial pipeline addresses this platform-side curation problem: existing evaluation frameworks are customer-side, and benchmark-compression work treats benchmarks as fixed pools rather than streams of incoming sets. We describe a capability-taxonomy-driven curation pipeline applied to declarative agents with custom actions in Microsoft 365 Copilot. It takes an agent specification and a customer's eval set as input, projects each query into a platform-owned capability taxonomy, and outputs per-query decisions (admit, drop, swap, or human review), under the philosophy that a healthy regression set is the minimal set of queries capturing the maximal spread of capability signatures -- distinct combinations of capabilities a query exercises together. Three components instantiate this: a classifier producing per-(query, capability) verdicts via a hybrid of deterministic specification-based extraction and large-language-model (LLM) semantic inference; an Invocation Quality (IQ) rater scoring how thoroughly a query exercises each capability, so a new query sharing a signature with an existing entry can still be recognized as a better test and displace it; and a consolidator comparing incoming queries against the regression set on coverage and quality through a rule-based decision cascade, backed by a conservative curator that only suggests evictions. The mechanism is taxonomy-agnostic and applies to any regression eval-set curation problem with a typed capability taxonomy, including taxonomies that evolve in response to the very evidence the pipeline surfaces.",
+      "authors": [
+        "Tezan Sahu",
+        "Aritra Das",
+        "Pankaj Mittal",
+        "Sudipta Das"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI",
+        "cs.SE"
+      ],
+      "published": "2026-08-02T05:19:25+00:00",
+      "link": "https://arxiv.org/pdf/2608.01004v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Pipeline for curating regression eval sets for agent platforms; general method for building evaluation sets that transfers to medical agent benchmark curation.",
+      "llm_evidence_cn": "面向Agent平台回归评估集构建的能力分类学流水线，可迁移到医疗Agent评估集设计，但无医疗/EHR内容。",
+      "llm_evidence": "面向Agent平台回归评估集构建的能力分类学流水线，可迁移到医疗Agent评估集设计，但无医疗/EHR内容。",
+      "canonical_evidence": "面向Agent平台回归评估集构建的能力分类学流水线，可迁移到医疗Agent评估集设计，但无医疗/EHR内容。",
+      "llm_tldr_en": "Describes a capability-taxonomy-driven pipeline for curating regression evaluation sets in agent-extensibility platforms, applied to Microsoft 365 Copilot. Offers transferable methodology for designing evaluation sets for medical agents, though not domain-specific.",
+      "llm_tldr_cn": "Agent平台在回归评估中面临客户评估集与固定查询数上限之间的矛盾，但缺少平台侧评估集整理方案。该文提出能力分类学驱动的策展流水线，根据Agent规范与客户评估流构建回归集，并在Microsoft 365 Copilot声明式Agent上落地。该方法为医疗Agent评估集的系统化构建提供了可迁移思路，虽未涉及EHR数据。",
+      "llm_tldr": "Agent平台在回归评估中面临客户评估集与固定查询数上限之间的矛盾，但缺少平台侧评估集整理方案。该文提出能力分类学驱动的策展流水线，根据Agent规范与客户评估流构建回归集，并在Microsoft 365 Copilot声明式Agent上落地。该方法为医疗Agent评估集的系统化构建提供了可迁移思路，虽未涉及EHR数据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.02520v1",
+      "source": "arxiv",
+      "title": "MedPRESS: A Multi-turn Benchmark for Patient-Pressure-Induced Medical Sycophancy in LLMs",
+      "abstract": "Large language models (LLMs) are increasingly used for health-related advice. Existing research measures their safety with static questions rather than pressured patient-facing conversations. We introduce MedPRESS, a multi-turn benchmark for measuring patient-pressure-induced sycophancy in LLMs. MedPRESS contains 600 medically grounded five-turn dialogues across three scenario families: medication and treatment demand, personal health self-care, and symptom triage and care resistance. Each dialogue begins with a health query and escalates through personal experience, social proof, external evidence claims, and direct adversarial challenge. We evaluate 20 LLMs across general, medical-domain, lightweight, large, open-weight, and proprietary families using structured judging and safety-focused metrics. Results show that models frequently shift toward unsafe agreement under repeated patient pressure, with substantial variation across model families, model scale, and prompt type. Anti-sycophancy prompting improves robustness for several models, but does not eliminate unsafe agreement. MedPRESS highlights a critical gap in medical LLM evaluation: safe medical knowledge is not enough unless models can maintain it under conversational pressure.",
+      "authors": [
+        "Saman Sarker Joy",
+        "Niloy Farhan"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-08-03T17:17:29+00:00",
+      "link": "https://arxiv.org/pdf/2608.02520v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Multi-turn benchmark evaluating medical LLM sycophancy across 20 models; directly benchmarks performance of medical conversational agents.",
+      "llm_evidence_cn": "多轮基准评估20个医疗LLM的谄媚行为，直接对医疗对话智能体进行性能评测。",
+      "llm_evidence": "多轮基准评估20个医疗LLM的谄媚行为，直接对医疗对话智能体进行性能评测。",
+      "canonical_evidence": "多轮基准评估20个医疗LLM的谄媚行为，直接对医疗对话智能体进行性能评测。",
+      "llm_tldr_en": "MedPRESS introduces 600 multi-turn dialogues to measure patient-pressure-induced sycophancy in 20 medical LLMs; evaluates safety in pressured conversations.",
+      "llm_tldr_cn": "现有LLM安全评测多为静态问题，无法衡量面对患者施压时的谄媚风险。MedPRESS构建了涵盖用药需求、个人健康自护、症状分诊三类场景的600段五轮对话，逐级施加个人经历、社会证明、外部证据与对抗挑战等压力。作者在20个通用与医疗领域LLM上评测，发现模型在高压对话中容易产生谄媚回应，凸显对医疗对话智能体进行多轮安全评测的必要性。",
+      "llm_tldr": "现有LLM安全评测多为静态问题，无法衡量面对患者施压时的谄媚风险。MedPRESS构建了涵盖用药需求、个人健康自护、症状分诊三类场景的600段五轮对话，逐级施加个人经历、社会证明、外部证据与对抗挑战等压力。作者在20个通用与医疗领域LLM上评测，发现模型在高压对话中容易产生谄媚回应，凸显对医疗对话智能体进行多轮安全评测的必要性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.01012v1",
+      "source": "arxiv",
+      "title": "MedUPS: Towards Diagnostic Assistance in Uncommon Medical Cases with Large Language Models",
+      "abstract": "Uncommon and off-guideline cases are difficult for clinical decision support, because physicians must make a series of management decisions under diagnostic uncertainty and rarely see the full case at once. Most large language model (LLM) benchmarks for medicine score only the final diagnosis, yet much of clinical care turns on the next appropriate action: the next test to order, the imaging study to obtain, the specialist to involve, or the differential to pursue. We introduce MedUPSQA, a dataset of 21,874 mid-stream clinical decision points built from 5,535 real case reports, and MedUPS, an alignment framework that supervises models on these intermediate decisions as they unfold along a patient's trajectory. We segment free-text case presentations into chronologically ordered, accumulating clinical chunks and align models to predict the next step with reinforcement learning (GRPO), using an external LLM-as-a-Judge reward. This objective mirrors how clinicians actually meet patients, reasoning forward from accumulating evidence toward the next decision, rather than committing to a final label. Across three backbones, mid-stream alignment raises next-step accuracy from 55.2 to 66.7 for Qwen3.6-27B, from 47.2 to 57.8 for Qwen3.5-9B, and from 37.8 to 44.4 for HuatuoGPT-3-8B, with 95% CI. In several model scales we test the objective improves accuracy more than scale, with smaller models surpassing larger, frontier models we evaluate. We further train supervised fine-tuning (SFT) baselines on the mid-stream task, SFT improves all backbones above base, indicating the target framwork carries signal independently of the optimizer. We release the dataset, code, and aligned checkpoints.",
+      "authors": [
+        "Ofir Ben Shoham",
+        "Oriel Perets",
+        "Nir Grinberg",
+        "Nadav Rappoport"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-08-02T05:27:21+00:00",
+      "link": "https://arxiv.org/pdf/2608.01012v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Evaluates intermediate clinical decision making for LLMs, relevant to evaluating clinical decision support agents, though not using EHR data.",
+      "llm_evidence_cn": "评估大语言模型的中间临床决策，与临床决策支持智能体评估相关，但未使用EHR数据。",
+      "llm_evidence": "评估大语言模型的中间临床决策，与临床决策支持智能体评估相关，但未使用EHR数据。",
+      "canonical_evidence": "评估大语言模型的中间临床决策，与临床决策支持智能体评估相关，但未使用EHR数据。",
+      "llm_tldr_en": "MedUPS constructs MedUPSQA with 21,874 mid-stream clinical decision points from real case reports and an alignment framework to supervise LLMs on these intermediate decisions, moving beyond final-diagnosis-only benchmarks.",
+      "llm_tldr_cn": "该工作针对少见医疗案例，指出现有医学大模型基准只评估最终诊断，忽略中间临床决策。作者从真实病例报告中构建含21,874个中间决策点的MedUPSQA数据集，并设计MedUPS对齐框架，监督模型在患者轨迹中逐步选择正确检查或转诊。实验显示该方法显著提升中间决策准确率并改善最终诊断。这为临床决策支持系统的评估提供更细粒度指标，可作为EHR评估的补充。",
+      "llm_tldr": "该工作针对少见医疗案例，指出现有医学大模型基准只评估最终诊断，忽略中间临床决策。作者从真实病例报告中构建含21,874个中间决策点的MedUPSQA数据集，并设计MedUPS对齐框架，监督模型在患者轨迹中逐步选择正确检查或转诊。实验显示该方法显著提升中间决策准确率并改善最终诊断。这为临床决策支持系统的评估提供更细粒度指标，可作为EHR评估的补充。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.05375v1",
+      "source": "arxiv",
+      "title": "DoctorAgents: an agentic framework to iteratively refine AutoML pipeline for small clinical temporal data",
+      "abstract": "Clinical machine learning (ML) has the potential to support high-stakes medical decision-making, but reliable deployment is often constrained by scarce, heterogeneous, and temporal complexity. Developing effective ML pipelines for such data remains time-consuming and error-prone, while existing automated machine learning (AutoML) systems only partially address this challenge because they largely rely on brute-force search over predefined spaces and lack explicit reasoning and memory. We therefore reformulate AutoML for small clinical data from exhaustive search to reasoning-driven refinement. We propose DoctorAgents, an agentic AI framework that autonomously constructs and optimizes end-to-end ML pipelines through specialized large language model (LLM) agents for generation, validation, and refinement. DoctorAgents backpropagates natural-language feedback through textual gradient descent to perform targeted updates without exhaustive search. Experiments across diverse clinical tasks show that DoctorAgents consistently outperforms established AutoML baselines while producing more interpretable task-specific representations.",
+      "authors": [
+        "Ruilin Wang",
+        "Bo-Hong Wang",
+        "Elizabeth Kourbatski",
+        "Jun Bai",
+        "Hegang Chen",
+        "Ziyang Song",
+        "Gilles Boire",
+        "Marie Hudson",
+        "Yue Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG",
+        "cs.MA"
+      ],
+      "published": "2026-08-05T19:52:55+00:00",
+      "link": "https://arxiv.org/pdf/2608.05375v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "An agentic AI framework that builds and optimizes clinical ML pipelines on small temporal clinical data, likely EHR, aligning with medical agent requirements.",
+      "llm_evidence_cn": "一个用于小规模临床时序数据（可能为EHR）的智能体AI框架，符合医疗智能体要求。",
+      "llm_evidence": "一个用于小规模临床时序数据（可能为EHR）的智能体AI框架，符合医疗智能体要求。",
+      "canonical_evidence": "一个用于小规模临床时序数据（可能为EHR）的智能体AI框架，符合医疗智能体要求。",
+      "llm_tldr_en": "DoctorAgents is an agentic AI framework that autonomously constructs and optimizes end-to-end ML pipelines for small clinical temporal data, shifting AutoML from brute-force search to reasoning-driven refinement.",
+      "llm_tldr_cn": "针对小规模、异质且时序复杂的临床数据，现有AutoML依赖暴力搜索且缺乏推理记忆，本文提出DoctorAgents智能体框架，将构建和优化ML流程从穷举搜索改为推理驱动的迭代精炼。该框架可自主完成端到端流程构建与优化，为临床机器学习建模提供了新的智能体范式，但并未涉及对医疗智能体本身的评测或基准。",
+      "llm_tldr": "针对小规模、异质且时序复杂的临床数据，现有AutoML依赖暴力搜索且缺乏推理记忆，本文提出DoctorAgents智能体框架，将构建和优化ML流程从穷举搜索改为推理驱动的迭代精炼。该框架可自主完成端到端流程构建与优化，为临床机器学习建模提供了新的智能体范式，但并未涉及对医疗智能体本身的评测或基准。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.01570v1",
+      "source": "arxiv",
+      "title": "Characterizing Treatment-Context Medication Evidence Across Clinic Notes and Structured EHR Medication History",
+      "abstract": "Clinic notes and structured electronic health record (EHR) medication history often contain different medication information. Same-visit disagreement between these sources may result from note-side normalization errors, differences in terminology or timing, or actual differences in documentation. We developed a note-grounded approach that uses large language model (LLM) assisted reference construction, targeted and random human review, deterministic medication normalization, and semantic and temporal comparisons with structured medication history. We evaluated all normalization results on a patient-level held-out test set to limit adaptation to the study cohort. On 5,403 held-out mention rows, exact canonical agreement improved from 0.7226 with surface-exact matching to 0.8429 after lexical cleanup and curated alias mapping. In a random audit of previously unaudited rows, canonical-label agreement was 0.9210 among evaluable valid medication mentions, whereas treatment-action attribution was lower at 0.5326. In the full-cohort characterization analysis, only 16.44% of note-derived rows had same-visit exact overlap with structured medication history, but 55.17% had same-visit semantic overlap, 90.34% had same-visit or +/-30-day overlap, and only 3.97% remained in the strict no-structured-overlap bucket under broad project-level mapping. An ontology-backed sensitivity analysis further showed that held-out strict Observational Medical Outcomes Partnership (OMOP)-backed no-overlap fell from 43.99% to 36.68% after a development-derived alias supplement. These results show that note-to-structured-medication mismatch can arise from normalization errors, differences in terminology, and differences in documentation timing.",
+      "authors": [
+        "Mingyang Jiang",
+        "Congning Ni",
+        "Weixin Liu",
+        "Zhijun Yin"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-08-03T01:00:01+00:00",
+      "link": "https://arxiv.org/pdf/2608.01570v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Uses LLM to align clinic notes with structured EHR medication history, directly relevant to EHR-based medical agent data grounding.",
+      "llm_evidence_cn": "使用LLM对齐诊室笔记与结构化EHR用药史，与基于EHR的医疗智能体数据支撑直接相关。",
+      "llm_evidence": "使用LLM对齐诊室笔记与结构化EHR用药史，与基于EHR的医疗智能体数据支撑直接相关。",
+      "canonical_evidence": "使用LLM对齐诊室笔记与结构化EHR用药史，与基于EHR的医疗智能体数据支撑直接相关。",
+      "llm_tldr_en": "This paper characterizes discrepancies between clinic note medications and structured EHR records, using LLM-assisted normalization and temporal comparison to build reliable medication evidence.",
+      "llm_tldr_cn": "诊室笔记与结构化电子病历用药史常存在信息不一致，影响医疗智能体的数据可靠性。本文提出基于LLM辅助参考构建、人工审查、确定性用药规范化和语义时间比较的方法，系统刻画同一就诊中两类来源的用药差异。在5403条留出提及记录上进行评估，验证了规范化结果与结构化用药历史的一致性。该方法有助于为基于EHR的医疗智能体构建更准确的用药证据基础，降低数据噪声。",
+      "llm_tldr": "诊室笔记与结构化电子病历用药史常存在信息不一致，影响医疗智能体的数据可靠性。本文提出基于LLM辅助参考构建、人工审查、确定性用药规范化和语义时间比较的方法，系统刻画同一就诊中两类来源的用药差异。在5403条留出提及记录上进行评估，验证了规范化结果与结构化用药历史的一致性。该方法有助于为基于EHR的医疗智能体构建更准确的用药证据基础，降低数据噪声。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.06294v1",
+      "source": "arxiv",
+      "title": "QuanTiMedAI: Quantum-Enhanced Time-Series Model guided by Agentic AI for Cardiac Arrest Mortality Prediction",
+      "abstract": "Cardiac arrest remains one of the most lethal conditions encountered in intensive care units. Despite the growing availability of electronic health record data, existing mortality prediction studies in this population largely depend on static summaries derived from early admission. Such approaches ignore the temporal progression of physiological deterioration and recovery that unfolds throughout a patient's ICU stay. To address this limitation, we introduce QuanTiMedAI, a quantum-agentic framework developed for cardiac arrest mortality prediction using agentic AI guided quantum enhancement time series model. The proposed system combines an agentic large language model (LLM) for clinically informed feature discovery with a compact quantum recurrent network for temporality aware mortality prediction. Our findings demonstrate that agentic LLM-guided feature selection consistently outperforms conventional feature selection approaches, and the proposed quantum architecture achieves competitive predictive performance through nonlinear feature enhancement while keeping the number of parameters very low. Through extensive experimentation on a MIMIC-IV cohort of cardiac arrest patients, QuanTiMedAI's quantum-enhanced architecture attains an AUROC of 0.852 using only 605 parameters, an improvement of approximately 2.9\\% over a current state-of-the-art baseline for this task. A structured ablation study systematically validates the contribution of each architectural design choice. These results show that quantum-enhanced sequential modeling can exceed classical recurrent networks while using substantially fewer parameters.",
+      "authors": [
+        "Mutasim Fuad Sarker",
+        "Adiba Rahman Namira",
+        "Wafa Binte Alam",
+        "Md Adnan Arefeen",
+        "Mahzabeen Emu",
+        "Sumaiya Tabassum Nimi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.ET"
+      ],
+      "published": "2026-08-06T17:18:03+00:00",
+      "link": "https://arxiv.org/pdf/2608.06294v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "agentic AI framework using EHR time series for cardiac arrest mortality prediction",
+      "llm_evidence_cn": "使用EHR时间序列的代理式AI框架，应用于心脏骤停死亡率预测",
+      "llm_evidence": "使用EHR时间序列的代理式AI框架，应用于心脏骤停死亡率预测",
+      "canonical_evidence": "使用EHR时间序列的代理式AI框架，应用于心脏骤停死亡率预测",
+      "llm_tldr_en": "QuanTiMedAI combines an agentic LLM for clinically informed feature discovery with a quantum-enhanced time-series model for cardiac arrest mortality prediction, exploiting longitudinal EHR data instead of static admission summaries.",
+      "llm_tldr_cn": "心脏骤停死亡率预测常依赖入院早期静态指标，忽略了ICU住院期间生理变化的时间进程。该文提出QuanTiMedAI，将代理式大语言模型的临床特征发现与量子增强时间序列模型结合，从电子健康记录中学习动态演变规律。该方法利用纵向EHR数据捕捉恶化与恢复趋势，弥补静态摘要的局限，为ICU死亡率预测提供了新的智能体驱动建模思路。",
+      "llm_tldr": "心脏骤停死亡率预测常依赖入院早期静态指标，忽略了ICU住院期间生理变化的时间进程。该文提出QuanTiMedAI，将代理式大语言模型的临床特征发现与量子增强时间序列模型结合，从电子健康记录中学习动态演变规律。该方法利用纵向EHR数据捕捉恶化与恢复趋势，弥补静态摘要的局限，为ICU死亡率预测提供了新的智能体驱动建模思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.02939v1",
+      "source": "arxiv",
+      "title": "Federated generative event models for tokenized electronic health records",
+      "abstract": "Electronic health record foundation models are limited by institutionally siloed data and substantial performance degradation under cross-site transfer. We evaluated federated training of tokenized generative event models (GEMs) across 122,251 intensive care hospitalizations from three independent health systems harmonized to the Common Longitudinal ICU Data Format. Models were assessed on 12 post-24-hour clinical prediction tasks using within-site, cross-site, centralized, and federated training configurations. GEMs achieved the highest mean within-site and cross-site ROC-AUC and were substantially more transportable than conventional supervised models: their average cross-site penalties were 0.025 ROC-AUC and 0.027 PR-AUC, compared with 0.079 and 0.089 for LightGBM. Federated Learning (FedAvg and FedAvgM) approached the performance of centralized GEM training, with most gains obtained within 5-10 communication rounds. However, centralized multi-site training provided only modest improvements over complete local training. Multi-site models were most useful when local training data were limited, with their advantage narrowing as institutional data accumulated. These findings show that federated GEM training is technically feasible and preserves most centralized performance, but that the main open challenge is learning transportable representations to translate larger, but heterogeneous data from multiple health systems into a reliable target-site benefit.",
+      "authors": [
+        "Michael C. Burkhart",
+        "Luke Solo",
+        "Inhyeok Lee",
+        "S'Khaja Charles",
+        "Zewei \"Whiskey\" Liao",
+        "Kaveri Chhikara",
+        "Dema Therese",
+        "Wan-Ting Liao",
+        "Catherine A. Gao",
+        "William F. Parker",
+        "Brett K. Beaulieu-Jones"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.CY"
+      ],
+      "published": "2026-08-03T22:54:31+00:00",
+      "link": "https://arxiv.org/pdf/2608.02939v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "transferable EHR-based model evaluation methodology across clinical prediction tasks",
+      "llm_evidence_cn": "可迁移的EHR模型评估方法，覆盖临床预测任务",
+      "llm_evidence": "可迁移的EHR模型评估方法，覆盖临床预测任务",
+      "canonical_evidence": "可迁移的EHR模型评估方法，覆盖临床预测任务",
+      "llm_tldr_en": "Evaluates federated training of generative event models on ICU EHR across three health systems, showing improved cross-site transportability on clinical prediction tasks.",
+      "llm_tldr_cn": "电子健康记录基础模型受制于跨机构数据隔离和跨站点性能下降。本文在三个独立医疗系统的12余万次ICU住院数据上，评估了基于联邦训练的词元化生成事件模型（GEMs），并与集中式及传统监督模型比较。模型在12项临床预测任务上取得最高的站点内与跨站点ROC-AUC，跨站点迁移损失显著低于传统模型。结果表明联邦生成模型能有效缓解数据孤岛问题，为EHR上的模型评估提供了可迁移的方法。",
+      "llm_tldr": "电子健康记录基础模型受制于跨机构数据隔离和跨站点性能下降。本文在三个独立医疗系统的12余万次ICU住院数据上，评估了基于联邦训练的词元化生成事件模型（GEMs），并与集中式及传统监督模型比较。模型在12项临床预测任务上取得最高的站点内与跨站点ROC-AUC，跨站点迁移损失显著低于传统模型。结果表明联邦生成模型能有效缓解数据孤岛问题，为EHR上的模型评估提供了可迁移的方法。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.03166v1",
+      "source": "arxiv",
+      "title": "Adversarial Stress Testing of Role-Playing Language Agents using Multi-Agent Evaluation",
+      "abstract": "Role-Playing Language Agents (RPLAs) are increasingly deployed in high-stakes applications such as healthcare assistance, customer support, and education, where maintaining consistent personas, ethical constraints, and behavioral coherence under adversarial pressure is critical. Existing evaluation approaches rely on static benchmarks or isolated single-turn prompts that fail to capture cumulative behavioral failures emerging over extended interactions.   We present a modular multi-agent platform for adversarially stress-testing RPLAs through structured, multi-turn dialogue. The system coordinates three agents: a strategy-driven Interrogator Agent that applies six progressive adversarial strategies, a Target Agent representing the RPLA under evaluation, and an automated Judging Agent that scores behavior across role fidelity, drift, ethical deviation, and consistency dimensions.   Through experiments across three personas and three LLM families, we demonstrate that multi-strategy adversarial evaluation reveals failure modes invisible to single-strategy testing, reducing overall robustness scores by 0.17--0.20 points on average. Cross-model validation confirms consistent degradation patterns across Llama-3.3-70B, GPT-4o-mini, and Claude-3.5-Haiku, with Authority Challenge and Emotional Manipulation emerging as the most effective attack strategies. Automated judging achieves strong human alignment ($r = 0.82$, Fleiss' $κ= 0.71$). This work is released as an open-source platform to support AI safety and reproducible RPLA benchmarking. While the framework enables systematic discovery of failure modes, we acknowledge potential ethical risks associated with adversarial testing methodologies and emphasize responsible usage for improving AI safety.",
+      "authors": [
+        "Saqib Shouqi",
+        "Abdullah Nazly",
+        "Januki Wanniarachchi",
+        "Ravisha De Alwis"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-04T05:54:32+00:00",
+      "link": "https://arxiv.org/pdf/2608.03166v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-agent adversarial evaluation applicable to healthcare agents",
+      "llm_evidence_cn": "适用于医疗智能体的多智能体对抗评估方法",
+      "llm_evidence": "适用于医疗智能体的多智能体对抗评估方法",
+      "canonical_evidence": "适用于医疗智能体的多智能体对抗评估方法",
+      "llm_tldr_en": "Presents a modular multi-agent platform for adversarial stress-testing role-playing language agents across extended multi-turn dialogues, applicable to healthcare assistance.",
+      "llm_tldr_cn": "角色扮演语言智能体（RPLA）正被部署到医疗辅助等高价值场景，但现有静态基准和单轮提示无法捕捉长时间交互中的累积行为失败。本文提出一个模块化多智能体平台，通过结构化的多轮对话对抗性压力测试RPLA。平台协调三个智能体：策略驱动的询问者智能体应用六种渐进对抗策略，目标智能体代表被测RPLA，另一个智能体记录行为。该方法可迁移到医疗智能体的鲁棒性评估，但不使用EHR数据。",
+      "llm_tldr": "角色扮演语言智能体（RPLA）正被部署到医疗辅助等高价值场景，但现有静态基准和单轮提示无法捕捉长时间交互中的累积行为失败。本文提出一个模块化多智能体平台，通过结构化的多轮对话对抗性压力测试RPLA。平台协调三个智能体：策略驱动的询问者智能体应用六种渐进对抗策略，目标智能体代表被测RPLA，另一个智能体记录行为。该方法可迁移到医疗智能体的鲁棒性评估，但不使用EHR数据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.03591v1",
+      "source": "arxiv",
+      "title": "DiagChain: A Diagnostic Benchmark for Evaluating LLM Agents on Evidence-Grounded Attack Chain Reconstruction",
+      "abstract": "Large Language Model (LLM) agents offer a promising approach to attack chain reconstruction by retrieving and interpreting heterogeneous telemetry to infer ordered attacker actions. However, existing benchmarks mainly evaluate final outputs or aggregate accuracy, providing limited insight into how errors arise and propagate across intermediate reasoning stages. We present DiagChain, a diagnostic benchmark for evidence-grounded attack chain reconstruction that enables stage-wise evaluation of LLM agents. DiagChain includes MAIN-69, a suite of 69 scenarios spanning multiple operating systems, evidence noise levels, and chain lengths. It further introduces Evidence-Centric Retrieval-Augmented Generation (ECRAG), which couples evidence retrieval with an evolving structured representation of the reconstructed chain. Five complementary metrics are introduced to assess distinct stages of the reconstruction process and support systematic failure diagnosis. Based on evaluations using 6 LLMs, DiagChain reveals that even the strongest configuration succeeds on only 39.6% of the 849 reference steps in MAIN-69. Our analysis further shows that smaller models struggle with the more basic task of incorporating retrieved evidence into their outputs, whereas larger models can proceed to later steps, where correctly ordering that evidence becomes the main bottleneck. These results validate the importance of diagnostic evaluation beyond end-to-end accuracy and provide actionable insights for improving evidence-grounded cybersecurity agents.",
+      "authors": [
+        "Xuyang Liu",
+        "Yibin Han",
+        "Zhenwei Zhang",
+        "Kai Chang",
+        "Zhiwei Xu",
+        "Tian Qiu",
+        "Weixian Deng",
+        "Jiabao Gao",
+        "Xiaolin Peng",
+        "Hai Wan",
+        "Xibin Zhao"
+      ],
+      "primary_category": "cs.CR",
+      "categories": [
+        "cs.CR",
+        "cs.AI"
+      ],
+      "published": "2026-08-04T12:43:47+00:00",
+      "link": "https://arxiv.org/pdf/2608.03591v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Diagnostic benchmark for stage-wise evaluation of LLM agents; non-medical but transferable to medical agent performance benchmarking.",
+      "llm_evidence_cn": "面向LLM Agent的分阶段诊断基准，可迁移到医疗Agent的性能评估，但非医学领域。",
+      "llm_evidence": "面向LLM Agent的分阶段诊断基准，可迁移到医疗Agent的性能评估，但非医学领域。",
+      "canonical_evidence": "面向LLM Agent的分阶段诊断基准，可迁移到医疗Agent的性能评估，但非医学领域。",
+      "llm_tldr_en": "Introduces DiagChain, a diagnostic benchmark for stage-wise evaluation of LLM agents on evidence-grounded attack chain reconstruction, revealing how errors arise and propagate; useful methodology for benchmarking medical agents.",
+      "llm_tldr_cn": "现有LLM Agent基准大多只看最终输出或总体准确率，难以追踪错误在中间推理阶段的产生与传播。针对这一问题，DiagChain构建了基于证据的攻击链重构诊断基准，包含69个跨多操作系统、证据噪音与链长变化的场景，支持对Agent进行分阶段评估，并提出证据中心检索增强生成（ECRAG）。该基准虽面向安全领域，但其分阶段评估思路可迁移到医疗Agent的性能评测中。",
+      "llm_tldr": "现有LLM Agent基准大多只看最终输出或总体准确率，难以追踪错误在中间推理阶段的产生与传播。针对这一问题，DiagChain构建了基于证据的攻击链重构诊断基准，包含69个跨多操作系统、证据噪音与链长变化的场景，支持对Agent进行分阶段评估，并提出证据中心检索增强生成（ECRAG）。该基准虽面向安全领域，但其分阶段评估思路可迁移到医疗Agent的性能评测中。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.03606v1",
+      "source": "arxiv",
+      "title": "Learning Clinical-Trial Strategy: Offline Policy Training for Decision Agents",
+      "abstract": "Clinical development is sequential decision-making under uncertainty, where a sponsor must plan a portfolio of experiments from heterogeneous evidence. We study this setting by framing oncology clinical development as an offline decision-making problem in which an agent predicts the next six-month trial portfolio of an oncology drug program from information available at the decision date. To support this, we construct a temporal dataset that combines 31.7k heterogeneous public data records, including trial registries, regulatory reviews, sponsor filings, utilization data, and epidemiology, into 881 offline decision episodes across 45 historical programs. We compare four offline objectives: behavioral cloning, reward-weighted behavioral cloning, learned-reward training, and value-based implicit Q-learning against four frontier LLM agents that share a common date-gated retrieval scaffold across held-out drug, sponsor, drug-class, and temporal splits. Models trained offline outperform the non-fine-tuned baselines, particularly in the post-August 2025 contamination-clean holdout. Reward-weighted behavioral cloning performs the best, obtaining 46.2% indication F1 and 14.2% strict F1 against 25.0% and 2.1%, respectively, for the best-performing tool agent on each metric. These results suggest that structured offline learning can teach agents to plan clinical experiments.",
+      "authors": [
+        "William Bolton",
+        "Philip Torr"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-08-04T12:58:17+00:00",
+      "link": "https://arxiv.org/pdf/2608.03606v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "offline reinforcement learning for healthcare decision-making agents",
+      "llm_evidence_cn": "面向医疗决策智能体的离线强化学习方法",
+      "llm_evidence": "面向医疗决策智能体的离线强化学习方法",
+      "canonical_evidence": "面向医疗决策智能体的离线强化学习方法",
+      "llm_tldr_en": "Frames oncology clinical development as an offline decision problem for agents, builds an 881-episode dataset from 31.7k heterogeneous records, and compares four offline objectives to train agents that predict trial portfolios, offering a benchmark for healthcare agent evaluation.",
+      "llm_tldr_cn": "该论文针对肿瘤药物临床试验开发中的序贯决策与证据异质性问题，将预测药物项目下一阶段试验组合建模为离线强化学习任务，并整合3.17万条来自试验登记、监管审评、申办方文件等的异构公开记录，构建881个离线决策片段。作者系统比较行为克隆、奖励加权行为克隆等四种离线训练目标，结果表明该方法可有效训练临床决策智能体，并且为基于离线数据的医疗智能体评估提供了可复用的训练与评估框架。",
+      "llm_tldr": "该论文针对肿瘤药物临床试验开发中的序贯决策与证据异质性问题，将预测药物项目下一阶段试验组合建模为离线强化学习任务，并整合3.17万条来自试验登记、监管审评、申办方文件等的异构公开记录，构建881个离线决策片段。作者系统比较行为克隆、奖励加权行为克隆等四种离线训练目标，结果表明该方法可有效训练临床决策智能体，并且为基于离线数据的医疗智能体评估提供了可复用的训练与评估框架。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

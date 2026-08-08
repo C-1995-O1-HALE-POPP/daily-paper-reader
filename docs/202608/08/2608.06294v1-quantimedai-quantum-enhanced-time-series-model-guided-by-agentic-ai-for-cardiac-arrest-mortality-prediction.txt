@@ -1,0 +1,499 @@
+Title: QuanTiMedAI: Quantum-Enhanced Time-Series Model guided by Agentic AI for Cardiac Arrest Mortality Prediction
+
+URL Source: https://arxiv.org/pdf/2608.06294v1
+
+Published Time: Fri, 07 Aug 2026 01:16:05 GMT
+
+Number of Pages: 21
+
+Markdown Content:
+# QuanTiMedAI: Quantum-Enhanced Time-Series Model guided by Agentic AI for Cardiac Arrest Mortality Prediction 
+
+Mutasim Fuad Sarker 
+
+Dept. of ECE North South University, Dhaka, Bangladesh 
+
+mutasim.sarker@northsouth.edu 
+
+Adiba Rahman Namira 
+
+Dept. of ECE North South University, Dhaka, Bangladesh 
+
+adiba.namira@northsouth.edu 
+
+Wafa Binte Alam 
+
+Dept. of ECE North South University, Dhaka, Bangladesh 
+
+wafa.alam@northsouth.edu 
+
+Md Adnan Arefeen 
+
+Dept. of ECE North South University, Dhaka, Bangladesh 
+
+adnan.arefeen@northsouth.edu 
+
+Mahzabeen Emu 
+
+Dept. of ECE Memorial University, St. John’s, NL, Canada 
+
+memu@mun.ca 
+
+Sumaiya Tabassum Nimi 
+
+Dept. of ECE North South University, Dhaka, Bangladesh 
+
+sumaiya.nimi@northsouth.edu 
+
+## Abstract 
+
+Cardiac arrest remains one of the most lethal conditions encountered in inten-sive care units. Despite the growing availability of electronic health record data, existing mortality prediction studies in this population largely depend on static summaries derived from early admission. Such approaches ignore the temporal progression of physiological deterioration and recovery that unfolds throughout a patient’s ICU stay. To address this limitation, we introduce QuanTiMedAI, a quantum-agentic framework developed for cardiac arrest mortality prediction us-ing agentic AI guided quantum enhancement time series model. The proposed sys-tem combines an agentic large language model (LLM) for clinically informed fea-ture discovery with a compact quantum recurrent network for temporality aware mortality prediction. Our findings demonstrate that agentic LLM-guided feature selection consistently outperforms conventional feature selection approaches, and the proposed quantum architecture achieves competitive predictive performance through nonlinear feature enhancement while keeping the number of parameters very low. Through extensive experimentation on a MIMIC-IV cohort of car-diac arrest patients, QuanTiMedAI’s quantum-enhanced architecture attains an AUROC of 0.852 using only 605 parameters, an improvement of approximately 2.9% over a current state-of-the-art baseline for this task. A structured ablation study systematically validates the contribution of each architectural design choice. These results show that quantum-enhanced sequential modeling can exceed clas-sical recurrent networks while using substantially fewer parameters. 
+
+> Preprint. arXiv:2608.06294v1 [cs.AI] 6 Aug 2026
+
+Figure 1: QuanTiMedAI overview: comparison of the traditional static tree-based prediction pipeline against our proposed approach, where raw ICU EHR data is converted to time-series blocks and passed through an agentic Gemma 4 driven feature selection loop before being fed into the QL-STM module for mortality prediction. 
+
+Keywords: MIMIC-IV, Large Language Model, , Quantum Long Short Term Memory (QLSTM), Timeseries Analysis, Clinical Decision Support. 
+
+## 1 Introduction 
+
+Cardiac arrest is one of the most lethal and time-critical emergencies encountered in hospital medicine. In-hospital cardiac arrest (IHCA) affects millions of patients worldwide each year, and despite decades of improvement in resuscitation protocols [4, 33], survival rates remain persistently poor. A recent nationwide cohort study reported an incidence of approximately 6 to 7 IHCA events per 1,000 hospitalizations [5], and a systematic review and meta-analysis across 35 observational studies confirmed pooled ICU mortality of 74% and in-hospital mortality of 82% in ICU-admitted cardiac arrest patients [21]. Early identification of high-risk patients directly shapes treatment de-cisions, resource allocation, and goals-of-care discussions in a setting where clinical conditions can evolve rapidly [35]. The availability of large-scale electronic health record repositories such as MIMIC-IV [16] has ac-celerated data-driven cardiac arrest mortality research, and several groups have applied machine learning to this problem using this resource [30, 22, 20, 15, 36]. Broader systematic reviews confirm that traditional machine learning approaches have consistently dominated cardiac arrest outcome prediction research across the literature [35, 39]. These studies represent real progress in showing that structured clinical data can support mortality prediction in this population. 2A closer examination of these studies reveals a common methodological trend: to our knowl-edge most MIMIC-IV–based cardiac arrest mortality prediction models rely primarily on con-ventional machine learning approaches, including LASSO, XGBoost, and ensemble-based meth-ods. [30, 22, 20, 15]. These models each patient as a fixed snapshot with no way to capture how a patient’s condition evolves over time. ICU data is inherently sequential and vital signs, labo-ratory values, and treatment events evolve continuously throughout a patient’s stay, with the path of that change carrying prognostic information that a single static snapshot simply cannot cap-ture [11, 26, 31]. Sequential models have been shown to clearly outperform static approaches on general ICU populations [9, 38, 36, 27, 26, 23], yet to the best of our knowledge, no prior study has investigated sequential time-series modeling for cardiac arrest mortality prediction on MIMIC-IV. Classical LSTM, while effective for sequential data, requires large numbers of parameters and is known to struggle with complex nonlinear temporal dependencies in long sequences [13]. Quantum Long Short-Term Memory (QLSTM) [7] addresses this by replacing classical gating with varia-tional quantum circuits, offering higher representational capacity per parameter [3, 1], and has out-performed classical LSTM across multiple sequential forecasting domains [17, 29, 18]. Systematic reviews of quantum machine learning in healthcare have consistently identified sequential clinical EHR data as the most important underexplored area [10, 32], yet no prior work has applied QLSTM to clinical EHR time-series for patient outcome prediction [37]. These studies also rely on conventional feature selection methods such as LASSO regularization and correlation filtering. These approaches are purely data-driven and offer limited capacity to incorporate existing clinical knowledge about cardiac arrest physiology. The features they select may perform well statistically on a given training split but are not necessarily grounded in clinical reasoning [14]. For a problem like cardiac arrest mortality, where the relevant physiology is well understood, this is a real gap. Agentic AI offers a promising alternative. Large language models have been shown to encode substantial medical knowledge acquired from scientific literature and clinical corpora [28, 36]. Re-cent research further suggests that these models can identify clinically meaningful predictors using domain reasoning rather than relying exclusively on statistical associations [14, 8]. Unlike conven-tional prompt-based approaches, an agentic framework enables iterative refinement, allowing the model to evaluate performance, reflect on outcomes, and revise feature selections accordingly [14]. For cardiac arrest mortality prediction, where many risk factors are already well established in clinical literature, this feedback-driven process provides a practical mechanism for identifying in-formative variables beyond what can be achieved through manual selection or statistical filtering alone [28, 14]. This work proposes QuanTiMedAI , a quantum-agentic clinical time-series framework that com-bines agentic LLM-guided feature selection with a compact quantum recurrent architecture for in-hospital cardiac arrest mortality prediction on MIMIC-IV, evaluated against classical LSTM base-lines under identical experimental conditions. To the best of our knowledge, agentic LLM reasoning for clinical feature discovery and quantum recurrent modeling for temporal prediction have not previously been brought together within a single clinical decision-support pipeline. The principal contributions of this work are as follows: • We propose QuanTiMedAI, a quantum-agentic time-series framework for in-hospital car-diac arrest mortality prediction on MIMIC-IV that integrates agentic LLM-guided feature selection, an engineered clinical severity-score channel, and a compact quantum recurrent network for sequential modeling of ICU data. • We introduce an agentic LLM-guided feature selection pipeline that iteratively refines clin-ical feature subsets through performance-guided feedback, incorporating clinical domain knowledge via an engineered severity score channel. • We propose a modified five-VQC QLSTM architecture with an input re-injection skip con-nection that improves AUROC by about 2% over a parameter-matched classical LSTM (0.852 versus 0.835) on the same cohort, while using only 605 parameters, yielding a lightweight model. • We conduct a rigorous ablation study across six architectural variants that isolates the effect of each design choice, showing that the proposed design attains the highest AUROC (0.852) and that the input re-injection mechanism alone accounts for roughly a 1.5% AUROC gain. 32 Related Work 
+
+2.1 In-Hospital Cardiac Arrest Mortality Prediction 
+
+The MIMIC-IV database is a publicly available de-identified electronic health record dataset from Beth Israel Deaconess Medical Center, covering ICU admissions from 2008 to 2019 and accessible to credentialed researchers via PhysioNet [16]. It has been widely used to study in-hospital mortal-ity prediction in cardiac arrest patients. A previous study conducted a retrospective study on 1,722 ICU-admitted cardiac arrest patients, applying LASSO regression and XGBoost to identify indepen-dent risk factors from demographics, comorbidities, vital signs, laboratory results, scoring systems, and treatment information collected from the first day of ICU admission. The LASSO nomogram was selected as the final model based on higher net benefit [30]. Some other studies extended this to a multicenter setting using both MIMIC-IV and the eICU Collaborative Research Database, building an ensemble model through soft voting across eight machine learning algorithms, with the externally validated model deployed as a clinical web application [22]. A more recent study on MIMIC-IV applied multiple machine learning algorithms to post-cardiac arrest patients for 28-day mortality prediction, where XGBoost achieved an AUC-ROC of 0.89 and dynamic lactate clearance was identified as the primary predictor [6]. While these studies show that machine learning on structured clinical data from MIMIC-IV can support cardiac arrest mortality prediction, they all share the same critical limitation. Every study aggregated clinical variables from only the first 24 hours of ICU admission into a static feature vec-tor, discarding the temporal dimension entirely. ICU EHR data is inherently sequential. Vital signs, laboratory values, scoring systems, medication events, and output measurements are recorded re-peatedly at regular intervals throughout a patient’s stay, and the patterns of change in these measure-ments over time carry useful predictive information that a single-timepoint snapshot cannot capture. Previous studies acknowledged this directly, noting that traditional machine learning models ignore the time-series characteristics of ICU data [26], and applied RNN, GRU, and LSTM with attention mechanisms to 40,083 general ICU patients from MIMIC-IV, achieving an AUC of 0.870 ± 0.001 for in-hospital mortality prediction [9, 36]. A past research similarly demonstrated on MIMIC-III that LSTM-based sequential models significantly outperform static classifiers when the temporal structure of clinical measurements is preserved [11]. Table 1: Comparison of the proposed QuanTiMedAI framework with recent in-hospital mortality prediction studies.                                              
+
+> Study CA Cohort Seq. 3-D Temporal Model Architecture Agentic LLM Classical ML QLSTM
+> Sun et al. [30] ✓×✓(LASSO) ××
+> Liu et al. [22] ✓×✓(Ensemble) ××
+> Li et al. [20] ✓×✓(XGBoost) ××
+> Jia et al. [15] ✓×✓(XGBoost) ××
+> Deng et al. [9] ×✓✓(LSTM) ××
+> Wang et al. [34] ××✓(XGBoost) ××
+> QuanTiMedAI(Ours) ✓✓✓(LSTM) ✓✓
+
+Table 1 summarizes these differences across four recent cardiac arrest mortality studies on MIMIC-IV [30, 22, 20, 15] and two broader ICU mortality studies [9, 34] alongside our proposed method. All prior studies rely solely on classical machine learning approaches with no sequential temporal representation, no quantum architecture, and no agentic LLM guided feature selection. Our pro-posed method is the only entry that incorporates all of these dimensions simultaneously, combining sequential three-dimensional temporal modeling, LSTM and QLSTM architectures, agentic LLM feature selection, and LLM reasoning for interpretability. To the best of our knowledge, no prior study identified in our literature review has applied LSTM or any sequential time-series deep learning model to in-hospital mortality prediction in cardiac arrest 4patients using MIMIC-IV EHR data. All existing cardiac arrest mortality studies on MIMIC-IV identified in this review have relied solely on static first-day feature aggregations, leaving how a pa-tient’s condition changes over time entirely unmodeled. Also, even where LSTM has been applied to general ICU time-series data, it has known limitations such as gradient instability on long sequences and limited capacity for highly nonlinear temporal dependencies [13], which motivate exploring a more capable alternative. This is where QLSTM becomes relevant, as discussed in the following subsection. 
+
+2.2 QLSTM in Time-Series Applications 
+
+QLSTM was introduced as a hybrid quantum-classical architecture that replaces the classical gating mechanisms of LSTM cells with variational quantum circuits [7]. The authors showed that QLSTM successfully learns temporal sequential data and in certain cases converges faster and reaches better accuracy than classical LSTM, while its shallow circuit requirements keep it practical for near-term NISQ devices [7]. Since then, QLSTM has been validated across multiple time-series domains and has consistently outperformed classical LSTM. In financial forecasting, a study showed that a hybrid QLSTM out-performed classical LSTM on stock price prediction across multiple evaluation metrics [17], and a study combining broad learning systems with QLSTM for chaotic stock index forecasting showed consistent improvements over classical LSTM on real financial datasets [29]. The pattern across these studies is clear: on complex nonlinear sequential data, QLSTM performs better than classical LSTM. On the healthcare side, multiple systematic reviews have recognized the potential of quantum ma-chine learning for clinical data. Ullah et al. reviewed 49 QML studies in healthcare covering EHR data, ECG, and medical imaging, and identified sequential clinical EHR data as an important un-derexplored direction [32]. Subsequent studies similarly identified potential for quantum-enhanced models in clinical prediction tasks in a systematic review of QML in the biomedical domain [24]. A study has the most comprehensive review to date published in npj Digit. Med. screened over 4,915 studies from 2015 to 2024 and found that while QML for digital health is growing rapidly, rigor-ous application-specific work on clinical EHR data particularly for critical care outcome prediction remains scarce [10]. There is only one existing application of QLSTM in a biomedical context in which it was applied to drug discovery on static molecular fingerprint datasets, achieving ROC-AUC improvements of 3% to over 6% over classical LSTM [37]. However, this work involves no sequential or temporal modeling, no patient EHR data, and no clinical outcome prediction. The temporal modeling capability for which QLSTM was designed was not used at all. This leaves two clear and directly related gaps. First, no prior study identified in our review has applied any sequential time-series model to in-hospital mortality prediction in cardiac arrest patients on MIMIC-IV. Second, even though QLSTM has consistently outperformed classical LSTM on time-series data in multiple domains, it has never been applied to sequential clinical EHR data for any patient outcome prediction task, and the only existing biomedical application of QLSTM used static data rather than time-series. Given that medical ICU EHR data is multivariate, hourly, and spans the full patient stay, which is exactly the kind of sequential data where QLSTM has shown advantages over LSTM, there is strong motivation to apply it here. To the best of our knowledge, this work is among the first to apply QLSTM to sequential clinical EHR time-series data for patient outcome prediction, and among the first to apply sequential deep learning to in-hospital cardiac arrest mortality prediction on MIMIC-IV. 
+
+Baseline Characteristics Description. The cohort comprised 2,307 patients, of whom 1,296 (56.2%) died during hospitalization. Several baseline characteristics differed significantly between the mortality groups. Patients who died were older (SMD = 0.199, p < 0.001 ) and had a higher prevalence of prior stroke (SMD = 0.105, p = 0 .016 ). In contrast, the survived group had larger proportions of males, as well as higher rates of hypertension, congestive heart failure, and myocar-dial infarction (all |SMD | ≥ 0.098 , p < 0.05 ). Diabetes and chronic obstructive pulmonary disease were well balanced (SMD ≤ 0.063 , p > 0.05 ). Notably, age, sex, hypertension, CHF, and stroke all exceeded the conventional SMD threshold of 0.10 for potential imbalance, suggesting that these variables should be considered for adjustment in downstream analyses. 5Table 2: Baseline patient characteristics stratified by in-hospital mortality. 
+
+Characteristic Died Survived SMD p-value (n = 1296) (n = 1011) 
+
+Age, years 67.8 ± 16.4 64.5 ± 16.2 0.199 < 0.001 
+
+Male sex 747 (57.6%) 641 (63.4%) -0.118 0.006 Hypertension 846 (65.3%) 715 (70.7%) -0.117 0.006 Congestive heart failure 484 (37.3%) 451 (44.6%) -0.148 < 0.001 
+
+Myocardial infarction 361 (27.9%) 327 (32.3%) -0.098 0.022 Diabetes mellitus 473 (36.5%) 361 (35.7%) 0.016 0.728 Chronic obstructive pulmonary disease 295 (22.8%) 204 (20.2%) 0.063 0.148 Prior stroke 157 (12.1%) 90 (8.9%) 0.105 0.016       
+
+> Note. Continuous variables are reported as mean ±standard deviation, and categorical variables are reported as count (%). SMD denotes standardized mean difference. An absolute SMD greater than 0.10 is conventionally considered to indicate meaningful imbalance. p-values were obtained using appropriate univariate tests, such as the two-sample
+> t-test for continuous variables and the χ2test for categorical variables.
+
+## 3 Methods 
+
+This section presents our proposed methodological framework called QuanTiMedAI, designed to evaluate whether agentic LLM-guided feature selection improves in-hospital mortality prediction in cardiac arrest ICU patients relative to random feature selection, and whether replacing classical LSTM with the proposed QLSTM yields further improvement. Three experimental conditions share an identical data source, cohort definition, preprocessing pipeline, training procedure, and evaluation protocol. The controlled variables are (i) the feature selection strategy and (ii) the recurrent cell architecture, such that any observed difference in performance can be attributed to one of these two factors. 
+
+3.1 Dataset and Cohort 3.1.1 Data Source and Inclusion Criteria 
+
+Data were sourced from the MIMIC-IV database [16], a publicly available de-identified electronic health record repository from Beth Israel Deaconess Medical Center. Patients were identified by cardiac arrest diagnosis codes, specifically ICD-9 code 427.5 and ICD-10 codes prefixed with I46. Inclusion was restricted to adult patients aged ≥ 18 years at the time of admission who had a linked ICU stay. For patients with multiple hospital admissions, only the first admission was retained, and within each admission, only the first documented ICU stay was used. The prediction task was defined as binary in-hospital mortality classification using clinical data collected exclusively within the first τ = 24 hours of ICU admission [36], where τ denotes the observation window. 
+
+3.1.2 Feature Extraction and Preprocessing 
+
+A total of F clinical features were extracted spanning multiple physiological domains, including vital signs, severity scores, haematology, coagulation, renal function, metabolic and electrolyte pan-els, arterial blood gas measurements, cardiac biomarkers, hepatic markers, fluid balance, vasoac-tive agent administration, and mechanical ventilation status. Each feature is designated as either temporal (T) or static (S). Temporal features are just the ongoing measurements tracked over the observation period, while static features cover the fixed details like a patient’s age, sex, and baseline medical history. Temporal features were binned into T equally spaced intervals over the observation window τ ,where the bin width is τ /T hours and 
+
+T ∈ T , (1) with T denoting the discrete set of candidate temporal resolutions evaluated in this study. Within each bin, continuous variables were summarized by their mean value, urine output was aggregated as a cumulative sum, and vasoactive agent administration and mechanical ventilation were encoded as binary indicators denoting active administration during that interval. 6Figure 2: QuanTiMedAI methodology framework: the end-to-end pipeline covering cohort selec-tion from MIMIC-IV, time-series preprocessing with temporal binning T ∈ T , agentic Gemma 4 guided feature selection with iterative refinement, severity score computation, and the proposed 5-VQC QLSTM recurrent architecture with residual skip connection evaluated against classical LSTM baselines. Features with a missingness rate exceeding a predefined threshold ρ were excluded prior to model training. Clinically critical features identified as having established prognostic value in cardiac arrest were retained regardless of their missingness rate. For the remaining features, missing values were handled using forward fill along the temporal axis, with leading missing values back-filled from the first available observation. All temporal features were normalized using z-score standardization: 
+
+˜xi(t) = xi(t) − μi
+
+σi
+
+, (2) where μi and σi denote the mean and standard deviation of feature i computed exclusively from the training partition and applied to the validation and test sets to prevent data leakage. The resulting input for each patient is a three-dimensional tensor of shape (T, F sel + 1) , where Fsel denotes the number of selected features and the additional channel corresponds to the engineered severity score described in the following subsection. 
+
+3.2 Agentic Feature Selection via Large Language Model 3.2.1 Agent Design and Objective 
+
+Feature selection was performed using an agentic framework driven by a large language model (LLM), accessed locally via Ollama. The agent operates in two phases: initial feature selection and iterative performance-guided refinement, with both phases restricted strictly to the training set. At each configuration (K, T ), the agent receives a mortality-stratified statistical summary of the training set comprising feature-level correlation with the outcome, mean ± SD stratified by mortality status, temporal trend direction across the first and second halves of the observation window, and percentage missingness. The agent is instructed to return exactly K feature names along with a weight vector w ∈ RK and a scalar bias b, where 
+
+K ∈ K , (3) with K denoting the set of candidate feature counts evaluated across experiments. 
+
+3.2.2 Severity Score Engineering 
+
+The selected features and LLM-derived weights are used to construct an engineered severity score channel that is appended to the input tensor at each temporal step. The severity score at time t is 7Table 3: Clinical Features Extracted From MIMIC-IV for 24-Hour ICU Cardiac Arrest Patients 
+
+Category Feature Type Vital Signs 
+
+Heart Rate TSystolic Blood Pressure TDiastolic Blood Pressure TMean Arterial Pressure TRespiratory Rate TBody Temperature TPeripheral Oxygen Saturation (SpO 2) TGlasgow Coma Scale (Total) a T
+
+Severity Scores SAPS III Score T
+
+Haematology 
+
+Haematocrit THaemoglobin TPlatelet Count TWhite Blood Cell Count TRed Blood Cell Count TRed Cell Distribution Width T
+
+Coagu-lation 
+
+Prothrombin Time TInternational Normalised Ratio T
+
+Renal Function 
+
+Serum Creatinine TBlood Urea Nitrogen T
+
+Metabolic / Electrolytes 
+
+Blood Glucose TSerum Potassium TSerum Sodium TSerum Calcium TSerum Chloride TAnion Gap TSerum Bicarbonate TSerum Magnesium TSerum Albumin TSerum Lactate T
+
+Arterial Blood Gas 
+
+Arterial pH TPartial Pressure of O 2 TPartial Pressure of CO 2 TBase Excess T
+
+Cardiac / Hepatic 
+
+Cardiac Troponin T TCreatine Kinase-MB TAlanine Aminotransferase TAspartate Aminotransferase T
+
+Fluid Balance Urine Output (hourly sum) T
+
+Vasoactive Agents b
+
+Epinephrine TDopamine TNorepinephrine TPhenylephrine TDobutamine T
+
+Ventilation b Mechanical Ventilation T
+
+Demographics Age at ICU Admission SSex (Male = 1) S
+
+Comorbidities b
+
+Hypertension SCongestive Heart Failure SMyocardial Infarction SDiabetes Mellitus SChronic Obstructive Pulmonary Disease SStroke / Cerebrovascular Disease S
+
+Note: T = Temporal (First 24 h of ICU stay); S = Static (single value per patient).  
+
+> a
+
+GCS total computed as sum of eye, verbal, and motor scores.  
+
+> b
+
+Vasoactive agents and mechanical ventilation encoded as per-hour binary indicators (1 = administered/active); comorbidities encoded from ICD-9/ICD-10 diagnoses. 
+
+8Figure 3: VQC Used in our proposed method defined as: 
+
+s(t) = σ X
+
+> i∈S
+
+wi xi(t) + b
+
+!
+
+, σ(z) = 11 + e−z , (4) where S denotes the set of selected features, wi is the LLM-derived weight for feature i, xi(t)
+
+is the normalized feature value at temporal bin t, b is a scalar bias term, and σ(z) is the standard sigmoid activation function. This channel provides the downstream model with a clinically informed summary of patient deterioration at each time step, embedding domain knowledge directly into the input representation. 
+
+3.2.3 Iterative Refinement Protocol 
+
+Following initial selection, the feature set undergoes up to R rounds of iterative refinement. In each round, the agent receives the current feature set, the derived severity weights, and structured performance feedback comprising fold-mean AUROC, AUPRC, cross-entropy loss, and per-feature permutation importance scores. To generate these feedback signals without data leakage, a V -fold stratified cross-validation protocol is applied exclusively to the training set.We kept the held-out test set completely separate during this optimization phase. Within each fold, we split the training data into training and validation sets using stratified sampling to keep the class balance even. We calculated feature standardization parameters using only the training split of each fold, then applied them to the validation split.On each fold, we trained an LSTM-based proxy network, using early stopping tied to the validation AUROC, and saved the best-performing checkpoint for fold evaluation. We then pooled the predictions across all folds to calculate our overall metrics, specifically the fold-mean ± SD and 95 confidence intervals for AUROC, AUPRC, and Brier score, alongside the average per-feature permutation importance. To force the agent to keep exploring the feature space, we required it to swap out at least ⌈α · K⌉
+
+features from its current lineup at each refinement round (where α is the minimum swap fraction). Once this optimization grid locked in the feature selections and severity weights, all downstream experiments inherited them without needing to call the LLM again. 
+
+3.3 Model Architecture 
+
+All of our models share the same straightforward design: a single recurrent encoder layer, a last-step hidden state readout, and a two-layer feed-forward classifier with a sigmoid output. We intention-ally kept this architecture minimal to isolate how much the recurrent core itself contributes to the performance.Each model takes an input tensor of shape (N, T, K in ), where N is the batch size, T
+
+is the number of temporal bins, and Kin is the input feature dimensionality. For the LLM-guided variants, Kin = K + 1 to include the engineered severity score channel. For the random selection baseline, there is no extra channel, so Kin = K.9Figure 4: AUROC and AUPRC heatmaps for QuanTiMedAI(Ours), LSTM, and LSTM Random Feature Selection across the number of features K and window T
+
+3.3.1 Classical LSTM Baseline 
+
+The classical baseline employs a two-layer stacked LSTM architecture [13]. Let ht ∈ Rdh and 
+
+ct ∈ Rdh denote the hidden state and cell state at temporal step t, respectively, where dh is the hidden dimension. The standard LSTM transition at each step is governed by: 
+
+ft = σ(Wf xt + Uf ht−1 + bf ),
+
+it = σ(Wixt + Uiht−1 + bi),
+
+˜ct = tanh( Wcxt + Ucht−1 + bc),
+
+ct = ft ⊙ ct−1 + it ⊙ ˜ct,
+
+ot = σ(Woxt + Uoht−1 + bo),
+
+ht = ot ⊙ tanh( ct), (5) where W·, U·, and b· are learnable weight matrices and bias vectors, and ⊙ denotes element-wise multiplication. The first layer operates at hidden dimension d1 and the second at d2, with the final hidden state hT passed to the classifier head. 
+
+3.3.2 Proposed QLSTM Architecture 
+
+The proposed QuanTiMedAI replaces each classical gate with a hybrid quantum-classical block consisting of a classical linear projection followed by a variational quantum circuit (VQC) [7, 25]. The cell contains M VQCs distributed across the gate structure: the forget gate employs VQC 1, the input and update gates employ VQC 2 and VQC 3 respectively, the output block employs VQC 4, and the hidden-state refinementemploys VQC 5. The output-stage VQC present in the original six-VQC specification [7] is omitted, reducing the cell to five VQCs. A residual skip connection reinjects the raw input xt directly into the hidden-refinement VQC 5, preserving clinical signal that would otherwise be lost through the quantum bottleneck. 10 Each VQC operates on Q qubits. The circuit structure consists of three stages. In the data encoding stage, a Hadamard gate H is applied to each qubit q to initialize a uniform superposition, followed by angle encoding of the classical input. For each qubit q, an RY rotation parameterized by arctan( xq )
+
+and an RZ rotation parameterized by arctan( x2 
+
+> q
+
+) are applied: 
+
+Uenc (xq ) = RZ
+
+ arctan( x2 
+
+> q
+
+) RY (arctan( xq )) H, (6) where xq denotes the projected input value for qubit q. In the variational layer stage, L variational layers are applied. Within each layer, CNOT gates are applied in a cyclic entanglement pattern con-necting each qubit to its neighbor, followed by a general rotation gate Rot (ϕ1, ϕ 2, ϕ 3) parameterized by three independently trainable angles per qubit: 
+
+U (ℓ) 
+
+> var
+
+=
+
+> Q−1
+
+Y
+
+> q=0
+
+Rot 
+
+
+
+ϕ(ℓ, 1)  
+
+> q
+
+, ϕ (ℓ, 2)  
+
+> q
+
+, ϕ (ℓ, 3) 
+
+> q
+
+
+
+· CNOT cyclic , (7) where ℓ indexes the variational layer and ϕ(ℓ,j ) 
+
+> q
+
+are the trainable rotation parameters. In the mea-surement stage, the expectation value of the Pauli-Z operator is measured on each qubit, yielding a classical output vector v ∈ RQ:
+
+vq = ⟨ψ|Zq |ψ⟩, q = 0 , . . . , Q − 1, (8) where |ψ⟩ denotes the final quantum state after all circuit layers. All M VQCs share this structural design but are equipped with independently trainable parameters, yielding a total of ΘQ = M ·Q·L·3
+
+quantum trainable parameters. The final hidden state hT is read out at the last temporal step and passed to a classifier head. All VQCs are implemented and executed using the default.qubit 
+
+statevector simulator in PennyLane [2], which provides exact noiseless gradients and expectation values. All reported results therefore reflect ideal simulation conditions and do not account for gate errors, decoherence, or readout noise present on physical quantum hardware. 
+
+3.3.3 Implementation Details and Reproducibility 
+
+To allow exact replication of the agentic feature selection pipeline and all downstream mod-els, we report the full configuration used across experiments. Feature selection was handled by Gemma 4(E4B), served locally via Ollama under the identifier gemma4:e4b , with thinking mode enabled and reasoning traces stripped. The system prompt instructs the model to act as a senior intensivist and data scientist, reason solely from training-set summary statistics, and return a strict JSON object with keys features , severity weights, and severity bias, where at least one selected feature carries |weight | ≥ 0.10 . The initial-selection prompt supplies the mortality-stratified sum-mary per feature, covering correlation with mortality, percentage missingness, dead/alive mean ±
+
+SD, and early-versus-late temporal trend, and instructs the agent to select exactly K features with corresponding severity weights and bias. Each refinement prompt additionally supplies the pre-vious feature set and severity parameters, the aggregate 10-fold inner cross-validation AUROC, AUPRC, and loss, the per-feature permutation-importance ranking, a table of the top-30 features by |correlation |, and from round 3 onward, the set of previously attempted combinations, which the agent is forbidden to repeat. Temperature was set to 0.30 for initial selection and 0.70 for re-finement. Failed responses, defined as incorrect JSON schema, wrong K, duplicate features, or all-zero severity weights, triggered retries at temperature min( Tbase + 0 .15 × attempt , 1.20) , with up to six retries on the initial call and eight on each refinement round. The refinement loop ran for exactly R = 5 rounds per (K, T ) configuration, with the agent required to swap at least a fraction 
+
+α = 0 .10 of the K selected features between consecutive rounds. For the headline configuration (K = 18 ), this enforces a minimum churn of ⌈0.10 × 18 ⌉ = 2 features per round; proposals vi-olating this constraint, or numerically identical to the previous state, were rejected and resampled at higher temperature. The cross-validation feedback driving this loop used V = 10 -fold stratified cross-validation restricted to the training partition. Within each fold, the training rows were further split 80/20 (stratified) into inner-training and inner-validation subsets used solely for early stopping, with z-score normalization parameters computed exclusively on the inner-training rows. Each fold trained an LSTM-based proxy for up to 100 epochs with early stopping (patience 20 epochs, mon-itored on validation AUROC), after which AUROC, AUPRC, cross-entropy loss, and permutation importance were computed on the fold’s held-out rows. Fold-mean ± SD, a t-distribution-based 95% confidence interval, and the pooled out-of-fold AUROC and AUPRC were then reported back to the agent as feedback. 11 System Prompt 
+
+You are a Senior Intensivist and Data Scientist specialising in post-cardiac-arrest ICU mortality. You are designing the input features for a time-series LSTM that predicts in-hospital death from the first 24 hours post-arrest. 
+
+Rules: 
+
+• You will ONLY ever be given summary statistics computed from training data — never any test-set information. • Your recommendations are validated by cross-validation on that training data; downstream selection uses the CV results, not any held-out labels. • Think carefully about which features have the strongest, most physiologically plausible re-lationship with mortality, penalising features with very high missingness or unstable scales. • Reply STRICTLY in JSON with exactly these keys: 
+
+– features : list of feature-name strings 
+
+– severity weights : dict mapping feature-name → numeric weight (literals, not strings; in [−6, 6] )
+
+– severity bias : numeric (not a string) • Emit NOTHING outside of that JSON object — no preamble, no epilogue, no markdown code fences if possible. • At least one selected-feature weight must have |weight | ≥ 0.10 .
+
+Initial Selection Prompt 
+
+Dataset: adult ICU patients post-cardiac arrest, first 24 hours. 
+
+POPULATION STATISTICS (DEV set only — held-out test patients excluded): 
+
+{dev labeled summary }
+
+TASK: 
+
+1. Select EXACTLY {K} features for the LSTM input. Prioritise large |correlation | with mor-tality and clear dead/alive separation. 2. Design a severity-score formula via severity weights and severity bias .3. Provide NUMERIC severity weights (not strings). 4. At least one selected feature must have |weight | ≥ 0.10 .All available features: {all features }
+
+Return strictly JSON as specified in the system message. 
+
+Refinement Prompt 
+
+Previous features ( {n}): 
+
+{prev state[’features’] }
+
+Previous severity weights: {prev state[’severity weights’] }
+
+Previous severity bias : {prev state.get(’severity bias’, 0.0) }
+
+INNER DEV-CV RESULTS (dev-only, aggregate over {N CV FOLDS } folds): • AUROC = {inner cv metrics[’auroc’]:.3f }
+
+• AUPRC = {inner cv metrics[’auprc’]:.3f }
+
+• Loss = {inner cv metrics[’loss’]:.3f }
+
+PERMUTATION IMPORTANCE on inner-val folds (AUROC drop when shuffled): 
+
+{imp lines }
+
+TOP-—CORRELATION— FEATURES (dev-only, for context — not required): 
+
+{corr lines }
+
+INNER-TRAIN STATISTICS (dead vs alive, inner-train rows only): 
+
+12 Table 4: Performance comparison of QuanTiMedAI with existing in-hospital cardiac arrest mortality prediction studies on MIMIC-IV.                                            
+
+> Study Method Feature Selection Features AUROC Temp.
+> Sun et al. [30] LASSO LASSO 11 0.799 ×
+> Li et al. [20] RF LASSO 70.830 ×
+> Jia et al. [15] XGBoost Boruta 37 0.828 ×
+> QuanTiMedAI Ours Agentic LLM 18 0.852 ✓
+> Temp. = temporal modeling; ×= static; ✓= time-series.
+> {inner fold train summary }
+> All available features: {all features }{forbidden }
+> TASK: Propose a REFINED set of EXACTLY {K}features and updated severity weights and
+> severity bias .• You MUST swap AT LEAST {n min swap }feature(s) vs the previous set. • Drop features with the smallest permutation-importance drop. • Consider adding high-|corr |features that are NOT already selected. • Provide NUMERIC severity weights (not strings). At least one selected-feature weight must have |weight | ≥ 0.10 .• Keep weights and bias inside [−6,6] .Return strictly JSON as specified in the system message.
+
+Once the five-round loop terminated, the incumbent with the highest mean inner CV AUROC, com-prising the 18 selected features, their LLM-derived severity weights, and the severity bias listed in full in Table 9, was frozen for the K = 18 , T = 2 configuration and inherited unchanged by all downstream models trained at this cell, including the LSTM-Gemma baseline, every architectural ablation arm in Table 7, and QuanTiMedAI itself, which did not re-query the agent. QuanTiMedAI’s recurrent core comprises a single QLSTM cell with five variational quantum circuits, covering the forget, input, candidate, output, and hidden-refinement gates, where the hidden-refinement circuit additionally receives the raw input xt re-injected alongside the post-gate hidden state, each oper-ating on Q = 4 qubits and simulated on PennyLane’s noiseless default.qubit statevector back-end with backpropagation differentiation, with a single linear projection preceding each circuit’s data-encoding stage. All models were trained with the Adam optimizer at an initial learning rate of 
+
+1×10 −3 annealed via cosine decay to 1×10 −5 over 100 epochs, weight decay of 1×10 −4, gradient-norm clipping at 1.0, batch size 64, early stopping with patience 20 epochs on validation AUROC, and class-weighted binary cross-entropy loss to account for the cohort’s mortality imbalance. Each model was retrained across three random seeds, with performance reported as seed-averaged test probabilities. 
+
+## 4 Evaluation and Results 
+
+Table 4 compares QuanTiMedAI against three recent in-hospital cardiac arrest mortality prediction studies on MIMIC-IV, summarizing each study’s feature selection method, number of selected fea-tures, reported AUROC, and use of temporal modeling. Unlike these studies, which rely on static first-24-hour feature aggregation and conventional feature selection, QuanTiMedAI combines agen-tic LLM-guided feature selection, sequential time-series modeling, and a quantum-enhanced recur-rent architecture. QuanTiMedAI’s AUROC of 0.852 represents an improvement of approximately 2.9% over the 0.828 reported by Jia et al. [15], the most recent study from our literature review. For the controlled experiments that follow, we evaluate our proposed quantum LSTM (QLSTM) model against two classical LSTM baselines. One being a classical LSTM that uses the identical feature selection and severity weighting as our Model, provided by the Gemma language model. This isolates the architectural contribution of the quantum component. In another approach, classical 13 Table 5: Performance Summary                  
+
+> Metric Stat. QuanTiMedAI LSTM LSTM Random Selection AUROC
+> ↑
+> Mean 0.815 0.810 0.775 Best 0.852
+> (K=18,T=2)
+> 0.846
+> (K=15,T=24)
+> 0.833
+> (K=15,T=8) Worst 0.734 (K=2,T=2) 0.719 (K=2,T=4) 0.695 (K=2,T=4)
+> AUPRC
+> ↑
+> Mean 0.856 0.853 0.819 Best 0.886
+> (K=15,T=6)
+> 0.882
+> (K=15,T=24)
+> 0.869
+> (K=15,T=8) Worst 0.791 (K=2,T=2) 0.775 (K=2,T=4) 0.734 (K=2,T=2)
+> Best Configurations K=18,T=2 K=15,T=24 K=15,T=8
+
+LSTM with randomly selected feature subsets, representing a traditional black box approach without guided feature engineering. All models are trained and assessed on the same MIMIC IV derived Cardiac arrest dataset for in-hospital mortality prediction. Inputs consist of time-series clinical variables.The number of features K is varied to study the impact of input dimensionality. 
+
+4.1 Overall Performance Comparison 
+
+Table 5 aggregates the results across all 54 ( K, T ) configurations ( 2 ≤ K ≤ 20 , T ∈{2, 4, 6, 8, 12 , 24 } h). Our Model attains the highest mean AUROC (0.815), outperforming both the LSTM (0.810) and the random selection based LSTM (0.775). The same trend holds for AUPRC (0.856 vs 0.853 vs 0.819), demonstrating consistently superior discrimination and calibration. More importantly, the single best configuration of our model K = 18 , T = 2 h reaches an AUROC of 0.852 and AUPRC of 0.882, markedly higher than the best LSTM setting (AUROC = 0.846, AUPRC = 0.882 at K = 15 , T = 24 h) and the best random LSTM (AUROC = 0.833, AUPRC = 0.869). Table 6: Parameter and performance comparison (K=18, T=2). Settings Parameters Performance 
+
+Experiment K T Input Dim. Total Trainable Quantum Classical AUROC AUPRC LSTM 18 2 19 281 729 281 729 0 281 729 0.828 0.863 
+
+LSTM Random 18 2 18 280 961 280 961 0 280 961 0.759 0.814 
+
+QuanTiMedAI(Ours) 18 2 19 605 605 120 485 0.852 0.882 4.2 Parameter Efficiency 
+
+A key advantage of our architecture is its drastically reduced parameter count. Table 6 contrasts the model sizes for the K = 18 , T = 2 setting. The classical LSTM requires 281,729 trainable parameters, while the random selection counterpart uses 280,961. Our quantum enhanced model operates with only 605 parameters total, 120 of which reside in the variational quantum circuit and 485 in the lightweight classical head. The most meaningful comparison is against a parameter-matched classical LSTM of 655 parameters, which achieves an AUROC of 0.835.QuanTiMedAI achieves 0.852 with a similar parameter budget, a gain of 0.017 AUROC (a relative improvement of approximately 2%) that can be attributed to the quantum gating mechanism rather than model size. The ≈466 × reduction in parameters relative to the full 281,729-parameter LSTM highlights the compactness of the proposed model while maintaining competitive predictive performance. 
+
+4.3 Influence of Feature Count and Observation Window 
+
+To understand the sensitivity to input design, we varied K and T. As K grows from 2 to 18–20, all models improve substantially. Our Model consistently outperforms the baselines at every K, with the gap widening for intermediate K. At K = 10, our AUROC around 0.83 vs. 0.81 for LSTM. 14 Figure 5: Bloch Sphere state distribution of VQC 5
+
+The top performance plateaus around K = 15–18, indicating that Gemma’s severity weighted feature ranking effectively captures the most discriminative physiological signals like lactate, base excess, anion gap, GCS, and SpO 2 being recurrently assigned the highest weights. Our model achieves its best result at T = 2 h, whereas the classical LSTM peaks at T = 24 h. 
+
+4.4 Calibration and Robustness 
+
+While the pointwise improvements over the traditional LSTM are modest in a few configurations, our model consistently came out ahead across all 54 (K, T ) settings, including the mean, best, and worst cases. This uniform performance gap suggests a genuine, reproducible advantage rather than a statistical fluke. 
+
+4.5 Learned Feature Severity Weights 
+
+The Gemma-derived severity weights add a layer of interpretability to our model. In every setup, the largest positive coefficients belonged to lactate, anion gap, base excess, bicarbonate, GCS, and SpO 2, matching established clinical knowledge regarding mortality risk. Meanwhile, the bias term automatically adapts the model’s decision threshold. This also implicitly compensates for unknown factors. Our model preserves these weights exactly as provided, demonstrating that the quantum component enhances the model without distorting the clinically meaningful feature attribution. 
+
+4.6 Quantum State Trajectory and Bloch Sphere Analysis 
+
+Figure 5 illustrates the final distributions across all four qubits. Each qubit develops a specialized geometric signature, proving the network distributes feature processing efficiently. This multi-axial separation confirms that QuanTiMedAI successfully exploits Hilbert space expressivity for robust linear separability. To evaluate how the Variational Quantum Circuit (VQC) transforms features into class-discriminative states, we analyze Bloch sphere trajectories. Figure 6 tracks this evolution for Qubit 0. In Step-1 and Step-2, embedding gates ( H, RY , RZ ) restrict pure states to the sphere’s surface, leaving the Survive and Mortality classes completely interleaved. A phase transition occurs in Step-3; entangling CNOT gates contract the state distributions toward the center, signaling mixed states induced by multi-qubit entanglement. By Step-4, variational lay-ers leverage this space to repel states toward the boundaries, fracturing the data into two distinct, spatially segregated clusters. 
+
+## 5 Ablation Study 
+
+The original QLSTM architecture introduced by Chen et al. [7] employs six VQCs per recurrent cell, corresponding to the forget, input, cell candidate, output, hidden-state refinement, and output-stage gates, with four qubits and circuit depth two. This specification has since been adopted in subse-quent QLSTM applications. Khan et al. [18] applied this architecture to solar power forecasting, 15 Figure 6: Quantum State Distribution of Qubit 0 as circuit grows at each step where blue means survived and yellow means mortality Table 7: QuanTiMedAI Architectural Ablation at K=18 , T =2                                                                                         
+
+> Configuration VQCs Skip Read-out Total Params Q-Params Acc. Prec. Rec. F1 AUROC AUPRC QuanTiMedAI (Ours) 5✓last 605 120 0.758 0.808 0.746 0.776 0.852 0.882
+> 6-VQC with Skip 6✓last 725 144 0.768 0.810 0.769 0.789 0.848 0.873 5-VQC without Skip 5—last 529 120 0.766 0.814 0.758 0.785 0.839 0.868 Mean-pool read-out 5✓mean 605 120 0.766 0.817 0.754 0.784 0.838 0.865 Chen et al. [7] 6—last 573 144 0.766 0.797 0.785 0.791 0.838 0.867 Param. matched classical LSTM ——last 655 00.753 0.797 0.754 0.775 0.835 0.868 Classical LSTM ——last 281,729 00.738 0.803 0.708 0.753 0.828 0.864
+
+comparing QLSTM against classical LSTM on real-world photovoltaic datasets and demonstrat-ing accelerated training convergence and reduced test loss within the initial epochs for QLSTM, suggesting its capacity to capture complex spatiotemporal patterns more efficiently than classical counterparts. Kea et al. [17] similarly demonstrated that a hybrid QLSTM outperformed classical LSTM on stock price prediction across multiple evaluation metrics. While these studies validate the original 6-VQC specification on structured time-series data, none have investigated whether modifi-cations to the VQC count, re-injection mechanism, or temporal read-out strategy affect performance on high-dimensional clinical EHR sequences. This work directly investigates that question. All ablation experiments were locked to K=18 , T =2 , inheriting the same feature set, severity weights, and severity bias selected by the Gemma-4 agentic pipeline at this configuration. The held-out test set ( N =462 , mortality = 56.3%) was never used during feature or model selection. Each arm was trained across three seeds. Qubit count (four) and circuit depth (two) were held constant across all quantum arms to isolate specific design choices. Six architectural variants were evaluated in a structured design. The first four arms form a 2×2
+
+factorial over two design axes; VQC topology (5-VQC vs. 6-VQC) and xt re-injection (on vs. off), so each main effect is estimable both in isolation and in combination. The proposed QuanTiMedAI occupies the 5-VQC with re-injection cell of this factorial; the remaining three cells isolate what happens when either or both design choices are removed. Two further arms probe the temporal read-out strategy and the value of the quantum core itself. The proposed architecture, QuanTiMedAI , is our modified QLSTM design that removes the output-stage VQC from the original Chen et al. specification, reducing the cell to five VQCs, and adds a residual skip connection that reinjects the raw current input xt into the hidden-refinement VQC. The temporal summary fed to the classifier head is the last hidden state hT . The remaining five arms each change exactly one design choice: 5-VQC without re-injection isolates the contribution of the skip connection; the Chen et al. [7] baseline retains the original output-stage VQC with no skip connection and serves as the direct literature baseline; 6-VQC with skip connection completes the 
+
+2×2 factorial; mean-pool read-out replaces the last-step hT with the mean of ht across all T time steps; and the classical LSTM arm replaces the quantum cell with a standard two-layer LSTM of 16 hidden sizes 192 and 96 with last-step readout, serving as the classical upper-bound baseline just as it was done previously. Table 8: Statistical comparison of baseline models against QuanTiMedAi ( AUROC = 0 .852 ).                                              
+
+> Model AUROC ∆AUROC zp(raw) p(Bonf.) Sig. @ 0.05
+> 5-VQC without skip connection 0.839 0.0127 2.089 0.0367 0.7711 no Chen 2020: 6-VQC, no skip connection 0.838 0.0142 2.619 0.0088 0.1851 no 6-VQC with skip connection 0.848 0.0040 0.954 0.3403 1.0000 no Mean-pool readout (vs last step) 0.838 0.0135 2.944 0.0032 0.0680 no No quantum core (classical LSTM) 0.828 0.0236 2.492 0.0127 0.2667 no Parameter matched classical LSTM 0.835 0.0170 3.337 <0.001 0.0178 yes
+
+The full capacity classical LSTM attains an AUROC of just 0.828, while a drastically smaller parameter-matched classical LSTM reaches 0.835. This inversion where a model with more pa-rameters performs worse is a classic signature of overfitting on the limited training set. While the larger LSTM tends to memorize spurious patterns which hurts its ability to generalize the compact classical model avoids this issue entirely. However, the classical model’s simpler gates ultimately bottleneck its representational power. QuanTiMedAI addresses both challenges at once. Within a similar parameter budget, it achieves an AUROC of 0.852, noticeably outperforming the parameter-matched classical LSTM (Bonferroni-corrected p = 0 .018 ).This edge suggests that the quantum gating mechanism offers advantages beyond simple parameter reduction, though this benefit needs further validation on noisy simulators and physical hardware before making definitive claims. These results align with the idea that quantum entanglement can support more compact temporal encod-ing, even if the exact mechanism and its resilience to realistic noise remain open questions. Quan-TiMedAI also surpasses the large LSTM by a margin of 0.024 AUROC, and while the raw p-value of 0.013 does not survive the most conservative correction, this is an expected power limitation given the test-set size, not evidence of equivalence. In contrast to classical models that either overfit (large) or underfit (small), QuanTiMedAi delivers the best of both compact size and inherent robustness to overfitting making it the clinically safer and more reliable choice Table 7 presents the Test results for all six arms, ranked by AUROC. Table 9: Feature weights ( K = 18 , T = 2 ). # Feature Severity weight 1 Lactate 0.6500 
+
+2 Base excess 0.5500 
+
+3 Anion gap 0.3500 
+
+4 Bicarbonate 0.2000 
+
+5 Glasgow Coma Scale (GCS) 0.3000 
+
+6 Oxygen saturation (SpO 2) 0.2000 
+
+7 pH 0.1000 
+
+8 Albumin 0.2500 
+
+9 Systolic blood pressure (SBP) −0.1500 
+
+10 Creatinine 0.1000 
+
+11 Blood urea nitrogen (BUN) 0.1000 
+
+12 Sodium 0.0800 
+
+13 Heart rate 0.0800 
+
+14 Respiratory rate 0.0500 
+
+15 Glucose 0.0500 
+
+16 Red cell distribution width (RDW) 0.0500 
+
+17 Hemoglobin 0.0500 
+
+18 Age 0.0500 
+
+Severity bias 0.5000 
+
+QuanTiMedAI, the proposed architecture, achieves the highest AUROC of 0.852, outperforming all other arms. Comparing the two 5-VQC arms shows that xt re-injection contributes a 0.013 AUROC improvement (approximately 1.5% relative). This supports the architectural motivation: reinjecting 17 Table 10: Performance metrics of QuanTiMedAI as Qubit count is increased 
+
+Qubits Total params Quantum params AUROC AUPRC 
+
+2 qubits 283 60 0.843 0.872 
+
+3 qubits 439 90 0.845 0.878 
+
+4 qubits 605 120 0.852 0.882 
+
+6 qubits 967 180 0.850 0.883 
+
+8 qubits 1369 240 0.852 0.877 
+
+xt allows the model to recover signal lost through the 4-qubit bottleneck, which is particularly consequential in ICU EHR sequences where physiological measurements at each time step carry direct prognostic value. Comparing QuanTiMedAI against the Chen et al. [7] baseline the original specification used in prior QLSTM literature shows a gap of 0.014 AUROC in favour of the proposed architecture. The 6-VQC with re-injection arm (AUROC 0.848) sits between the two, confirming that re-injection is consistently beneficial regardless of VQC count, while QuanTiMedAI remains the most parameter-efficient high-performing configuration. Replacing the last-step readout with mean pooling reduces AUROC from 0.852 to 0.838, confirming that the final hidden state hT carries more discriminative information than a uniform average of hidden states for ICU mortality prediction. Taken together, the two classical baselines reveal a clear trend. The full-capacity LSTM (281,729 parameters) scores an AUROC of 0.828, while the parameter-matched version (655 parameters) ac-tually hits 0.835. This minimal difference indicates that the larger model’s massive capacity doesn’t improve discrimination on this cohort. Instead, the dataset likely cannot support over 280k weights without overfitting; simply scaling the network down to a few hundred parameters yields compara-ble results.In contrast, QuanTiMedAI reaches an AUROC of 0.852 with just 605 parameters, out-performing both classical setups across every configuration. The jump over the parameter-matched LSTM (0.852 vs. 0.835) is especially telling. It confirms that the quantum gating mechanism it-self, rather than just a lower parameter count drives the performance. While the resulting ≈466-fold compression over the full LSTM is a massive structural advantage, these findings demonstrate highly parameter-efficient performance under ideal simulation. We attribute this edge to the entangled vari-ational circuit, though this requires validation under realistic noise conditions. 
+
+## 6 Discussion 
+
+QuanTiMedAI outperforms a comparably sized classical LSTM because of how variational quantum circuits handle clinical data. A classical model needs many parameters to simultaneously capture the nonlinear relationships between variables like lactate, GCS, pH, and base excess. VQCs do this more efficiently: by encoding these measurements into quantum state space and entangling the qubits, the circuit naturally picks up complex interactions across multiple physiological signals at once, without needing a large parameter budget [12, 1]. This is why QuanTiMedAI achieves an AUROC of 0.852 with only 605 parameters while a comparably sized classical LSTM of 655 parameters reaches only 0.835, the quantum gating mechanism provides a richer representational capacity, not just a smaller footprint. The xt skip connection adds to this by keeping raw clinical measurements directly accessible at each time step, recovering signal that would otherwise be lost through the qubit bottleneck [19]. Validation under realistic hardware noise remains an important next step. 
+
+## 7 Conclusion 
+
+In this study, we proposed QuanTiMedAI, a quantum-agentic time-series framework that combines agentic LLM-guided feature selection with a compact Quantum Long Short-Term Memory architec-ture for in-hospital cardiac arrest mortality prediction on MIMIC-IV. Agentic Gemma-4 feature se-lection consistently outperformed random selection, and a structured ablation study showed that the proposed 5-VQC architecture with input re-injection performed best among all variants, including the original Chen et al. [7] specification, with re-injection contributing the largest single gain in both AUROC and calibration. QuanTiMedAI achieved an AUROC of 0.852 using only 605 parameters, 18 compared to 281,729 for a full-capacity LSTM, exceeding a parameter-matched classical LSTM (0.835) and improving on a recent MIMIC-IV cardiac arrest baseline by approximately 2.9% [15]. These results support QuanTiMedAI as a lightweight candidate for future resource-aware clinical applications, pending external validation. 
+
+## REFERENCES References 
+
+[1] Amira Abbas, David Sutter, Christa Zoufal, Aurelien Lucchi, Alessio Figalli, and Stefan Wo-erner. The power of quantum neural networks. Nature Computational Science , 1(6):403–409, 2021. doi: 10.1038/s43588-021-00084-1. [2] Ville Bergholm, Josh Izaac, Maria Schuld, Christian Gogolin, Shahnawaz Ahmed, Vishnu Ajith, M. Sohaib Alam, Guillermo Alonso-Linaje, B. AkashNarayanan, Ali Asadi, et al. Pen-nyLane: Automatic differentiation of hybrid quantum-classical computations. arXiv preprint arXiv:1811.04968 , 2018. [3] Jacob Biamonte, Peter Wittek, Nicola Pancotti, Patrick Rebentrost, Nathan Wiebe, and Seth Lloyd. Quantum machine learning. Nature , 549(7671):195–202, 2017. doi: 10.1038/ nature23474. [4] Clifton W. Callaway, Michael W. Donnino, Ericka L. Fink, Romergryko G. Geocadin, Eyal Golan, Karl B. Kern, Marion Leary, William J. Meurer, Mary Ann Peberdy, Trevonne M. Thompson, and Janice L. Zimmerman. Part 8: Post-cardiac arrest care: 2015 AHA guidelines update for cardiopulmonary resuscitation and emergency cardiovascular care. Circulation , 132 (18 suppl 2):S465–S482, 2015. doi: 10.1161/CIR.0000000000000262. [5] Feng-Cheng Chang, Ming-Jer Hsieh, Jih-Kai Yeh, and Victor Chien-Chia Wu. Longitudinal analysis of in-hospital cardiac arrest: trends in the incidence, mortality, and long-term survival of a nationwide cohort. Crit. Care , 29:41, 2025. doi: 10.1186/s13054-025-05274-1. [6] D. Chen and G. Li. Superior machine learning model for post-cardiac arrest mortality predic-tion: a MIMIC-IV cohort study. J. Cardiothorac. Vasc. Anesth. , 2026. doi: 10.1016/j.jcva. 2026.01.008. [7] Samuel Yen-Chi Chen, Shinjae Yoo, and Yao-Lung L. Fang. Quantum long short-term mem-ory. In Proc. IEEE Int. Conf. Acoust., Speech Signal Process. (ICASSP) , pages 8622–8626, Singapore, May 2022. doi: 10.1109/ICASSP43922.2022.9747369. [8] Sungwon Choi, Donghyun Kim, Hyeonjeong Jeon, and Sangdon Park. FeatLLM: Large lan-guage models as zero-shot feature extractors for tabular learning. In Advances in Neural Infor-mation Processing Systems (NeurIPS) , 2024. [9] Y. Deng, S. Liu, Z. Wang, Y. Wang, Y. Jiang, and B. Liu. Explainable time-series deep learning models for the prediction of mortality, prolonged length of stay and 30-day readmission in intensive care patients. Front. Med. , 9:933037, September 2022. doi: 10.3389/fmed.2022. 933037. [10] R. S. Gupta, C. E. Wood, T. Engstrom, J. D. Pole, and S. Shrapnel. A systematic review of quantum machine learning for digital health. npj Digit. Med. , 8:237, May 2025. doi: 10.1038/s41746-025-01597-z. [11] Hrayr Harutyunyan, Hrant Khachatrian, David C. Kale, Greg Ver Steeg, and Aram Galstyan. Multitask learning and benchmarking with clinical time series data. Scientific Data , 6(1):96, June 2019. doi: 10.1038/s41597-019-0103-9. [12] Vojtˇ ech Havl´ ıˇ cek, Antonio D. C´ orcoles, Kristan Temme, Aram W. Harrow, Abhinav Kandala, Jerry M. Chow, and Jay M. Gambetta. Supervised learning with quantum-enhanced feature spaces. Nature , 567(7747):209–212, March 2019. doi: 10.1038/s41586-019-0980-2. [13] Sepp Hochreiter and J¨ urgen Schmidhuber. Long short-term memory. Neural Comput. , 9(8): 1735–1780, November 1997. doi: 10.1162/neco.1997.9.8.1735. 19 [14] Daniel P. Jeong, Zachary C. Lipton, and Pradeep Ravikumar. LLM-FS-Agent: Agentic large language models for feature selection on tabular data. arXiv preprint arXiv:2403.01233 , 2024. [15] Ji Jia, Hua-lei Dai, Ying-xia Guan, et al. Prediction of in-hospital mortality risk in cardiac arrest patients using machine learning models: a study based on the MIMIC-IV database with external validation from Yunnan University Affiliated Hospital. BMC Medical Informatics and Decision Making , 2026. doi: 10.1186/s12911-026-03465-6. [16] Alistair E. W. Johnson, Lucas Bulgarelli, Lu Shen, Alvin Gayles, Ayad Shammout, Steven Horng, Tom J. Pollard, Sicheng Hao, Benjamin Moody, Brian Gow, Li-wei H. Lehman, Leo A. Celi, and Roger G. Mark. MIMIC-IV, a freely accessible electronic health record dataset. 
+
+Scientific Data , 10(1):1, January 2023. doi: 10.1038/s41597-022-01899-x. [17] S. Kea, C. Ho, P. Lim, and K. C. Chen. A hybrid quantum-classical model for stock price prediction using quantum-enhanced long short-term memory. Entropy , 26(11):954, November 2024. doi: 10.3390/e26110954. [18] Saad Zafar Khan, Nazeefa Muzammil, Salman Ghafoor, Haibat Khan, Syed Mohammad Hasan Zaidi, Abdulah Jeza Aljohani, and Imran Aziz. Quantum long short-term memory (QLSTM) vs. classical LSTM in time series forecasting: a comparative study in solar power forecasting. 
+
+Front. Phys. , 12:1439180, October 2024. doi: 10.3389/fphy.2024.1439180. [19] Mostafizur Rahaman Laskar and Richa Goel. Shallow entangled circuits for quantum time series prediction on IBM devices. Sci. Rep. , 15:43727, December 2025. doi: 10.1038/ s41598-025-28512-6. [20] Yong Li, Ying Liu, Qing Zhang, Hongwei Zhu, Chengli Wen, and Xian Jiang. Construc-tion and validation of prognostic model for ICU mortality in cardiac arrest patients: an in-terpretable machine learning modelling approach. Eur. J. Med. Res. , 30:328, 2025. doi: 10.1186/s40001-025-02588-2. [21] Oliver Lim, Ryan Ruiyang Ling, Vivien Mak, Shir Lynn Lim, Kollengode Ramanathan, Judit Orosz, Gemma Pound, Daryl Jones, Ashwin Subramaniam, et al. Prevalence and outcomes of in-hospital cardiac arrest in the intensive care unit: a systematic review and meta-analysis. 
+
+Crit. Care , 30:149, 2026. doi: 10.1186/s13054-026-05880-7. [22] L. Liu, W.-W. Lai, B.-W. Li, S.-H. Wang, M.-M. Yu, Y.-C. Liu, and Y.-F. Chai. Prediction model of in-hospital mortality risk in intensive care unit patients with cardiac arrest: a multi-center retrospective cohort study based on an ensemble model. Front. Cardiovasc. Med. , 12: 1582636, May 2025. doi: 10.3389/fcvm.2025.1582636. [23] Longfei Liu, Rongqin Chen, Jifu Qu, Chunli Liu, Ye Li, and Dan Wu. Multi-scale spa-tiotemporal dynamic graph neural network for early prediction of mortality risks in heart failure patients. IEEE Journal of Biomedical and Health Informatics , 29:7579, 2025. doi: 10.1109/JBHI.2025.3574566. [24] D. Maheshwari, B. Garcia-Zapirain, and D. Sierra-Sosa. Quantum machine learning applica-tions in the biomedical domain: a systematic review. IEEE Access , 10:80463–80484, 2022. doi: 10.1109/ACCESS.2022.3195044. [25] K. Mitarai, M. Negoro, M. Kitagawa, and K. Fujii. Quantum circuit learning. Physical Review A, 98(3):032309, 2018. doi: 10.1103/PhysRevA.98.032309. [26] Zhale Nowroozilarki, Arash Pakbin, James Royalty, Donald K. K. Lee, and Bobak J. Mor-tazavi. Real-time mortality prediction using MIMIC-IV ICU data via boosted nonparametric hazards. In 2021 IEEE EMBS International Conference on Biomedical and Health Informatics (BHI) , pages 1–4. IEEE, July 2021. doi: 10.1109/BHI50953.2021.9508537. [27] Benjamin Shickel, Patrick J. Tighe, Azra Bihorac, and Parisa Rashidi. Deep EHR: A survey of recent advances in deep learning techniques for electronic health record (EHR) analysis. IEEE Journal of Biomedical and Health Informatics , 22(5):1589–1604, 2018. doi: 10.1109/JBHI. 2017.2767063. 20 [28] Karan Singhal, Shekoofeh Azizi, Tao Tu, et al. Large language models encode clinical knowl-edge. Nature , 620:172–180, 2023. doi: 10.1038/s41586-023-06291-2. [29] L. Su, D. Li, and D. Qiu. BLS-QLSTM: a novel hybrid quantum neural network for stock index forecasting. Humanit. Soc. Sci. Commun. , 12(1):1–15, 2025. doi: 10.1038/ s41599-025-05348-z. [30] Yiwu Sun, Zhaoyi He, Jie Ren, and Yifan Wu. Prediction model of in-hospital mortal-ity in intensive care unit patients with cardiac arrest: a retrospective analysis of MIMIC-IV database based on machine learning. BMC Anesthesiology , 23(1):178, 2023. doi: 10.1186/s12871-023-02138-5. [31] Julian Theis, William L. Galanter, Andrew D. Boyd, and Houshang Darabi. Improving the in-hospital mortality prediction of diabetes ICU patients using a process mining/Deep learning architecture. IEEE Journal of Biomedical and Health Informatics , 26(1):388–399, 2022. doi: 10.1109/JBHI.2021.3092969. [32] U. Ullah and B. Garcia-Zapirain. Quantum machine learning revolution in healthcare: a sys-tematic review of emerging perspectives and applications. IEEE Access , 12:11423–11450, 2024. doi: 10.1109/ACCESS.2024.3353461. [33] Jonathan Vo, Faye L. Norby, Paul Marano, Yuri Matusov, Kyndaron Reinier, Joseph Ebinger, Henry Halperin, and Sumeet S. Chugh. Management and prevention of in-hospital car-diac arrest: present and future. npj Cardiovasc. Health , 1:7, 2024. doi: 10.1038/ s44325-024-00009-7. [34] Jianwei Wang, Lizhen Lin, Li-ping Qiu, Li-lan Zheng, Lu-xi Wu, Hui Lv, and Haihua Xie. Assessing in-hospital mortality risk in ICU lung cancer patients using machine learning: an analysis based on the MIMIC-IV database. PLOS ONE , 21(1):e0341259, 2026. doi: 10.1371/ journal.pone.0341259. [35] Shengfeng Wei, Xiangjian Guo, Shilin He, Chunhua Zhang, Zhizhuan Chen, Jianmei Chen, Yanmei Huang, Fan Zhang, and Qiangqiang Liu. Application of machine learning for patients with cardiac arrest: systematic review and meta-analysis. J. Med. Internet Res. , 27:e67871, 2025. doi: 10.2196/67871. [36] Kunyu Yu, Rui Yang, Jingchi Liao, Siqi Li, Huitao Li, Irene Li, Yifan Peng, Rishikesan Ka-maleswaran, and Nan Liu. Benchmarking foundation models with multimodal public elec-tronic health records. IEEE Journal of Biomedical and Health Informatics , 2025. doi: 10.1109/JBHI.2025.3645076. Early access. [37] L. Zhang, Y. Xu, M. Wu, L. Wang, and H. Xu. Quantum long short-term memory for drug discovery. EPJ Quantum Technol. , 13:14, January 2026. doi: 10.1140/epjqt/ s40507-026-00467-1. [38] Zhuo Zheng, Jiawei Luo, Yingchao Zhu, Lei Du, Lan Lan, Xiaobo Zhou, Xiaoyan Yang, and Shixin Huang. Development and validation of a dynamic real-time risk prediction model for intensive care units patients based on longitudinal irregular data: multicenter retrospective study. J. Med. Internet Res. , 27:e69293, 2025. doi: 10.2196/69293. [39] Amirhosein Zobeiri, Alireza Rezaee, Farshid Hajati, Ahmadreza Argha, and Hamid Alinejad-Rokny. Post-cardiac arrest outcome prediction using machine learning: a systematic review and meta-analysis. Int. J. Med. Inform. , 193:105659, 2025. doi: 10.1016/j.ijmedinf.2024. 105659. 21

@@ -1,0 +1,379 @@
+Title: MedUPS: Towards Diagnostic Assistance in Uncommon Medical Cases with Large Language Models
+
+URL Source: https://arxiv.org/pdf/2608.01012v1
+
+Published Time: Tue, 04 Aug 2026 01:05:53 GMT
+
+Number of Pages: 13
+
+Markdown Content:
+# MedUPS: Towards Diagnostic Assistance in Uncommon Medical Cases with Large Language Models 
+
+## Ofir Ben Shoham ∗, Oriel Perets ∗, Nir Grinberg, Nadav Rappoport 
+
+Stein Faculty of Computer and Information Science Ben-Gurion University of the Negev {benshoho, orielpe}@post.bgu.ac.il, {nigrn, nadavrap}@bgu.ac.il 
+
+Abstract 
+
+Uncommon and off-guideline cases are difficult for clinical decision support, because physicians must make a series of management decisions under diagnostic uncertainty and rarely see the full case at once. Most large language model (LLM) benchmarks for medicine score only the final diagnosis, yet much of clinical care turns on the next appropriate action: the next test to order, the imaging study to obtain, the spe-cialist to involve, or the differential to pursue. We introduce MedUPSQA, a dataset of 21 ,874 mid-stream clinical deci-sion points built from 5,535 real case reports, and MedUPS, an alignment framework that supervises models on these inter-mediate decisions as they unfold along a patient’s trajectory. We segment free-text case presentations into chronologically ordered, accumulating clinical chunks and align models to predict the next step with reinforcement learning (GRPO), us-ing an external LLM-as-a-Judge reward. This objective mir-rors how clinicians actually meet patients, reasoning forward from accumulating evidence toward the next decision, rather than committing to a final label. Across three backbones, mid-stream alignment raises next-step accuracy from 55 .2 to 66 .7
+
+for Qwen3.6-27B, from 47 .2 to 57 .8 for Qwen3.5-9B, and from 37 .8 to 44 .4 for HuatuoGPT-3-8B, with 95% CI. In several model scales we test the objective improves accu-racy more than scale, with smaller models surpassing larger, frontier models we evaluate. We further train supervised fine-tuning (SFT) baselines on the mid-stream task, SFT improves all backbones above base, indicating the target framwork car-ries signal independently of the optimizer. We release the dataset, code, and aligned checkpoints. 
+
+## 1 Introduction 
+
+Clinical large language models (CLLMs) now support a wide range of clinical tasks, including treatment prediction, med-ical coding, and diagnosis for both common and uncommon cases (Ben Shoham and Rappoport 2024; Liévin et al. 2024; Perets et al. 2025). Their clinical value depends on more than accuracy; the underlying reasoning must be clinically coherent, and this matters most in complex or atypical pre-sentations (Sonoda et al. 2025; Wu, Chen, and Chen 2023). The stakes are highest for uncommon and rare conditions. Diagnostic error is common and consequential: a landmark report estimates that most people will experience at least one diagnostic error in their lifetime, and that such errors are a 
+
+> ∗
+
+These authors contributed equally. 
+
+leading source of preventable harm (Ball, Miller, and Balogh 2015). Among 6,507 patients with rare diseases, the average time from first medical contact to a confirmed diagnosis was 4.7 years, 73% were misdiagnosed at least once, and 22% consulted eight or more clinicians before receiving an an-swer (Faye et al. 2024). A diagnostic odyssey of this kind is produced by a long series of intermediate decisions made under uncertainty, such as which test to order, which special-ist to involve, and which differential to pursue, each taken with only partial information in hand. Clinicians reason the same way. They form and revise hypotheses as evidence ac-crues and choose the next action that best reduces uncertainty (Bowen 2006), and in real practice diagnoses and treatments unfold over time, requiring the integration of evolving ev-idence, prior interventions, and medical knowledge. Most medical LLM benchmarks instead score the terminal diag-nosis from a fully specified vignette (Liévin et al. 2024; Perets et al. 2025). This exam-style evaluation does not re-flect the reality of clinical encounters, where clinicians must decide with incomplete information, and so provides limited evidence of a model’s ability to support clinicians while a case is still unfolding. For uncommon cases, the final diag-nosis has several limitations as a training target. It arrives once per case, and it is recorded in free text whose phras-ing varies from report to report. For rare presentations it is often uncertain even in the published record. We therefore supervise mid-stream clinical decision-making: predicting the next appropriate clinical step along a patient’s trajectory. A case that unfolds over T chunks yields many such decision points, each with a concrete answer that the case itself later confirms, so the supervision is denser than a single termi-nal label and closer to what clinicians do at the bedside. We build MedUPSQA from real, segmented case presentations and align models to predict the next step using Group Rela-tive Policy Optimization (GRPO) (Shao et al. 2024), scored by an external LLM-as-a-Judge. Our contributions are as follows: 1. A mid-stream alignment objective. We formalize next-step prediction along patient timelines as a reinforcement learning objective and show that GRPO on this single ob-jective improves next-step clinical reasoning on uncom-mon cases, across three unrelated backbones and with no diagnostic labels. We compare it against supervised fine-tuning on identical pairs, which isolates the contribution arXiv:2608.01012v1 [cs.CL] 2 Aug 2026 of the optimizer from that of the target. 2. MedUPSQA, an open dataset. We release 21 ,874 val-idated next-step decision points with reasoning traces, derived from segmented real-world case reports 1, to-gether with our aligned models and code 2. Throughout, MedUPSQA names the dataset and MedUPS names the alignment framework and the resulting model family (e.g., MedUPS-Qwen3.6-27B). 3. Alignment over scale. Under our evaluation judge, mid-stream-aligned open models of modest size match or ex-ceed substantially larger open and frontier models on next-step prediction, which suggests that targeted inter-mediate supervision can matter more than model size for uncommon-case reasoning. We quantify how much of this comparison is attributable to the identity of the judge, and are explicit about what that check does and does not settle. 
+
+## 2 Related Work 
+
+A broad line of work applies reinforcement learning (RL) to clinical LLMs primarily as an alignment mechanism, aiming to match model behavior to clinician expectations and do-main norms. Med-PaLM 2 optimizes a physician preference model and reports gains under criteria such as diagnostic prudence and reasoning clarity (Singhal et al. 2025), and, because expert supervision is expensive, Yang et al. (2025) instead reward agreement with an AI evaluator to align ra-diology summaries with radiologist expectations. In these approaches, improvements in reasoning arise indirectly from preference or style alignment rather than from explicit super-vision of clinical reasoning. A related group shapes rewards around clinical structure without an explicit reasoning ob-jective: MMedPO for medical vision-language models (Zhu et al. 2024, 2025), QoQ Med with hierarchy- and modality-aware reward scaling (Dai et al. 2025), and verifiable radi-ology reporting combining chain-of-thought with RL (Jing et al. 2025). More recent work uses RL to directly target reasoning behavior, typically by optimizing over reasoning traces or reward signals tied to verifiable outcomes. Med-RLVR demonstrates that RL over explicit reasoning traces can improve performance on medical multiple-choice bench-marks such as MedQA and MMLU-Pro Health (Zhang et al. 2025). Similarly, Su et al. (2025) extend verifiable-reward RL across domains, including medicine, by learning reward models that assign continuous scores in [0 , 1] and rely on an auxiliary LLM as a judge for open-ended responses. While these methods indicate that RL can strengthen reasoning robustness, they are largely evaluated on common, clean, exam-style benchmarks with closed-form answers, and do not address longitudinal clinical decision-making or com-plex patient trajectories. Sequential decision support pre-dates LLMs. Reinforcement learning over electronic health records has been used to recommend the next clinical ac-tion directly from structured patient state, most prominently the AI Clinician, which learns sepsis treatment policies from 
+
+> 1https://huggingface.co/collections/oriel9p/medups
+> 2https://github.com/oriel9p/MedUPS
+
+ICU time series and evaluates them against clinician be-havior (Komorowski et al. 2018). That literature operates on densely sampled structured variables within a narrow, guideline-covered condition, and learns from downstream outcomes. Our setting is complementary rather than compet-ing: free-text presentations of uncommon conditions, where structured state is unavailable, outcome labels are absent, and the supervision signal is what the record says happened next. A further line of work argues that static vignettes mis-represent clinical practice, and builds interactive settings in which information arrives over time. MediQ reformulates exam questions so that the model must recognize when its information is insufficient and ask follow-up questions before committing, and finds that strong LLMs seek information poorly even when they answer well under full information (Li et al. 2024). AgentClinic and CRAFT-MD instead sim-ulate the encounter itself, pairing a model clinician with a simulated patient so that performance is measured over a dia-logue rather than a one-shot answer, and both report substan-tial drops relative to vignette-style evaluation (Schmidgall et al. 2024; Johri et al. 2025). DDXPlus supplies large-scale trajectories of evidence acquisition and differential diagno-sis, but from a synthetic generative process rather than real encounters (Fansi Tchango et al. 2022). These resources es-tablish that sequential, information-limited evaluation is both necessary and difficult. They are, however, evaluation en-vironments: they measure off-the-shelf models and supply no training signal, and their cases are simulated or synthe-sized rather than drawn from real presentations. We take the same premise and turn it into supervision, deriving a dense training objective from the decision points that real case reports already contain. The closest line of work im-proves diagnostic reasoning through explicit supervision of clinical rationales, and provides our main points of compar-ison. MedCaseReasoning assembles diagnostic cases paired with clinician-authored reasoning traces and reports that su-pervised fine-tuning (SFT) on these traces improves both diagnostic accuracy and reasoning recall (Wu et al. 2025b). MedReason converts clinical question-answer pairs into step-by-step reasoning chains derived from a medical knowledge graph, and shows that SFT on the resulting chains raises med-ical reasoning across several 7–8B models (Wu et al. 2025a). HuatuoGPT-o1 takes a two-stage route, first fine-tuning on verifier-guided reasoning trajectories and then applying PPO with a verifier-based reward (Chen et al. 2024). All three depend on final-diagnosis labels or articulated rationales, and all three evaluate on exam-style or fully specified cases, which makes them costly to extend to uncommon presen-tations, rare diseases, and longitudinal settings where such labels are scarce or unreliable. Our work departs from these methods in three ways. We supervise the intermediate next step along a patient’s trajectory rather than the final diag-nosis, so training needs no diagnostic labels. We optimize this objective with RL rather than SFT on curated rationales. And we build MedUPSQA on top of CUPCase (Perets et al. 2025), a corpus of real, uncommon patient case reports, so both training and evaluation reflect the information-limited setting of an early clinical encounter rather than a clean benchmark. Table 1 summarizes the comparison. Chunk i 
+
+> Chunk i+1
+> Chunk n
+> Generate
+> Question
+> .
+> .
+> Answer
+> Chronological
+> Split
+> Case
+> Presentation
+> Validate
+> Quality
+> LLM Judge +
+> Human
+> Validation
+> Base Model
+> Aligned
+> Model
+> RL Alignment
+> CoT : {Let me go through the details
+> carefully. The case discusses a
+> treatment using Laennec, a
+> placenta- derived drug, for a patient..}
+> Extract CoT
+
+Figure 1: MedUPSQA construction and mid-stream alignment. Case reports are segmented into chronologically ordered chunks c1, . . . , c T . For each prefix, a question qi answerable from ci+1 is generated with an answer ai and rationale ri, and a judge keeps only instances clinically equivalent to ci+1 . The retained instances align policy models with GRPO. Every stage of construction is automated; no clinician adjudication is involved, which we treat as the principal limitation of the resource.                               
+
+> Method Prediction target Training signal Reasoning supervision Setting / data Dx labels Trajectory-aware
+> MedReason (Wu et al. 2025a) MCQA answer SFT KG-derived chains Exam-style QA required ×
+> MedCaseReasoning (Wu et al. 2025b) Final diagnosis SFT Clinician traces Case reports required ×
+> HuatuoGPT-o1 (Chen et al. 2024) Verifiable answer SFT + RL (PPO) Verifier-guided Exam-style QA required ×
+> MedUPSQA (ours) Next clinical step RL (GRPO) LLM-judge reward Case reports none ✓
+
+Table 1: Comparison with the three most closely related resources. MedUPSQA differs in its prediction target, its reasoning supervision, and its independence from final-diagnosis labels, and in operating over accumulating evidence rather than a fully specified case. 
+
+## 3 Methodology 
+
+Figure 1 gives an overview of the MedUPS pipeline. Where conventional alignment optimizes models directly for final-diagnosis prediction, our approach aligns them over the clin-ical trajectory by learning intermediate decision steps. Given a free-text case, we split it into temporally ordered clinical chunks and build supervision from prefixes of that trajectory, predicting the next clinically relevant step from the context available so far. This construction is denser by design: a case of T chunks supplies T − 1 supervised decisions where a final-diagnosis objective supplies one. We align models with a single objective, next-step prediction, using GRPO, and we perform no supervised fine-tuning and no training on the final-diagnosis label. We then evaluate the aligned models on a held-out set of mid-stream decision points. 
+
+3.1 Problem Formulation 
+
+Each case presentation is represented as an ordered sequence of clinical chunks {c1, c 2, . . . , c T }, where ci precedes ci+1 
+
+in the clinical narrative. At decision point i, a policy model observes the accumulated context {c1, . . . , c i} together with a question qi about the next clinically relevant step, and must produce the answer ai that is realized in the continuation 
+
+ci+1 . This mirrors the information-limited setting of a real encounter, in which only part of the case has revealed itself and the clinician must decide what to do next. 
+
+3.2 Dataset and Construction 
+
+Our dataset extends CUPCase (Perets et al. 2025) to 5,802 
+
+medical case reports from the BMC Journal of Medical Case Reports . Each case is a free-text clinical presentation; the accompanying free-text final diagnosis is not used anywhere in this work. 
+
+Chronological chunking. Each case presentation is split into a sequence of chronologically ordered, clinically co-herent text chunks. Chunking uses few-shot prompting with GPT-4o, instructing the model to segment the case into min-imal, self-contained units, each capturing a single dominant clinical concept (e.g., symptom evolution, physical exam-ination finding, laboratory result, imaging report, medica-tion change, or clinician assessment). This preserves tempo-ral structure while avoiding conflation of multiple decision-relevant facts within one training instance. Chunking is fully automated and has not been verified by clinicians; the exact prompt and worked examples are released with the dataset. 
+
+Question and answer generation. Given the chunk se-quence, we form instances from pairs ({c1, . . . , c i}, c i+1 ),where the available patient context is all prior chunks up to step i and supervision is derived from information introduced in ci+1 . We first generate a clinically meaningful question qi
+
+with an external LLM (DeepSeek-R1), grounded in the ac-cumulated context and constructed so that it can be resolved from evidence in ci+1 . Conditioned on the same context and question, we then use DeepSeek-R1 in a few-shot setting to generate a chain-of-thought ri and a final answer ai, giving instances ({c1, . . . , c i}, q i) → (ri, a i).
+
+Validation and splits. To ensure supervision quality, can-didate questions and answers are screened by an external LLM judge, which sees the accumulated case context and determines whether the proposed answer is clinically equiv-alent to the reference realized in ci+1 , grading accuracy, completeness, contextual fit, and precision (full prompt in Appendix C, Figure A3). We arrived at this prompt iter-atively, manually inspecting 30 judged instances after each revision and adjusting the criteria where the verdicts diverged from our reading of the reference. The review was carried out by the authors on the same instances that drove the revisions, so it is a development check on the prompt rather than an in-dependent validation of the judge. Chunking and generation succeed on 5,789 cases and yield 46 ,447 candidate decision points; the filter retains 21 ,874 (47 .1% ) across 5,535 cases, and these constitute MedUPSQA. The filter therefore dis-cards slightly more than half of the generated supervision, trading dataset size for answers that are verifiably grounded in what the case reports next. To further ensure the quality, 4 authors randomly select 50 samples and validate their ques-tions, and answers manually. We split at the case-report level 
+
+before chunking and question generation, assigning every de-cision point from a case to a single split, which gives 18 ,581 
+
+train, 1,067 validation, and 2,226 test decision points with no case shared across splits. Full dataset statistics, including the distribution over question types and over position along the trajectory, are given in Appendix A, Table A1. 
+
+3.3 Reward 
+
+We use an external LLM (DeepSeek-Chat) as a clinical judge to provide the reward signal during GRPO. Rather than a sin-gle binary correctness check, the judge grades each sampled answer with a four-criterion rubric, scoring each criterion on a {0, 1, 2} scale: Correct (the answer matches the clini-cal action, finding, test, decision, or diagnosis realized in the reference continuation), Specific (the answer matches the ref-erence’s level of detail, neither too vague nor over-specified), 
+
+Grounded (the answer is supported by the visible context and does not invent findings), and Complete (no essential component of a multi-part reference answer is missing). The criteria are combined with weights (3 , 1, 2, 1) , chosen a pri-ori to prioritize clinical correctness and evidence grounding and not tuned on validation data, into a raw score in [0 , 14] 
+
+normalized to [0 , 1] :
+
+R(ˆ a) = 114 
+
+ 3 scorr + sspec + 2 sground + scomp 
+
+. (1) We did not ablate these weights, and the sensitivity of the aligned models to them is unknown. 
+
+3.4 Optimization 
+
+We align models with Group Relative Policy Optimization (GRPO) (Shao et al. 2024), a critic-free policy-gradient method that normalizes each sampled completion’s reward against the mean reward of its sampling group, avoiding a separately trained value network. For each prompt we sam-ple a group of candidate completions, score each with the rubric judge, and update the policy to increase the likeli-hood of completions whose rewards exceed the group aver-age. We perform parameter-efficient post-training with low-rank adapters (LoRA); only adapter parameters are updated, while a frozen reference model initialized from the same backbone provides KL regularization. Rollouts are gener-ated with vLLM colocated and periodically re-synchronized with the updated adapter weights. The same optimization setup is used across all model families. 
+
+## 4 Experiments 
+
+Models and adaptation. We apply mid-stream GRPO alignment to three open instruction-tuned backbones span-ning 8B to 27 B parameters: Qwen3.6-27B , Qwen3.5-9B ,and the medical model HuatuoGPT-3-8B . We addition-ally report two unaligned open baselines under the same protocol, the medical reasoning model MedReason-8B and the substantially larger mixture-of-experts model Qwen3.5-397B-A17B . As non-aligned reference points, we evaluate strong frontier models, GPT-5.6 (variants sol and luna ), using identical prompts, answer extractors, and judge. All aligned models use LoRA adapters with base weights frozen. Exact model snapshots and access dates are listed in the re-leased configuration files. 
+
+Supervised fine-tuning baseline. To separate the training 
+
+target from the optimizer , we additionally fine-tune each of the three backbones on the identical mid-stream pairs with a standard supervised objective, using the generated Chain of Thought (CoT), and answer (ri, a i) as the target sequence. These checkpoints are denoted with an -sft suffix. They see exactly the same training instances as the GRPO runs and use the same LoRA configuration, prompt template, answer ex-tractor, and evaluation pool; the only difference is the learning signal. We did not tune the SFT recipe per backbone. 
+
+Prompting. All policy runs use a structured reasoning prompt that enforces a fixed output schema: the model rea-sons within a thinking span and emits its final answer inside a dedicated <final_answer> . . . </final_answer> 
+
+span, from which the prediction is parsed. The system prompt and the next-step user template are reproduced in Appendix C, Figure A1. 
+
+Reward and evaluation judges. The GRPO reward is the four-criterion rubric score defined above. At evaluation time we use a stricter binary equivalence judge (DeepSeek-Chat) that scores a prediction correct only when its clinical content matches the reference; its prompt is given in Appendix C, Figure A2. 
+
+GRPO alignment loop. Each optimization step follows a fixed pipeline: (i) Generate , sample a group of G=8 com-pletions per prompt with vLLM from the current policy; (ii) Extract & judge , parse the <final_answer> span and score each completion with the rubric judge to obtain a reward in [0 , 1] ; (iii) Advantage , center each completion’s reward against its group mean to form the GRPO advantage; (iv) Update , apply the clipped GRPO policy-gradient update to the LoRA parameters with a KL penalty against the frozen Decision Question Prediction Report Verdict  
+
+> Diagnosis
+> case 152
+> What will be the most likely diagnosis given the patient’s symptoms and ingestion of rhododendron flowers? Grayanotoxin (rhododendron) poisoning. Acute intoxication by some species of rhododendron was suspected.
+> correct
+> Management
+> case 3749
+> What will be the next step in management given the persistent severe hyperkalemia despite initial treatment? Urgent hemodialysis — potassium 8.9 mmol/L, idioventricular rhythm, anuria, no response to shifting therapy. The antikalemic treatment was repeated without success, leading to an urgent consultation with a nephrologist for emergency dialysis.
+> correct
+> Management
+> case 640
+> What will be the next step in anticoagulation management following recovery of the peripheral blood cell count? Resume warfarin; direct oral anticoagulants are contraindicated with mechanical valves. Heparin was changed to warfarin and the patient was discharged from hospital.
+> correct
+> Workup
+> case 4950
+> What will be the next diagnostic step for the painless mass on the lateral side of the left knee? Magnetic resonance imaging to characterize the lesion’s size, depth and tissue composition in known Mazabraud syndrome. Plain film radiographs did not show abnormalities; an ultrasound examination showed a homogeneous, hypoechogenic soft-tissue mass with a cyst-like aspect.
+> incorrect
+> ordering (C)
+> Pathology
+> case 5529
+> What will be the expected histopathological findings on biopsy of the rectal lesions? Given long-standing Sjögren’s syndrome and its known B-cell lymphoma risk, diffuse infiltration of small-to-medium lymphoid cells consistent with MALT lymphoma. Inflamed mucosa with elongated tortuous glands attenuated toward the surface, and fibromuscular obliteration; the intervening mucosa was histologically normal.
+> incorrect
+> clinical (E)
+
+Table 2: Five decisions from the evaluation pool. Shading links matching content between the prediction and the report. The two failures differ in kind: case 4950 disagrees only about the order of the workup, the predicted MRI being performed later in the same case, while case 5529 is a genuine clinical error. reference. The optimizer, sampling, judge, and checkpoint-selection settings are identical across model families and are documented in full in Appendix B, with the full hyperparam-eter list in Table A2. 
+
+Evaluation protocol. All reported accuracies are LLM-judge equivalence rates on a fixed evaluation pool of 500 
+
+decision points drawn from the 2,226 -item test split, strati-fied by the number of context chunks available at prediction time (1 through 8) so that positions along the trajectory are covered. Every model and every judge in this paper scores the same 500 items, so all comparisons are made on identical instances. We report the bootstrap mean over 5 resamples of that pool (seeds 1001 –1005 ) with a 95% t-based interval. This interval quantifies sampling variation within the evalu-ation pool only: each model was trained once, from a single seed, and evaluated at a single validation-selected check-point, so it bounds neither training nor decoding variance. We therefore describe results in 95% CI. 
+
+Guarding against judge bias. The training reward and the primary evaluation metric are both produced by the same model family. An aligned policy could therefore raise its score by matching the idiosyncrasies of that judge while leaving its clinical decisions unchanged, and the comparison against frontier models is the most exposed to this concern, because those models were never optimized against our re-ward. We do not have clinician labels for these predictions, so we cannot establish which judge is closer to clinical as-sessment; what we can establish is how far a reported score moves when the judge changes. We therefore re-score the evaluation pool with two further automated judges, GPT-5.6 and Opus 5, under an identical prompt template, temperature, and answer extractor. 
+
+## 5 Results 
+
+What a decision point looks like. Table 2 shows five de-cisions drawn from the evaluation pool, chosen to span the question types and to include one ordering disagreement and one clinical error, with the question asked, the prediction, and the continuation the report recorded. The comparison is free text against free text, which is why grading requires a judge rather than string matching. Table A3 in Appendix D follows a single uncommon case through three successive cuts, and its third cut previews the failure mode we return to below: the prediction is clinically reasonable but the reference records a different kind of step. 
+
+Mid-stream alignment yields large gains. Table 3 reports next-step accuracy. Mid-stream GRPO raises Qwen3.6-27B from 55 .24 to 66 .68 (+11 .4 points), Qwen3.5-9B from 47 .24 
+
+to 57 .80 (+10 .6), and HuatuoGPT-3-8B from 37 .80 to 44 .40 
+
+(+6 .6). In every case the aligned results are higher than base in 95% CI. The effect holds at two scales of a general-purpose backbone (Qwen) and on a domain-specialized medical back-bone (HuatuoGPT), which is the strongest evidence we can offer that the gain reflects the objective rather than a quirk of one model family. Among the unaligned open models, the two trained on curated rationales for exam-style ques-tion answering, MedReason-8B ( 35 .92 ) and HuatuoGPT-3-8B ( 37 .80 ), score lowest, which fits our framing of the mid-Model 0-shot 5-shot 
+
+Open source models (base) 
+
+Qwen3.5-397B-A17B 53.16 [50.23, 56.09] 47.00 [45.20, 48.80] 
+
+Qwen3.6-27B 55.24 [53.04, 57.44] 51.10 [48.20, 54.00] 
+
+Qwen3.5-9B 47.24 [44.21, 50.27] 42.40 [40.80, 44.00] 
+
+HuatuoGPT-3-8B 37.80 [35.61, 39.99] 39.80 [38.20, 41.40] 
+
+MedReason-8B 35.92 [33.91, 37.93] 32.10 [30.00, 34.30] 
+
+Frontier models (no alignment) 
+
+GPT-5.6 sol 60.88 [57.05, 64.71] 60.36 [58.34, 62.38] 
+
+GPT-5.6 luna 59.76 [57.05, 62.47] 59.08 [57.18, 60.09] 
+
+MedUPS models (ours): SFT vs. GRPO on identical pairs 
+
+MedUPS-Qwen3.6-27B-SFT 59.60 [58.40, 60.90] 58.40 [55.80, 60.90] 
+
+MedUPS-Qwen3.6-27B (GRPO) 66.68 [64.09, 69.27] 59.90 [56.20, 63.60] 
+
+MedUPS-Qwen3.5-9B-SFT 55.60 [54.90, 56.20] 53.20 [51.40, 55.00] 
+
+MedUPS-Qwen3.5-9B (GRPO) 57.80 [55.56, 60.04] 52.20 [49.40, 54.90] 
+
+MedUPS-HuatuoGPT-3-8B-SFT 50.00 [47.90, 52.20] 48.80 [45.70, 52.00] 
+
+MedUPS-HuatuoGPT-3-8B (GRPO) 44.40 [42.42, 46.38] 47.40 [46.20, 48.50] 
+
+Table 3: Mid-stream next-step prediction accuracy (%) under the DeepSeek equivalence judge, on the fixed 500 -item evaluation pool. Bootstrap mean with a 95% CI over 5 resamples. Each MedUPS checkpoint shares the backbone of the same name in the base block, and the -sft and GRPO variants of a backbone are trained on identical mid-stream pairs. Absolute values are judge-relative (see “How much depends on the judge”) and are a lower bound on clinical competence (see “Error analysis”). stream setting as poorly covered by exam-style supervision, though these backbones differ from the Qwen models in other ways too. 
+
+RL beats supervised fine-tuning where the backbone is strong. Because the SFT and GRPO checkpoints of a back-bone are trained on identical pairs, the comparison isolates the learning signal. SFT on MedUPSQA already lifts every backbone above its base, which confirms that the mid-stream target carries signal independently of how it is optimized. On the largest backbone GRPO is clearly the better of the two: MedUPS-Qwen3.6-27B reaches 66 .68 against 59 .60 for its SFT counterpart, and it is the only configuration in the table that overtakes the frontier systems. The advantage does not extend down the scale range. At 9B the GRPO and SFT inter-vals overlap, and on HuatuoGPT-3-8B the SFT checkpoint is higher of the GRPO one; the same ordering holds under demonstrations, where GRPO leads only at 27 B. We read this as suggesting that group-relative RL pays off where the base policy is already strong enough for its sampled comple-tions to differ informatively, and that on a weaker backbone imitating the reference answers is the safer signal. Since we did not tune the SFT recipe per backbone, part of this pattern may reflect recipe fit rather than a property of the objective. 
+
+Alignment can substitute for scale on this task. After mid-stream alignment the open Qwen3.6-27B ( 66 .68 ) ex-ceeds both GPT-5.6 variants ( sol 60 .88 , luna 59 .76 ), while the same backbone before alignment ( 55 .24 ) trails them by roughly five points. The pattern repeats inside the open fam-ily: the aligned 9B model reaches 57 .80 , above the unaligned 
+
+27 B backbone at 55 .24 and within two points of GPT-5.6 10B 100B 1T Model size (parameters) 30 35 40 45 50 55 60 65 70 Mid-stream next-step accuracy (%)     
+
+> +11.4 Qwen3.6-27B +10.6 Qwen3.5-9B +6.6 HuatuoGPT-3-8B MedReason-8B Qwen3.5 397B-A17B GPT-5.6 luna GPT-5.6 sol Base MedUPS-aligned Open-source Closed-source
+
+Figure 2: Mid-stream accuracy against model scale (0-shot). Circles mark base models, triangles their MedUPS-aligned counterparts, and arrows the alignment gain. Open models (green) sit on the parameter axis. Frontier models (blue) appear in a separate panel sharing only the accuracy axis: their parameter counts are undisclosed, so no horizon-tal position should be read from them. Error bars are 95% 
+
+bootstrap CIs over the evaluation pool. 
+
+luna , so alignment recovers a roughly threefold parameter gap. Over the range of scales we test, the training objective separates the systems more than model size does; Figure 2 plots accuracy against parameter count, with frontier sys-0 1 2 3 5 8 10 Number of in-context shots (K) 0.35 0.40 0.45 0.50 0.55 0.60 Accuracy on test.jsonl       
+
+> Qwen3.5-9B
+> base MedUPS-Qwen3.5-9B
+> 01235810 Number of in-context shots (K)
+> HuatuoGPT-3-8B
+> base MedUPS-HuatuoGPT-3-8B
+
+Figure 3: Few-shot ablation. Mid-stream accuracy against the number of answer-only in-context demonstrations. Each aligned checkpoint stays above its own backbone at every shot count. tems on a separate axis because their parameter counts are undisclosed. This comparison is also the one most exposed to judge identity, which we quantify next. 
+
+In-context demonstrations do not substitute for align-ment. The 5-shot column of Table 3 tests whether the same behavior can be elicited by prompting instead of training. It cannot: five answer-only demonstrations lower accuracy for every open model and for both frontier variants, and the aligned checkpoints move in the same direction. The one ex-ception is HuatuoGPT-3-8B, the weakest general instruction follower in the set, which gains 2.0 points from having the output format demonstrated. The likely reason for the de-cline is that our demonstrations show the answer without the reasoning, which pulls models with a native thinking span toward short, under-reasoned outputs; the effect is largest where the 0-shot model reasons most. This makes the 5-shot column a floor on what prompting can achieve rather than a fair elicitation ceiling, since we did not test demon-strations that include chain-of-thought traces. The ordering is nonetheless unchanged: every trained checkpoint, SFT or GRPO, stays above its own base at 5 shots. Figure 3 sweeps the shot count and shows the same picture across the range: demonstrations are drawn from a held-out shot pool and ren-dered answer-only, the demonstration items themselves are excluded from the evaluation pool, and each aligned check-point stays above its own backbone at every shot count. 
+
+How much depends on the judge. Neither judge is vali-dated against clinician labels, so this check measures whether a reported score depends on which model produced the ver-dict, not whether either judge is right. Table 4 re-scores the evaluation pool with GPT-5.6 and Opus 5. DeepSeek and GPT-5.6-luna agree on 79 .2% of instances ( κ = 0 .56 ), mod-                   
+
+> Judge pair nAgreement Cohen’s κ
+> DeepSeek / GPT-5.6-luna 500 0.79 0.56 [0.49 ,0.63 ]DeepSeek / GPT-5.6-sol 500 0.77 0.53 [0.45 ,0.60 ]DeepSeek / Opus 5 500 0.85 0.65 [0.57 ,0.72 ]
+
+Table 4: Judge robustness. The same 500 predictions of MedUPS-Qwen3.6-27B scored independently by each judge under an identical prompt template and answer extractor. Agreement is the raw proportion of matching verdicts; κ is Cohen’s chance-corrected coefficient (Cohen 1960) with a 
+
+95% CI from its analytic standard error. Measured accuracy on this pool is 0.672 under the DeepSeek judge and 0.580 
+
+under GPT-5.6. erate agreement on the bands of Landis and Koch (1977), and the disagreement is asymmetric: GPT-5.6 rejects 75 pre-dictions the DeepSeek judge accepted against 29 in the re-verse direction, so accuracy on this pool falls from 0.672 
+
+to 0.580 . Opus 5 sits closer to DeepSeek ( 0.85 agreement, 
+
+κ = 0 .65 ), so the DeepSeek–GPT-5.6 gap is the widest of the three pairings rather than a typical one. Roughly one pre-diction in five sits where two capable models disagree about clinical equivalence, which is a property of the task rather than of either judge. We re-scored our strongest checkpoint rather than every system in Table 3, so this check bounds the magnitude of the judge effect but does not verify that the model ordering survives a judge swap. The shift we mea-sure, 9.2 points, is larger than the 5.8-point margin by which MedUPS-Qwen3.6-27B leads GPT-5.6 sol ; we therefore do not claim that the open-versus-frontier ordering is judge-independent, and re-scoring the full table under a second judge family is the follow-up we regard as most necessary. The aligned-versus-base comparisons are exposed in the op-posite direction, since only the aligned model was optimized against a DeepSeek-family reward. What argues against those gains being pure judge matching is their consistency across three unrelated backbones and the error analysis below, in which the surviving failures are dominated by properties of the reference rather than of the judge. 
+
+Error analysis. A graded failure on this task is not au-tomatically a clinical failure. The reference is whatever one published report happened to record next, so a prediction can be marked incorrect for reasons that have nothing to do with the model’s reasoning. To separate the two, we inspected ev-ery failure of MedUPS-Qwen3.6-27B on the evaluation pool and assigned each to one of six categories: (A) the reference is an under-determined particular of a single patient that no reasoner could recover from the visible context; (B) the refer-ence does not address the question asked; (C) the prediction names a defensible step at the wrong point in the workup or the wrong granularity; (D) question and continuation concern different kinds of step; (E) the prediction is clinically wrong on the information available; (F) the judge erred. Assignment was performed by an LLM rater instructed to resolve doubt 
+
+against calling a failure clinical, so category E is a lower bound on genuine reasoning error, and it was not verified by clinicians. Crossing this attribution with a stratification by question stem shows the two dominant strata failing for op-posite reasons. Action questions, which ask what to do next, are the hardest stratum ( 58 .7% against 68 .6% for Finding), yet not one of their failures is a clinical error and roughly three quarters are disagreements about which of several de-fensible next steps the report happened to take first. Finding questions instead fail because the reference is an arbitrary particular of one patient (A) or does not answer the question (B), which together account for about four fifths of that stra-tum’s failures. Aggregated over the pool, category E covers 
+
+2.0% of all decisions. Two consequences follow for how Ta-ble 3 should be read. The headline accuracies understate clin-ical competence by an amount that varies systematically with question type, so differences between models are informative while the absolute level is not a measure of clinical safety. And the largest single source of graded failure on Action questions, the class with the most direct bedside analogue, is under-specification of the reference rather than model error, which is a concrete argument for the multi-reference standard we flag below. We ran this attribution only for our strongest aligned model, so we cannot rule out that the failure compo-sition differs for the frontier baselines, which would change how the cross-system margins should be interpreted. 
+
+## 6 Discussion 
+
+Chunks as a patient trajectory. Splitting a case into chronologically ordered chunks turns a static vignette into a sequence of decision points where information grows step by step, which is closer to a real encounter than a fully spec-ified case. Asking the model for the next step at each point rewards what clinicians value: reasoning forward from what is known so far, choosing the most informative next action, and staying calibrated when the picture is incomplete. It also gives denser supervision than a single terminal label, since a case with T chunks yields many next-step decisions, each with a concrete answer that can be checked against what the case reports next. 
+
+Alignment over scale, and why it matters for deployment. 
+
+A mid-stream-aligned 27 B open model surpasses the frontier systems we tested under our judge, and an 8B medical model improves sharply under the same recipe. Open models of this size can run on-premises inside hospital infrastructure, which eases the privacy, cost, and auditability constraints that make closed frontier APIs hard to use on patient data. Subject to the judge caveat above, our results point to the alignment objective, rather than ever-larger closed models, as a workable direction for clinically useful systems. We did not measure inference latency or serving cost, so the operational side of that argument remains untested. 
+
+Why uncommon cases need dedicated models. Rare and off-guideline presentations are where general systems tend to fail and where patients are most often harmed (Ball, Miller, and Balogh 2015; Faye et al. 2024). These cases are under-represented in training corpora and often fall outside clinical guidelines, so a model tuned for common, guideline-covered conditions cannot be assumed to carry over. Building and evaluating on uncommon-case trajectories, as MedUPSQA does, targets the population with the greatest unmet need. 
+
+Ethical considerations. MedUPS is intended as clinical decision support under clinician oversight, and over-reliance on its next-step suggestions is a real risk that deployment must guard against. Supervision and evaluation both rely on an LLM-as-a-Judge, which could carry errors and biases; we reduce this with a strict rubric, score caching for consistency, a separate binary evaluation judge, and two additional judge families, we recommend expert audit before clinical use. The underlying case reports come from the published literature and carry its publication, geographic, and demographic bi-ases; we report the observable composition of the corpus in Appendix A, but the reporting in case reports is incomplete enough that we cannot characterize which patient popula-tions the resulting models are and are not validated for. This is a material limitation for any clinical use. We release the data, code, and checkpoints so that others can, replicate, and strengthen these safeguards. 
+
+Limitations and future work. Our reward and our pri-mary metric are produced by language models, and neither is validated against clinician labels; the 30 -instance review de-scribed above shaped the judge prompt during development but was neither held out nor performed by independent clin-icians, so it does not stand in for such validation, and expert annotation of a held-out sample is the natural next step and the one we regard as most needed. Every stage of dataset con-struction, filtering, reward assignment, evaluation, and error attribution runs through LLMs, so the retained supervision is by definition what an automated judge considered equivalent, and cumulative bias cannot be excluded. We report rank sta-bility under an alternate judge for our strongest checkpoint, as discussed above. We compare GRPO against supervised fine-tuning on identical mid-stream pairs, but not against ap-plying the same GRPO recipe to final-diagnosis labels, so we establish what the mid-stream target buys relative to how it is optimized rather than relative to the conventional training target. The mixed GRPO-versus-SFT outcome across back-bones is itself unexplained, and because the SFT recipe was not tuned per backbone we cannot separate a property of the objective from a property of the recipe. Further ablations would strengthen the paper: rubric weights, group size G,the LoRA rank, and the training seed. Our cases come from a single case-report corpus, which bounds their diversity and leaves generalization to other journals, however, due to the open, worldwide access to the journal, and the time frame of reports, we assume diversity is present. Because that corpus is public, contamination of the pretraining data of the models we compare cannot be excluded, however, the small represen-tation of the specific case reports in the incredibly large pre-training data should mitigate this limitation slightly. Finally, a reference next step drawn from what published reports hap-pened to do is one defensible action rather than the only one, the retrospective nature of the report should strenghten this action as a solid choice in the patient trajectory. Useful next steps include a reference standard admitting multiple accept-able next steps, calibration and abstention when the next step is genuinely uncertain, a breakdown of accuracy as a function of position along the trajectory, and multimodal trajectories that add imaging and laboratory data. 
+
+## 7 Conclusion 
+
+We introduced MedUPSQA, a dataset of 21 ,874 mid-stream clinical decision points, and MedUPS, an alignment frame-work that supervises language models on the intermediate clinical decisions unfolding along a patient’s trajectory in-stead of on final diagnostic labels. Aligning models on next-step prediction with GRPO produced large gains on mid-stream reasoning across three backbones spanning 8B to 
+
+27 B parameters, with separated bootstrap intervals in every case. Supervised fine-tuning on the identical pairs also lifts every backbone, so the target carries signal independently of the optimizer, while GRPO is the stronger of the two at the largest scale we test. Under our evaluation judge, a mid-stream-aligned open model also surpassed substantially larger frontier systems, and a 9B aligned model surpassed its own unaligned 27 B counterpart, which suggests that for uncommon cases the alignment objective can carry more weight than scale over this range. Because both the reward and the metric are automated, we are explicit about what the evaluation does not settle, and we release our dataset, code, and checkpoints to support the clinician-grounded validation that this line of work now requires. 
+
+## References 
+
+Ball, J. R.; Miller, B. T.; and Balogh, E. P. 2015. Improving diagnosis in health care . National Academies Press. Ben Shoham, O.; and Rappoport, N. 2024. Cpllm: Clinical prediction with large language models. PLOS Digital Health ,3(12): e0000680. Bowen, J. L. 2006. Educational strategies to promote clinical diagnostic reasoning. New England Journal of Medicine ,355(21): 2217–2225. Chen, J.; Cai, Z.; Ji, K.; Wang, X.; Liu, W.; Wang, R.; Hou, J.; and Wang, B. 2024. Huatuogpt-o1, towards medical complex reasoning with llms. arXiv preprint arXiv:2412.18925 .Cohen, J. 1960. A coefficient of agreement for nominal scales. Educational and psychological measurement , 20(1): 37–46. Dai, W.; Chen, P.; Ekbote, C.; and Liang, P. P. 2025. QoQ-Med: Building Multimodal Clinical Foundation Mod-els with Domain-Aware GRPO Training. arXiv preprint arXiv:2506.00711 .Fansi Tchango, A.; Goel, R.; Wen, Z.; Martel, J.; and Ghosn, J. 2022. DDXPlus: A New Dataset for Automatic Medical Diagnosis. In Advances in Neural Information Processing Systems (NeurIPS) Datasets and Benchmarks Track .Faye, F.; Crocione, C.; Anido de Peña, R.; Bellagambi, S.; Escati Peñaloza, L.; Hunter, A.; Jensen, L.; Oosterwijk, C.; Schoeters, E.; de Vicente, D.; et al. 2024. Time to diagnosis and determinants of diagnostic delays of people living with a rare disease: results of a Rare Barometer retrospective patient survey. European Journal of Human Genetics , 32(9): 1116– 1126. Jing, P.; Lee, K.; Zhang, Z.; Zhou, H.; Yuan, Z.; Gao, Z.; Zhu, L.; Papanastasiou, G.; Fang, Y.; and Yang, G. 2025. Reason Like a Radiologist: Chain-of-Thought and Reinforcement Learning for Verifiable Report Generation. arXiv preprint arXiv:2504.18453 .Johri, S.; Jeong, J.; Tran, B. A.; Schlessinger, D. I.; Wongvibulsin, S.; Barnes, L. A.; Zhou, H.-Y.; Cai, Z. R.; Van Allen, E. M.; Kim, D.; Daneshjou, R.; and Rajpurkar, P. 2025. An Evaluation Framework for Clinical Use of Large Language Models in Patient Interaction Tasks. Na-ture Medicine , 31(1): 77–86. Komorowski, M.; Celi, L. A.; Badawi, O.; Gordon, A. C.; and Faisal, A. A. 2018. The Artificial Intelligence Clinician Learns Optimal Treatment Strategies for Sepsis in Intensive Care. Nature Medicine , 24(11): 1716–1720. Landis, J. R.; and Koch, G. G. 1977. The measurement of observer agreement for categorical data. biometrics , 159– 174. Li, S. S.; Balachandran, V.; Feng, S.; Ilgen, J. S.; Pierson, E.; Koh, P. W.; and Tsvetkov, Y. 2024. MediQ: Question-Asking LLMs and a Benchmark for Reliable Interactive Clinical Reasoning. In Advances in Neural Information Processing Systems (NeurIPS) , volume 37. Liévin, V.; Hother, C. E.; Motzfeldt, A. G.; and Winther, O. 2024. Can large language models reason about medical questions? Patterns , 5(3). Perets, O.; Shoham, O. B.; Grinberg, N.; and Rappoport, N. 2025. CUPCase: Clinically Uncommon Patient Cases and Diagnoses Dataset. In Proceedings of the AAAI Conference on Artificial Intelligence , 27, 28293–28301. Schmidgall, S.; Ziaei, R.; Harris, C.; Reis, E.; Jopling, J.; and Moor, M. 2024. AgentClinic: A Multimodal Agent Bench-mark to Evaluate AI in Simulated Clinical Environments. 
+
+arXiv preprint arXiv:2405.07960 .Shao, Z.; Wang, P.; Zhu, Q.; Xu, R.; Song, J.; Bi, X.; Zhang, H.; Zhang, M.; Li, Y.; Wu, Y.; et al. 2024. Deepseekmath: Pushing the limits of mathematical reasoning in open lan-guage models. arXiv preprint arXiv:2402.03300 .Singhal, K.; Tu, T.; Gottweis, J.; Sayres, R.; Wulczyn, E.; Clark, K.; Pfohl, S.; et al. 2025. Toward expert-level medi-cal question answering with large language models. Nature Medicine .Sonoda, Y.; Kurokawa, R.; Hagiwara, A.; Asari, Y.; Fukushima, T.; Kanzawa, J.; Gonoi, W.; and Abe, O. 2025. Structured clinical reasoning prompt enhances LLM’s diag-nostic capabilities in diagnosis please quiz cases. Japanese Journal of Radiology , 43(4): 586–592. Su, Y.; Yu, D.; Song, L.; Li, J.; Mi, H.; Tu, Z.; Zhang, M.; and Yu, D. 2025. Crossing the Reward Bridge: Expanding RL with Verifiable Rewards Across Diverse Domains. arXiv preprint arXiv:2503.23829 .Wu, C.-K.; Chen, W.-L.; and Chen, H.-H. 2023. Large lan-guage models perform diagnostic reasoning. arXiv preprint arXiv:2307.08922 .Wu, J.; Deng, W.; Li, X.; Liu, S.; Mi, T.; Peng, Y.; Xu, Z.; Liu, Y.; Cho, H.; Choi, C.-I.; et al. 2025a. Medreason: Eliciting factual medical reasoning steps in llms via knowledge graphs. 
+
+arXiv preprint arXiv:2504.00993 .Wu, K.; Wu, E.; Thapa, R.; Wei, K.; Zhang, A.; Suresh, A.; Tao, J. J.; Sun, M. W.; Lozano, A.; and Zou, J. 2025b. MedCaseReasoning: Evaluating and learning diag-nostic reasoning from clinical case reports. arXiv preprint arXiv:2505.11733 .Yang, L.; et al. 2025. Aligning large language models with radiologists by reinforcement learning from AI feedback for chest CT reports. European Journal of Radiology . Online ahead of print. Zhang, S.; Liu, Q.; Qin, G.; Naumann, T.; and Poon, H. 2025. Med-rlvr: Emerging medical reasoning from a 3b base model via reinforcement learning. arXiv preprint arXiv:2502.19655 .Zhu, K.; Xia, P.; Li, Y.; Zhu, H.; Wang, S.; and Yao, H. 2024. MMedPO: Aligning Medical Vision-Language Models with Clinical-Aware Multimodal Preference Optimization. arXiv preprint arXiv:2412.06141 .Zhu, K.; Xia, P.; Li, Y.; Zhu, H.; Wang, S.; and Yao, H. 2025. MMedPO: Aligning Medical Vision-Language Mod-els with Clinical-Aware Multimodal Preference Optimiza-tion. In Proceedings of the 42nd International Conference on Machine Learning (ICML) . Poster. 
+
+## A Dataset Statistics 
+
+Table A1 reports the composition of MedUPSQA, including the distribution over question types and over position along the case trajectory.            
+
+> Statistic Value
+> Construction
+> Case reports (CUPCase extension) 5,802
+> Cases successfully chunked and generated 5,789
+> Candidate decision points 46 ,447
+> After equivalence validation
+> Retained decision points 21 ,874 (47 .1% )Cases represented 5,535
+> Splits (disjoint at case level)
+> Train 18 ,581
+> Validation 1,067
+> Test 2,226
+> Per-case structure
+> Chunks per case after processing (mean) 4
+
+Table A1: MedUPSQA dataset statistics. Splits are disjoint at the case-report level: every decision point derived from a case is assigned to a single split before chunking and question generation. The fixed evaluation pool is a stratified sample of the test split, scored identically by every model and every judge reported in the paper. 
+
+## B Training and Compute Details 
+
+This appendix documents the full training configuration used for all mid-stream GRPO runs. Unless a model family is named explicitly, settings are shared across families. 
+
+Framework and hardware. We align models with GRPO as implemented in TRL, launched with accelerate across 
+
+8 GPUs on a single node ( 8×NVIDIA B200 180GB). Train-ing runs in bf16 with gradient checkpointing enabled. 
+
+Optimization. We use the dr_grpo loss with a sin-gle GRPO iteration per batch ( num_iterations =1) and 
+
+G=8 sampled generations per prompt. The per-device train batch size is 1 with gradient accumulation of 4, and we train for one epoch over the mid-stream training set. The learning rate is 1×10 −5 under a constant-with-warmup schedule ( 10 
+
+warmup steps); we found a constant rate avoided the flat-reward plateau seen with cosine decay during exploration. The KL coefficient against the frozen reference is β=0 .01 .The maximum completion length is 8,192 tokens, and the maximum prompt length accommodates long medical cases. Each model was trained once, from a single seed; we did not measure seed-to-seed variance. 
+
+Parameter-efficient adaptation. Only LoRA adapters are trained (rank r=16 , α=64 , dropout 0.05 ); base weights stay frozen, and a frozen copy of the backbone serves as the KL reference. Updated adapter weights are periodically re-synchronized to the vLLM engine used for generation. 
+
+Sampling. Rollout sampling follows each model’s rec-ommended settings. For the Qwen families (Qwen3.6-27B, Qwen3.5-9B) and HuatuoGPT-3-8B we use temperature 0.6,top-p 0.95 , top-k 20 , with a thinking budget of 6,000 tokens for the Qwen families. Reasoning models that emit native Setting Value                             
+
+> GRPO loss dr_grpo
+> Generations per prompt G8GRPO iterations 1Per-device batch size 1Gradient accumulation 4Epochs 1Learning rate 1×10 −5(constant + warmup) Warmup steps 10 KL coefficient β0.01 Max completion length 8,192 tokens Thinking budget (Qwen) 6,000 tokens LoRA rank / α/ dropout 16 / 64 / 0.05 Precision bf16 + grad. checkpointing GPUs 8 (single node) Rollout backend vLLM (colocated) Sampling T=0 .6, top-p0.95 , top-k20
+> Judge model / temperature DeepSeek-Chat / 0.1 Log / save / eval steps 5 / 25 / 100
+
+Table A2: Mid-stream GRPO training configuration. thinking tokens are delimited at their closing reasoning tag before the <final_answer> span is parsed. 
+
+Reward and judge. The GRPO reward is the four-criterion rubric score (Correct, Specific, Grounded, Com-plete; weights 3, 1, 2, 1; normalized to [0 , 1] ), produced by DeepSeek-Chat (DeepSeek V4 Flash) at temperature 0.1
+
+with up to 600 output tokens. To remove stochastic judge noise on repeated answers, scores are memoized in a shared filesystem cache keyed by a SHA-256 hash of the judge in-put, so identical answers within a sampling group receive one frozen score. Optional reward shaping (a format bonus and a reasoning-length penalty) is disabled in all reported runs, so the reward equals the normalized rubric score. 
+
+Numerical stability. For model families that show large per-step policy drift, we clip the log-ratio feeding the K3 KL estimator to bound rare single-token outliers, and for back-bones whose chat template ends turns with a token other than the tokenizer’s scalar EOS we correct the termination check to the model’s true multi-token EOS set. These patches affect training stability only and leave the objective unchanged. 
+
+Checkpointing and evaluation cadence. We evaluated on the validation split every 100 GRPO training steps using the same judge protocol and selected the checkpoint with the highest validation accuracy. The results reported in the main paper use ckpt-800 for Qwen3.6-27B and ckpt-1400 
+
+for HuatuoGPT-3-8B. 
+
+Supervised fine-tuning baseline. The -sft checkpoints are trained on the same 18 ,581 mid-stream training instances, with the generated CoT and answer (ri, a i) as the target se-quence under a standard next-token objective. They use the same LoRA configuration, precision, and hardware as the GRPO runs. 
+
+## C Prompt Templates 
+
+This appendix collects the prompt templates used to build and to score MedUPSQA. All are reproduced verbatim; braces mark the fields substituted per instance. The chunking prompt is released with the dataset. 
+
+## D Qualitative Example 
+
+Table A3 follows one case through three successive deci-sion points, showing at each the question asked, the rea-soning trace, the prediction, and the continuation the report recorded. Policy system prompt (next-step task) 
+
+You are a clinical reasoning assistant. You will be shown a portion of a patient case and a question whose answer is determined by what comes next in that case -- typically the most appropriate next test, treatment, diagnosis, finding, or clinical decision given the information available so far. Follow these rules when answering: - Reason only from the information stated in the case. Do not invent findings, labs, history, or details that are not provided. - Be as clinically specific as the case supports. Name the specific test, drug, anatomical site, or action rather than a vague category -- for example, "CT chest with IV contrast" rather than "imaging". - If the correct answer has multiple components, include all of them. - Think through the case briefly inside <think>...</think>, then output your final answer wrapped in <final_answer>...</final_answer> tags. 
+
+User: 
+
+Case presentation: {context_chunk} Question: {question} 
+
+Figure A1: Policy prompt for the mid-stream next-step task. The prediction is parsed from the <final_answer> span. The same template is used for every policy model, aligned and unaligned. 
+
+Evaluation judge (mid-stream next-step task) 
+
+You are a clinical expert evaluating whether a model’s answer to a case question matches the reference answer. Consider semantic equivalence and clinical correctness -- phrasing and synonyms do not matter, but the clinical content (action, test, drug, finding, decision, or diagnosis) must be the same. Question: {question} Model’s answer: {pred} Reference answer: {ref} After analysis, conclude with JSON containing: "judgment": 1 if the model’s answer is equivalent to the reference, 0 otherwise 
+
+Figure A2: Binary equivalence judge for the mid-stream task. Applied at evaluation time only, identically to every model and every judge family. It is stricter than the four-criterion training rubric. Dataset quality validation (construction-time equivalence judge) 
+
+Act as a clinical expert evaluating answer correctness. Decide wether the proposed answer is correct given the reference information containing the ground truth answer. When comparing the two answers, consider: 1.Accuracy: Match with gold-standard answer. Key errors? (e.g., wrong test referral) 2.Completeness: All critical components included? 3.Context: Appropriate for this patient’s specifics? 4.Precision: Specific enough for clinical use? (e.g., "CT abdomen with contrast" vs "imaging") For this clinical question, in context: Question: {question} Context: {case_context} Between this answer and reference information containing the ground truth answer: Proposed Answer: {final_answer} Reference Information: {reference_answer} After careful analysis, conclude with JSON containing: "judgment": 1 if correct, 0 if incorrect 
+
+Figure A3: Construction-time quality validation prompt. Applied once per candidate decision point during dataset construc-tion. An instance is retained in MedUPSQA only when the judge returns judgment = 1 ; this filter reduces 46 ,447 candidates to the 21 ,874 retained instances. Unlike the evaluation judge in Figure A2, this prompt also sees the accumulated case context, so it can reject answers that are defensible in general but wrong for this patient. The wording was reached iteratively, with 30 
+
+judged instances inspected manually after each revision. Reproduced verbatim, including the original typographical errors. 
+
+Cut 1 — Examination Cut 2 — Identification Cut 3 — Escalation 
+
+Question What will be the expected findings on corneal examination suggestive of fungal infection? What will be the next diagnostic step to identify the mycelium? What will be the next diagnostic step after the infection spreads to the adjacent sclera and progresses to endophthalmitis? Trace “Fungal keratitis classically presents with satellite lesions, feathery margins, hypopyon. But based strictly on the provided text: subepithelial and superficial stromal opacities with dot-like and tentacle-like infiltrates . . . the instruction says: reason only from the information stated in the case.” “MALDI-TOF-MS was attempted but failed due to lack of reference spectrum in the database . . . the standard next step for identifying an unknown fungus is molecular sequencing, specifically ribosomal RNA (rRNA) gene sequencing (e.g. ITS region sequencing).” “When corneal opacity prevents fundus view, B-scan ultrasonography is used . . . Sometimes enucleation is done, but that’s therapeutic/surgical, not diagnostic. The question specifically asks for a 
+
+diagnostic step.” Prediction Subepithelial and superficial stromal opacities with dot-like and tentacle-like infiltrates, often with a central corneal ulcer and hypopyon in advanced cases. Molecular identification via ribosomal RNA (rRNA) gene sequencing, targeting the internal transcribed spacer (ITS) region with panfungal primers. B-scan ultrasonography (ocular ultrasound), essential when direct fundus visualization is obscured; it guides further management (vitreous sampling, vitrectomy, or enucleation). Report A grayish-white ulcer measuring 4 × 6 mm; inflammatory infiltrates with feathered margins and hypopyon 2 mm deep; dense central stromal opacity surrounded by a reticular pattern of subepithelial and superficial stromal infiltration. The mycelium was sent for internal transcribed spacer (ITS) rRNA gene sequencing analysis and unambiguously identified; the reference spectrum was then added to the in-house MALDI-TOF-MS database. The infection still spread to the adjacent sclera and progressed to endophthalmitis. Enucleation eventually had to be done. Verdict correct correct incorrect 
+
+Table A3: One MedUPSQA case cut at three successive decision points (severe filamentous keratitis). At each cut the model sees the report only up to that point and predicts what happens next, graded free text against free text. Shading links the same clinical entity wherever it recurs within a column. Cut 3 is a graded failure that is not a clinical one: its answer, B-scan ultrasonography, is standard practice when corneal opacity blocks the fundus view, but the report never mentions it.
