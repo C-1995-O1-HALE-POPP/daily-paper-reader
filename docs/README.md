@@ -6,36 +6,29 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-09
-- 运行时间：2026-08-09 20:52:47 UTC
+- 最新运行日期：2026-08-10
+- 运行时间：2026-08-10 20:54:49 UTC
 - 运行状态：成功
-- 本次总论文数：5
-- 精读区：0
-- 速读区：5
+- 本次总论文数：3
+- 精读区：1
+- 速读区：2
 
 ### 今日简报（AI）
-今日速读5篇论文，聚焦AI智能体在医疗分诊、搜索行为与对话基准测试中的可靠性评估。最值得关注的是两篇7分工作：CRS-Triage提出在临床证据不全时基于置信度和可靠性的选择性分诊；Benchmarking the Benchmarks则系统诊断了对话智能体评测基准的盲点。建议普通读者优先了解医疗AI分诊的置信度校准逻辑，以及现有评测基准可能高估智能体能力的问题。
-- 详情：[/202608/09/README](/202608/09/README)
+今日精读3篇AI智能体评估论文，聚焦端到端审计引擎、临床医疗强化学习与安全环境下的代码智能体评测。最值得关注是精读的《An End-to-End Agent Auditing Engine》（8分），其系统化审计框架可参考；速读中《ResidencyRL》结合模拟临床环境训练也具实践价值。建议普通读者优先关注智能体审计方向，快速浏览其余两篇即可。
+- 详情：[/202608/10/README](/202608/10/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [An End-to-End Agent Auditing Engine](/202608/10/2608.07346v1-an-end-to-end-agent-auditing-engine)  
+   标签：评分：8.0/10、query:ehr-agent
+   evidence：端到端智能体审计引擎，可标准化执行轨迹并快速集成评测任务，可直接用于医疗智能体基准评测
 
 ### 速读区论文标签
-1. [CRS-Triage: Confidence- and Reliability-Aware Selective Triage under Incomplete Clinical Evidence](/202608/09/2608.03862v1-crs-triage-confidence--and-reliability-aware-selective-triage-under-incomplete-clinical-evidence)  
+1. [ResidencyRL: Reinforcement Learning in Simulated Clinical Environments](/202608/10/2608.07418v1-residencyrl-reinforcement-learning-in-simulated-clinical-environments)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：基于EHR的临床决策支持系统，具备选择性转诊功能；与使用EHR的医疗智能体相关
-2. [Benchmarking the Benchmarks: Evaluating Benchmarks for Conversational Agents](/202608/09/2608.06329v1-benchmarking-the-benchmarks-evaluating-benchmarks-for-conversational-agents)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：提出评估对话智能体基准质量的框架，可直接用于医疗智能体的基准测试
-3. [Diagnosing Search Behavior and Failure Modes in Long-Horizon Search Agents](/202608/09/2608.01913v1-diagnosing-search-behavior-and-failure-modes-in-long-horizon-search-agents)  
+   evidence：在模拟多轮临床交互中训练临床AI代理的强化学习方法
+2. [Permission Denied: Policy-Graded Evaluation of Coding Agents in Hardened Environments](/202608/10/2608.02670v1-permission-denied-policy-graded-evaluation-of-coding-agents-in-hardened-environments)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：轨迹级诊断分解搜索智能体的检索与利用失败，是通用的智能体性能评估方法，可迁移到医疗智能体
-4. [PatTree: a novel approach for automated creation of multimodal, graph-based patient representations for medical classification tasks](/202608/09/2608.02692v1-pattree-a-novel-approach-for-automated-creation-of-multimodal-graph-based-patient-representations-for-medical-classification-tasks)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：从临床数据构建多模态患者图表示，支持基于EHR的医学AI
-5. [MatrAIx: Simulating the World with 8.3 Billion Persona Agents](/202608/09/2608.04205v1-matraix-simulating-the-world-with-83-billion-persona-agents)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：大规模模拟用户评估基础设施，可用于智能体性能基准测试，但非医疗EHR专用
+   evidence：策略分级评估方法，适用于受限环境中的智能体，可迁移到基于EHR的医疗智能体基准测试
 
 
 <div class="dpr-home-promo-card">

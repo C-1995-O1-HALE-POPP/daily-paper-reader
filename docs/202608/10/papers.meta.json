@@ -1,0 +1,54 @@
+{
+  "label": "2026-08-10",
+  "date": "2026-08-10",
+  "generated_at": "2026-08-10T20:54:55",
+  "count": 3,
+  "papers": [
+    {
+      "paper_id": "202608/10/2608.07346v1-an-end-to-end-agent-auditing-engine",
+      "section": "deep",
+      "title_en": "An End-to-End Agent Auditing Engine",
+      "authors": "Haoning Wang, Mingxun Zhang, Chenyue Yu, Yingjun Shang, Xia Hu, Guanchu Wang, Na Zou",
+      "date": "2026-08-07",
+      "pdf": "https://arxiv.org/pdf/2608.07346v1",
+      "score": "8.0",
+      "evidence": "端到端智能体审计引擎，可标准化执行轨迹并快速集成评测任务，可直接用于医疗智能体基准评测",
+      "tldr": "大语言模型智能体框架（harness）的快速发展使得严谨评估变得重要，但构建端到端、系统化、全面的评估流水线仍是一大挑战。为此提出A²E引擎，基于新的Agent Task Protocol快速集成任务，通过自动插桩的Monitor捕获并生成标准化执行轨迹；在评估阶段，采用执行效率、工具使用、任务规划、错误恢复等多维指标系统刻画框架能力。实验揭示不同模型-框架组合在不同任务上存在显著性能差异，没有单一组合始终最优。这些发现证明了系统化评估的必要性，并为模型与框架的协同进化提供了有用指导。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "With the rapid advancement of large language models (LLMs), harnesses have become essential infrastructure for deploying agents across a wide range of domains. The fast-evolving harness ecosystem has also made rigorous capability evaluation increasingly important. However, efficiently building an end-to-end, systematic, and comprehensive evaluation pipeline remains a significant challenge. To address this challenge, we introduce $A^2E$ (Agent Auditing Engine), an end-to-end evaluation engine designed for agent harnesses. $A^2E$ leverages our newly proposed Agent Task Protocol (ATP) to enable the rapid integration of evaluation tasks with different harnesses. Through an automatically instrumented Monitor, it captures and generates standardized execution traces during experiments. In the Evaluation stage, $A^2E$ systematically assesses harness capabilities using a suite of multidimensional metrics. Compared with correctness alone, these metrics provide a more fine-grained characterization of differences among harnesses in execution efficiency, tool use, task planning, and error recovery. Experiments conducted with $A^2E$ further reveal that model-harness combinations exhibit substantial performance variation across different types of tasks, and that no single combination consistently outperforms all others across every task. These findings not only demonstrate the necessity of systematic evaluation but also provide useful guidance for the co-evolving of models and harnesses. Our code is available at https://github.com/datamllab/A2E.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/10/2608.07418v1-residencyrl-reinforcement-learning-in-simulated-clinical-environments",
+      "section": "quick",
+      "title_en": "ResidencyRL: Reinforcement Learning in Simulated Clinical Environments",
+      "authors": "Valentin Liévin, Samuel Schmidgall, Tim Strother, Alex Bijamov, Akshay Goel, Anil Palepu, Chunjong Park, Vahid Balazadeh, Min Woo Sun, Marius Guerard, Justin Chen, Dave Steiner, Vikram Dhillon, Ibrahim Azar, Akhil Mehta, Nicholas Spetsieris, Shilpan Shah, Maen Abdelrahim, Amit Dahiya, Yun Liu, Katherine Chou, Yossi Matias, Avinatan Hassidim, Dale R. Webster, Quoc V. Le, Raia Hadsell, Joelle Barral, Carey Radebaugh, Aleksandra Faust, Shekoofeh Azizi, Mike Schaekermann, Po-Hsuan Cameron Chen, Tao Tu, David Racz, Lin Yang",
+      "date": "2026-08-07",
+      "pdf": "https://arxiv.org/pdf/2608.07418v1",
+      "score": "7.0",
+      "evidence": "在模拟多轮临床交互中训练临床AI代理的强化学习方法",
+      "tldr": "医学教育中，临床推理依赖多轮患者对话，但现有语言模型主要在静态基准上评测，缺乏对完整决策序列的优化。本文提出ResidencyRL，通过模拟临床环境中的多轮强化学习（最多60轮对话）训练AI智能体，结合对抗性模拟器和结构化奖励。在对抗条件下诊断准确率提升7.0%，漏诊红旗症状率降低31%，专家盲评中87.6%偏好该智能体，且能力可迁移至其他基准。该工作表明序列决策可通过仿真RL有效学习，迈向临床掌握。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "In medical education, physicians convert academic knowledge into clinical expertise through residency: years of training across thousands of encounters, with diverse sources of feedback and progressively greater autonomy. Much of clinical reasoning relies on the patient encounter, a dialogue in which a clinician elicits history, refines diagnostic hypotheses, and decides management under uncertainty. While large language models (LLMs) excel on static medical benchmarks, methods to optimize the full sequence of clinical decisions remain underdeveloped. We present ResidencyRL, a reinforcement learning (RL) method for training clinical artificial intelligence (AI) agents through simulated multi-turn clinical encounters (up to 60 dialogue turns and 8 tool calls per trajectory). ResidencyRL pairs the policy agent with LLM simulators capable of complex, adversarial behaviors, training against a structured reward aligned to diagnostic accuracy, management quality, communication, documentation, and safety. On held-out evaluations, the ResidencyRL agent improves diagnostic accuracy by 7.0% under adversarial conditions (88.0% vs. 81.0%) and reduces missed red flag rates by 31%, demonstrating rigorous mitigation of premature closure. Blinded expert clinicians validated these gains, preferring the trained agent in 87.6% of side-by-side comparisons. The procedural competencies transfer to unseen benchmarks: the agent outperforms the base model across all six clinical axes of the AMIE multi-visit benchmark, and shows consistent directional improvements on AgentClinic and CRAFT-MD. Our findings demonstrate that sequential clinical decision-making can be effectively learned through multi-turn RL in simulation, yielding robust, generalizable capabilities, paving the way towards clinical mastery. Prospective validation with real-world workflows remains necessary to establish clinical utility.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/10/2608.02670v1-permission-denied-policy-graded-evaluation-of-coding-agents-in-hardened-environments",
+      "section": "quick",
+      "title_en": "Permission Denied: Policy-Graded Evaluation of Coding Agents in Hardened Environments",
+      "authors": "Dotan Davidovich, Yair Amar, Hai Rozencwajg, Or Hiltch",
+      "date": "2026-08-02",
+      "pdf": "https://arxiv.org/pdf/2608.02670v1",
+      "score": "6.0",
+      "evidence": "策略分级评估方法，适用于受限环境中的智能体，可迁移到基于EHR的医疗智能体基准测试",
+      "tldr": "现有编码代理评测几乎都在宽松沙箱中进行，忽略了真实企业环境中的安全策略约束。本文引入基于常见企业限制的分级安全策略，在 Terminal-Bench 2.1 上系统评测 12 个编码代理。结果显示硬化并非免费且影响不均匀：最严格策略下成功率损失最高达 18.3 点、成本膨胀 167.3%，且两者不一致，最优模型随策略变化。研究还剖析了策略受阻时的行为与失败模式，并发布开源插件 Boundary-Bench，支持策略约束下的编码代理评测。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Coding agents increasingly run inside organizations whose security controls (scoped credentials, restricted egress, read-only filesystems, non-root execution) constrain them like any other software. Existing benchmarks, however, evaluate agents almost exclusively in permissive sandboxes, so it is unknown how performance changes when policy is enforced. In this work, we evaluate 12 coding agents on Terminal-Bench 2.1 across nested security policy levels derived from common real-world enterprise restrictions. Hardening is never free but far from uniform: under the strictest policy, success losses reach 18.3 points and cost inflation 167.3\\%, and the two axes disagree; the model that best preserves success is also the one that loses the most efficiency, so model choice is policy-dependent. Beyond aggregate scores, we characterize how agents behave when policy blocks their actions and decompose the failures hardening induces: runs grind into timeouts or wrong solutions rather than stopping early, in a mix that differs by model. To ground comparisons, we verify task solvability under the strictest policy, separating model failures from tasks the policy forecloses. We release Boundary-Bench, an open-source hardening plugin enabling policy-constrained evaluation of coding agents on Terminal-Bench and compatible benchmarks.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
