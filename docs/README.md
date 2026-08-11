@@ -6,29 +6,38 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-10
-- 运行时间：2026-08-10 20:54:49 UTC
+- 最新运行日期：2026-08-11
+- 运行时间：2026-08-11 20:03:12 UTC
 - 运行状态：成功
-- 本次总论文数：3
-- 精读区：1
-- 速读区：2
+- 本次总论文数：6
+- 精读区：3
+- 速读区：3
 
 ### 今日简报（AI）
-今日精读3篇AI智能体评估论文，聚焦端到端审计引擎、临床医疗强化学习与安全环境下的代码智能体评测。最值得关注是精读的《An End-to-End Agent Auditing Engine》（8分），其系统化审计框架可参考；速读中《ResidencyRL》结合模拟临床环境训练也具实践价值。建议普通读者优先关注智能体审计方向，快速浏览其余两篇即可。
-- 详情：[/202608/10/README](/202608/10/README)
+今日聚焦6篇论文，精读EHR临床交互与医疗推理评估，速读覆盖数据分析、用药安全与LLM测试。最值得关注EHR纵向对话评估框架及医疗推理校准基准，均获满分推荐；另发现7B专用模型在业务分析上优于32B直连基线。建议普通读者优先从满分精读入手，理解医疗AI评估关键趋势。
+- 详情：[/202608/11/README](/202608/11/README)
 
 ### 精读区论文标签
-1. [An End-to-End Agent Auditing Engine](/202608/10/2608.07346v1-an-end-to-end-agent-auditing-engine)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：端到端智能体审计引擎，可标准化执行轨迹并快速集成评测任务，可直接用于医疗智能体基准评测
+1. [ELICITED: EHR-grounded Longitudinal Interactive Conversations for Information-seeking Triage Evaluation and Decision-making](/202608/11/2608.09024v1-elicited-ehr-grounded-longitudinal-interactive-conversations-for-information-seeking-triage-evaluation-and-decision-making)  
+   标签：评分：10.0/10、query:ehr-agent
+   evidence：基于EHR的交互式对话分诊评估基准
+2. [CliniCARE-Bench: Clinical Calibrated Audit of Medical Reasoning in EHR](/202608/11/2608.07796v1-clinicare-bench-clinical-calibrated-audit-of-medical-reasoning-in-ehr)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：基于MIMIC-IV真实EHR的临床推理审计基准，在受管工具环境中评测医疗Agent
+3. [An Agentic Generative Large Language Model for Treatment Planning of Colorectal Cancer](/202608/11/2608.09142v1-an-agentic-generative-large-language-model-for-treatment-planning-of-colorectal-cancer)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：使用UF Health临床文本的智能体大模型用于治疗规划
 
 ### 速读区论文标签
-1. [ResidencyRL: Reinforcement Learning in Simulated Clinical Environments](/202608/10/2608.07418v1-residencyrl-reinforcement-learning-in-simulated-clinical-environments)  
+1. [Business Truth, not SQL Accuracy: A Rule-Gated 7B Analytics Agent Outperforms a Direct-Prompted 32B Baseline](/202608/11/2608.09254v1-business-truth-not-sql-accuracy-a-rule-gated-7b-analytics-agent-outperforms-a-direct-prompted-32b-baseline)  
    标签：评分：7.0/10、query:ehr-agent
-   evidence：在模拟多轮临床交互中训练临床AI代理的强化学习方法
-2. [Permission Denied: Policy-Graded Evaluation of Coding Agents in Hardened Environments](/202608/10/2608.02670v1-permission-denied-policy-graded-evaluation-of-coding-agents-in-hardened-environments)  
+   evidence：面向智能体可靠性的基准，包含澄清、弃权、拒绝等非执行指标，可迁移到EHR医疗智能体的性能评测
+2. [Coupled Graph--Policy Distillation for Personalized Medication Safety in Older Adults with Multimorbidity](/202608/11/2608.09443v1-coupled-graph--policy-distillation-for-personalized-medication-safety-in-older-adults-with-multimorbidity)  
+   标签：评分：7.0/10、query:ehr-agent
+   evidence：利用患者临床状态的药物安全多智能体框架
+3. [Tangent: An Empirical Study of Testing Practices for LLM-Based Agent Applications](/202608/11/2608.08413v1-tangent-an-empirical-study-of-testing-practices-for-llm-based-agent-applications)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：策略分级评估方法，适用于受限环境中的智能体，可迁移到基于EHR的医疗智能体基准测试
+   evidence：对LLM智能体测试实践的实证研究，与智能体基准测试相关
 
 
 <div class="dpr-home-promo-card">

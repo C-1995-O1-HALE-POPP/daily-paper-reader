@@ -1,0 +1,281 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-11T19:54:49.018309+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 3,
+    "deep_cap": 6,
+    "deep_selected": 3,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2608.09024v1",
+      "source": "arxiv",
+      "title": "ELICITED: EHR-grounded Longitudinal Interactive Conversations for Information-seeking Triage Evaluation and Decision-making",
+      "abstract": "Emergency-department (ED) triage requires clinicians to rapidly identify patients who need immediate attention, determine who can safely wait, and prioritize limited clinical resources. At presentation, however, information may be limited to a chief complaint and initial vital signs. Clinically important details, including symptom onset and progression, associated symptoms, medical history, and medication use, are often obtained through focused conversation. Effective triage therefore requires clinicians to identify information gaps, ask appropriate follow-up questions, and update their assessment as new evidence becomes available. Most existing ED benchmarks evaluate acuity prediction from a fixed clinical snapshot. Although this formulation measures predictive performance after patient information has been assembled, it does not capture the interactive process through which triage-relevant evidence is elicited and interpreted. Existing medical dialogue datasets support the study of clinical communication, but dialogue statements are not always linked to temporally ordered events in the electronic health record (EHR). We introduce EHR2Dial-Triage, an agentic conversation-generation framework and benchmark grounded in MIMIC-IV-ED. The framework constructs triage conversations under explicit role-based and temporal information boundaries. Each accepted patient disclosure is linked to its supporting EHR event and the first dialogue turn at which it becomes available. EHR2Dial-Triage enables controlled evaluation of information elicitation, evidence use, five-level Emergency Severity Index prediction, and patient-facing communication across models and patient personas. It provides a structured setting for studying conversational triage as a dynamic process of clinical information acquisition, reasoning, and communication.",
+      "authors": [
+        "Haohao Zhu",
+        "Xiaolin Shi",
+        "Jiayu Zhou"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-08-10T02:26:06+00:00",
+      "link": "https://arxiv.org/pdf/2608.09024v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 10.0,
+      "llm_evidence_en": "EHR-grounded interactive conversational benchmark for triage evaluation",
+      "llm_evidence_cn": "基于EHR的交互式对话分诊评估基准",
+      "llm_evidence": "基于EHR的交互式对话分诊评估基准",
+      "canonical_evidence": "基于EHR的交互式对话分诊评估基准",
+      "llm_tldr_en": "Proposes an EHR-grounded multi-turn benchmark for ED triage, enabling agents to ask follow-up questions and update assessments.",
+      "llm_tldr_cn": "现有急诊分诊评估基准大多依赖固定的病历摘要或生命体征进行病情严重程度预测，无法模拟真实临床中医生通过追问获取病史、用药等关键信息的交互过程。为此，论文提出ELICITED，一个由EHR驱动的纵向多轮对话基准，用于评测医疗智能体在分诊场景中的信息询问、证据整合和决策更新能力。该基准设计了多样化的临床对话流程，为更贴近临床实际的医疗AI评估提供了新工具。",
+      "llm_tldr": "现有急诊分诊评估基准大多依赖固定的病历摘要或生命体征进行病情严重程度预测，无法模拟真实临床中医生通过追问获取病史、用药等关键信息的交互过程。为此，论文提出ELICITED，一个由EHR驱动的纵向多轮对话基准，用于评测医疗智能体在分诊场景中的信息询问、证据整合和决策更新能力。该基准设计了多样化的临床对话流程，为更贴近临床实际的医疗AI评估提供了新工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.07796v1",
+      "source": "arxiv",
+      "title": "CliniCARE-Bench: Clinical Calibrated Audit of Medical Reasoning in EHR",
+      "abstract": "Large language models perform strongly on medical knowledge benchmarks, but reliable clinical deployment requires agents to conduct defensible investigations over heterogeneous, longitudinal records: determining what evidence is needed, retrieving and reconciling structured and free-text data, grounding conclusions in verifiable evidence, and deferring cases that cannot be resolved reliably. We introduce CliniCARE-Bench (Clinical Calibrated Audit of Medical Reasoning in EHR), a benchmark for retrospective clinical audit: 25 clinician-validated scenarios instantiated as 750 patient-specific cases over real-patient-derived MIMIC-IV data. Systems investigate each case through a governed, logged tool environment for record retrieval, computation, and policy access, and return one of four verdicts---Yes, No, Indeterminate: Lack of Data, or Indeterminate: Medically Ambiguous---the last two separating missing evidence from residual medical ambiguity. Beyond verdict accuracy, we score patient-evidence and policy grounding, process adherence, calibrated abstention, reliability, and efficiency against case-level reference verdicts produced by independent multi-model adjudication and calibrated against Clinical Board review. Every retrieval, computation, and report is replayable, so the investigation trace is inspectable and scorable. To our knowledge, CliniCARE-Bench is the first deployment-oriented clinical-agent benchmark to jointly evaluate real longitudinal EHR investigation, claim-level evidence grounding, governing-policy use, process adherence, and calibrated abstention within a common patient-level adjudication framework. Across 16 agentic systems, four-way accuracy spans 65.3-76.1%, but raw accuracy overstates investigation quality. Defect-free accuracy, which credits a verdict only when correct and free of prohibited shortcuts, is 4.8-14.8 points lower and reorders the leaderboard.",
+      "authors": [
+        "Veronica Chatrath",
+        "Bryan Zhu",
+        "George Pu",
+        "Jingxuan Fan",
+        "Apaar Shanker",
+        "Varun Ursekar",
+        "Anahita Sharma",
+        "Jason Qin",
+        "Keqi Han",
+        "Soham Dinesh Tiwari",
+        "Soham Dan",
+        "Vijay Kalmath",
+        "Yuan Li",
+        "Daniel Yue Zhang",
+        "Chenguang Wang",
+        "Zainab Doctor",
+        "Zhijun Yin",
+        "Nigam H. Shah",
+        "Yuan Xue"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-07T22:39:13+00:00",
+      "link": "https://arxiv.org/pdf/2608.07796v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Benchmark for clinical audit of medical reasoning over MIMIC-IV EHR, evaluates agents in governed tool environment",
+      "llm_evidence_cn": "基于MIMIC-IV真实EHR的临床推理审计基准，在受管工具环境中评测医疗Agent",
+      "llm_evidence": "基于MIMIC-IV真实EHR的临床推理审计基准，在受管工具环境中评测医疗Agent",
+      "canonical_evidence": "基于MIMIC-IV真实EHR的临床推理审计基准，在受管工具环境中评测医疗Agent",
+      "llm_tldr_en": "CliniCARE-Bench is a benchmark for retrospective clinical audit in EHR, using 750 patient-specific cases from MIMIC-IV in a governed tool environment to evaluate agents on evidence retrieval, reconciliation, and defensible conclusions.",
+      "llm_tldr_cn": "大型语言模型在医学知识基准上表现出色，但可靠的临床应用要求Agent能够在异构纵向EHR中设计可辩护的查询。为此提出CliniCARE-Bench，基于MIMIC-IV构建25个临床医生验证场景共750个患者实例，通过受管、日志化的工具环境评测系统的记录检索、证据整合与结论落地能力。结果显示该基准可识别仅靠知识无法解决的推理缺陷。工作为EHR驱动的医疗Agent评估提供了首个临床标定的审计基准。",
+      "llm_tldr": "大型语言模型在医学知识基准上表现出色，但可靠的临床应用要求Agent能够在异构纵向EHR中设计可辩护的查询。为此提出CliniCARE-Bench，基于MIMIC-IV构建25个临床医生验证场景共750个患者实例，通过受管、日志化的工具环境评测系统的记录检索、证据整合与结论落地能力。结果显示该基准可识别仅靠知识无法解决的推理缺陷。工作为EHR驱动的医疗Agent评估提供了首个临床标定的审计基准。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Benchmarks for clinical decision support agents based on EHR",
+      "matched_requirement_id": "req-9",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.09142v1",
+      "source": "arxiv",
+      "title": "An Agentic Generative Large Language Model for Treatment Planning of Colorectal Cancer",
+      "abstract": "Treatment planning in precision oncology requires synthesizing heterogeneous patient information with rapidly evolving clinical guidelines to ensure guideline-concordant care. While large language models (LLMs) show promise in many diagnostic tasks, their adoption for high-stakes treatment planning is hindered by complex reasoning, adherence to timely clinical guidelines, and safety concerns. In this study, we present GatorOnco, an agentic LLM for colorectal cancer (CRC) treatment planning. GatorOnco is developed using a total of 282 billion tokens of biomedical text, including healthcare system-scale clinical text comprising 166 billion tokens from UF Health. We implemented a domain-adaptation method that integrates pre-training, model merging, a two-stage post-training approach, and agent-based reinforcement learning. An agentic retrieval-augmented generation (RAG) approach dynamically integrates time-sensitive clinical guidelines into the reasoning process. In a blind, randomized clinical evaluation conducted by five UF Health oncologists, GatorOnco significantly outperformed open-source LLMs (P < 0.01) and achieved expert-level performance comparable to UF Health oncologists. Compared with expert oncologists, GatorOnco received significantly higher ratings for readability (4.46 vs. 4.19, P < 0.01) and completeness (3.91 vs. 3.52, P < 0.01), while showing statistically comparable performance in correctness (4.09 vs. 4.11, P = 0.921), currency (4.04 vs. 3.98, P = 0.478), and safety (4.22 vs. 4.22, P = 0.999). These findings demonstrate that integrating agentic reasoning with large-scale domain adaptation can help bridge the gap for generative AI in high-stakes cancer treatment planning.",
+      "authors": [
+        "Mengxian Lyu",
+        "Cheng Peng",
+        "Tim Jang",
+        "Ang Li",
+        "Mengyuan Zhang",
+        "Ziyi Chen",
+        "Leighton Elliott",
+        "Tianshi Liu",
+        "Lidice Galindo",
+        "Chiranjeevi Sainatham",
+        "Oscar F. Borja-Montes",
+        "Kaleb E. Smith",
+        "Ying Zhang",
+        "Lichao Sun",
+        "Jiang Bian",
+        "Gloria Lipori",
+        "Duane A. Mitchell",
+        "Elizabeth A. Shenkman",
+        "Yi Guo",
+        "Thomas J. George",
+        "Yonghui Wu"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-08-10T05:42:03+00:00",
+      "link": "https://arxiv.org/pdf/2608.09142v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "agentic LLM for treatment planning using clinical text from UF Health",
+      "llm_evidence_cn": "使用UF Health临床文本的智能体大模型用于治疗规划",
+      "llm_evidence": "使用UF Health临床文本的智能体大模型用于治疗规划",
+      "canonical_evidence": "使用UF Health临床文本的智能体大模型用于治疗规划",
+      "llm_tldr_en": "Agentic generative LLM for colorectal cancer treatment planning, developed on 282B medical tokens including UF Health clinical text; domain adaptation integrates pre-training and model alignment for guideline-concordant care.",
+      "llm_tldr_cn": "结直肠癌治疗规划需要综合异质患者信息与不断更新的指南，LLM在此高安全场景下的应用仍面临推理复杂和指南遵循不足。GatorOnco是基于2820亿token生物医学文本（含1600亿token UF Health临床文本）开发的智能体LLM，通过整合预训练、领域适配等策略实现个性化治疗规划。该研究展示了利用大规模EHR临床文本构建医疗智能体并进行治疗决策的可行性，为精准肿瘤学智能体评估奠定基础。",
+      "llm_tldr": "结直肠癌治疗规划需要综合异质患者信息与不断更新的指南，LLM在此高安全场景下的应用仍面临推理复杂和指南遵循不足。GatorOnco是基于2820亿token生物医学文本（含1600亿token UF Health临床文本）开发的智能体LLM，通过整合预训练、领域适配等策略实现个性化治疗规划。该研究展示了利用大规模EHR临床文本构建医疗智能体并进行治疗决策的可行性，为精准肿瘤学智能体评估奠定基础。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.09254v1",
+      "source": "arxiv",
+      "title": "Business Truth, not SQL Accuracy: A Rule-Gated 7B Analytics Agent Outperforms a Direct-Prompted 32B Baseline",
+      "abstract": "LLM analytics agents are evaluated on SQL syntax accuracy, but production failures look different: questions with two valid business definitions, questions the warehouse cannot answer, deprecated columns after a schema change, and queries that execute successfully while returning the wrong business number. No execution-match metric can score them. This paper introduces WarehouseReliabilityBench, 400 frozen tasks over two synthetic warehouses in which roughly half the correct responses are a clarification, an abstention or a refusal, with pinned denominators and a pre-registered paired bootstrap fixing each claim verb before the numbers existed. QueryProof, a 7B agent, uses rules derived from a semantic layer and physical catalog to determine its behaviour, and gates every answer on deterministic post-execution checks. On an 80-task synthetic test split evaluated once, QueryProof outperforms a direct-prompted 32B baseline by +0.237 [+0.112, +0.375] Business Truth Rate at 71.0% lower cost per correct answer; against a cost-matched few-shot baseline the accuracy gain holds but the cost difference does not resolve. This compares systems rather than model sizes: the 32B baseline receives none of the scaffolding. False success falls from 0.754 to 0.351 of returned answers, and no wrong number was returned on an answerable task (0 of 24), though 13 answers went to questions requiring clarification or abstention. Removing the routing layer changes little (0.562 against 0.537), so the result does not depend on escalation. Routing tuned on validation over-abstains on test, and the fitted confidence model loses to the heuristic it replaced. Resampling template families rather than tasks widens both accuracy intervals to include zero, so the effect's direction is better supported than its magnitude. The gain tracks the deterministic layer, though no component ablation was run.",
+      "authors": [
+        "Morris Lee"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-08-10T08:14:24+00:00",
+      "link": "https://arxiv.org/pdf/2608.09254v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "agent reliability benchmark with non-execution metrics (clarification, abstention, refusal) transferable to benchmarking medical agents on EHR data",
+      "llm_evidence_cn": "面向智能体可靠性的基准，包含澄清、弃权、拒绝等非执行指标，可迁移到EHR医疗智能体的性能评测",
+      "llm_evidence": "面向智能体可靠性的基准，包含澄清、弃权、拒绝等非执行指标，可迁移到EHR医疗智能体的性能评测",
+      "canonical_evidence": "面向智能体可靠性的基准，包含澄清、弃权、拒绝等非执行指标，可迁移到EHR医疗智能体的性能评测",
+      "llm_tldr_en": "LLM analytics agents fail on business truth, not SQL syntax; the paper introduces WarehouseReliabilityBench with clarification/abstention/refusal tasks and QueryProof, a rule-gated 7B agent, beating 32B direct prompting, offering transferable reliability metrics.",
+      "llm_tldr_cn": "商业智能体常因业务定义歧义或数据不可答而失败，但现有评测只关注SQL准确率。论文提出WarehouseReliabilityBench，其中约半数正确响应是澄清、弃权或拒绝，并基于语义层规则构建QueryProof。实验显示7B的QueryProof优于直接提示的32B基线，说明面向业务真值的基准能更好衡量智能体可靠性。此评测思路可直接迁移到基于EHR的医疗智能体评估。",
+      "llm_tldr": "商业智能体常因业务定义歧义或数据不可答而失败，但现有评测只关注SQL准确率。论文提出WarehouseReliabilityBench，其中约半数正确响应是澄清、弃权或拒绝，并基于语义层规则构建QueryProof。实验显示7B的QueryProof优于直接提示的32B基线，说明面向业务真值的基准能更好衡量智能体可靠性。此评测思路可直接迁移到基于EHR的医疗智能体评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.08413v1",
+      "source": "arxiv",
+      "title": "Tangent: An Empirical Study of Testing Practices for LLM-Based Agent Applications",
+      "abstract": "Agents built on large language models (LLMs) are increasingly used to build applications that perform complex, multi-step tasks involving reasoning, tool use, and interaction with external environments. Despite rapid progress in benchmarking LLM-based agents, very few studies have attempted to understand how such systems are tested in practice. In particular, testing levels, objectives, data patterns, test complexity, and validation strategies for agent applications remain underexplored. In this paper, we present an empirical study of testing practices in LLM-based agent applications using a large corpus of mined open-source projects. We construct a large-scale dataset of agent applications, tools, and tests, and manually label 2,572 test methods from 240 modules. From this analysis, we derive a taxonomy of 23 testing patterns across test fixtures, data, objectives, and assertions, and characterize tests by level (unit, module, integration). We complement this with structured interviews of 10 senior industry practitioners building agentic systems. Our results show that testing of LLM-based agent applications is dominated by narrowly scoped unit tests, with limited coverage of complex interactions, realistic scenarios, and non-functional requirements. Tests frequently rely on simplistic inputs, heavy mocking, and shallow validation, and agent-related tests exhibit low structural complexity. While industry practice places greater emphasis on non-functional testing than open-source projects, both reveal common gaps, including the lack of formal testing foundations, unclear test objectives, and challenges in generating high-quality test data. Based on these findings, we outline research directions toward more systematic and rigorous testing of agent applications, including foundations for agent testability, formalized test objectives, and fault-based testing techniques.",
+      "authors": [
+        "Rangeet Pan",
+        "Tyler Stennett",
+        "Divya Sankar",
+        "Bridget McGinn",
+        "Alessandro Orso",
+        "Raju Pavuluri",
+        "Saurabh Sinha",
+        "Maja Vukovic"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE"
+      ],
+      "published": "2026-08-09T02:08:34+00:00",
+      "link": "https://arxiv.org/pdf/2608.08413v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "empirical study of testing practices for LLM agents, relevant to agent benchmarking",
+      "llm_evidence_cn": "对LLM智能体测试实践的实证研究，与智能体基准测试相关",
+      "llm_evidence": "对LLM智能体测试实践的实证研究，与智能体基准测试相关",
+      "canonical_evidence": "对LLM智能体测试实践的实证研究，与智能体基准测试相关",
+      "llm_tldr_en": "Empirical study of testing practices for LLM-based agent applications using a large open-source corpus; manually labels 2,572 test methods to analyze testing levels, objectives, and validation strategies.",
+      "llm_tldr_cn": "LLM智能体应用测试实践研究稀少，评测质量难以保障。该文通过大规模挖掘开源项目构建智能体应用、工具与测试数据集，并对2572个测试方法进行人工标注，系统分析测试层级、目标、数据模式、测试复杂度与验证策略，揭示当前智能体测试的特征与不足。虽非医疗领域，其测试分析方法和基准构建流程可直接迁移至医疗智能体性能评估。",
+      "llm_tldr": "LLM智能体应用测试实践研究稀少，评测质量难以保障。该文通过大规模挖掘开源项目构建智能体应用、工具与测试数据集，并对2572个测试方法进行人工标注，系统分析测试层级、目标、数据模式、测试复杂度与验证策略，揭示当前智能体测试的特征与不足。虽非医疗领域，其测试分析方法和基准构建流程可直接迁移至医疗智能体性能评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.09443v1",
+      "source": "arxiv",
+      "title": "Coupled Graph--Policy Distillation for Personalized Medication Safety in Older Adults with Multimorbidity",
+      "abstract": "Large language model (LLM) agents can support medication review between clinical visits, but safe choices for older adults with multimorbidity depend on conditions, medications, and geriatric risks that users may omit. We introduce ATLAS, a coupled graph--policy distillation framework for patient-adaptive medication safety. ATLAS structures guideline evidence as a medication-safety graph. Targeted questions update the patient state and distill relevant relations into a patient-specific medication conflict graph (PMCG). A risk-first multi-agent policy uses the PMCG to screen contraindications, assess cautions and monitoring needs, identify safer alternatives, and verify the final medication plan. We also introduce GeriMedBench, an interactive benchmark that tests safety-critical information acquisition and evidence-based decision revision. Across a European non-interactive multimorbidity benchmark, an Asian interactive multimorbidity benchmark, and an Asian non-interactive cross-guideline benchmark, ATLAS achieves the strongest complete-decision performance among the compared systems. On the European non-interactive multimorbidity benchmark, it exceeds the strongest proprietary LLM baseline by 53.73 points in Strict Success Rate and 14.63 points in overall safety reasoning score (OSRS), with no unsafe recommendations under the automated evaluator. A blinded clinician evaluation gives ATLAS higher mean ratings across all five criteria and flags potentially unsafe recommendations in one ATLAS case and two Gemini cases.",
+      "authors": [
+        "Zihan Wang",
+        "Anglin Liu",
+        "Rongyi Wang",
+        "Dantong Li",
+        "Yi Lu",
+        "Siqing Yuan",
+        "Hongxia Xu",
+        "Zhongtian Long",
+        "Jintai Chen"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-10T11:19:44+00:00",
+      "link": "https://arxiv.org/pdf/2608.09443v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "LLM agents for personalized medication safety using patient-specific clinical state",
+      "llm_evidence_cn": "利用患者临床状态的药物安全多智能体框架",
+      "llm_evidence": "利用患者临床状态的药物安全多智能体框架",
+      "canonical_evidence": "利用患者临床状态的药物安全多智能体框架",
+      "llm_tldr_en": "ATLAS couples graph distillation with policy learning for patient-adaptive medication review, using targeted questions to build a medication conflict graph and a risk-first multi-agent policy to screen contraindications and verify plans, improving safety in older adults with multimorbidity.",
+      "llm_tldr_cn": "针对老年多病共存患者用药安全中用户遗漏关键临床信息的问题，论文提出ATLAS框架。该方法将指南证据构建为药物安全图，通过针对性提问更新患者状态并生成个体化用药冲突图。风险优先的多智能体策略利用该图进行禁忌症筛查、替代方案识别和用药计划验证。该框架及配套数据集为临床用药审查智能体的安全决策提供了有力支撑。",
+      "llm_tldr": "针对老年多病共存患者用药安全中用户遗漏关键临床信息的问题，论文提出ATLAS框架。该方法将指南证据构建为药物安全图，通过针对性提问更新患者状态并生成个体化用药冲突图。风险优先的多智能体策略利用该图进行禁忌症筛查、替代方案识别和用药计划验证。该框架及配套数据集为临床用药审查智能体的安全决策提供了有力支撑。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
