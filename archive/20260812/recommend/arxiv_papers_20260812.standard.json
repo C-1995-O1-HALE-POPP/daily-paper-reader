@@ -1,0 +1,467 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-12T21:17:19.703737+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 8,
+    "quick_skim_target": 11,
+    "quick_selected": 8
+  },
+  "deep_dive": [
+    {
+      "id": "2608.06110v2",
+      "source": "arxiv",
+      "title": "ECHO: A Locally-Deployable Agentic Health Assistant with Temporal Memory, Safety Guardrails, and Speech Assessment",
+      "abstract": "This paper presents ECHO (Enhanced Care & Health Observer), a locally-deployable conversational health assistant for long-term chronic care management. ECHO integrates three complementary software modules developed under shared supervision as a unified system. The core module is an agentic chatbot built on a ReAct loop orchestrated via LangGraph, equipped with 17 clinical tools and a temporal knowledge graph for persistent cross-session memory; it achieves a 94.9% tool-execution pass rate across a 59-scenario benchmark with GPT-5 Mini. A two-stage hybrid safety layer intercepts all incoming queries: a rule-based layer handles explicit crisis signals and jailbreak attempts in under 1ms, while a signed graph neural network (GNN) with APPNP-style propagation classifies boundary cases by clinical intent, achieving 88.8% accuracy and 90.6% unsafe recall on a 2,537-query annotated Turkish health dataset while outperforming zero-shot LLM baselines including Llama 3.3 70B. A multimodal speech assessment module combining Whisper acoustic encoding and BERT text encoding with cross-attention fusion estimates emotion, depression, and pain, reaching a mean macro F1 of 0.652. The full system is implemented as a web application that can run entirely on consumer hardware, with no patient data transmitted to external services, supporting compliance with GDPR and KVKK.",
+      "authors": [
+        "Abdulkadir Külçe",
+        "Alihan Esen",
+        "Çağla Fikir",
+        "Berke Kurt",
+        "Kuzey Arar",
+        "Gökhan Ercan",
+        "Faik Boray Tek"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-08-06T14:44:12+00:00",
+      "link": "https://arxiv.org/pdf/2608.06110v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Locally-deployable agentic health assistant with benchmark-based performance evaluation (94.9% tool-execution pass rate)",
+      "llm_evidence_cn": "可本地部署的智能体健康助手，基于基准测试评估性能（工具执行通过率94.9%）",
+      "llm_evidence": "可本地部署的智能体健康助手，基于基准测试评估性能（工具执行通过率94.9%）",
+      "canonical_evidence": "可本地部署的智能体健康助手，基于基准测试评估性能（工具执行通过率94.9%）",
+      "llm_tldr_en": "Presents ECHO, a locally-deployable conversational health assistant for chronic care, integrating ReAct agent, 17 clinical tools, temporal memory, safety layers, and speech assessment, achieving 94.9% tool-execution pass rate on 59 scenarios.",
+      "llm_tldr_cn": "针对长期慢病管理需求，提出可本地部署的智能体健康助手ECHO，其核心是基于ReAct循环的智能体聊天机器人，集成17个临床工具和时间知识图谱，并配备混合安全层与语音评估，在59个场景基准上达到94.9%的工具执行通过率。该工作展示了医疗智能体结合工具使用与基准评估的实践方式，并强调本地部署与安全保障。",
+      "llm_tldr": "针对长期慢病管理需求，提出可本地部署的智能体健康助手ECHO，其核心是基于ReAct循环的智能体聊天机器人，集成17个临床工具和时间知识图谱，并配备混合安全层与语音评估，在59个场景基准上达到94.9%的工具执行通过率。该工作展示了医疗智能体结合工具使用与基准评估的实践方式，并强调本地部署与安全保障。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.10273v1",
+      "source": "arxiv",
+      "title": "Locally Deployable Small Language Models for Emergency Department Decision Support: A Systematic Benchmark of Fine-Tuning Strategies",
+      "abstract": "Deploying large language models (LLMs) for decision support in emergency departments (EDs) faces two major challenges: privacy risks of transmitting patient data to closed-source commercial LLMs and the lack of systematic evaluation of fine-tuning strategies for locally deployable open-source small language models (SLMs). We benchmarked eight open-source SLMs using zero-shot prompting, prefix tuning, Low-Rank Adaptation (LoRA), and full fine-tuning on three ED tasks: triage level prediction, specialist referral recommendation, and diagnosis prediction. Using 2,083 MIMIC-IV-ED cases and Claude Haiku 4.5 and Claude Sonnet 4.5 as baselines, we found that LoRA fine-tuned open-source SLMs outperform commercial baselines on triage level prediction and specialist referral recommendation, while diagnosis prediction remains challenging for open-source SLMs. Confusion matrix analysis further shows that fine-tuned open-source SLMs can detect highest-severity patients missed by the commercial baselines. These results demonstrate that locally deployable SLMs can achieve clinically competitive performance for ED decision support.",
+      "authors": [
+        "Qingfeng Zhang",
+        "Yuanxiong Guo",
+        "Yanmin Gong"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-08-10T22:15:21+00:00",
+      "link": "https://arxiv.org/pdf/2608.10273v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Systematic benchmark of LLMs for emergency department decision support using MIMIC-IV-ED EHR data",
+      "llm_evidence_cn": "使用MIMIC-IV-ED电子病历对急诊决策支持LLM进行系统基准测试",
+      "llm_evidence": "使用MIMIC-IV-ED电子病历对急诊决策支持LLM进行系统基准测试",
+      "canonical_evidence": "使用MIMIC-IV-ED电子病历对急诊决策支持LLM进行系统基准测试",
+      "llm_tldr_en": "Benchmarks eight open-source SLMs with four fine-tuning strategies on MIMIC-IV-ED for triage, referral, and diagnosis, finding LoRA superior and privacy-preserving.",
+      "llm_tldr_cn": "针对急诊场景使用闭源LLM传输患者数据的隐私风险及开源小模型微调策略缺乏系统评估的问题，论文在2083例MIMIC-IV-ED病例上基准测试八种开源SLM，覆盖零样本、前缀微调、LoRA和全量微调三种急诊任务。结果显示LoRA微调的开源SLM优于Claude Haiku/Sonnet基线，兼顾本地隐私保护。该工作为基于EHR的临床决策支持模型评估提供了可复现的基准方法，虽未聚焦复杂代理框架，但直接对标了临床决策支持评估需求。",
+      "llm_tldr": "针对急诊场景使用闭源LLM传输患者数据的隐私风险及开源小模型微调策略缺乏系统评估的问题，论文在2083例MIMIC-IV-ED病例上基准测试八种开源SLM，覆盖零样本、前缀微调、LoRA和全量微调三种急诊任务。结果显示LoRA微调的开源SLM优于Claude Haiku/Sonnet基线，兼顾本地隐私保护。该工作为基于EHR的临床决策支持模型评估提供了可复现的基准方法，虽未聚焦复杂代理框架，但直接对标了临床决策支持评估需求。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.09861v1",
+      "source": "arxiv",
+      "title": "Towards Expert-level Medical AI for Real-time Video Consultations",
+      "abstract": "Audio-visual interaction is the standard for patient-physician consultations, enabling natural communication and effective assessment of illness through non-verbal cues. While text-based AI has shown promise, it discards essential perceptual dimensions and limits patients who cannot articulate symptoms in writing. Early efforts to extend medical AI to audio-visual interaction have demonstrated feasibility but not reached clinician-level performance. Here, we provide the first demonstration of expert-level AI in real-time clinical video consultations using AMIE (Articulate Medical Intelligence Explorer) in a video configuration. AMIE (Video) is a Gemini-based multi-agent system integrating low-latency dialogue, clinical reasoning, and real-time audio-visual perception. To guide development, we established a taxonomy and automated evaluations for clinical audio-visual cues in telehealth settings. In a randomized Objective Structured Clinical Examination (OSCE) study with 30 primary care physicians (PCPs), 15 patient actors and 100 clinical scenarios, we compared AMIE (Video), its text-only counterpart AMIE (Text), and PCPs consulting via video. Clinical evaluators rated AMIE (Video) on par or better than PCPs in history-taking, diagnosis, management, and physical observation and examination. Patient actors preferred AMIE's approach to assessing and explaining conditions, while PCPs were preferred for rapport and partnership building. In modality ablation, patient actors preferred AMIE (Video)'s interface over text chat for communicative effectiveness, convenience, and feeling understood. Limitations remain in fine anatomical precision, subtle affective nuances, and high-frequency movements. While further research is needed before real-world translation, these results mark an important milestone toward AI systems capable of augmenting care across the sensory complexity of clinical practice.",
+      "authors": [
+        "Mahvish Nagda",
+        "Jihyeon Lee",
+        "Matthew Thompson",
+        "Chunjong Park",
+        "Tim Strother",
+        "Valentin Liévin",
+        "Roma Ruparel",
+        "Akshay Goel",
+        "Teya Bergamaschi",
+        "Suhana Bedi",
+        "Meet Shah",
+        "Pavel Dubov",
+        "Liviu Panait",
+        "Toshiyuki Fukuzawa",
+        "Sam Schmidgall",
+        "Craig Schiff",
+        "Joseph Xu",
+        "Aliya Rysbek",
+        "Yana Lunts",
+        "Jan Freyberg",
+        "Rebecca Hemengway",
+        "Sunny Virmani",
+        "David Racz",
+        "Carey Radebaugh",
+        "Joëlle Barral",
+        "Kavi Goel",
+        "Dale R. Webster",
+        "Katherine Chou",
+        "Avinatan Hassidim",
+        "Yossi Matias",
+        "James Manyika",
+        "Gregory Wayne",
+        "Tao Tu",
+        "Yun Liu",
+        "Ethan Goh",
+        "Christina Chen",
+        "Ryutaro Tanno",
+        "Po-Hsuan Cameron Chen",
+        "Mike Schaekermann",
+        "Anil Palepu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CV"
+      ],
+      "published": "2026-08-10T17:19:31+00:00",
+      "link": "https://arxiv.org/pdf/2608.09861v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Expert-level medical AI agent for video consultations with performance demonstration",
+      "llm_evidence_cn": "面向视频问诊的专家级医疗AI代理并展示性能评估",
+      "llm_evidence": "面向视频问诊的专家级医疗AI代理并展示性能评估",
+      "canonical_evidence": "面向视频问诊的专家级医疗AI代理并展示性能评估",
+      "llm_tldr_en": "AMIE (Video), a Gemini-based multi-agent system, achieves expert-level performance in real-time clinical video consultations, marking a milestone for medical AI agents.",
+      "llm_tldr_cn": "论文针对文本医疗AI无法利用视听信息、早期视听系统未达临床水平的问题，提出基于Gemini的多代理系统AMIE(Video)，整合低延迟对话、临床推理与实时音视频感知。实验在真实临床视频问诊场景中首次实现专家级AI表现。该工作验证了多代理架构在复杂医疗交互中的能力，为医疗代理性能评估提供了新的应用范本，但并未依赖于电子健康记录数据。",
+      "llm_tldr": "论文针对文本医疗AI无法利用视听信息、早期视听系统未达临床水平的问题，提出基于Gemini的多代理系统AMIE(Video)，整合低延迟对话、临床推理与实时音视频感知。实验在真实临床视频问诊场景中首次实现专家级AI表现。该工作验证了多代理架构在复杂医疗交互中的能力，为医疗代理性能评估提供了新的应用范本，但并未依赖于电子健康记录数据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.03674v1",
+      "source": "arxiv",
+      "title": "DiagLoop: A Counterfactual Data Flywheel with Stage-Localized Reinforcement for Diagnostic LLMs",
+      "abstract": "Causal diagnostic models must explain how conclusions follow from evidence because diagnoses guide repairs and treatments. Yet serious cases are scarce, records rarely contain reasoning paths, and data transfer poorly across configurations, complicating local deployment. We present DiagLoop, a counterfactual data flywheel that converts codified physical relations or clinical guidelines, authored once per mechanism family, into training supervision beyond recorded cases. A training-only teacher proposes counterfactual worlds by varying causes, contexts, and observations, while an independent hybrid checker admits only valid worlds. The student reasons through symptom abstraction, causal-chain construction, and root-cause attribution. Stage-specific criteria identify its earliest failure. For nonterminal failures, a bounded repair probes downstream competence, and the resulting weakness profile guides subsequent data generation. Stage-localized reinforcement learning updates only the model-generated continuation, while replay and preservation reduce forgetting. The same criteria govern admission, attribution, reward, and regeneration through checks separate from the proposer. Using only synthesized scenarios and no case-level expert reasoning annotations, the resulting 8B model improves strict path correctness over the strongest conventional baseline. Gains are 11.6 points across eight industrial systems and 5.5 points across ten disease categories. Gains over a deranged-routing control are 3.9 and 2.3 points, respectively. The model also exceeds the evaluated proprietary references in both domains, even when they receive few-shot examples or the specification in context.",
+      "authors": [
+        "Jian Zhang",
+        "Bingyi Wang",
+        "Yizhi Liu"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-08-04T13:49:41+00:00",
+      "link": "https://arxiv.org/pdf/2608.03674v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "counterfactual data flywheel with stage-localized reinforcement for diagnostic LLMs; RL-based training and evaluation in healthcare diagnostics",
+      "llm_evidence_cn": "面向诊断LLM的反事实数据飞轮与分段局部强化，在医疗诊断中利用强化学习训练和评估",
+      "llm_evidence": "面向诊断LLM的反事实数据飞轮与分段局部强化，在医疗诊断中利用强化学习训练和评估",
+      "canonical_evidence": "面向诊断LLM的反事实数据飞轮与分段局部强化，在医疗诊断中利用强化学习训练和评估",
+      "llm_tldr_en": "DiagLoop converts codified physical/clinical guidelines into counterfactual training worlds with a hybrid checker, then uses stage-localized reinforcement to train diagnostic LLMs, addressing scarce reasoning-path data.",
+      "llm_tldr_cn": "因果诊断模型难以获得严重病例和推理路径数据。DiagLoop将编码的临床指南转化为反事实训练世界，由独立混合检查器验证后，用分阶段局部强化训练诊断LLM进行症状抽象、因果链构建和根因归因。该方法减少了对外部记录数据的依赖，并提升了本地部署的适应能力。其反事实数据生成与强化机制可用于医疗智能体的评估与训练。",
+      "llm_tldr": "因果诊断模型难以获得严重病例和推理路径数据。DiagLoop将编码的临床指南转化为反事实训练世界，由独立混合检查器验证后，用分阶段局部强化训练诊断LLM进行症状抽象、因果链构建和根因归因。该方法减少了对外部记录数据的依赖，并提升了本地部署的适应能力。其反事实数据生成与强化机制可用于医疗智能体的评估与训练。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.10996v1",
+      "source": "arxiv",
+      "title": "ConRub-Med: Reinforcement Learning with Consensus Rubrics for Open-Ended Medical Question Answering",
+      "abstract": "Reinforcement learning with verifiable rewards has been especially effective in mathematics and coding, where answers can be checked automatically. Many open-ended medical questions lack comparably cheap outcome verifiers: responses may be partly correct, incomplete, or contain clinically consequential errors. Rubrics written or validated by physicians offer strong clinical grounding, but involving experts in every instance is costly. Model-generated rubrics make this supervision scalable. We introduce ConRub-Med to preserve useful distinctions as rubric feedback moves from construction to policy optimization. For each prompt, three heterogeneous language models propose atomic criteria independently; a separate model reviews them, retaining only criteria with semantic support from all three generators. Three-State scoring distinguishes correct coverage, missing information, and incorrect claims. Errors receive negative rather than zero credit. When every response in a complete Group Relative Policy Optimization (GRPO) group receives the same final reward, a pairwise judge provides sequence advantages only if both candidate orders agree, without changing the scalar rewards. Groups without ties use vanilla GRPO. In a blinded study matched by question, two medical experts rate panels from the full pipeline as more clinically relevant than panels produced by one generator. Across the evaluated open models, ConRub-Med ranks first on six of nine benchmarks and achieves the highest medical and generalization averages. Using the resulting rubric dataset of 5,166 prompts, it scores $38.98 \\pm 1.04$ (mean $\\pm$ SD) on HealthBench-Hard, compared with InfiMed-ORBIT's 33.60 with 8,000 samples and 37.30 with 28,000.",
+      "authors": [
+        "Taojie Zhu",
+        "Yuan Xia",
+        "Tao Sun",
+        "Yizhi Wang",
+        "Yan Chen",
+        "Qunshan He",
+        "Tian Guan",
+        "Jian Wang",
+        "Jinjie Gu",
+        "Junwei Liu",
+        "Yonghong He"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-08-11T14:48:15+00:00",
+      "link": "https://arxiv.org/pdf/2608.10996v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "reinforcement learning with consensus rubrics for open-ended medical QA; scalable rubric-based evaluation for medical LLM agents",
+      "llm_evidence_cn": "用共识评分标准进行强化学习以评估开放式医学问答，为医学LLM智能体提供可扩展的评分评估",
+      "llm_evidence": "用共识评分标准进行强化学习以评估开放式医学问答，为医学LLM智能体提供可扩展的评分评估",
+      "canonical_evidence": "用共识评分标准进行强化学习以评估开放式医学问答，为医学LLM智能体提供可扩展的评分评估",
+      "llm_tldr_en": "ConRub-Med applies reinforcement learning with three-model consensus rubrics to open-ended medical question answering, preserving rubric distinctions from construction to policy optimization for scalable, clinically grounded evaluation.",
+      "llm_tldr_cn": "面向开放式医学问答，现有强化学习的可验证奖励难以处理部分正确或有临床风险的答案。ConRub-Med让三个异构语言模型独立提出原子标准，再经评审整合为共识评分标准，并用该标准进行策略优化。在医学问答上证明，该方法在扩展监督和保持临床区分度之间取得了平衡。为医疗LLM智能体的自动化评估提供了新思路。",
+      "llm_tldr": "面向开放式医学问答，现有强化学习的可验证奖励难以处理部分正确或有临床风险的答案。ConRub-Med让三个异构语言模型独立提出原子标准，再经评审整合为共识评分标准，并用该标准进行策略优化。在医学问答上证明，该方法在扩展监督和保持临床区分度之间取得了平衡。为医疗LLM智能体的自动化评估提供了新思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.04828v1",
+      "source": "arxiv",
+      "title": "Skill-Use: Can LLMs Actually Use Skills in Agentic Harnesses?",
+      "abstract": "Large language model (LLM) agents increasingly rely on skills, structured documents that specify when to act, which procedure to follow, and which tools are allowed. Existing evaluations mostly judge the quality of a skill or its contribution to task success, leaving unexamined whether an agent can recognize a relevant skill and apply it on its own. We introduce Skill-Use, a benchmark that evaluates skill use under progressive disclosure, where an agent sees only a skill's name and short description and must retrieve the full procedure before following it. Skill-Use separates three facets of skill use. Trigger measures whether the agent invokes the relevant skill, Compliance measures how faithfully it follows the prescribed procedure, and Boundary measures whether it avoids forbidden operations. A Skill-Use (SU) score combines the three and credits execution only after the skill is triggered. Skill-Use pairs 79 real skills with 177 executable tasks across nine domains, each grounded in real files, run in an isolated Docker sandbox, and scored by a trajectory-based rubric. Evaluating eight LLMs under two agent harnesses, we find that reliable skill use remains out of reach, as the strongest configuration reaches an SU of only 0.613. Triggering and procedural compliance fail as independent bottlenecks, and both scores and model rankings shift with the harness, so skill use behaves as a capability conditioned on the harness rather than a fixed property of the model.",
+      "authors": [
+        "Jinyi Han",
+        "Yuanjian Xu",
+        "Ying Liao",
+        "Xinyi Wang",
+        "Zishang Jiang",
+        "Zixiang Di",
+        "Fanyang Lu",
+        "Zhichao Hu",
+        "Yanghua Xiao"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-08-05T13:29:16+00:00",
+      "link": "https://arxiv.org/pdf/2608.04828v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark evaluating whether LLM agents can trigger, comply with, and stay within skill boundaries; directly relevant to agent benchmarking",
+      "llm_evidence_cn": "基准评测LLM智能体在渐进披露下能否触发、遵循并保持技能边界，直接与智能体基准测试相关",
+      "llm_evidence": "基准评测LLM智能体在渐进披露下能否触发、遵循并保持技能边界，直接与智能体基准测试相关",
+      "canonical_evidence": "基准评测LLM智能体在渐进披露下能否触发、遵循并保持技能边界，直接与智能体基准测试相关",
+      "llm_tldr_en": "Skill-Use benchmark evaluates agent skill application under progressive disclosure, separating trigger, compliance, and boundary facets; reveals whether agents can actually use skills in agentic harnesses.",
+      "llm_tldr_cn": "现有评测多关注技能本身质量，而未检验智能体能否自主识别并正确使用技能。Skill-Use提出在渐进披露条件下评测智能体技能使用，区分触发、遵循和边界三个维度，要求智能体只能先看到技能名称和简介，再检索完整流程。该基准能更真实地评估智能体在实际框架中的技能应用能力。其评测维度可用于医疗智能体技能使用评估。",
+      "llm_tldr": "现有评测多关注技能本身质量，而未检验智能体能否自主识别并正确使用技能。Skill-Use提出在渐进披露条件下评测智能体技能使用，区分触发、遵循和边界三个维度，要求智能体只能先看到技能名称和简介，再检索完整流程。该基准能更真实地评估智能体在实际框架中的技能应用能力。其评测维度可用于医疗智能体技能使用评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.06430v1",
+      "source": "arxiv",
+      "title": "MiGHT-EHR: A Multi-task Graph Transformer for Heterogeneous Temporal Electronic Health Records",
+      "abstract": "Learning from Electronic Health Records (EHRs) has gained significant attention due to its potential to improve clinical prediction. However, effective learning remains challenging because EHRs encode heterogeneous, temporally ordered clinical interactions. In particular, EHRs contain: (i) heterogeneous clinical entities, including patients, visits, diagnoses, prescriptions, and procedures, together with their heterogeneous interactions, (ii) longitudinal patient trajectories across hospital visits and (iii) shared statistical dependencies across related clinical prediction tasks. Existing EHR learning methods capture only a subset of these properties. To bridge this gap, we propose Multi-task Graph transformer for Heterogeneous Temporal EHRs (MiGHT-EHR), which jointly models all three within a unified representation learning method. MiGHT-EHR constructs a heterogeneous graph from EHRs in which nodes represent clinical entities and edges connect statistically associated entities identified via normalized point-wise mutual information. Across MIMIC-III and MIMIC-IV datasets, MiGHT-EHR outperforms state-of-the-art methods on average across four tasks: drug recommendation, prediction of length-of-stay, mortality, and readmission, with particularly strong improvements in mortality and readmission prediction. Furthermore, a post-hoc analysis of the learned representations reveals that patient neighborhoods are organized by clinical outcomes, salient medical concepts are recoverable as linear directions in the representation space, and task probabilities are well calibrated. Collectively, these findings demonstrate that MiGHT-EHR representations support diverse prediction tasks while preserving clinically interpretable structure.",
+      "authors": [
+        "Anirudh Rayas",
+        "Yuan Wang",
+        "Pavan Turaga"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "q-bio.QM"
+      ],
+      "published": "2026-08-05T23:27:40+00:00",
+      "link": "https://arxiv.org/pdf/2608.06430v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Multi-task graph transformer for heterogeneous temporal EHR, enabling EHR-based agent learning",
+      "llm_evidence_cn": "面向异构时序EHR的多任务图Transformer，为基于EHR的代理提供表征基础",
+      "llm_evidence": "面向异构时序EHR的多任务图Transformer，为基于EHR的代理提供表征基础",
+      "canonical_evidence": "面向异构时序EHR的多任务图Transformer，为基于EHR的代理提供表征基础",
+      "llm_tldr_en": "Proposes a multi-task graph transformer for heterogeneous temporal EHRs, jointly modeling entities, trajectories, and task dependencies to improve clinical prediction.",
+      "llm_tldr_cn": "电子健康记录建模面临异构临床实体、纵向轨迹和跨任务依赖三大挑战，现有方法只能覆盖部分特性。为此提出MiGHT-EHR，一种多任务图Transformer，统一建模患者、就诊、诊断、处方和手术等异构实体及其时序交互，并通过多任务学习共享相关预测任务的信息。实验结果展示其在临床预测上的有效性。该模型可作为医疗代理理解和推理EHR数据的底层架构，但论文本身并未涉及代理系统的评估。",
+      "llm_tldr": "电子健康记录建模面临异构临床实体、纵向轨迹和跨任务依赖三大挑战，现有方法只能覆盖部分特性。为此提出MiGHT-EHR，一种多任务图Transformer，统一建模患者、就诊、诊断、处方和手术等异构实体及其时序交互，并通过多任务学习共享相关预测任务的信息。实验结果展示其在临床预测上的有效性。该模型可作为医疗代理理解和推理EHR数据的底层架构，但论文本身并未涉及代理系统的评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.08604v1",
+      "source": "arxiv",
+      "title": "Multi-Agent Reinforcement Learning via Agent-Specific Preference",
+      "abstract": "Multi-agent reinforcement learning (MARL) is a powerful framework for solving complex collaborative tasks, but it relies heavily on well-defined global reward functions. Designing such rewards is challenging, especially in systems with heterogeneous agents, where a single scalar objective may fail to capture diverse behaviors. In this paper, we introduce Multi-AGent Preference-Integrated lEarning (MAGPIE), which addresses these challenges through agent-specific preference modeling. Each agent is evaluated by a dedicated expert through preference signals, eliminating the need for global evaluation. We theoretically prove that optimizing these decentralized preferences converges to a Nash equilibrium policy. To integrate local preferences into a coherent global objective, we construct agent-specific reward models from preference data and combine them via a monotonic aggregation mechanism. We further prove that optimizing this aggregate reward model is equivalent to training the Nash equilibrium policy. Extensive experiments on benchmark multi-agent tasks and a sequential production line task show that MAGPIE achieves performance comparable to reward-engineered baselines, demonstrating its potential to facilitate policy learning in scenarios where precise reward engineering is impractical.",
+      "authors": [
+        "Ni Mu",
+        "Yao Luan",
+        "Yiqin Yang",
+        "Qing-Shan Jia"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-08-09T09:38:41+00:00",
+      "link": "https://arxiv.org/pdf/2608.08604v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Multi-agent RL with agent-specific preference evaluation transferable to healthcare agents",
+      "llm_evidence_cn": "基于智能体特定偏好的多智能体RL评估，可迁移到医疗智能体",
+      "llm_evidence": "基于智能体特定偏好的多智能体RL评估，可迁移到医疗智能体",
+      "canonical_evidence": "基于智能体特定偏好的多智能体RL评估，可迁移到医疗智能体",
+      "llm_tldr_en": "MAGPIE replaces global rewards in MARL with agent-specific preference signals from expert evaluators, proving convergence to Nash equilibrium and enabling decentralized agent evaluation.",
+      "llm_tldr_cn": "多智能体强化学习常依赖精心设计的全局奖励，但在异质智能体系统中难以定义。MAGPIE 为每个智能体引入专属专家偏好信号，取代全局评估，并证明了优化这些分散偏好可收敛到纳什均衡策略。该方法消除了对全局奖励的依赖，为复杂系统中的智能体评估提供了新思路。该偏好建模机制可迁移用于医疗智能体的多维度评估。",
+      "llm_tldr": "多智能体强化学习常依赖精心设计的全局奖励，但在异质智能体系统中难以定义。MAGPIE 为每个智能体引入专属专家偏好信号，取代全局评估，并证明了优化这些分散偏好可收敛到纳什均衡策略。该方法消除了对全局奖励的依赖，为复杂系统中的智能体评估提供了新思路。该偏好建模机制可迁移用于医疗智能体的多维度评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.09053v1",
+      "source": "arxiv",
+      "title": "Diagnosing as Cardiologists Do: ECG Agents with Doctor-Grounded Priors for Clinical Reasoning Across Diseases and Populations",
+      "abstract": "Cardiologists interpret electrocardiograms by localizing waveform components, measuring rhythm and interval patterns, and translating these structured observations into diagnostic evidence. Whether this expert reading process can serve as an effective prior for ECG agents remains unclear. To address this question, we introduce LuminaECG, a clinically structured ECG reasoning framework that reformulates ECG interpretation as measurement-grounded visual reading. ECG signals are rendered on standard electrocardiographic grid paper to preserve the spatial and scale cues used in clinical reading. P-wave, QRS-complex, and T-wave boundaries are explicitly delineated, and color-coded segmentation decomposes the waveform into discrete visual measurement primitives. A general 2B vision-language backbone is then trained with low-rank supervised fine-tuning to associate these primitives with diagnostic reasoning, without architectural modification. Across open, proprietary, and ECG-specialist zero-shot baselines, LuminaECG improves both waveform measurement and diagnostic recovery. It reaches a clinically meaningful reader tier on the CODE-test benchmark, transfers across geographically diverse ECG datasets without retraining, and generates reports whose structure contains an emergent prognostic signal. These findings suggest that effective ECG agents require not only larger models, but supervision that preserves the alignment between measurable waveform evidence and clinical knowledge.",
+      "authors": [
+        "Hongxiang Gao",
+        "He-yang Xu",
+        "Yuwen Li",
+        "Minghui Zhao",
+        "Zhipeng Cai",
+        "Xingyao Wang",
+        "Chenxi Yang",
+        "Jianqing Li",
+        "Chengyu Liu"
+      ],
+      "primary_category": "eess.SP",
+      "categories": [
+        "eess.SP",
+        "cs.CV",
+        "cs.LG"
+      ],
+      "published": "2026-08-10T03:00:35+00:00",
+      "link": "https://arxiv.org/pdf/2608.09053v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "medical agent using ECG clinical data; evaluates clinical reasoning across diseases and populations",
+      "llm_evidence_cn": "使用ECG临床数据的医疗智能体，评估跨疾病和人群的临床推理",
+      "llm_evidence": "使用ECG临床数据的医疗智能体，评估跨疾病和人群的临床推理",
+      "canonical_evidence": "使用ECG临床数据的医疗智能体，评估跨疾病和人群的临床推理",
+      "llm_tldr_en": "LuminaECG reformulates ECG interpretation as measurement-grounded visual reading by rendering signals on standard grid paper and delineating waveform boundaries, enabling ECG agents to reason across diseases and populations with doctor-grounded priors.",
+      "llm_tldr_cn": "针对现有ECG智能体缺乏临床先验的问题，本文提出LuminaECG框架，将ECG解释建模为基于测量的视觉阅读：在标准网格纸上渲染信号并显式划分P波、QRS波群和T波边界。该方法使智能体能够像心脏病专家一样进行结构化观察并生成诊断证据，在多种疾病和人群上提升了临床推理能力。这为医学智能体利用临床记录数据提供了新的推理范式。",
+      "llm_tldr": "针对现有ECG智能体缺乏临床先验的问题，本文提出LuminaECG框架，将ECG解释建模为基于测量的视觉阅读：在标准网格纸上渲染信号并显式划分P波、QRS波群和T波边界。该方法使智能体能够像心脏病专家一样进行结构化观察并生成诊断证据，在多种疾病和人群上提升了临床推理能力。这为医学智能体利用临床记录数据提供了新的推理范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.10827v1",
+      "source": "arxiv",
+      "title": "MIRA: Medical Image Reflection for Agentic Diagnosis",
+      "abstract": "Medical visual agents can use tools to inspect images and retrieve external knowledge, but indiscriminate tool use may introduce noisy or misleading evidence. Reliable diagnosis therefore requires not only acquiring additional observations, but also verifying whether tool actions are necessary and whether the resulting evidence supports the current hypothesis. We introduce MIRA (Medical Image Reflection for Agentic Diagnosis), a medical visual diagnostic framework for autonomous evidence search and reflective verification. MIRA dynamically invokes image-processing operations, including zooming, grounding, pointing, rotation, and measurement, as well as web search, while evaluating the relevance and consistency of the acquired evidence. We develop MIRA through a two-stage training strategy. First, a tool-augmented Monte Carlo Tree Search data engine explores diverse diagnostic hypotheses and jointly verifies visual grounding accuracy and semantic consistency to construct supervised fine-tuning trajectories. Second, reinforcement learning further improves decision-making through online reflective principle evolution: failure cases are distilled into candidate principles, and only principles that improve held-out rollout rewards are retained. Across nine medical visual reasoning benchmarks, MIRA achieves an average score of 64.73, improving its Qwen3-VL-8B backbone by 7.44 points. It also increases useful tool-use judgments from 56.2% to 73.8% and reduces harmful judgments from 8.9% to 1.6%. Qualitative analyses show that MIRA can re-examine evidence, correct premature conclusions, and adapt its tool-use strategy. Project page: https://MIRA-VL.github.io/",
+      "authors": [
+        "Shengzhi Wang",
+        "Jun Yang",
+        "Kai Wu",
+        "Xiaozhong Ji",
+        "Yiwen Ye",
+        "Ziyang Chen",
+        "Mingliang Xiong",
+        "Wen Fang",
+        "Mingqing Liu",
+        "Mengyuan Xu",
+        "Miaoxuan Shan",
+        "Caiyan Liu",
+        "Bin He",
+        "Qingwen Liu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-08-11T11:57:27+00:00",
+      "link": "https://arxiv.org/pdf/2608.10827v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Medical agent with evidence verification relevant to agent evaluation",
+      "llm_evidence_cn": "具备证据验证的医疗智能体，与智能体评估相关",
+      "llm_evidence": "具备证据验证的医疗智能体，与智能体评估相关",
+      "canonical_evidence": "具备证据验证的医疗智能体，与智能体评估相关",
+      "llm_tldr_en": "MIRA is a medical visual diagnostic framework with autonomous evidence search and reflective verification to avoid noisy tool use and ensure evidence supports hypotheses.",
+      "llm_tldr_cn": "医疗视觉智能体在诊断中常盲目使用工具而引入噪声证据。MIRA 提出自主证据搜索与反思验证框架，动态调用缩放、定位、测量和网页搜索，并评估证据相关性与一致性。两阶段开发使智能体能判断工具是否需要、证据是否支持当前假设。该系统提升了医疗影像智能体诊断的可靠性，也为智能体评估提供了可借鉴的反思机制。",
+      "llm_tldr": "医疗视觉智能体在诊断中常盲目使用工具而引入噪声证据。MIRA 提出自主证据搜索与反思验证框架，动态调用缩放、定位、测量和网页搜索，并评估证据相关性与一致性。两阶段开发使智能体能判断工具是否需要、证据是否支持当前假设。该系统提升了医疗影像智能体诊断的可靠性，也为智能体评估提供了可借鉴的反思机制。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

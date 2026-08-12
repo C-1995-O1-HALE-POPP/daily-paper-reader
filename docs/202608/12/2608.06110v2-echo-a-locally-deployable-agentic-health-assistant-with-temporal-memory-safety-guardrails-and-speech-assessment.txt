@@ -1,0 +1,176 @@
+Title: ECHO: A Locally-Deployable Agentic Health Assistant with Temporal Memory, Safety Guardrails, and Speech Assessment
+
+URL Source: https://arxiv.org/pdf/2608.06110v2
+
+Published Time: Wed, 12 Aug 2026 00:56:35 GMT
+
+Number of Pages: 5
+
+Markdown Content:
+# ECHO: A Locally-Deployable Agentic Health Assistant with Temporal Memory, Safety Guardrails, and Speech Assessment 
+
+Abdulkadir K¨ ulc ¸e ∗, Alihan Esen ∗, C ¸ a˘ gla Fikir †, Berke Kurt ∗, Kuzey Arar †, G¨ okhan Ercan ∗, Faik Boray Tek ∗∗Dept. of Artificial Intelligence and Data Engineering, Istanbul Technical University, Istanbul, Turkey 
+
+†Dept. of Computer Engineering, Istanbul Technical University, Istanbul, Turkey 
+
+{kulce21, esenal22, fikir21, kurtbe21, arar25, ercang, tekfb }@itu.edu.tr, 
+
+Abstract —This paper presents ECHO (Enhanced Care & Health Observer), a locally-deployable conversational health assistant for long-term chronic care management. ECHO integrates three complementary software modules developed under shared supervision as a unified system. The core module is an agentic chatbot built on a ReAct loop orchestrated via LangGraph, equipped with 17 clinical tools and a temporal knowledge graph for persistent cross-session memory; it achieves a 94.9% tool-execution pass rate across a 59-scenario benchmark with GPT-5 Mini. A two-stage hybrid safety layer intercepts all incoming queries: a rule-based layer handles explicit crisis signals and jailbreak attempts in under 1ms, while a signed graph neural network (GNN) with APPNP-style propagation classifies boundary cases by clinical intent, achieving 88.8% accuracy and 90.6% unsafe recall on a 2,537-query annotated Turkish health dataset while outperforming zero-shot LLM baselines including Llama 3.3 70B. A multimodal speech assessment module combining Whisper acoustic encoding and BERT text encoding with cross-attention fusion estimates emotion, depression, and pain, reaching a mean macro F1 of 0.652. The full system is implemented as a web application that can run entirely on consumer hardware, with no patient data transmitted to external services, supporting compliance with GDPR and KVKK. 
+
+Index Terms —medical chatbot, agentic AI, temporal knowledge graph, signed graph neural network, safety classification, multi-modal speech assessment, multi-task learning, health informatics, Turkish NLP, LangGraph, guardrail systems 
+
+I. I NTRODUCTION 
+
+Modern chronic care management is episodic by design: patients are expected to independently execute complex clinical routines between hospital visits with little continuous support. All-cause 30-day unplanned readmission rates for chronic disease cohorts reach 21.3% [1], directly reflecting a systemic failure in outpatient care continuity. Existing digital health tools fail to close this gap for three reasons. First, LLMs are stateless across sessions: they forget medical history, allergies, and changing symptoms between conversations. Second, reminder applications are passive and unable to interpret clinical context or answer complex follow-up questions. Third, general-purpose LLMs lack specialized safety mechanisms to intercept dangerous queries before generating a response. ECHO (Enhanced Care & Health Observer) addresses all three limitations through a unified architecture comprising three integrated modules:  
+
+> •
+
+An agentic orchestration layer with a temporal knowledge graph maintaining a persistent patient profile across sessions with 17 assistive tools.  
+
+> •
+
+A two-stage hybrid guardrail combining deterministic rule-based interception for explicit crises with a signed GNN intent classifier for boundary-case queries.  
+
+> •
+
+A speech-input assessment module that runs only for voice interactions and injects emotion, depression, and pain estimates into the agent context. II. R ELATED WORK 
+
+Medical LLMs such as Med-PaLM [2] and Med-Gemini [3] were fundamentally session-bound: they could answer clinical questions from static context but had no mechanism for maintaining an enhanced patient history across separate conversations. RAG [4] addressed this partially by retrieving patient-specific records at query time, but the append-only structure of vector databases introduces temporal hallucination when clinical facts change. Latimer et al. [5] claim state-of-the-art performance for Hindsight , which organizes knowledge into typed fact hierarchies and fuses multi-strategy retrieval with Reciprocal Rank Fusion. LongMemEval [6] benchmarks show that commercial LLMs frequently fail to overwrite obsolete information, posing a direct safety risk in clinical contexts where outdated dosage records could inform dangerous advice. Unlike these session-bound or append-only approaches, ECHO combines a structured SQLite layer for transactional health data with a Hindsight temporal knowledge graph for unstructured longitudinal memory, allowing clinical facts to be superseded rather than accumulated, preserving a safe and consistent patient history across sessions. 
+
+A. Safety Classification for Health Queries 
+
+Keyword-based guardrails are easily avoided by rephrasing and generate high false-positive rates on clinical terms that are hazardous in one context but benign in another; yet they remain useful for unambiguous signals where neural inference latency is unacceptable. Llama Guard [7] frames safety as instruction-following via a 7B LLM, offering taxonomy flexibility but at inference cost impractical for a low-latency pre-agent filter. arXiv:2608.06110v2 [cs.AI] 11 Aug 2026 Abercrombie and Rieser [8] show that clinical severity cannot be reliably inferred from surface language alone, precisely the regime where a learned classifier is necessary beyond simple rules. Approximate personalized propagation of neural predictions (APPNP) [9] and signed Graph Neural Networks (GNNs) [10] have been applied to other NLP tasks but not previously to health query safety classification. 
+
+B. Speech-Based Health & Mood Assessment 
+
+Recent speech foundation models such as wav2vec 2.0 [11] and Whisper [12] provide strong acoustic representations that can be adapted to downstream clinical tasks, while BERT [13] enables transcript-level semantic modeling. Together, these encoders make it possible to analyze both how a user speaks and what the user says. Most existing speech-health systems, however, are designed for a single target condition. Prior work has studied depression detection [14], Parkinson’s disease detection [15], and voice-based pain assessment [16] as separate tasks, typically training one model per condition. This single-task framing limits their usefulness in conversational care settings, where a single voice interaction may contain multiple health-relevant signals. Multi-task learning [17] offers a natural alternative by allowing related tasks to share a common representation while preserving task-specific prediction heads. Unlike these single-task systems, ECHO’s speech module estimates emotion, depression, and pain from the same voice interaction, allowing the agentic pipeline to receive a richer passive health signal without additional user input. III. S YSTEM ARCHITECTURE 
+
+ECHO’s React frontend communicates with a FastAPI backend that orchestrates the full pipeline. The request lifecycle proceeds as follows: the user message is posted to the API Gateway, which first queries the Hindsight memory engines for relevant cross-session context, then forwards the enriched input to the hybrid guardrail. If the guardrail passes the query, it reaches the LangGraph agentic loop, which reasons, invokes tools against SQLite, and generates a response streamed back via Server-Sent Events. After the stream completes, a background coroutine asynchronously retains the new turn in Hindsight. When the user submits voice input, the audio is transcribed locally and simultaneously analyzed by the speech assessment module; the resulting emotion, depression, and pain estimates are injected into the agent’s context alongside the transcript. All components are designed to support fully local operations on the user’s machine, with no personally identifiable health data transmitted to external services, ensuring compliance with GDPR and KVKK regulations (Fig. 1). 
+
+A. Agentic Orchestration and Temporal Memory 
+
+The dialogue engine implements a Reason and Act (ReAct) [18] loop via a LangGraph state graph. The conversation history is maintained in a message-state schema, persisted across requests by a memory-saver checkpointer keyed to the active session thread. The graph connects two operational nodes: an LLM Call Node that resolves the system prompt (dynamically appending the current timezone-aware timestamp for temporal grounding, critical for rejecting future-dated medication logs or detecting overdue doses) and invokes the model through a LiteLLM gateway providing a unified interface for local Ollama models and cloud APIs; and a Tool Node that receives tool calls from the latest LLM message, executes the referenced Python functions against the local SQLite database, and appends operational results to the message state. The loop terminates when the LLM produces a message without tool calls. Independent tool calls within a single turn are parallelized, reducing latency for compound requests such as simultaneously logging a symptom and marking a dose taken. The 17 assistive tools are organized into four functional categories:  
+
+> •
+
+Medication management : add, remove, list, log intake with adherence tracking, undo log, and duplicate detection before insertion.  
+
+> •
+
+Calendar scheduling : add and remove appointments; expand recurring event rules (daily, weekly, bi-weekly, monthly) into chronological occurrences.  
+
+> •
+
+Symptom logging : record severity scores on predefined numerical scales, categorized by clinical tags (tremor, rigidity, freezing, nausea).  
+
+> •
+
+Emergency protocols : store caregiver contacts, retrieve and display them on crisis detection, and trigger deep longitudinal memory reflection via the reflect tool for cross-session health summaries. 
+
+B. Hindsight Temporal Knowledge Graph 
+
+Long-term memory is provided by Hindsight, deployed as a local Docker container. The knowledge graph organizes information into three typed memory networks:  
+
+> •
+
+World Facts : objective, static entity-relation assertions (e.g., “patient is allergic to Penicillin”).  
+
+> •
+
+Experience Facts : chronological records of agent-patient interactions (e.g., “patient logged tremor severity 8 at 10:15 AM on March 11”).  
+
+> •
+
+Observations : deduplicated, evidence-grounded beliefs automatically consolidated from raw facts by a background process. Each observation carries a proof count recording the number of independent facts corroborating it. During each asynchronous consolidation cycle, the background process extracts atomic tuples from conversation turns, resolves entity aliases, and wires new facts to existing graph nodes via temporal, semantic, causal, and co-occurrence edges. When a fact contradicts an existing observation, the prior belief is superseded with a timestamped revision rather than deleted, preserving the clinical history for audit. Retrieval is coordinated by the TEMPR engine executing four parallel strategies: semantic vector search via HNSW-indexed pgvector, BM25 keyword matching, graph-based link expansion, and temporal range filtering, all fused through Reciprocal Rank (3) recall / (9) retain            
+
+> Whisper STT
+> local - lazy-load
+> Patient
+> React 19 UI
+> Chat ·Meds ·Calendar
+> (1) input
+> CLIENT
+> API Gateway
+> SSE stream
+> Guardrail
+> 6-stage filter
+> ReAct Orchestrator
+> LangGraph
+> 17 Clinical Tools
+> meds ·calendar ·SOS
+> LLM Router
+> local / cloud
+> (4) screen (5) safe (7) act (6) reason
+> BACKEND (FastAPI ·localhost)
+> SQLite
+> records
+> Hindsight Memory
+> temporal graph
+> PERSISTENCE
+> write reflect (2) POST (10) stream (SSE) (8) answer
+
+Fig. 1. End-to-end ECHO system architecture. Numbered arrows trace the request lifecycle: (1) user input, (2) POST to API Gateway, (3) cross-session context recall from Hindsight, (4) guardrail screening, (5) safe input to LangGraph ReAct orchestrator, (6) LLM reasoning via LiteLLM, (7) clinical tool execution against SQLite, (8) response generation, (9) asynchronous memory retention, (10) SSE streaming back to the React frontend. Whisper speech-to-text runs locally on the client. 
+
+Fusion. Top candidates are passed through a neural cross-encoder reranker before injection into the LLM context. A novel 
+
+Proof-Count Boost then up-ranks observations corroborated by many independent facts, using a logarithmic normalization applied as a multiplicative score adjustment. This caps the maximum score lift at 5% for highly corroborated observations ( C ≥ 149 ), preventing frequent but low-relevance memories from polluting the context win-dow regardless of frequency. Entity creation is restricted to predefined clinical taxonomy templates. Temporal decay applies Ebbinghaus-inspired linear forgetting [19], ensuring older unrepeated facts naturally lose retrieval priority unless supported by new evidence. 
+
+C. Hybrid Safety Guardrail Pipeline 
+
+Every message is intercepted by a two-stage pipeline before reaching the LLM. 
+
+a) Stage 1 — Rule-Based Layer: Three sequential regex checks run in under 1 ms: (1) Jailbreak/injection : structural pat-terns for role-override and prompt extraction attempts; (2) Ex-plicit crisis : bi-contextual matching requiring co-occurrence of a medication token with a self-harm keyword within a bounded window; (3) Off-topic filter : requests structurally unrelated to health (code generation, finance, etc.). Matches are blocked immediately; the LLM is never invoked. Crisis matches surface the patient’s emergency contacts; jailbreak and off-topic matches receive a brief refusal. 
+
+b) Stage 2 — Signed GNN Classifier: Queries passing the rule-based layer are forwarded to the signed GNN, which handles the harder class of boundary cases : clinically dangerous queries that contain no explicit harmful language. It classifies each query into a nine-class intent taxonomy ( benign general, medication related, mild emotional stress, chronic condition, non-acute injury, acute medical risk, harmful treatment, manip-ulation, self-harm risk ) and simultaneously produces a binary safe/unsafe label. Queries are encoded by sentence-transformer model 
+
+paraphrase-multilingual-mpnet-base-v2 (768-dim) and passed through a shared 512-dim encoder feeding a safety head and an intent head. A k-NN graph ( k = 15 , cosine distance) over 2,029 training embeddings produces positive edges (same-class, similarity ≥ 0.75 ; 3,742 edges) and negative edges at six empirically identified confusion boundaries (cross-class, similarity ≥ 0.70 ; 1,625 directed edges from unsafe to safe nodes). Positive propagation follows APPNP ( α = 0 .2, K = 2 ): 
+
+H(t+1) = (1 −α) Apos H(t) + α H 0 (1) A negative correction delta repels boundary-case embeddings from confusable cross-class representations: 
+
+Hfinal = Hpos − λneg αneg (Aneg Hpos − Hpos ) (2) Training uses a five-term loss: safety cross-entropy with hard example mining (weight 15.0 for missed unsafe), intent cross-entropy with risk-severity weights ( self-harm risk : 10.0), pull and push contrastive losses, and a propagation consistency term. 
+
+c) Intent-Aware Response Routing: Unsafe GNN predic-tions trigger intent-specific responses: self-harm risk surfaces emergency contacts with a supportive message; acute medical risk advises immediate emergency care; harmful treatment 
+
+recommends physician consultation; manipulation receives a silent generic refusal to prevent adversarial feedback. Safe predictions are forwarded to LangGraph with the intent label in context. 
+
+D. Speech Assessment in the Voice Input Pipeline 
+
+The speech assessment module provides a passive health signal during voice-based interactions. When the user speaks through the browser’s push-to-talk interface, the audio is transcribed locally with Whisper and analyzed before the message enters the chat pipeline. The module estimates three complementary health-relevant dimensions: emotional state (5-class: neutral, happy, sad, angry, fear), depression status (binary), and pain status (binary). The estimated scores are injected into the agent’s system context alongside the transcribed text, allowing the LangGraph orchestrator to proactively adjust its response tone and suggest the log_symptom tool when elevated pain or distress is detected. The model combines acoustic and textual information using two pretrained encoders. Whisper-base is used as the audio encoder to capture prosodic and acoustic cues such as tone, rhythm, and vocal tension, while BERT encodes the Whisper-generated transcript to capture semantic information. A cross-attention fusion block then aligns what the user says with how it is spoken. The resulting fused representation is passed to three independent classification heads for emotion, depression, and pain prediction. Training combines five corpora under partial-label learning: IEMOCAP [20], CREMA-D [21], and RAVDESS [22] for emotion; DAIC-WOZ [23] for depression; and TAME Pain [24] for pain. Because each dataset provides labels for only one task, each sample updates only the relevant prediction head while still contributing to the shared multimodal representation. To prevent the larger emotion datasets from dominating training, task-balanced sampling is used. During fine-tuning, the upper Whisper layers and fusion/classification heads are updated, while BERT remains frozen to reduce overfitting on the smaller clinical datasets. IV. E XPERIMENTAL RESULTS 
+
+The benchmark covers 59 scenarios and 110 turns across nine clinical categories. Table I reports Pass Rate and argument-level F1 for selected models:                                     
+
+> TABLE I TOOL EXECUTION BENCHMARK (59-S CENARIO SUITE )
+> Model Pass F1 TR Pass TR F1
+> GPT-OSS 120B 96.61% 0.980 ——GPT-5 Mini 94.92% 0.977 92.86% 0.976 Gemma 4 26B IT 89.83% 0.951 ——GPT-5 Nano 88.14% 0.915 92.86% 0.929 Qwen 3 32B 86.44% 0.897 ——GPT-5.4 Nano 76.27% 0.818 50.00% 0.673 Gemini 2.5 Fl.Lite 47.46% 0.548 ——
+
+GPT-5 Mini achieves the best cost-accuracy trade-off (94.92%, F1 0.977), meeting the ≥ 90% design target. High-capacity commercial models consistently exceed 94% pass rate, while medium-sized open models remain above 86%, making them viable for self-hosted edge deployments. End-to-end latency per turn ranges from 4.82 s (GPT-5.4 Nano) to 8.78 s (GPT-5 Mini); SSE streaming keeps Time to First Token under 3 s across all models. Failure mode analysis of GPT-5 Mini’s three failures reveals: (1) the model sought clarification instead of invoking the tool when appointment time was unspecified; (2) a complementary mark_medication_taken call was omitted in a week-long timeline scenario; (3) a Turkish list-medications query triggered redundant invocation of both 
+
+list_medications and get_todays_medications .Cross-session memory was validated through a one-week pa-tient simulation spanning 10 conversation threads. Unstructured facts absent from the SQLite schema (patient name, neurologist identity, and lifestyle preferences) were consistently recalled without re-prompting. The reflect tool synthesized cross-session patterns such as “the tremor on March 11 came after a late morning dose; the fall on March 13 was on a day with no doses logged”, a pattern invisible within any single conversation. The memory layer also surfaced a neurologist appointment that the tool’s 7-day window had omitted. 
+
+A. Safety Classifier 
+
+Table II shows the ablation on 508 held-out Turkish queries. The rule-based layer provides deterministic coverage at zero inference cost; the signed GNN handles the boundary cases that pass it. Positive propagation yields the largest single gain (+4.8 pp unsafe recall); the full model recovers this gain while adding intent-aware representations, achieving 88.8% accuracy and 90.6% unsafe recall.                       
+
+> TABLE II SAFETY CLASSIFIER ABLATION (n= 508 )
+> Configuration Acc. Safe R. Unsafe R.
+> Baseline MLP 0.874 0.890 0.858 + Pos. Prop. ( λ=0.8) 0.886 0.866 0.906 + Neg. Delta ( λn=0.5) 0.874 0.878 0.870 + Intent Loss 0.876 0.862 0.890 Full Model (+ Pull+Push) 0.888 0.870 0.906
+
+Table III compares the full model against zero-shot baselines. The proposed system outperforms all baselines in accuracy and balanced accuracy at orders-of-magnitude lower inference cost. Llama 3.3 70B approaches the system (0.855 balanced accuracy) without task-specific training, yet requires a 70B-parameter forward pass per query; ECHO requires only a sentence encoder and a small MLP over a pre-computed 8 MB index. False negatives share a common pattern: clinically severe queries phrased as routine questions, where graph propagation recovers boundary cases with informative neighbors but cannot recover isolated rare symptom presentations.                     
+
+> TABLE III LLM B ASELINE COMPARISON (Z ERO -S HOT )
+> Model Acc. Safe R. Unsafe R.
+> Llama 3.1 8B 0.695 0.445 0.943 Qwen3 32B 0.813 0.843 0.785 Gemini 2.5 FL 0.848 0.785 0.908 Llama 3.3 70B 0.856 0.854 0.856 Proposed 0.888 0.870 0.906
+
+B. Multimodal Speech Assessment 
+
+Table IV reports macro F1 scores on participant-level held-out splits for the speech assessment module. The baseline is an audio-only Whisper model trained without the BERT text branch and without cross-attention fusion. It uses the same general training setup and evaluation protocol as the final model, making it a controlled reference for measuring the contribution of multimodal fusion. The final model adds frozen BERT transcript embeddings and a cross-attention fusion block that combines linguistic information with Whisper acoustic representations. 
+
+TABLE IV SPEECH ASSESSMENT RESULTS (M ACRO F1) 
+
+Task Baseline Final ∆
+
+Emotion (5-class) 0.698 0.732 +0.034 Pain (binary) 0.596 0.685 +0.089 Depression (binary) 0.528 0.538 +0.010 Mean 0.607 0.652 +0.045 
+
+The final model improves mean macro F1 from 0.607 to 0.652, indicating that adding BERT-based transcript features and cross-attention fusion provides a clear benefit over the Whisper-only baseline. The largest gain is observed in pain detection, suggesting that pain-related speech benefits from combining acoustic cues with transcript-level information. Emotion recognition also improves moderately. Depression detection remains the most difficult task, with only a small improvement over the baseline. This suggests that short utterance-level modeling is limited for depression screening, which likely requires longer conversational context. Overall, the results support the multimodal fusion design while identifying depression detection as the main direction for future improvement. V. D ISCUSSION AND CONCLUSION 
+
+This paper presented ECHO, a unified chronic care software system integrating three coupled modules into a locally-deployable pipeline. The key engineering contribution is the architectural composition: a stateful agentic core with persistent cross-session memory, a computationally stratified safety layer, and a passive speech-assessment channel, each deployable on consumer hardware with no patient data transmitted externally. Four concrete directions remain. First, the rule-based crisis lexicon requires adversarial paraphrase augmentation. Second, signed GNN recall on rare symptom presentations requires targeted dataset expansion. Third, depression detection requires more diverse and task-specific training data, since short speech segments provide limited evidence for reliable screening. Fourth, ECHO’s modular architecture is designed to support extensibility through the Model Context Protocol (MCP): each clinical tool can be exposed as an MCP-compliant server, allowing third-party applications (electronic health record systems, wearable sensor platforms, or pharmacy databases) to integrate with ECHO through a standardized interface. This would enable end users and clinicians to configure the assistant’s capabilities to their specific care workflows without modifying the core system. Longer-term goals include wearable sensor integration, native mobile deployment, and clinical validation. REFERENCES [1] S. Kaya, G. S. G¨ uven, and S. Aydan, “Hastanelere yeniden yatıs ¸ hızlarının de˘ gerlendirilmesi,” Hacettepe Sa˘ glık ˙ Idaresi Dergisi , vol. 21, no. 1, pp. 127–150, 2018. [2] Google Research, “Med-PaLM,” Research Report, 2023. [3] G. Corrado and J. Barral, “Advancing medical AI with Med-Gemini,” Google Research Blog, May 2024, accessed: June 30, 2026. [Online]. Available: https://research.google/blog/advancing-medical-ai-with-med-gemini/ [4] P. Lewis et al. , “Retrieval-augmented generation for knowledge-intensive NLP tasks,” arXiv preprint arXiv:2005.11401 , 2020. [5] C. Latimer et al. , “Hindsight is 20/20: Building agent memory that retains, recalls, and reflects,” arXiv preprint arXiv:2512.12818 , 2025. [6] D. Wu et al. , “LongMemEval: Benchmarking chat assistants on long-term memory,” arXiv preprint arXiv:2410.10813 , 2024. [7] H. Inan et al. , “Llama Guard: LLM-based input-output safeguard for human-AI conversations,” arXiv preprint arXiv:2312.06674 , 2023. [8] G. Abercrombie and V. Rieser, “Risk-graded safety for handling medical queries in conversational AI,” in Proceedings of the Conference on Asian Chapter of the Association for Computational Linguistics (AACL) , 2022, pp. 234–243. [9] J. Gasteiger, A. Bojchevski, and S. G¨ unnemann, “Predict then propagate: Graph neural networks meet personalized PageRank,” in International Conference on Learning Representations (ICLR) , 2019. [10] T. Derr, Y. Ma, and J. Tang, “Signed graph convolutional networks,” in Proceedings of the IEEE International Conference on Data Mining (ICDM) , 2018, pp. 929–934. [11] A. Baevski et al. , “wav2vec 2.0: A framework for self-supervised learning of speech representations,” in Advances in Neural Information Processing Systems , vol. 33, 2020, pp. 12 449–12 460. [12] A. Radford et al. , “Robust speech recognition via large-scale weak supervision,” arXiv preprint arXiv:2212.04356 , 2022. [13] J. Devlin et al. , “BERT: Pre-training of deep bidirectional transformers for language understanding,” in Proceedings of the Conference of the North American Chapter of the Association for Computational Linguistics (NAACL) , 2019, pp. 4171–4186. [14] L. Liu et al. , “Diagnostic accuracy of deep learning using speech samples in depression: A systematic review and meta-analysis,” Journal of the American Medical Informatics Association (JAMIA) , vol. 31, no. 10, pp. 2394–2404, 2024. [15] T. Purohit et al. , “Automatic Parkinson’s disease detection from speech: Layer selection vs adaptation of foundation models,” in Proceedings of the IEEE International Conference on Acoustics, Speech and Signal Processing (ICASSP) , 2025, pp. 1–5. [16] S. Borna et al. , “A review of voice-based pain detection in adults using artificial intelligence,” Bioengineering , vol. 10, no. 4, 2023, art. no. 500. [17] R. Caruana, “Multitask learning,” Machine Learning , vol. 28, no. 1, pp. 41–75, 1997. [18] S. Yao, J. Zhao, D. Yu, N. Du, I. Shafran, K. Narasimhan, and Y. Cao, “ReAct: Synergizing reasoning and acting in language,” in International Conference on Learning Representations (ICLR) , 2023. [19] H. Ebbinghaus, Memory: A Contribution to Experimental Psychology .New York: Teachers College, Columbia University, 1913, originally published in German as ¨Uber das Ged¨ achnis , 1885. [20] C. Busso et al. , “IEMOCAP: Interactive emotional dyadic motion capture database,” Language Resources and Evaluation , vol. 42, no. 4, pp. 335– 359, 2008. [21] H. Cao et al. , “CREMA-D: Crowd-sourced emotional multimodal actors dataset,” IEEE Transactions on Affective Computing , vol. 5, no. 4, pp. 377–390, 2014. [22] S. R. Livingstone and F. A. Russo, “The ryerson audio-visual database of emotional speech and song (RAVDESS): A dynamic, multimodal set of facial and vocal expressions in north american english,” PLOS ONE ,vol. 13, no. 5, 2018, art. no. e0196391. [23] J. Gratch et al. , “The distress analysis interview corpus of human and computer interviews,” in Proceedings of the International Conference on Language Resources and Evaluation (LREC) , 2014, pp. 3123–3128. [24] T.-Q. Dao et al. , “TAME pain: Trustworthy assessment of pain from speech and audio for the empowerment of patients,” PhysioNet , 2025, version 1.0.0.

@@ -1,0 +1,465 @@
+Title: Diagnosing as Cardiologists Do: ECG Agents with Doctor-Grounded Priors for Clinical Reasoning Across Diseases and Populations
+
+URL Source: https://arxiv.org/pdf/2608.09053v1
+
+Published Time: Tue, 11 Aug 2026 01:46:49 GMT
+
+Number of Pages: 23
+
+Markdown Content:
+# Diagnosing as Cardiologists Do: ECG Agents with Doctor-Grounded Priors for Clinical Reasoning Across Diseases and Populations 
+
+Hongxiang Gao 1,2,* , He-Yang Xu 1,2,* , Yuwen Li 1,2 , Minghui Zhao 1,2 , Zhipeng Cai 1,2 ,
+
+Xingyao Wang 1,2 , Chenxi Yang 1,2 , Jianqing Li 1,2 , Chengyu Liu 1,2,#,†  
+
+> 1
+
+State Key Laboratory of Digital Medical Engineering, Southeast University  
+
+> 2
+
+School of Instrument Science and Engineering, Southeast University  
+
+> ∗
+
+Equal Core Contributions, # Project Lead, † Corresponding Author 
+
+{hongxiang_seu, xuhy, chengyu}@seu.edu.cn 
+
+Abstract 
+
+Cardiologists interpret electrocardiograms by localizing waveform components, measuring rhythm and interval patterns, and translating these structured observations into diagnostic evidence. Whether this expert reading process can serve as an effective prior for ECG agents remains unclear. To address this question, we introduce L UMINA ECG, a clinically structured ECG reasoning framework that reformulates ECG interpretation as measurement-grounded visual reading. ECG signals are rendered on standard electrocardiographic grid paper to preserve the spatial and scale cues used in clinical reading. P-wave, QRS-complex, and T-wave boundaries are explicitly delineated, and color-coded segmentation decomposes the waveform into discrete visual measurement primitives. A general 2B vision–language backbone is then trained with low-rank supervised fine-tuning to associate these primitives with diagnostic reasoning, without architectural modification. Across open, proprietary, and ECG-specialist zero-shot baselines, L UMINA ECG improves both waveform measurement and diagnostic recovery. It reaches a clinically meaningful reader tier on the CODE-test benchmark, transfers across geographically diverse ECG datasets without retraining, and generates reports whose structure contains an emergent prognostic signal. These findings suggest that effective ECG agents require not only larger models, but supervision that preserves the alignment between measurable waveform evidence and clinical knowledge. 
+
+Project Page https://luminaecg.github.io 
+
+Model https://huggingface.co/hiangx/LuminaECG 
+
+Preprint. arXiv:2608.09053v1 [eess.SP] 10 Aug 2026 1 Introduction 
+
+The electrocardiogram (ECG) is one of the most information-dense measurements in routine clinical practice. A ten-second, twelve-lead ECG encodes several distinct kinds of cardiac information at once: rhythm, conduction intervals, electrical axis, chamber activity, and lead-specific ST–T morphology. Experts reach a diagnosis through a systematic measurement of each waveform component against the calibrated grid, where every small square stands for a fixed interval of time and voltage (Kligfield et al., 2007). Rate, intervals, axis, and ST–T geometry are measured off this grid and matched to diagnostic criteria (Wagner et al., 2009; Hancock et al., 2009; Surawicz et al., 2009), so that each conclusion stays anchored to a quantity that can be checked (cf. Fig. 1). This measurement-grounded integration of evidence is what turns a printed tracing into a clinical diagnosing, and it sets the standard that any automated reader must meet. As artificial intelligence has advanced, a growing number of methods have been developed for automated ECG interpretation (Hannun et al., 2019; Ribeiro et al., 2020; Attia et al., 2019b,a). Conventional supervised ECG models perform well on predefined tasks but remain limited in generalization beyond fixed label spaces (Ballas and Diou, 2023; Strodthoff et al., 2021; Siontis et al., 2021). Multimodal large language models (MLLMs) provide a more flexible alternative and have shown rapidly improving capabilities across medical diagnostic tasks (Li et al., 2023; Tu et al., 2024). However, these models lack the domain-specific priors required for detailed ECG interpretation, including waveform localization, interval measurement, and the correspondence between morphological evidence and diagnostic criteria (Wan et al., 2025; Oh et al., 2023; Liu et al., 2026; Lan et al., 2025; Jin et al., 2026). A model may therefore know what atrial fibrillation or bundle-branch block means, yet still fail to identify the evidence supporting that diagnosis in a particular ECG. Despite these advances, current ECG models remain difficult to deploy reliably in real-world clinical settings, where predictions must generalize and remain grounded in waveform evidence. This leads to a broader question: what should the next generation of ECG agents look like? 
+
+Better diagnostic priors from cardiologists are all we need. Guided by this idea, we introduce L UMINA ECG, an ECG reasoning framework designed to test whether the structure of clinical interpretation can elevate diagnostic performance toward the level of human readers. Following the workflow of cardiologists, we first build an agentic data-processing pipeline that renders each twelve-lead ECG on standardized grid paper, preserving the temporal and voltage scales required for clinical measurement (cf. Fig. 1). The P wave, QRS complex, and T wave are then explicitly delineated (Martínez et al., 2004; Peimankar and Puthusserypady, 2021; Joung et al., 2024), making key waveform components directly identifiable to the model. Signal-derived measurements and available annotations are further organized into structured reports that mirror the progression from waveform observation and quantitative assessment to diagnostic conclusion. Rather than relying on a large and complex multimodal language model, we deliberately fine-tune a compact 2B backbone (Qwen Team, 2025; Hu et al., 2022) without architectural modification or additional alignment procedures. This design allows us to directly test whether clinically informed data construction, rather than model scaling alone, can provide a stronger foundation for ECG interpretation. We conduct extensive experiments to evaluate whether clinician-informed supervision can compensate for limited model scale. Despite using only a compact 2B backbone and a simple fine-tuning procedure, LUMINA ECG consistently outperforms the evaluated open, proprietary, and ECG-specialist zero-shot baselines in waveform measurement, diagnostic recovery, and structured report generation. The improve-ment is particularly pronounced for quantitative interpretation: L UMINA ECG achieves a heart-rate mean absolute error of only 0.43 bpm, approximately fifteen times lower than the best error among the compared zero-shot models. On the CODE-test benchmark (Ribeiro et al., 2020), it attains a macro-F1 of 0.840 and a micro-F1 of 0.852, exceeding both the medical-student tier (0.817 and 0.833) and the emergency-resident tier (0.829 and 0.846), and approaching the cardiology-resident tier (0.862 and 0.876). The model also transfers without retraining across ECG datasets collected from geographically distinct health systems. Beyond diagnostic performance, its generated reports retain prognostic information in an unseen cohort, despite the model not being trained for outcome prediction. 2Cardiologist: Implicit ECG reading grammer LuminaECG: explicit ECG reading interface 
+
+> LuminaECG
+> Our Cardiologist-Aligned ECG Interpretation Agent
+
+Diagnosing as Cardiologists Do Key Results             
+
+> Superior Across Generation, Measurement, and Diagnosis
+> Learned Generalist Intelligence with Cardiologist-like Reasoning
+> What Can Cardiologist-Inspired Priors Bring to ECG Agents? Wave Semantics
+> P = 140 ms PR = 182 ms QRS = 142 ms QTc = 485 ms RR = 600 ms ...
+> Lead I
+> ✘P < 120 ms
+> ✔PR 120 - 200 ms
+> ✘QRS < 120 ms
+> ✘QTc < 440 ms
+> ✘HR: 60 - 100 bpm ...
+> Evidence
+> <img> <Lead> I,II,III,...,V6 <color> P=green, QRS=red,T=blue <grid> 10mm/mv, 25mm/s
+> <Rhythm> : Sinus, HR=<> bpm
+> <Interval> : PR = <> ms ...
+> <Axis>: P <> QRS <> T <> ...
+> <Conclusion>:
+> Sinus rhythm Wide-QRS pattern LBBB-compatible morphology
+> Automated Annotator
+
+Figure 1: Overview of LuminaECG. Cardiologist diagnostic priors are encoded into the data construction process to guide waveform localization, measurement, and evidence-based interpretation, yielding consistent gains in report generation, quantitative accuracy, and cross-dataset generalization. 
+
+Together, these results suggest that the bottleneck in medical multimodal modelling lies not only in model capacity, but also in whether the training data preserve how clinicians localize evidence, derive measurements, and connect those measurements to diagnostic conclusions. For ECG, and potentially other measurement-intensive medical domains, expert-informed data design may therefore be a more fundamental step than model scaling. Before building larger medical models, we may first need to build data that preserve how clinicians see, measure, and reason. 
+
+# 2 Related Works 
+
+Deep learning for automatic ECG diagnosis. Deep learning has driven the main advances in automatic ECG diagnosis, moving the field from hand-crafted-feature classifiers (de Chazal et al., 2004; Martínez et al., 2004) to networks that learn from the raw signal and reach cardiologist-level accuracy on rhythm and multi-label tasks (Hannun et al., 2019; Ribeiro et al., 2020; Siontis et al., 2021), with later architectural and self-supervised advances broadening their coverage (Peimankar and Puthusserypady, 2021; Joung et al., 2024; Hong et al., 2019; Yao et al., 2020; Na et al., 2024; McKeen et al., 2024; Liu et al., 2024, 2025). These systems are closed-set classifiers: they emit a label rather than an interpretation, expose no localized evidence for a call, and lose much of their in-distribution accuracy across recorders, populations, and acquisition conditions, which keeps them short of dependable unsupervised clinical use (Ballas and Diou, 2023; Strodthoff et al., 2021; Wagner et al., 2020; Siontis et al., 2021). 
+
+Foundation models and multimodal LLMs for ECG. To move past closed-set labels, a second line couples the tracing with large language models, first pairing a signal encoder with a text decoder for report generation and question answering (Wan et al., 2025; Oh et al., 2023; Zhao et al., 2024) and, closest to our setting, reading the paper-format twelve-lead ECG directly as an image (Liu et al., 2026; Lan et al., 2025) in the manner of general medical vision-language models (Li et al., 2023; Tu et al., 2024); ECG-R1 goes further, shaping the output with diagnostic protocols and reinforcement rewards (Jin et al., 2026). What these systems supervise is report text, and the correspondence between a stated finding and the waveform evidence for it is never made explicit. A report can therefore read fluently and still disagree with the tracing it describes, a failure quantified for radiology report generation (Chen et al., 2020; Miura et al., 2021; Jain et al., 2021): nothing ties a diagnostic claim to the waveform component that supports it or the measurement that quantifies it. 3Injecting prior knowledge into learning. A broad literature makes expert priors visible to a model, whether in the loss (Raissi et al., 2019; Karniadakis et al., 2021), the curriculum (Bengio et al., 2009; Kumar et al., 2010), the supervised reasoning trace (Wei et al., 2022; Lightman et al., 2024), the pixels via visual prompts that ring a region of interest (Shtedritski et al., 2023; Yang et al., 2023; Cai et al., 2024; Wan et al., 2024), or, for ECG, attention and knowledge-enhanced objectives (Hong et al., 2019; Liu et al., 2025). Each adds one prior at one level; grounded ECG reading needs three registered together in a single training example: a metric coordinate frame, the identity of each waveform component, and the tie from a measurement to the diagnosis it supports. L UMINA ECG builds all three into every training example, rendering the ECG on its native paper grid, colour-coding the P, QRS, and T waves, and writing a measurement-grounded structured report, and fits these aligned views with ordinary low-rank fine-tuning (Qwen Team, 2025; Hu et al., 2022). We treat this visible-prior ladder as a hypothesis, and test below whether the model reads from these priors or from correlated shortcuts. 
+
+# 3 Results 
+
+We evaluate LuminaECG with a unified protocol designed to make comparisons across ECG agents clinically meaningful. The protocol fixes the test cohorts, input format, diagnostic endpoints, and reporting criteria, so that performance differences reflect ECG interpretation ability rather than variations in prompting, preprocessing, or label construction. The evaluation is organized around three capabilities required for clinically ECG diagnose and interpretation. We first test whether LuminaECG can generate doctor-style reports with higher linguistic fidelity than general vision–language models. We then ask whether these reports are grounded in quantitative ECG measurements, including heart rate, PR interval, and QRS duration. Finally, we examine whether doctor-grounded supervision supports clinically meaningful interpretation, both by comparison against human readers of different expertise tiers on CODE-test and by transferring across external cohorts. This diagnostic stance motivates the structure of the following results. 
+
+3.1 Evaluation Protocol 
+
+We evaluated LuminaECG with a unified protocol designed to test whether clinical reading priors can move an ECG agent toward human-level interpretation while preserving interpretable evidence. The protocol covers four complementary aspects: generated report quality, clinically essential numeric measurements, comparison with human readers on CODE-test, and cross-cohort transfer after doctor-style supervision. For report generation and numeric measurement, all models were tested on the same held-out MIMIC-IV-ECG set of 79 ,981 records, using the same ECG-derived inputs, guideline-structured reference reports, and waveform-derived numeric references. Report quality Papineni et al. (2002); Vedantam et al. (2015) was measured with BLEU, ROUGE-L and CIDEr to quantify agreement with clinical references. Measurement fidelity was measured by mean absolute error for heart rate, PR interval and QRS duration. All values are averaged over the full test set, so differences between methods reflect reporting and measurement ability rather than differences in data, prompting, or evaluation rules. For diagnostic interpretation, we used macro-F1 and micro-F1 on clinically defined ECG conditions. CODE-test Ribeiro et al. (2020) provides a human-reader scale, allowing the agent to be compared with medical students, residents, cardiologists and a published deep-learning baseline. Cross-cohort evaluation further tests whether the learned clinical reading priors transfer to external datasets with no training contact. Macro-F1 gives equal weight to each diagnosis, whereas micro-F1 reflects aggregate performance across all decisions. 43.2 Doctor-grounded supervision yields measurement-grounded ECG reporting 
+
+For an ECG agent to approach human-like diagnosis, the prediction itself is not sufficient: the model must also produce interpretable evidence that resembles the way clinicians read ECGs. A correct label without a faithful report may reflect shortcut learning, while a fluent report without accurate measurements may only imitate clinical language. We therefore first evaluated whether doctor-grounded supervision enables LuminaECG to generate guideline-structured ECG reports and to preserve the quantitative measurements that support clinical interpretation, including heart rate, PR interval and QRS duration. On the MIMIC-IV-ECG held-out test set ( n = 79 ,981 ), LuminaECG showed a large and consistent advantage in report-generation quality. It achieved the best score on every text-similarity metric, with BLEU-1 0.853 , BLEU-4 0.741 , ROUGE-L 0.808 and CIDEr 0.896 . In contrast, the strongest general frontier systems remained substantially lower: GPT-5.4 reached BLEU-4 0.307 and ROUGE-L 0.392 ,while Claude-Opus-4.7 reached BLEU-4 0.292 and ROUGE-L 0.383 . The gap was especially pronounced on CIDEr, where LuminaECG reached 0.896 whereas all compared zero-shot systems were near zero. This indicates that the improvement is not limited to local lexical overlap, but extends to the report-level structure and clinically specific phrasing induced by the doctor-style supervision. The same pattern appeared in numeric measurement fidelity. LuminaECG reduced heart-rate MAE to 
+
+0.43 bpm, compared with 6.45 bpm for GPT-5.4, 8.37 bpm for Claude-Opus-4.7 and 15 .73 bpm for Qwen3-VL-8B. For ECG intervals, LuminaECG also achieved the lowest error, with PR MAE 8.97 ms and QRS MAE 4.48 ms, whereas the strongest zero-shot systems remained at approximately 24 –26 ms for PR and 14 –21 ms for QRS. Thus, doctor-grounded supervision does more than make the report text resemble clinical writing: it anchors the generated interpretation to waveform-derived measurements that clinicians rely on when forming diagnoses. Together, these results show that LuminaECG learns measurement-grounded ECG reporting rather than superficial report imitation. The generated outputs are both more faithful to guideline-structured clinical references and more accurate in the numeric evidence required for ECG interpretation, providing the basis for comparing the agent with human readers and testing whether the learned clinical reading priors transfer across cohorts. 
+
+Finding 1 
+
+Doctor-grounded supervision converts ECG reporting from language imitation into measurement-grounded interpretation. 
+
+3.3 Frontier systems miss critical findings; doctor-grounded supervision closes the gap 
+
+Beyond report fluency and measurement accuracy, a clinically useful ECG agent must not overlook findings that carry immediate clinical consequence; a model that produces accurate normal reports but misses life-threatening abnormalities is unsafe regardless of its aggregate scores. We therefore evaluated critical-finding recall, measuring how many pre-specified urgent diagnoses each system recovers. On PTB-XL ( n = 4 ,396 , no training contact), across 2,569 critical-finding instances spanning eleven urgent diagnoses (atrial fibrillation, atrial flutter, ventricular tachycardia, third-degree AV block, LBBB, RBBB, ST elevation, ST depression, QTc prolongation, old infarction, and LV hypertrophy), L UMINA ECG-2B recovered 50 .8% , whereas every frontier zero-shot system remained below 10 .3% : Claude-Opus-4.7 reached 0.096 , GPT-5.4 0.076 , Gemini-3.1-Pro 0.051 , and the largest open model, Qwen3-VL-235B-A22B, only 0.008 . A 2-billion-parameter doctor-grounded model thus exceeded a 235-billion-parameter zero-shot model on this endpoint by roughly 64 ×. The gap is not closed by ECG specialisation either: on in-domain 5MIMIC-IV-ECG the published ECG-specialist ECG-R1 recovered only 1.1% of critical findings, missing 
+
+81% . This indicates that the bottleneck for recovering critical findings is supervision design rather than parameter count or domain pre-training. The advantage was uniform across conditions rather than driven by a single class: L UMINA ECG-2B was the strongest system on eight of the eleven critical findings, including atrial fibrillation ( 0.92 recall versus 
+
+0–0.16 for the next-best frontier), LV hypertrophy ( 0.78 versus 0–0.28 ) and LBBB ( 0.70 versus 0–0.06 ). The systems also differed in how they failed, with frontier models separating into loud hallucinators (Claude, GPT and the Qwen family, 63 –72% hallucinated claims) and a silent omitter (Gemini, 64% of findings omitted), whereas L UMINA ECG-2B alone occupied a balanced low-error regime (hallucination 0.21 ,omission 0.21 ). Together, these results show that doctor-grounded supervision closes the critical-finding safety gap separating general vision–language models from clinical ECG interpretation, and that scale alone does not narrow it. 
+
+Finding 2 
+
+Critical-finding recovery depends more on clinically grounded supervision than on model scale. Despite using only a 2B backbone, L UMINA ECG recovered 50 .8% of urgent findings on unseen PTB-XL data, whereas all evaluated frontier zero-shot systems remained below 10 .3% and showed either severe hallucination or omission. 
+
+3.4 Clinical diagnostic priors bring ECG agents closer to human readers 
+
+A clinically meaningful ECG agent should be evaluated on a scale that is interpretable to clinicians. Instead of reporting diagnostic scores only against other algorithms, we used CODE-test as a human-reader benchmark, where the same six CODE-6 red-flag diagnoses are evaluated across medical students, residents, cardiologists, and the Ribeiro-2020 deep-convolutional baseline. This setting allows us to ask whether clinical diagnostic priors learned from doctor-style supervision can move an ECG agent toward human reader performance. On CODE-test ( n = 827 ), L UMINA ECG-2B reached macro-F1 0.840 and micro-F1 0.852 over the six red-flag diagnoses (cf. Fig. 2a). This places the model above the medical-student tier (macro-F1 0.817 ) and the emergency-resident tier ( 0.829 ), and below the cardiology-resident tier ( 0.862 ), locating L UMINA ECG-2B within a clinically interpretable junior-reader range. Compared with existing ECG agents and zero-shot vision–language systems, this represents a substantial shift: the model is no longer only producing ECG-like text or isolated labels, but begins to align with the diagnostic behavior of human trainees on an external reader benchmark. The per-condition results show where this alignment is strongest. L UMINA ECG-2B exceeded the medical-student tier on five of the six diagnoses—first-degree AV block ( 0.818 vs 0.732 ), LBBB ( 0.929 vs 0.915 ), sinus bradycardia ( 0.778 vs 0.750 ), atrial fibrillation ( 0.765 vs 0.706 ) and sinus tachycardia ( 0.909 vs 
+
+0.873 )—and exceeded the emergency-resident tier on three of the six; RBBB remains the single condition below both junior tiers ( 0.841 vs 0.928 and 0.852 ). These gains indicate that clinical diagnostic priors provide more than superficial report fluency: they help the agent recover clinically meaningful decision patterns that are comparable to early-stage human ECG readers. 60.70 0.75 0.80 0.85 0.90 0.95 1.00    
+
+> F1 over six CODE-6 red-flag diagnoses (CODE-test, n= 827 )
+> Cardiologist 2 Ribeiro-DNN Cardiologist 1 Cardiology resident LuminaECG-2B (ours) ED resident Medical student
+> 0.935 0.925 0.902 0.862 0.840 0.829 0.817
+> junior-reader tier
+> macro-F1 micro-F1
+
+(a) Comparison with human readers on CODE-test. Macro-F1 (solid) and micro-F1 (dashed) across six CODE-6 red-flag diagnoses. L UMINA ECG-2B exceeds the medical-student and emergency-resident tiers, and remains below the cardiology resident, the cardiologists, and the Ribeiro-2020 baseline. MIMIC-val (in-domain) CODE-test (Brazil) Chapman (China) PTB-XL (Germany) 0.0 0.2 0.4 0.6 0.8 1.0     
+
+> Macro-F1 over six red-flag conditions  in-domain external (zero training contact)
+> 0.81 0.84 0.64 0.68 0.87 0.47 0.35 0.05
+> LuminaECG-2B ResNet1d-101 (CNN)
+
+(b) Cross-cohort generalization without target-cohort training. Macro-F1 across six red-flag diagnoses for L U-
+
+> MINA
+
+ECG-2B and a ResNet1d-101. Although comparable in-domain, the CNN degrades more sharply across external cohorts, whereas L UMINA ECG-2B remains more stable. 
+
+Figure 2: LUMINA ECG-2B surpasses the junior-reader tiers and generalizes across external cohorts. (a) Performance on the CODE-test reader benchmark. (b) Cross-cohort comparison with a CNN trained on the same source data. Full results are provided in Tables A2 and A3. 
+
+Finding 3 
+
+Clinical diagnostic priors move ECG agents toward human-reader performance. On CODE-test, LUMINA ECG-2B achieved a macro-F1 of 0.840 and a micro-F1 of 0.852 , surpassing the medical-student ( 0.817 ) and emergency-resident ( 0.829 ) tiers and approaching the cardiology-resident tier (0.862 ), while exceeding medical-student performance on five of the six individual diagnoses. 
+
+3.5 Doctor-style supervision enables transferable ECG interpretation across cohorts 
+
+Clinical ECG interpretation should remain stable beyond the dataset on which the agent is trained. A model that performs well only in-domain may have learned cohort-specific waveform shortcuts, device artifacts, or label conventions rather than transferable diagnostic structure. We therefore evaluated whether doctor-style supervision enables ECG interpretation to transfer across external cohorts with no training contact, spanning Brazil, China, and Germany. Across the three external cohorts, L UMINA ECG-2B retained macro-F1 between 0.644 and 0.840 over the six CODE-6 red-flag diagnoses (cf. Fig. 2b). On CODE-test, the model reached macro-F1 0.840 ; on Chapman–Shaoxing, it retained 0.644 despite the large cross-country shift; and on PTB-XL, it reached 
+
+0.678 . This stability was not limited to a single diagnosis. Atrial fibrillation remained strong across both Chapman and PTB-XL, with F1 0.898 and 0.892 , respectively, while sinus tachycardia also transferred consistently, with F1 0.889 on Chapman and 0.836 on PTB-XL. Other general-purpose VLMs remained at the same low diagnostic level observed in the preceding report-generation and measurement evaluations, indicating that the cross-cohort gains are not obtained by generic visual-language capacity alone. The advantage becomes clearer when compared with a waveform classifier trained on the same MIMIC source data. Although the ResNet1d-101 baseline is evaluated under the same external-cohort setting, its macro-F1 drops to 0.470 on CODE-test, 0.350 on Chapman–Shaoxing, and 0.049 on PTB-XL. In contrast, L UMINA ECG-2B maintains substantially higher performance across all three cohorts, with gains of +0 .370 , +0 .294 , and +0 .629 macro-F1, respectively. Thus, the central result is not merely improved 7Figure 3: Emergent prognostic value on the external Sami-Trop cohort ( n = 1 ,631 ; 104 deaths; out-of-fold). (a)                            
+
+> Kaplan–Meier survival across risk tertiles, with two-year mortality of 1.5% ,3.7% , and 13 .0% (log-rank P < 0.001 ). (b)
+> Adding report-derived features increased Harrell’s Cfrom 0.678 for age and sex to 0.764 (∆C= +0 .086 ,95% CI +0 .026 to
+> +0 .147 ;P= 0 .005 ). (c) Two-year calibration across risk deciles (slope 1.18 ,r= 0 .98 ). (d) Age- and sex-adjusted hazard ratios for report-derived phenotypes, with significant associations for major arrhythmia and prolonged QTc.
+
+accuracy on one benchmark, but stronger transport of ECG interpretation across cohort, geography, and label-distribution shift. Together, these findings indicate that doctor-style supervision helps ECG agents move beyond dataset-specific recognition toward transferable clinical interpretation. By learning to organize ECG evidence through report-like diagnostic priors, L UMINA ECG-2B preserves clinically meaningful performance across external cohorts rather than relying only on source-dataset correlations. 
+
+Finding 4 
+
+Transferable ECG interpretation emerges from clinically structured supervision rather than source-dataset fitting alone. Across three external cohorts, L UMINA ECG-2B maintained macro-F1 scores between 0.644 and 0.840 , while a waveform classifier trained on the same source data degraded sharply, reaching only 0.049 on PTB-XL. 
+
+3.6 Structured ECG reports carry emergent prognostic information 
+
+Clinical value ultimately depends on whether an ECG agent’s outputs relate to patient outcomes, not only to reference labels. We therefore asked whether the structured reports produced by doctor-grounded supervision carry prognostic information beyond patient demographics, even though L UMINA ECG-2B was trained only to transcribe ECGs and never encountered mortality outcomes. On the external Sami-Trop cohort (Chagas cardiomyopathy; n = 1 ,631 , 104 deaths, median follow-up 
+
+2.1 years, no training contact), features extracted from L UMINA ECG-2B’s reports added measurable 8prognostic value over age and sex. In an out-of-fold analysis, the concordance index of a demographic Cox model rose from 0.678 to 0.764 when the report features were added, an increment of ∆C = +0 .086 
+
+(paired bootstrap 95% CI +0 .026 to +0 .147 ; P = 0 .005 ); the integrated discrimination improvement was 
+
++0 .047 and the category-free net reclassification index +0 .36 , both excluding the null. This indicates that the diagnostic-transcription supervision encodes outcome-relevant structure recoverable in a cohort the model never saw. The resulting risk score was well calibrated across risk deciles (calibration slope 1.18 ; observed–predicted 
+
+r = 0 .98 ) and stratified two-year mortality monotonically from 0.6% in the lowest decile to 22 .3% in the highest (cf. Fig. 3), with the signal concentrated in specific phenotypes—an age- and sex-adjusted hazard ratio of 2.88 (95% CI 1.86 –4.46 ) for a major-arrhythmia flag and 3.94 (2.49 –6.24 ) for prolonged QTc—rather than an undifferentiated abnormal flag. This is an emergent, incremental association rather than a standalone risk predictor: demographics remain the dominant single covariate and adjustment is for age and sex only, so multivariable adjustment for comorbidities is required before clinical use. Together, these results show that doctor-grounded supervision produces reports whose structured content aligns with patient outcomes in a cohort with no training contact. 
+
+Finding 5 
+
+Diagnostic supervision yields report representations that extend beyond label recovery. In a zero-contact cohort, report-derived features improved the age-and-sex Cox model from a C-index of 
+
+0.678 to 0.764 , revealing emergent prognostic information even though L UMINA ECG-2B was never trained on mortality outcomes. 
+
+# 4 Discussion 
+
+This study suggests that the path toward clinically useful ECG agents should not begin with larger architectures or more parameters, but with the way clinicians actually read ECGs. By embedding clinical reading priors into the supervision data, a compact 2B vision–language model can learn to generate report-like, measurement-grounded, human-reader-aligned, and transferable ECG interpretations without changing the underlying model architecture. The central implication is that supervision design, rather than model scale alone, can determine whether an ECG agent learns clinically meaningful interpretation or merely imitates visual-language patterns. This distinction is especially important for medical agents. In clinical diagnosis, a prediction is rarely sufficient on its own; it must be supported by evidence that clinicians can inspect, question, and relate to established decision rules. For ECG interpretation, this means that an agent should not only output disease labels, but also organize findings in a doctor-like report, preserve core measurements, and connect waveform-derived evidence to diagnostic conclusions. Conventional classification supervision compresses this process into a final label, whereas doctor-style supervision exposes the intermediate structure of clinical reasoning. LuminaECG therefore treats ECG interpretation less as a generic recognition task and more as a structured reading task, where report language, quantitative measurements, and diagnostic decisions are learned together. This is the sense in which the model becomes more human-aligned: not because it reproduces human reasoning in full, but because its outputs are shaped around the same kinds of evidence that human readers use. Placing the model on a human-reader scale further clarifies the meaning of its performance. Algorithm-only comparisons can show whether one system outperforms another, but they do not reveal whether the result is clinically interpretable. By comparing the agent with medical students, residents, and cardiologists on the same external benchmark, the evaluation provides a more meaningful reference point. The finding that clinical diagnostic priors bring the agent above the junior-reader tiers suggests that doctor-style supervision 9can narrow the gap between generic ECG agents and early-stage human readers. This should not be understood as replacing expert interpretation, but as evidence that a compact agent can begin to acquire clinically recognizable diagnostic behavior when trained from the perspective of how ECGs are actually read. The transfer results extend this argument beyond a single benchmark. A common limitation of medical AI systems is that strong in-domain performance may reflect dataset-specific correlations, acquisition artifacts, or label conventions rather than stable clinical knowledge. ECG interpretation is particularly vulnerable to this problem because waveforms vary across devices, populations, institutions, and annotation systems. The improved cross-cohort behavior of LuminaECG suggests that doctor-style supervision encourages the model to learn more portable diagnostic structure. By grounding outputs in report-like evidence and clinical measurements, the agent is less dependent on source-dataset shortcuts and better able to preserve interpretation across external cohorts. This supports the broader view that human diagnostic priors can act as a form of transportable supervision. Future work should strengthen the supervision beyond report-level imitation. Doctor-style reports provide an important clinical prior, but they do not fully expose the evidence and reasoning process behind each diagnosis. Incorporating lead-level evidence, morphology-specific descriptions, physician-verified rationales, and multimodal clinical context such as symptoms, medications, laboratory values, and prior ECGs would help the model move from reproducing clinical report structure toward evidence-grounded reasoning. The goal is not to make ECG agents memorize reporting templates, but to teach them how clinicians connect measurements, waveform morphology, lead distribution, and patient context to diagnostic decisions. This shift from report-like generation to explicit clinical reasoning is a key direction for building ECG agents that are more faithful, explainable, and useful in real-world settings. Overall, LuminaECG points to a different design principle for medical vision–language agents. Rather than first asking how large the model should be, the more important question may be what kind of clinical reading process the model is asked to learn. For ECG interpretation, embedding human diagnostic priors into the data can produce an agent that writes more clinically meaningful reports, preserves quantitative evidence, approaches human trainee-level performance, and transfers better across cohorts. This suggests that the next stage of medical agent development should prioritize clinically structured supervision and human-readable evidence, not only architectural scale. 
+
+# 5 Methods 
+
+5.1 Doctor-style ECG supervision construction 
+
+We build the training data from MIMIC-IV-ECG ( 800 ,035 twelve-lead recordings), split 9:1 at the patient level into 719 ,828 training and 79 ,981 in-domain held-out records. The same construction is applied, with no retraining, to every external evaluation cohort (PTB-XL, Chapman–Shaoxing, CODE-test, Sami-Trop), so that cross-cohort differences reflect distribution shift rather than data preparation. Each record passes through three offline stages: measurement extraction, wave-annotated image rendering, and grounded report generation. 
+
+Measurement extraction. A NeuroKit-based delineator locates per-beat P, Q, R, S, T and U fiducial points across all twelve leads and computes a 303 -field per-record clinical feature panel ( 194 per-lead, 109 
+
+global): per-lead wave amplitudes, ST level and slope, T-wave symmetry, intervals and QRS/T areas; heart rate and heart-rate-variability metrics; mean PR/QRS/QT intervals with prolongation flags; frontal-plane P, QRS and T axes; QTc by Bazett and Fridericia; regional ST-segment levels and elevation/depression counts; R-wave progression; and rule-based rhythm, bundle-branch, hypertrophy, ischaemia and pre-excitation 10 scores, each with a confidence and its supporting leads. Every numerical quantity that the reference report later asserts about a record originates from this measurement step rather than from a free-text label. 
+
+Image rendering with wave-segment overlay. Each recording is rendered as a clinical-paper twelve-lead image on a calibration grid ( 25 mm/s, 10 mm/mV) in the standard 6 × 2 layout, with a colour overlay marking the P (green), QRS (red) and T (blue) wave segments. The grid fixes the physical time/voltage scale in pixel space so that intervals and amplitudes become measurable distances; the overlay makes the P, QRS and T components locally identifiable, so the visual encoder receives a faithful clinical image together with a self-evident segmentation cue. 
+
+Grounded report generation. For each training record, gpt-4o receives the MIMIC machine mea-surements and the extracted numeric panel—not the image—and writes one eight-section Chinese report (rhythm & rate; intervals; axis & voltage; conduction & arrhythmia; ST–T / ischaemia; signal quality; evidence points; conclusion). Because the generator never sees the waveform, a grounding protocol constrains it to assert only what the device diagnosis and the measurements determine: diagnoses derive from the device statements, with no diagnosis introduced that is absent from them and none contradicted; computed values serve as evidence attached to the diagnosis they support (first-degree AV block anchored to PR > 200 ms); only label-entailed morphology is asserted (an infarct wall with its fixed lead set and pathological Q waves); case-specific detail the label does not determine is omitted rather than fabricated; measurements a rhythm renders unreliable are flagged (the Bazett QTc under atrial fibrillation); and the evidence section links each conclusion to a measurement or a colour-identified wave. Over all 719 ,828 
+
+training reports, every report contains the eight sections ( 100 .0% ), a numeric interval ( 99 .8% ), and a colour-identified wave in the evidence section ( 98 .9% ). Native labels are harmonised to a common six-finding schema for cross-cohort evaluation (PTB-XL SCP codes, Chapman–Shaoxing SNOMED codes, and CODE-test adjudicated labels). Each training example is a triple (wave-annotated image, fixed eight-section instruction, grounded report); a low-rank adapter is the only trained component. 
+
+5.2 LuminaECG model implementation 
+
+LuminaECG was built on a Qwen2B vision–language backbone and fine-tuned using the doctor-style ECG supervision data constructed in the previous section. No task-specific architectural modules were added. This design was intentional: the study aimed to isolate the effect of clinical reading priors in the supervision data rather than attributing improvements to model scaling or architecture changes. The model was fine-tuned for two epochs on eight NVIDIA H100 GPUs. Unless otherwise specified, preprocessing, optimization, and training hyperparameters followed the official Qwen training configuration. Each training instance consisted of an ECG-derived visual input and its paired structured clinical report, enabling the model to learn report-style ECG interpretation directly from the constructed supervision data. 
+
+# 6 Conclusion 
+
+We introduce L UMINA ECG, a compact ECG reasoning model that embeds doctor-grounded priors into the training data to preserve waveform anatomy, clinical measurements, and evidence-to-diagnosis relationships. Across held-out and external cohorts, L UMINA ECG improves report generation, quantitative measurement, critical-finding recovery, human-reader alignment, and cross-cohort generalization, while its structured reports also retain emergent prognostic information. These results suggest that reliable medical reasoning depends not only on model scale, but also on whether the data reflect how clinicians localize, measure, and interpret evidence. Although prospective validation, stronger faithfulness, and broader clinical evaluation remain necessary, L UMINA ECG supports a broader design principle: expert diagnostic priors should be treated as a foundation for medical multimodal models rather than expected to emerge from scale alone. 11 References 
+
+Zachi I Attia, Suraj Kapa, Francisco Lopez-Jimenez, Paul M McKie, Dorothy J Ladewig, Gaurav Satam, Patricia A Pellikka, Maurice Enriquez-Sarano, Peter A Noseworthy, Thomas M Munger, Samuel J Asirvatham, Christopher G Scott, Rickey E Carter, and Paul A Friedman. Screening for cardiac contractile dysfunction using an artificial intelligence–enabled electrocardiogram. Nature Medicine , 25 (1):70–74, 2019a. doi: 10.1038/s41591-018-0240-2. Zachi I Attia, Peter A Noseworthy, Francisco Lopez-Jimenez, Samuel J Asirvatham, Abhishek J Deshmukh, Bernard J Gersh, Rickey E Carter, Xiaoxi Yao, Alejandro A Rabinstein, Brad J Erickson, Suraj Kapa, and Paul A Friedman. An artificial intelligence-enabled ECG algorithm for the identification of patients with atrial fibrillation during sinus rhythm: a retrospective analysis of outcome prediction. The Lancet ,394(10201):861–867, 2019b. doi: 10.1016/S0140-6736(19)31721-0. Aristotelis Ballas and Christos Diou. Towards domain generalization for ECG and EEG classification: Algorithms and benchmarks. IEEE Transactions on Emerging Topics in Computational Intelligence ,2023. Yoshua Bengio, Jérôme Louradour, Ronan Collobert, and Jason Weston. Curriculum learning. In Interna-tional Conference on Machine Learning (ICML) , 2009. doi: 10.1145/1553374.1553380. Mu Cai, Haotian Liu, Dennis Park, Siva Karthik Mustikovela, Gregory P. Meyer, Yuning Chai, and Yong Jae Lee. ViP-LLaVA: Making large multimodal models understand arbitrary visual prompts. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , 2024. Zhihong Chen, Yan Song, Tsung-Hui Chang, and Xiang Wan. Generating radiology reports via memory-driven transformer. In Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP) , pages 1439–1449, 2020. Philip de Chazal, Maria O’Dwyer, and Richard B. Reilly. Automatic classification of heartbeats using ECG morphology and heartbeat interval features. IEEE Transactions on Biomedical Engineering , 51(7): 1196–1206, 2004. E. William Hancock, Barbara J. Deal, David M. Mirvis, Peter Okin, Paul Kligfield, and Leonard S. Gettes. AHA/ACCF/HRS recommendations for the standardization and interpretation of the electrocardiogram. part V: Electrocardiogram changes associated with cardiac chamber hypertrophy. Journal of the American College of Cardiology , 53(11):992–1002, 2009. doi: 10.1016/j.jacc.2008.12.015. Awni Y. Hannun, Pranav Rajpurkar, Masoumeh Haghpanahi, Geoffrey H. Tison, Codie Bourn, Mintu P. Turakhia, and Andrew Y. Ng. Cardiologist-level arrhythmia detection and classification in ambulatory electrocardiograms using a deep neural network. Nature Medicine , 25(1):65–69, 2019. doi: 10.1038/ s41591-018-0268-3. Shenda Hong, Cao Xiao, Tengfei Ma, Hongyan Li, and Jimeng Sun. MINA: Multilevel knowledge-guided attention for modeling electrocardiography signals. In Proceedings of the 28th International Joint Conference on Artificial Intelligence (IJCAI) , pages 5888–5894, 2019. Edward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and Weizhu Chen. LoRA: Low-rank adaptation of large language models. In International Conference on Learning Representations , 2022. Saahil Jain, Ashwin Agrawal, Adriel Saporta, Steven Truong, Du Nguyen Duong, Tan Bui, Pierre Chambon, Yuhao Zhang, Matthew P. Lungren, Andrew Y. Ng, Curtis P. Langlotz, and Pranav Rajpurkar. RadGraph: Extracting clinical entities and relations from radiology reports. In Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track , 2021. 12 Jiarui Jin, Haoyu Wang, Xingliang Wu, Xiaocheng Fang, Xiang Lan, Zihan Wang, Deyun Zhang, Bo Liu, Yingying Zhang, Xian Wu, Hongyan Li, and Shenda Hong. ECG-R1: Protocol-guided and modality-agnostic MLLM for reliable ECG interpretation, 2026. URL https://arxiv.org/abs/2602. 04279 .Chankyu Joung, Mijin Kim, Taejin Paik, Seong-Ho Kong, Seung-Young Oh, Won Kyeong Jeon, Jae-hu Jeon, Joong-Sik Hong, Wan-Joong Kim, Woong Kook, Myung-Jin Cha, and Otto van Koert. Deep learning based ECG segmentation for delineation of diverse arrhythmias. PLoS One , 19(6):e0303178, 2024. George Em Karniadakis, Ioannis G Kevrekidis, Lu Lu, Paris Perdikaris, Sifan Wang, and Liu Yang. Physics-informed machine learning. Nature Reviews Physics , 3(6):422–440, 2021. doi: 10.1038/ s42254-021-00314-5. Paul Kligfield, Leonard S. Gettes, James J. Bailey, Rory Childers, Barbara J. Deal, E. William Hancock, Gerard van Herpen, Jan A. Kors, Peter Macfarlane, David M. Mirvis, Olle Pahlm, Pentti Rautaharju, and Galen S. Wagner. AHA/ACCF/HRS recommendations for the standardization and interpretation of the electrocardiogram. part I: The electrocardiogram and its technology. Journal of the American College of Cardiology , 49(10):1109–1127, 2007. doi: 10.1016/j.jacc.2007.01.024. M. Pawan Kumar, Benjamin Packer, and Daphne Koller. Self-paced learning for latent variable models. In 
+
+Advances in Neural Information Processing Systems (NeurIPS) , 2010. Xiang Lan, Feng Wu, et al. GEM: Empowering MLLM for grounded ECG understanding with time series and images. arXiv preprint arXiv:2503.06073 , 2025. Chunyuan Li, Cliff Wong, Sheng Zhang, Naoto Usuyama, Haotian Liu, Jianwei Yang, Tristan Naumann, Hoifung Poon, and Jianfeng Gao. LLaVA-Med: Training a large language-and-vision assistant for biomedicine in one day. In Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track , 2023. Hunter Lightman, Vineet Kosaraju, Yura Burda, Harri Edwards, Bowen Baker, Teddy Lee, Jan Leike, John Schulman, Ilya Sutskever, and Karl Cobbe. Let’s verify step by step. In International Conference on Learning Representations (ICLR) , 2024. arXiv:2305.20050. Che Liu, Cheng Ouyang, Zhongwei Wan, Haozhe Wang, Wenjia Bai, and Rossella Arcucci. Knowledge-enhanced multimodal ECG representation learning with arbitrary-lead inputs. In Findings of the Associa-tion for Computational Linguistics: EMNLP 2025 , 2025. arXiv:2502.17900. Che Liu et al. Zero-shot ECG classification with multimodal learning and test-time clinical knowledge enhancement. arXiv preprint arXiv:2403.06659 , 2024. Ruoqi Liu, Yuelin Bai, Xiang Yue, and Ping Zhang. Teaching multimodal LLMs to comprehend 12-lead electrocardiographic images. npj Digital Medicine , 2026. doi: 10.1038/s41746-026-02551-3. Juan Pablo Martínez, Rute Almeida, Salvador Olmos, Ana Paula Rocha, and Pablo Laguna. A wavelet-based ECG delineator: evaluation on standard databases. IEEE Transactions on Biomedical Engineering ,51(4):570–581, 2004. Kaden McKeen, Laura Oliva, Sameer Masood, Augustin Toma, Barry Rubin, and Bo Wang. ECG-FM: An open electrocardiogram foundation model. arXiv preprint arXiv:2408.05178 , 2024. Yasuhide Miura, Yuhao Zhang, Emily Tsai, Curtis Langlotz, and Dan Jurafsky. Improving factual com-pleteness and consistency of image-to-text radiology report generation. In Proceedings of the 2021 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (NAACL) , pages 5288–5304, 2021. 13 Yeongyeon Na, Minje Park, Yunwon Tae, and Sunghoon Joo. Guiding masked representation learning to capture spatio-temporal relationship of electrocardiogram. In International Conference on Learning Representations (ICLR) , 2024. Jungwoo Oh, Gyubok Lee, Seongsu Bae, Joon-myoung Kwon, and Edward Choi. ECG-QA: A comprehen-sive question answering dataset combined with electrocardiogram. In Advances in Neural Information Processing Systems (NeurIPS), Datasets and Benchmarks Track , 2023. arXiv:2306.15681. Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu. Bleu: a method for automatic evaluation of machine translation. In Proceedings of the 40th Annual Meeting of the Association for Computational Linguistics , pages 311–318. Association for Computational Linguistics, 2002. Abdolrahman Peimankar and Sadasivan Puthusserypady. DENS-ECG: A deep learning approach for ECG signal delineation. Expert Systems with Applications , 165:113911, 2021. Qwen Team. Qwen3-VL: A frontier vision-language family. https://qwenlm.github.io/blog/ qwen3-vl/ , 2025. Maziar Raissi, Paris Perdikaris, and George Em Karniadakis. Physics-informed neural networks: A deep learning framework for solving forward and inverse problems involving nonlinear partial differential equations. Journal of Computational Physics , 378:686–707, 2019. Antônio H. Ribeiro, Manoel Horta Ribeiro, Gabriela M. M. Paixão, Derick M. Oliveira, Paulo R. Gomes, Jéssica A. Canazart, Milton P. S. Ferreira, Carl R. Andersson, Peter W. Macfarlane, Wagner Meira, Thomas B. Schön, and Antonio Luiz P. Ribeiro. Automatic diagnosis of the 12-lead ECG using a deep neural network. Nature Communications , 11(1):1760, 2020. doi: 10.1038/s41467-020-15432-4. Aleksandar Shtedritski, Christian Rupprecht, and Andrea Vedaldi. What does CLIP know about a red circle? Visual prompt engineering for VLMs. In International Conference on Computer Vision (ICCV) ,2023. arXiv:2304.06712. Konstantinos C Siontis, Peter A Noseworthy, Zachi I Attia, and Paul A Friedman. Artificial intelligence-enhanced electrocardiography in cardiovascular disease management. Nature Reviews Cardiology , 18(7): 465–478, 2021. doi: 10.1038/s41569-020-00503-2. Nils Strodthoff, Patrick Wagner, Tobias Schaeffter, and Wojciech Samek. Deep learning for ECG analysis: Benchmarks and insights from PTB-XL. IEEE Journal of Biomedical and Health Informatics , 25(5): 1519–1528, 2021. doi: 10.1109/JBHI.2020.3022989. Borys Surawicz, Rory Childers, Barbara J. Deal, Leonard S. Gettes, James J. Bailey, Anton Gorgels, E. William Hancock, Mark Josephson, Paul Kligfield, Jan A. Kors, Peter Macfarlane, Jay W. Mason, David M. Mirvis, Peter Okin, Olle Pahlm, Pentti M. Rautaharju, Gerard van Herpen, Galen S. Wagner, and Hein Wellens. AHA/ACCF/HRS recommendations for the standardization and interpretation of the electrocardiogram. part III: Intraventricular conduction disturbances. Journal of the American College of Cardiology , 53(11):976–981, 2009. doi: 10.1016/j.jacc.2008.12.013. Tao Tu, Shekoofeh Azizi, Danny Driess, Mike Schaekermann, Mohamed Amin, Pi-Chuan Chang, Andrew Carroll, Chuck Lau, Ryutaro Tanno, Ira Ktena, et al. Towards generalist biomedical AI. NEJM AI , 1(3), 2024. doi: 10.1056/AIoa2300138. Ramakrishna Vedantam, C. Lawrence Zitnick, and Devi Parikh. CIDEr: Consensus-based image description evaluation. In IEEE Conference on Computer Vision and Pattern Recognition (CVPR) , pages 4566–4575. IEEE, 2015. doi: 10.1109/CVPR.2015.7299087. 14 Galen S. Wagner, Peter Macfarlane, Hein Wellens, Mark Josephson, Anton Gorgels, David M. Mirvis, Olle Pahlm, Borys Surawicz, Paul Kligfield, Rory Childers, and Leonard S. Gettes. AHA/ACCF/HRS recommendations for the standardization and interpretation of the electrocardiogram. part VI: Acute ischemia/ infarction. Journal of the American College of Cardiology , 53(11):1003–1011, 2009. doi: 10.1016/j.jacc.2008.12.016. Patrick Wagner, Nils Strodthoff, Ralf-Dieter Bousseljot, Dieter Kreiseler, Fatima I Lunze, Wojciech Samek, and Tobias Schaeffter. PTB-XL, a large publicly available electrocardiography dataset. Scientific Data , 7 (1):154, 2020. David Wan, Jaemin Cho, Elias Stengel-Eskin, and Mohit Bansal. Contrastive region guidance: Improving grounding in vision-language models without training. In European Conference on Computer Vision (ECCV) , 2024. arXiv:2403.02325. Zhongwei Wan, Che Liu, Xin Wang, Chaofan Tao, Hui Shen, Jing Xiong, Rossella Arcucci, Huaxiu Yao, and Mi Zhang. MEIT: Multimodal electrocardiogram instruction tuning on large language models for report generation. In Findings of the Association for Computational Linguistics: ACL 2025 , 2025. Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed H Chi, Quoc V Le, and Denny Zhou. Chain-of-thought prompting elicits reasoning in large language models. In Advances in Neural Information Processing Systems (NeurIPS) , 2022. arXiv:2201.11903. Jianwei Yang, Hao Zhang, Feng Li, Xueyan Zou, Chunyuan Li, and Jianfeng Gao. Set-of-mark prompting unleashes extraordinary visual grounding in GPT-4V. arXiv preprint arXiv:2310.11441 , 2023. Qihang Yao, Ruxin Wang, Xiaomao Fan, Jikui Liu, and Ye Li. Multi-class arrhythmia detection from twelve-lead varied-length ECG using attention-based time-incremental convolutional neural network. 
+
+Information Fusion , 53:174–182, 2020. Yubao Zhao et al. ECG-Chat: A large ECG-language model for cardiac disease diagnosis. arXiv preprint arXiv:2408.08849 , 2024. 15 A Complete Evaluation Results 
+
+Full numerical results are reported on the MIMIC-IV-ECG held-out test set ( n = 79 ,981 ). Table A1 summarizes report-generation quality and numeric-measurement accuracy, Table A2 presents the CODE-test comparison with human readers across expertise tiers, and Table A3 reports cross-dataset generalization across three external cohorts spanning three continents. All systems, including L UMINA ECG-2B, pretrain-2B, Qwen3-VL-8B (zero-shot), ECG-R1-8B, GPT-5, GPT-5.4, Claude-4, Claude-Opus-4.7, Gemini-3.1-Pro, and Qwen3-VL-235B, are evaluated on the same complete 79 ,981 -record test set using the standard evaluation pipeline. All metrics are computed on the full-report text slice. Table A1 reports the metrics available for all systems. Several frontier baselines rarely produce parseable QT/QTc intervals or P/QRS/T electrical axes, preventing a consistent comparison on these fields. We therefore report these measurements only for L UMINA ECG-2B. The corresponding mean absolute errors are 7.82 ms for QT, 8.91 ms for QTc, 8.64 ◦ for P-axis, 5.92 ◦ for QRS-axis, and 9.97 ◦ for T-axis. Table A1: Complete evaluation on the MIMIC-IV-ECG held-out test set ( n = 79 ,981 ). Top block: report-generation quality, character-level text similarity to the reference report (higher is better). Bottom block: numeric-measurement accuracy, mean absolute error of the values extracted from each report (lower is better; heart rate in bpm, intervals in ms). Bold marks the best value in each column.                                                                                                    
+
+> Report-generation quality (higher is better)
+> Model BLEU-1 BLEU-2 BLEU-3 BLEU-4 ROUGE-L CIDEr pretrain-2B (ablation, no SFT) 0.425 0.328 0.257 0.209 0.331 0.001 Qwen3-VL-8B (zero-shot) 0.262 0.221 0.184 0.155 0.393 0.000 ECG-R1-8B (external) 0.081 0.072 0.065 0.058 0.185 0.000 GPT-5.4 0.594 0.466 0.374 0.307 0.392 0.029 GPT-5 0.584 0.459 0.365 0.298 0.401 0.014 Claude-Opus-4.7 0.562 0.442 0.355 0.292 0.383 0.014 Claude-4 0.379 0.317 0.265 0.224 0.419 0.000 Gemini-3.1-Pro 0.000 0.000 0.000 0.000 0.067 0.000 Qwen3-VL-235B 0.434 0.347 0.276 0.225 0.390 0.000
+> LUMINA ECG-2B (ours) 0.853 0.810 0.773 0.741 0.808 0.896 Numeric-measurement accuracy (MAE, lower is better)
+> Model HR (bpm) PR (ms) QRS (ms) pretrain-2B (ablation, no SFT) 19.58 24.90 26.64 Qwen3-VL-8B (zero-shot) 15.73 44.99 16.09 ECG-R1-8B (external) 38.00 48.40 24.76 GPT-5.4 6.45 24.79 20.24 GPT-5 14.99 25.58 19.09 Claude-Opus-4.7 8.37 25.86 14.44 Claude-4 17.08 24.97 21.05 Gemini-3.1-Pro 8.87 23.97 15.20 Qwen3-VL-235B 15.29 24.91 21.05
+> LUMINA ECG-2B (ours) 0.43 8.97 4.48
+
+16 Table A2: CODE-test ( n = 827 ) comparison of L UMINA ECG-2B against human readers of different expertise tiers and the Ribeiro-2020 deep-convolutional baseline, reported as per-condition F1 over the six CODE-6 red-flag diagnoses and as overall macro/micro-F1 (higher is better). Rows are ordered by macro-F1. L UMINA ECG-2B ranks above the medical-student and emergency-resident tiers overall and exceeds the medical-student tier on five of the six diagnoses.                                                                 
+
+> Reader / Model 1dAVb RBBB LBBB SB AF ST macro-F1 micro-F1 Cardiologist 2 0.926 0.971 1.000 0.897 0.889 0.930 0.935 0.945 Ribeiro-DNN 0.897 0.944 1.000 0.882 0.870 0.960 0.925 0.938 Cardiologist 1 0.828 0.957 0.966 0.897 0.870 0.896 0.902 0.908 Cardiology resident 0.776 0.917 0.947 0.882 0.769 0.882 0.862 0.876 ED resident 0.719 0.852 0.912 0.848 0.696 0.946 0.829 0.846 Medical student 0.732 0.928 0.915 0.750 0.706 0.873 0.817 0.833
+> LUMINA ECG-2B (ours) 0.818 0.841 0.929 0.778 0.765 0.909 0.840 0.852
+
+Table A3: Cross-dataset generalization on three external cohorts with no training contact, spanning three continents. Columns 2–7 give L UMINA ECG-2B per-condition F1 over the six CODE-6 conditions (SB, ST denote sinus bradycardia and sinus tachycardia); the last two columns give macro-F1 for L UMINA ECG-2B and for a plain ResNet1d-101 multi-label classifier trained on the same MIMIC waveforms (higher is better). LUMINA ECG-2B retains 0.64 –0.84 macro-F1 across continents, whereas the CNN, matched in-domain on MIMIC, collapses to 0.05 –0.47 out of distribution.                                      
+
+> LUMINA ECG-2B per-condition F1 macro-F1 Cohort (region, n)1dAVb RBBB LBBB SB AF ST LUMINA ECG-2B ResNet1d-101 CODE-test (Brazil, 827 )0.818 0.841 0.929 0.778 0.765 0.909 0.840 0.470 Chapman (China, 45 ,151 )0.460 0.862 0.315 0.440 0.898 0.889 0.644 0.350 PTB-XL (Germany, 4,396 )0.430 0.638 0.760 0.512 0.892 0.836 0.678 0.049
+
+# B Case studies 
+
+We illustrate L UMINA ECG qualitatively in two parts. First, a head-to-head comparison against four frontier zero-shot systems on two individual 12-lead ECGs. For each case we show the tracing once, then every system’s report—the physician reference, L UMINA ECG-2B, and the four baselines (Qwen3-VL-235B, GPT-5.4, Claude-Opus-4.7, Gemini-3.1-Pro)—rendered verbatim in translation and condensed to the diagnostically relevant sections. Within each report, correct findings are shown in green , incorrect or misattributed calls in red , and findings present in the reference but missed are flagged in grey. Second, a set of stand-alone L UMINA ECG-2B readings of further held-out ECGs, presented as an interactive session. 17 B.1 Head-to-head against frontier systems 
+
+correct incorrect / misattributed [missed] present in the reference but absent from the read 
+
+Case A Atrial fibrillation, complete right bundle branch block, and prolonged QTc 
+
+MIMIC-IV-ECG, sample 15292609_44181131 
+
+Rendered 12-lead ECG with colour-coded P / QRS / T overlay. 
+
+Physician · reference · ground truth 
+
+Rhythm. Atrial fibrillation with occasional PVCs / intraventricular conduction anomaly; ventricular rate ∼62 bpm. 
+
+Intervals. PR not reliably assessable; QRS ≈144 ms; QT ≈488 ms; QTc ≈496 ms (QRS markedly prolonged, QTc mildly prolonged). Conduction. Consistent with complete right bundle branch block; atrial fibrillation with occasional PVCs. ST-T. No clear ischaemic or infarct-type ST-T change. Conclusion. Atrial fibrillation, complete right bundle branch block, mildly prolonged QTc — abnormal ECG. 
+
+LuminaECG-2B · ours 
+
+Rhythm. Atrial fibrillation with slow ventricular response; ∼59 bpm. Intervals. PR not reliably assessable; QRS ≈146 ms; QT ≈490 ms; QTc ≈486 ms (QRS markedly prolonged, QTc near the upper limit). Conduction. 
+
+Consistent with complete right bundle branch block; atrial fibrillation with slow ventricular response. Evidence. 
+
+RR intervals markedly irregular across leads with no clear green P waves → atrial fibrillation; red QRS in V1 shows an rSR ′ morphology with widening → right bundle branch block; blue T waves mildly abnormal inferiorly, without acute-ischaemic ST change. Conclusion. Atrial fibrillation with slow ventricular response, complete right bundle branch block, QTc near the upper limit — abnormal ECG. 
+
+Qwen3-VL-235B 
+
+Rhythm. Sinus rhythm; ∼75 bpm. Intervals. PR ≈160 ms; QRS ≈80 ms; QT ≈380 ms; QTc ≈410 ms. 
+
+Conduction. No AV block, bundle branch block, or ectopy; regular rhythm. ST-T. T-wave inversion with mild ST depression in V1–V3 → anteroseptal non-specific repolarization abnormality. Conclusion. Sinus rhythm; anteroseptal repolarization abnormality. [missed: AF, complete RBBB] 
+
+18 GPT-5.4 
+
+Rhythm. Sinus rhythm; ∼52 bpm. Intervals. PR ≈160 ms; QRS ≈90 ms; QT ≈440 ms; QTc ≈410 ms. 
+
+Conduction. QRS not widened; no definite block or ectopy; overall sinus bradycardia. ST-T. Mild J-point / ST elevation with tall symmetric T in V2–V5 → early-repolarization-like; no acute ischaemic change. Conclusion. 
+
+Sinus bradycardia; precordial early-repolarization-like ST-T change. [missed: AF, complete RBBB] 
+
+Claude-Opus-4.7 
+
+Rhythm. Sinus rhythm with early wide-complex beats (PVCs); ∼65 bpm. Intervals. PR ≈160 ms; QRS ≈90 ms (sinus), ≈160 ms (ectopic); QT ≈380 ms; QTc ≈395 ms. Conduction. PVCs on a sinus background; wide bizarre beats, no preceding P, morphology suggesting RVOT origin. ST-T. ST at baseline with normal T in sinus beats; secondary post-PVC change only; no primary ischaemic change. Conclusion. Sinus rhythm with PVCs (suggesting RVOT origin). [missed: AF, complete RBBB] 
+
+Gemini-3.1-Pro 
+
+Rhythm. Sinus rhythm; ∼60 bpm (baseline). Intervals. PR ≈160 ms; QRS ≈90 ms; QT ≈400 ms; QTc ≈400 ms. 
+
+Conduction. Multifocal premature ventricular complexes. ST-T. No clear ischaemic change. Conclusion. Sinus rhythm with multifocal PVCs. [missed: AF, complete RBBB] 
+
+19 Case B Old anteroseptal myocardial infarction on an otherwise normal sinus tracing 
+
+MIMIC-IV-ECG, sample 18490877_49900084 
+
+Rendered 12-lead ECG with colour-coded P / QRS / T overlay. 
+
+Physician · reference · ground truth 
+
+Rhythm. Sinus rhythm; ∼65 bpm, within normal range. Intervals. PR ≈204 ms; QRS ≈98 ms; QT ≈434 ms; QTc 
+
+≈452 ms (all broadly within normal limits). Conduction. AV and intraventricular conduction essentially normal; no definite block or significant arrhythmia. ST-T. Suggests a possible old anteroseptal myocardial infarction; correlate with clinical context and cardiac markers. Conclusion. Sinus rhythm, normal rate and axis, no conduction block; suggests a possible old anteroseptal myocardial infarction — abnormal ECG. 
+
+LuminaECG-2B · ours 
+
+Rhythm. Sinus rhythm; ∼65 bpm, within normal range. Intervals. PR ≈195 ms; QRS ≈100 ms; QT ≈431 ms; QTc ≈449 ms (broadly normal, QTc mildly long). Conduction. AV and intraventricular conduction essentially normal; no definite block or significant arrhythmia. ST-T. Suggests an old anteroseptal infarction; no acute ischaemic ST-T change. Conclusion. Sinus rhythm, normal rate and axis, no conduction block, QTc mildly long; suggests an old anteroseptal infarction — correlate with history and cardiac markers. 
+
+Qwen3-VL-235B 
+
+Rhythm. Sinus rhythm; ∼75 bpm. Intervals. PR ≈160 ms; QRS ≈80 ms; QT ≈380 ms; QTc ≈410 ms. 
+
+Conduction. No AV block, bundle branch block, or ectopy; regular rhythm. ST-T. No clear ischaemic change. 
+
+Conclusion. Normal ECG; sinus rhythm, no conduction abnormality or ischaemia. [missed: old anteroseptal MI] 
+
+GPT-5.4 
+
+Rhythm. Sinus rhythm; ∼60 bpm. Intervals. PR ≈160 ms; QRS ≈80 ms; QT ≈400 ms; QTc ≈400 ms. 
+
+Conduction. AV and intraventricular conduction essentially normal; no block or significant arrhythmia. ST-T. ST largely isoelectric; poor precordial R-wave progression, V1–V3 negative / low-voltage RS-QS. Conclusion. Sinus rhythm, left-axis deviation; consider possible left anterior fascicular block. [missed: old anteroseptal MI] 
+
+20 Claude-Opus-4.7 
+
+Rhythm. Sinus rhythm; ∼65 bpm (RR ≈920 ms, regular). Intervals. PR ≈160 ms; QRS ≈90 ms; QT ≈400 ms; QTc ≈418 ms. Conduction. No definite block, no ectopy; regular sinus rhythm. ST-T. ST isoelectric, T concordant; no ischaemic ST-T change and no pathological Q waves. Conclusion. Normal sinus-rhythm ECG, no significant abnormality. [missed: old anteroseptal MI] 
+
+Gemini-3.1-Pro 
+
+Rhythm. Sinus rhythm; ∼66 bpm. Intervals. PR ≈160 ms; QRS ≈100 ms; QT ≈400 ms; QTc ≈420 ms. 
+
+Conduction. No clear block or arrhythmia. ST-T. No clear ischaemic change (shallow lead III T-inversion is a common variant). Conclusion. Sinus rhythm, largely normal ECG. [missed: old anteroseptal MI] 
+
+B.2 LUMINA ECG in action 
+
+We show L UMINA ECG-2B reading four held-out 12-lead ECGs on its own, presented as an interactive session: each tracing is submitted with a fixed instruction and the model returns its report in eight structured steps; the readings are shown verbatim, translated from the model’s Chinese output. 
+
+LUMINA ECG-2B · held-out ECG, normal study  
+
+> Rendered 12-lead ECG P / QRS / T colour overlay
+> 1
+
+Rhythm Sinus rhythm , ∼87 bpm, mildly above the upper normal limit; regular RR intervals.  
+
+> 2
+
+Intervals PR 156 ms, QRS 90 ms, QT 362 ms, QTc 436 ms (Bazett); all within usual normal ranges.  
+
+> 3
+
+Axis P axis +63 ◦, QRS +38 ◦, T +45 ◦; normal frontal-plane axis; no voltage criteria for hypertrophy.  
+
+> 4
+
+Conduction AV and intraventricular conduction within normal limits; no bundle-branch block, no significant arrhythmia.  
+
+> 5
+
+ST-T No ischaemic or infarct-type ST-segment or T-wave change in any territory.  
+
+> 6
+
+Evidence Lead II green P waves regularly precede the red QRS with consistent RR → sinus rhythm; blue T waves stable, no acute-ischaemic ST change.  
+
+> 7
+
+Signal 0.005–150 Hz diagnostic bandwidth with 60 Hz notch; mild baseline drift and EMG noise; waveforms clear.  
+
+> 8
+
+Conclusion Sinus rhythm at a mildly increased rate, normal axis, no conduction block, no ischaemic ST-T change — overall a normal ECG. 
+
+21 LUMINA ECG-2B · held-out ECG, sinus tachycardia  
+
+> Rendered 12-lead ECG P / QRS / T colour overlay
+> 1
+
+Rhythm Sinus tachycardia , ∼100 bpm; regular RR intervals with a consistent P–QRS relationship.  
+
+> 2
+
+Intervals PR 122 ms, QRS 80 ms, QT 312 ms, QTc 403 ms; all within normal ranges.  
+
+> 3
+
+Axis P axis +78 ◦, QRS +71 ◦, T +77 ◦; normal axis; no evidence of hypertrophy or voltage abnormality.  
+
+> 4
+
+Conduction Normal AV and intraventricular conduction; no block and no significant arrhythmia beyond the tachycardia.  
+
+> 5
+
+ST-T No ischaemic or infarct-type ST-T change.  
+
+> 6
+
+Evidence Green P waves precede the red QRS with consistent RR 
+
+→ sinus origin of the tachycardia; blue T-wave morphology normal.  
+
+> 7
+
+Signal Standard diagnostic bandwidth with 60 Hz notch; low baseline drift and EMG noise; clear, interpretable waveforms.  
+
+> 8
+
+Conclusion Sinus tachycardia, normal axis, no conduction block, no ischaemic change — overall a normal or near-normal ECG. 
+
+LUMINA ECG-2B · held-out ECG, atrial fibrillation with rapid ventricular response  
+
+> Rendered 12-lead ECG P / QRS / T colour overlay
+> 1
+
+Rhythm Atrial fibrillation with rapid ventricular response ,
+
+∼132 bpm, clearly above the normal range.  
+
+> 2
+
+Intervals PR not reliably assessable (no organised P waves); QRS 106 ms; QT 310 ms, QTc 460 ms (mildly prolonged) . 
+
+> 3
+
+Axis P axis not assessable; QRS +66 ◦, T −166 ◦; overall normal axis; no clear ventricular hypertrophy.  
+
+> 4
+
+Conduction Consistent with atrial fibrillation with rapid ventricular response ; no definite AV or intraventricular block.  
+
+> 5
+
+ST-T Diffuse ST-T changes suggesting possible myocardial ischaemia ; recommend correlation with clinical context and markers.  
+
+> 6
+
+Evidence Markedly irregular RR across all leads, no clear green P waves → atrial fibrillation; blue T waves inverted or flattened in several leads → possible ischaemia.  
+
+> 7
+
+Signal Waveforms clear with low baseline drift and EMG noise; adequate for rhythm and interval assessment.  
+
+> 8
+
+Conclusion Atrial fibrillation with rapid ventricular response, mildly prolonged QTc, and diffuse ST-T changes suggesting possible ischaemia — abnormal ECG; recommend clinical correlation. 
+
+22 LUMINA ECG-2B · held-out ECG, sinus bradycardia with LAE and LVH  
+
+> Rendered 12-lead ECG P / QRS / T colour overlay
+> 1
+
+Rhythm Sinus bradycardia , ∼56 bpm, below the lower normal limit; regular RR intervals.  
+
+> 2
+
+Intervals PR 187 ms, QRS 110 ms, QT 473 ms, QTc 457 ms (mildly prolonged) ; PR and QRS roughly normal.  
+
+> 3
+
+Axis P axis +48 ◦, QRS +10 ◦, T +33 ◦; normal axis; findings 
+
+suggest left atrial enlargement and left ventricular hypertrophy . 
+
+> 4
+
+Conduction AV and intraventricular conduction within normal limits; sinus bradycardia without significant arrhythmia.  
+
+> 5
+
+ST-T ST-segment elevation in some leads suggesting possible inferior injury ; anterior Q waves that may relate to LVH.  
+
+> 6
+
+Evidence Lead II green P waves precede the red QRS with consistent RR → sinus rhythm; red QRS mildly widened 
+
+→ possible LVH; blue T with ST elevation →
+
+inferior-injury tendency.  
+
+> 7
+
+Signal 0.0005–150 Hz diagnostic bandwidth; signal acceptable, no obvious baseline drift or lead misplacement.  
+
+> 8
+
+Conclusion Sinus bradycardia with left atrial enlargement and LVH, mildly prolonged QTc, and possible inferior injury — abnormal ECG; recommend clinical correlation. 
+
+23
