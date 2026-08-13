@@ -1,0 +1,272 @@
+Title: Unmasking Toxic Mimicry in Medical Offline Reinforcement Learning for ICU Sepsis Management via Counterfactual Clinical Audits
+
+URL Source: https://arxiv.org/pdf/2608.11410v1
+
+Published Time: Thu, 13 Aug 2026 00:11:04 GMT
+
+Number of Pages: 10
+
+Markdown Content:
+# Unmasking Toxic Mimicry in Medical Offline Reinforcement Learning for ICU Sepsis Management via Counterfactual Clinical Audits 
+
+# Hangqi Ren 1, Junyi Liao 2
+
+> 1
+
+# School of Engineering, Vanderbilt University, Nashville, TN, USA; 
+
+> 2
+
+# Pratt School of Engineering, Duke University, Durham, NC, USA 
+
+# Abstract 
+
+Offline reinforcement learning (RL) offers considerable promise for optimizing ICU treatment decisions, yet standard evaluation metrics Mean Squared Error (MSE) and Fitted Q-Evaluation (FQE) assess only behavioral imitation and cannot detect Toxic Mimicry, a failure mode in which agents replicate harmful patterns such as treatment withdrawal during comfort-care transitions. Using the MIMIC-III database, we propose the Counterfactual Clinical Audit (CCA) framework, which stress-tests RL agents through physiological perturbations anchored in Surviving Sepsis Campaign (SSC) guidelines. We audit a Medical Decision Transformer (MedDT) and a Historical Causal Transformer (HCT-RL), the latter employing Causal Action Shielding, propensity-based importance weighting, and Conservative Q-Learning. CCA reveals that MedDT paradoxically reduces vasopressor dosage as lactate escalates, contradicting resuscitation guidelines, while HCT-RL maintains physiologically consistent responses. These findings expose a systemic misalign-ment between statistical fit and clinical safety, supporting counterfactual audits as a necessary evaluation standard for medical RL. 
+
+Keywords: Causal Inference, Deep Learning, Critical Care, Artificial Intelligence, Clinical Decision Support, Evalu-ation 
+
+# Introduction 
+
+Offline reinforcement learning (RL) has emerged as a promising approach for clinical decision support in intensive care units (ICUs). By learning treatment policies from historical electronic health records (EHRs), RL agents can optimize sequential decisions to maximize long-term patient outcomes. 1,2 The AI Clinician study demonstrated that RL-derived policies could potentially improve sepsis management, 3 and subsequent work has employed Deep Q-Networks, actor-critic methods, and Decision Transformers with encouraging simulation results. 4–7 
+
+Despite this promise, clinical deployment of medical RL remains far from reality. 8,9 The core barrier lies in eval-uation methodology. Current benchmarks rely on predictive accuracy (MSE) or value-based proxies such as Fitted Q-Evaluation (FQE), 10,11 which assess how closely an agent’s actions align with historical clinician behavior but are insensitive to the underlying causal logic of interventions. 9,12 High-fidelity imitation can yield favorable scores even when the imitated behaviors stem from non-therapeutic patterns. This limitation reflects a broader challenge in causal inference from observational data, where spurious associations may be misinterpreted as valid clinical strategies. 13,14 
+
+In ICU hemodynamic support, we identify a clinically significant confounder. Sepsis-3 defines septic shock as re-quiring vasopressors to maintain mean arterial pressure (MAP) ≥65 mmHg and a serum lactate level greater than 2 mmol/L, despite adequate fluid resuscitation. 15 The Surviving Sepsis Campaign (SSC) guidelines further recom-mend lactate-guided resuscitation and vasopressor titration to maintain hemodynamic targets. 16 However, vasopressor withdrawal in real-world practice frequently occurs not from physiological improvement but from transitions to com-fort care. 17,18 Studies document that withdrawal of life-sustaining treatment varies from 0% to 84% among deceased ICU patients. 19 These conditions combine to create a systematic confound in historical ICU data: guidelines man-date vasopressor escalation, yet palliative withdrawal produces the opposite pattern in observational records, with no goal-of-care labels to distinguish the two. We term this the palliative confounder. Without causal grounding, high-capacity sequence models risk interpreting care-withdrawal patterns as valid responses to metabolic stress. We define this failure mode as Toxic Mimicry: agents inadvertently learn harmful clinical patterns as optimal strategies, recommending decreased support precisely when guidelines mandate intensification. To address this safety gap, we propose the Counterfactual Clinical Audit (CCA) framework, which stress-tests policies through controlled physiological perturbations anchored in clinical guidelines. CCA comprises three audits: Spurious Robustness, which tests invariance to non-clinical noise; Causal Trend, which verifies dose-response alignment with guidelines; and Contextual Scissor Probe, which evaluates urgency scaling based on shock severity. We validate CCA by auditing two architectures using the MIMIC-III database: 20,21 a standard Medical Decision arXiv:2608.11410v1 [cs.LG] 11 Aug 2026 A. Model Architecture 
+
+B. Counterfactual Clinical Audit (CCA) Figure 1. Overview of the proposed framework. (A) Model architectures: MedDT conditions on historical actions a1: t−1, creating vulnerability to action leakage. HCT-RL employs Causal Action Shielding to reconstruct policies solely from physiological states. (B) The CCA framework: standard evaluation (MSE) fails to detect Toxic Mimicry. CCA comprises three audits that stress-test policies against clinical principles. 
+
+Transformer (MedDT) 6 and a Historical Causal Transformer (HCT-RL) incorporating Causal Action Shielding. Our contributions are: (1) characterizing Toxic Mimicry as a critical failure mode arising from the palliative confounder; (2) introducing CCA as a necessary complement to standard evaluation metrics; and (3) demonstrating that causal shielding and importance weighting effectively suppress palliative confounders where standard architectures fail. 
+
+# Methods 
+
+Dataset and Preprocessing 
+
+We utilized the MIMIC-III Clinical Database (v1.4) 20,21 to extract adult patients meeting Sepsis-3 criteria. 15 Our pipeline follows Komorowski et al. 3 The state space S ∈ R44 encompasses vital signs, laboratory results, and de-mographics. Unlike the original discrete formulation, we defined a continuous action space A ∈ R2 representing intravenous fluid and vasopressor dosages. We used a sliding window of L = 6 time steps (each 4 hours), with 70%/15%/15% train/validation/test splits at the patient level. All features were z-score normalized. 
+
+Counterfactual Clinical Audit (CCA) Framework 
+
+Standard metrics (MSE, FQE) assess behavioral imitation but cannot detect adherence to clinical principles. We pro-pose CCA, which stress-tests RL agents through controlled physiological perturbations anchored in SSC guidelines. 16 
+
+The framework comprises three complementary audits (Figure 1B). 
+
+Audit I: Spurious Robustness 
+
+Audit I targets susceptibility to spurious correlations, a failure mode in which models respond to non-causal laboratory features that co-vary with historical treatment patterns rather than anchoring decisions to hemodynamically relevant signals. Given a policy π and test set Dtest , we inject Gaussian noise ϵ ∼ N (0 , σ 2) independently at each of the 
+
+L timesteps of a target feature k (serum creatinine, σ = 0 .5) while holding all hemodynamic variables constant. We select a non-critical feature because sensitivity to hemodynamically irrelevant perturbations is the specific failure mode under test; sensitivity to critical features (e.g., MAP) is clinically expected and does not constitute a spurious response. For each trajectory s1: t, the perturbed trajectory ˜s1: t has feature k replaced by si,k + ϵi at every step i. The population sensitivity score is: 
+
+S = Es1: t∼D test [∥π(s1: t) − π(˜ s1: t)∥2] (1) A clinically sound agent should exhibit low sensitivity ( S → 0) to non-critical features. To facilitate cross-model comparison, we compute a relative robustness score Ri = 1 /(1 + Si) and normalize: ¯Ri = Ri/ max j Rj × 100% ,where the model with lower sensitivity attains 100%. 
+
+Audit II: Causal Trend Alignment 
+
+Audit II directly targets the palliative confounder, testing whether the learned dose-response relationship aligns with SSC guidelines, which recommend lactate-guided resuscitation and vasopressor titration to maintain hemodynamic targets in septic shock. 16 For each test trajectory, we counterfactually replace lactate values at all L timesteps with a fixed level ℓ, generating ˜s(ℓ)1: t . This sustained-exposure design simulates a patient maintained at a given metabolic state throughout the observation window. We sweep ℓ across the physiological range L (15 equally-spaced values from Z-score −2 to +5 ) while holding all other variables at observed values. For each level, we compute the population-average treatment intensity as the L2 norm of the full action vector: 
+
+¯A(ℓ) = Es1: t∼D test 
+
+h
+
+π
+
+
+
+˜s(ℓ)1: t
+
+
+
+> 2
+
+i
+
+(2) Results are expressed as percentage change relative to the baseline response at ℓ = ℓmin . We then compute the Spearman rank correlation between the 15 lactate levels and their corresponding population-average intensities: ρ =
+
+Corr ({ℓ1, . . . , ℓ 15 }, { ¯A(ℓ1), . . . , ¯A(ℓ15 )}). A positive correlation ( ρ > 0) indicates causal alignment with guidelines, whereas a negative correlation ( ρ < 0) signals Toxic Mimicry. 
+
+Audit III: Contextual Scissor Probe 
+
+Audit III tests for contextual blindness, the failure to adjust treatment urgency when hypotension coincides with multi-organ deterioration. A clinically capable agent should intensify vasopressor dosing more aggressively when hypotension co-occurs with multi-organ stress than when it occurs in isolation. We define two physiological scenar-ios evaluated across a MAP sweep of 10 equally-spaced steps from Z-score +1 to −2 (high to critically low blood pressure). Scenario A (Univariate): only MAP is varied while heart rate (HR) and lactate are held at observed values, representing isolated hypotension without systemic deterioration. Scenario B (Holistic): MAP, HR, and lactate are co-varied simultaneously. As MAP decreases from Z= +1 to Z= −2,HR increases from Z= −0.5 to Z= +2 and lactate increases from Z= −0.5 to Z= +2 , modeling the progressive hemody-namic collapse characteristic of distributive shock. For each scenario, we record the population-mean vasopressor dosage ¯Ascenario (MAP ) across the MAP sweep and fit a linear regression to obtain response slopes βuni and βhol . Scissor Divergence is defined as: 
+
+∆scissor = |βhol | − | βuni | (3) Here β represents the linear rate of vasopressor dose change per unit decrease in MAP; a steeper slope (larger |β|)indicates more aggressive dose escalation as blood pressure falls. A clinically appropriate agent should exhibit pos-itive Scissor Divergence ( ∆scissor > 0), steepening its vasopressor response when hypotension is accompanied by tachycardia and hyperlactatemia compared to isolated hypotension. 
+
+Model Architectures Under Audit 
+
+We audited two architectures differing fundamentally in their use of historical information (Figure 1A). The two architectures differ in three key dimensions: input conditioning (MedDT includes historical actions; HCT-RL excludes them via Causal Action Shielding), training signal (behavioral cloning vs. causal-weighted RL with CQL), and value estimation (none vs. CQL-regularized critic). 
+
+Medical Decision Transformer (MedDT) 
+
+MedDT adapts the Decision Transformer 6 to medical sequential decision-making. The model conditions action pre-diction on the full trajectory including returns-to-go R1: t, states s1: t, and previous actions a1: t−1. At each timestep, returns-to-go, state, and action embeddings are added with timestep encodings and passed through LayerNorm: eRi =
+
+LayerNorm (Linear R(Ri)+ Embed τ (τi)) , and analogously for esi and eai . Tokens are stacked as [eR 
+
+> 1
+
+, e s
+
+> 1
+
+, e a 
+
+> 1
+
+, . . . , e Rt , e st ,eat ] ∈ R3t×d and processed by a causally masked Transformer encoder ( d = 128 , 3 layers, 4 heads). Actions are pre-dicted from state-position outputs via Softplus activation, enforcing non-negative dosages. The training objective minimizes sequence-level MSE between predicted and clinician actions over all timesteps: 
+
+LMedDT = E(s,a,R )∼D 
+
+"
+
+1
+
+t
+
+> t
+
+X
+
+> i=1
+
+∥ˆai − ai∥22
+
+#
+
+(4) This architecture is vulnerable to action leakage: by conditioning on a1: t−1, the model may shortcut learning by copying previous actions rather than reasoning from physiological states, thereby inheriting the palliative confounder embedded in historical treatment patterns. 
+
+Historical Causal Transformer (HCT-RL) 
+
+HCT-RL addresses action leakage through a multi-component architecture that excludes historical actions from the encoder input (Causal Action Shielding), estimates a behavior policy to construct causal importance weights, and in-corporates Conservative Q-Learning (CQL) 5 to penalize over-optimistic value estimates on out-of-distribution actions. The forward pass employs an action-free state encoder: inputs s1: t are layer-normalized, projected to Rt×d, augmented with positional encodings, and processed through a Transformer encoder to yield latent representation zt at the final timestep. A multilayer perceptron (MLP) actor maps zt to ˆat via Softplus, and an auxiliary MLP decoder predicts the next state ˆst+1 .Training proceeds in four coupled steps. First, a propensity network ˆβ(at | zt) = N (μβ (zt), σ 2 
+
+> β
+
+(zt)) estimates the behavior policy by maximizing log-likelihood on observed transitions: 
+
+Lprop = −E(s,a )∼D 
+
+h
+
+log ˆβ(at | zt)
+
+i
+
+(5) Second, causal importance weights are derived from the propensity scores to downweight actions whose frequency in the historical record reflects treatment conventions (including palliative withdrawal) rather than physiological re-sponse: 
+
+wt = clip 
+
+
+
+exp 
+
+
+
+− log ˆβ(at | zt)
+
+
+
+, 0.1, 10 
+
+
+
+, wt ← wt / E[wt] (6) Third, a critic network Q(zt, a t) is updated using causal-weighted temporal difference (TD) learning combined with a CQL conservative penalty. With target yt = rt + γ(1 − dt)Qtarget (zt+1 , ˆat+1 ):
+
+Lcritic = Ewt · (Q(zt, a t) − yt)2| {z }
+
+> causal-weighted TD
+
++ α E
+
+"
+
+log X
+
+> ˜a
+
+exp Q(zt, ˜a) − Q(zt, a t)
+
+#| {z }
+
+> LCQL
+
+(7) where ˜a is sampled uniformly from [0 , 5] 2 and from the current actor. The CQL term penalizes Q-values of un-observed actions, ensuring conservative policy improvement. Fourth, the actor is updated by jointly minimizing a policy improvement objective, a weighted behavioral cloning (BC) loss emphasizing clinically active dosing decisions (at > 0.01 ), and the auxiliary state prediction loss: 
+
+LBC = E(1 + γact · 1[at > 0.01]) · ∥ ˆat − at∥22
+
+ (8) 
+
+Lactor = −E[Q(zt, ˆat)] + β LBC + λ E∥ˆst+1 − st+1 ∥22
+
+ (9) The causal-weighted TD loss reduces the influence of frequently observed but causally spurious actions (e.g., pal-liative dose reductions) on the learned value function. The auxiliary state prediction term regularizes the encoder to capture physiological dynamics rather than action-copying shortcuts. Together, these components ensure that policy improvement is rooted in physiological causality rather than distributional frequency. 
+
+Training and Evaluation 
+
+MedDT was trained with AdamW (learning rate 10 −4, weight decay 10 −4) and a linear warmup scheduler over 1,000 steps. HCT-RL used separate Adam optimizers for the actor (lr = 10 −4) and critic/propensity (lr = 3 × 10 −4). Both models were trained for up to 15 epochs; the checkpoint with lowest validation MSE was retained. Shared architectural parameters: hidden dimension d = 128 , 3 Transformer layers, 4 attention heads, window size L = 6 , batch size 256. Hyperparameter values for HCT-RL: α = 1 .0 (CQL weight), β = 2 .5 (BC weight), λ = 10 .0 (auxiliary weight), 
+
+γact = 20 .0 (active-action emphasis), γ = 0 .99 (discount factor). For standard evaluation, we report MSE on held-out test trajectories and Fitted Q-Evaluation (FQE), 10,11 an off-policy evaluation method that estimates policy value V π by iteratively minimizing the Bellman error: 
+
+LFQE (ϕ) = E(s,a,r,s ′)∼D 
+
+h Qϕ(s, a ) − r − γQ ϕtarget (s′, π (s′)) 2i
+
+(10) All models were trained across five random seeds (1, 42, 100, 777, 2025). Standard metrics in Table 1 and CCA Audits II–III report results from the seed with lowest validation MSE; Audit I sensitivity in Table 2 reports mean ± SD across all seeds. 
+
+# Results 
+
+Standard Evaluation Metrics 
+
+Table 1 summarizes performance on MIMIC-III. MedDT achieved substantially lower MSE (0.0098 vs. 0.0742) and higher FQE ( V π = 65 .29 vs. 63 .43 ), indicating superior behavioral imitation. However, as the following audits reveal, this statistical advantage conceals dangerous misalignment with clinical principles.  
+
+> Table 1. Standard Evaluation Metrics for Audited Architectures
+
+Model MSE FQE ( V π ) Interpretation MedDT 0.0098 65.29 ± 1.10 High-fidelity imitation HCT-RL 0.0742 63.43 ± 0.84 Causal reconstruction 
+
+Audit I: Spurious Robustness 
+
+Injecting Gaussian noise ( σ = 0 .5) into creatinine values across all timesteps of the window, MedDT exhibited a sensitivity of 0.058 while HCT-RL achieved 0.021, a 2.8-fold improvement (Figure 2). Relative robustness scores were 96.5% vs. 100%. Multi-seed analysis confirmed the stability of this finding (Table 2). MedDT’s sensitivity reflects its conditioning on historical action sequences: prior actions encode correlational signals between non-critical laboratory values and treatment patterns, which the model replicates even when those values are perturbed. HCT-RL, reconstructing policy from physiological state trajectories alone, is not susceptible to such spurious correlations.  
+
+> Figure 2. Audit I: Spurious Robustness on MIMIC-III. Left: sensitivity to creatinine perturbation (lower is better). Right: relative robustness scores normalized to the more robust model. HCT-RL demonstrates superior stability under non-critical perturbations.
+
+Audit II: Causal Trend Alignment 
+
+Counterfactually setting lactate across 15 levels from Z-score −2 to +5 (applied uniformly across the full observation window), HCT-RL demonstrated a monotonically increasing treatment response, rising approximately 10% above the baseline level at ℓmin , consistent with SSC guidelines recommending lactate-guided dose escalation (Spearman 
+
+ρ = +1 .00 , reflecting a strictly monotonic response across all 15 lactate levels). MedDT exhibited a paradoxical pattern: treatment intensity fell approximately 15% below baseline at moderate-to-high lactate levels before a partial recovery at extreme values ( ρ = −0.67 ), as shown in Figure 3. This inverse dose-response represents Toxic Mimicry. In the training data, severely elevated lactate frequently co-occurs with transition to palliative care and dose reduction; MedDT, conditioning on historical action sequences, has internalized this confounded association as a treatment rule. Figure 3. Audit II: Causal Trend Alignment on MIMIC-III. The y-axis shows treatment intensity as percentage change from the baseline response at minimum lactate. HCT-RL shows monotonic dose escalation consistent with SSC guidelines ( ρ = +1 .00 ). MedDT exhibits paradoxical reduction characteristic of Toxic Mimicry ( ρ = −0.67 ). 
+
+Audit III: Contextual Scissor Probe 
+
+Sweeping MAP from Z= +1 to Z= −2, HCT-RL exhibited pronounced Scissor Divergence: its vasopressor response steepened markedly in Scenario B relative to Scenario A, as shown in Figure 4. This steepening reflects appropriate integration of multi-organ stress signals; the model correctly recognizes that identical MAP levels carry higher urgency when accompanied by tachycardia and hyperlactatemia. MedDT showed minimal contextual discrimination, produc-ing near-identical vasopressor slopes across both scenarios ( ∆scissor ≈ 0), failing to differentiate isolated hypotension from distributive shock with multi-organ compromise. 
+
+Figure 4. Audit III: Contextual Scissor Probe on MIMIC-III. The upper panel shows mean vasopressor dosage vs. MAP for both scenarios. The lower panel shows per-step Scissor Divergence (Holistic − Univariate). HCT-RL exhibits consistently positive divergence, scaling urgency under multi-organ stress. MedDT fails to discriminate clinical contexts. External Validation on MIMIC-IV 
+
+To assess generalizability, we evaluated on MIMIC-IV (v3.1) 22,23 without retraining, testing whether observed patterns reflect architectural properties rather than dataset-specific artifacts. 
+
+Audit I on MIMIC-IV 
+
+The performance gap was amplified under distribution shift: MedDT sensitivity increased to 0.10 while HCT-RL achieved 0.01, a 10-fold improvement (Figure 5). Relative robustness scores: 91.9% vs. 100%. Multi-seed analysis confirmed this pattern with even wider separation (Table 2). As distributional distance from the training set increases, MedDT’s reliance on historical action correlations becomes more hazardous, whereas HCT-RL’s causal grounding in physiological state trajectories provides robust generalization. Recent work has independently documented similar transportability challenges when applying ICU-trained RL models to new clinical settings. 26  
+
+> Figure 5. Audit I on MIMIC-IV: Performance gap amplified under distribution shift. HCT-RL demonstrates 10-fold lower sensi-tivity than MedDT, confirming architectural robustness rather than dataset-specific adaptation.
+
+Audit III on MIMIC-IV 
+
+HCT-RL maintained positive Scissor Divergence (0.04–0.12) across the MAP sweep on MIMIC-IV (Figure 6). MedDT exhibited negative divergence ( −0.12 to 0): under multi-organ stress, it paradoxically recommended lower vasopressor doses than in the univariate condition, inverting the clinically required response. This pattern represents an especially dangerous failure mode under distribution shift, where learned confounders from the original training cohort are ap-plied to a new patient population. Figure 6. Audit III on MIMIC-IV: HCT-RL maintains positive Scissor Divergence throughout the MAP range. MedDT exhibits negative divergence, paradoxically reducing vasopressor support under multi-organ stress. 
+
+Summary of CCA Findings 
+
+Table 2 summarizes results across both datasets. MedDT achieved superior standard metrics but failed all CCA audits. The external validation confirms that Toxic Mimicry is a systematic failure mode arising from architectural dependence on historical actions, not a dataset-specific artifact. 
+
+Table 2. Summary of Counterfactual Clinical Audit Results. Audit I sensitivity values are mean ± SD across five random seeds; figures present results from a representative seed.                                        
+
+> MIMIC-III MIMIC-IV Audit Metric MedDT HCT-RL MedDT HCT-RL I: Spurious Sensitivity 0.060 ±0.006 0.032 ±0.008 0.062 ±0.028 0.003 ±0.003 Robustness Relative Score 97.4% 100% 94.4% 100% II: Causal Spearman ρ−0.67 +1 .00 ––Trend Toxic Mimicry Yes No ––III: Scissor Divergence ∆≈0Positive Negative Positive Probe Clinical Logic Fail Pass Fail Pass
+
+# Discussion and Conclusion 
+
+Discussion 
+
+This study reveals a systematic decoupling between standard evaluation metrics and clinical safety in medical offline RL. MedDT achieved superior MSE and FQE yet failed all CCA audits. This paradox exposes a core limitation: met-rics rewarding faithful replication of historical behavior cannot distinguish clinically appropriate patterns from harm-ful confounders. The palliative confounder causes high-capacity sequence models to interpret treatment withdrawal as valid therapeutic responses, producing Toxic Mimicry where policies recommend de-escalation precisely when guide-lines mandate intensification. Moreover, because end-of-life care decisions are known to vary across racial, ethnic, and socioeconomic groups, 17,18,19 the palliative confounder is unlikely to be uniformly distributed. Toxic Mimicry may therefore disproportionately affect patient subpopulations already subject to disparities in ICU care; if palliative transitions are more frequent in underserved populations, the resulting systematic undertreatment would compound existing disparities in sepsis outcomes. Toxic Mimicry shares conceptual roots with causal confusion in imitation learning, where policies learn spurious correlates from expert demonstrations that fail under distributional shift. 27 In the broader offline RL literature, this belongs to the class of reward misspecification under unobserved confounding. Our contribution is to expose this failure mode in a clinical domain where the confounding mechanism is identifiable and guideline-mandated dose-response directions enable falsifiable audits rather than relying on post-hoc reward analysis. The architectural contrast between MedDT and HCT-RL reveals the underlying mechanism. MedDT’s conditioning on a1: t−1 allows it to absorb the full distribution of historical treatment patterns, including palliative care trajecto-ries. HCT-RL’s Causal Action Shielding forces policy reconstruction from physiological state trajectories alone. The causal importance weighting further suppresses the influence of high-frequency palliative actions on Q-function learn-ing, while the CQL term prevents overestimation of conservative dose-reduction strategies. That HCT-RL maintains comparable FQE (63.43 vs. 65.29) despite substantially higher MSE, while passing all CCA audits, demonstrates that causal consistency and standard performance are not inherently in conflict; rather, standard metrics are insufficient to detect clinically serious failures. The CCA framework shifts evaluation from behavioral imitation to causal consistency, asking whether dose-response relationships align with physiological principles encoded in clinical guidelines. The external validation on MIMIC-IV shows that Toxic Mimicry amplifies under distribution shift, confirming the need for causal auditing as a prerequisite rather than an optional supplement to standard benchmarks. Beyond sepsis, CCA applies to any ICU decision domain where clinical guidelines establish a causal dose-response structure. Mechanical ventilation in acute respiratory distress syndrome (ARDS) provides a direct structural analogue: the ARDSNet trial established that low tidal volume ventilation (6 mL/kg) reduces mortality in patients with acute lung injury (PaO 2/FiO 2 [P/F] ≤300), such that a policy recommending tidal volumes above this protective threshold as oxygenation worsens would constitute an analogous failure mode to Audit II. 24 Similar structures exist in insulin infusion protocols, sedation depth management, and antibiotic de-escalation, where treatment decisions are governed by physiologically motivated dose-response principles. 2,8 CCA can be instantiated wherever guidelines provide falsi-fiable causal predictions, requiring only a domain-specific Audit II constructed from the relevant clinical criteria. A key limitation of the current work is that CCA audits behavioral safety, specifically whether a policy’s dose-response logic is causally consistent with clinical guidelines, but cannot directly certify outcome improvement. The gap between causal consistency and patient outcomes is well-established even within guideline-adherent therapies: the VASST trial demonstrated that in patients with septic shock who all received vasopressor support meeting SSC hemodynamic tar-gets, the choice of vasopressor agent still produced heterogeneous individual outcomes, showing that guideline com-pliance does not eliminate individual-level treatment variability. 25 Outside the ICU, where reward signals are sparser and confounding more pervasive, this gap widens further. 8,9 CCA is therefore best understood as a necessary safety screen rather than a sufficient criterion: policies that fail causal audits exhibit clinically inconsistent behavior that is incompatible with safe deployment, but those that pass still require prospective clinical validation before deployment. 1
+
+Limitations include: CCA audits anchored in SSC guidelines may not capture all dimensions of optimal management; counterfactual interventions assume independent manipulation of biomarkers; and evaluation is limited to two archi-tectures. Both MIMIC datasets reflect a single academic medical center in Boston, whose institutional patterns and demographic characteristics may differ from other health systems; model behavior under the palliative confounder may differ in populations with different racial, ethnic, and socioeconomic compositions, particularly given docu-mented disparities in end-of-life care decision-making across these groups. The importance weight clipping bounds (0.1, 10) follow standard offline RL practice; sensitivity to propensity model misspecification and alternative clipping ranges was not systematically evaluated. Cross-seed variability of Audit II and III metrics, which involve nonlinear counterfactual sweeps, warrants further investigation. 
+
+Conclusion 
+
+This study identifies Toxic Mimicry as a critical failure mode in medical offline RL and introduces the CCA frame-work to expose safety hazards that conventional benchmarks cannot detect. HCT-RL demonstrates that integrating Causal Action Shielding, propensity-based importance weighting, and CQL effectively suppresses palliative con-founders, maintaining physiological consistency where standard Decision Transformers fail. This work calls for a shift in evaluating AI-driven clinical decision support: predictive accuracy is insufficient for safety-critical applica-tions; counterfactual audits anchored in domain knowledge must become standard. The ultimate goal of medical RL is not to replicate historical decisions but to discover strategies that improve patient outcomes, requiring a transition from imitation toward causal reasoning. References 
+
+1. Gottesman O, Johansson F, Komorowski M, et al. Guidelines for reinforcement learning in healthcare. Nat Med .2019;25(1):16-18. 2. Liu S, See KC, Ngiam KY, Celi LA, Sun X, Feng M. Reinforcement learning for clinical decision support in critical care: comprehensive review. J Med Internet Res . 2020;22(7):e18477. 3. Komorowski M, Celi LA, Badawi O, Gordon AC, Faisal AA. The artificial intelligence clinician learns optimal treatment strategies for sepsis in intensive care. Nat Med . 2018;24(11):1716-1720. 4. Raghu A, Komorowski M, Ahmed I, Celi LA, Szolovits P, Ghassemi M. Deep reinforcement learning for sepsis treatment [Preprint]. arXiv:1711.09602. 2017. 5. Kumar A, Zhou A, Tucker G, Levine S. Conservative Q-learning for offline reinforcement learning. NeurIPS .2020;33:1179-1191. 6. Chen L, Lu K, Rajeswaran A, et al. Decision transformer: reinforcement learning via sequence modeling. NeurIPS .2021;34:15084-15097. 7. Roggeveen LF, El Hassouni A, de Grooth HJ, Girbes ARJ, Hoogendoorn M, Elbers PWG. Reinforcement learning for intensive care medicine: actionable clinical insights from novel approaches to reward shaping and off-policy model evaluation. Intensive Care Med Exp . 2024;12(1):32. 8. Yu C, Liu J, Nemati S, Yin G. Reinforcement learning in healthcare: a survey. ACM Comput Surv . 2021;55(1):1-36. 9. Gottesman O, Johansson F, Meier J, et al. Evaluating reinforcement learning algorithms in observational health settings [Preprint]. arXiv:1805.12298. 2018. 10. Le H, Voloshin C, Yue Y. Batch policy learning under constraints. ICML . 2019:3703-3712. 11. Tang S, Wiens J. Model selection for offline reinforcement learning: practical considerations for healthcare settings. 
+
+PMLR . 2021;149:2-35. 12. Richens JG, Lee CM, Johri S. Improving the accuracy of medical diagnosis with causal machine learning. Nat Commun . 2020;11(1):3923. 13. Prosperi M, Guo Y, Sperrin M, et al. Causal inference and counterfactual prediction in machine learning for actionable healthcare. Nat Mach Intell . 2020;2(7):369-375. 14. Sanchez P, Voisey JP, Xia T, Watson HI, O’Neil AQ, Tsaftaris SA. Causal machine learning for healthcare and precision medicine. R Soc Open Sci . 2022;9(8):220638. 15. Singer M, Deutschman CS, Seymour CW, et al. The third international consensus definitions for sepsis and septic shock (Sepsis-3). JAMA . 2016;315(8):801-810. 16. Evans L, Rhodes A, Alhazzani W, et al. Surviving sepsis campaign: international guidelines for management of sepsis and septic shock 2021. Intensive Care Med . 2021;47(11):1181-1247. 17. Prendergast TJ, Claessens MT, Luce JM. A national survey of end-of-life care for critically ill patients. Am J Respir Crit Care Med . 1998;158(4):1163-1167. 18. Sprung CL, Cohen SL, Sjokvist P, et al. End-of-life practices in European intensive care units: the Ethicus study. 
+
+JAMA . 2003;290(6):790-797. 19. Mark NM, Rayner SG, Lee NJ, Curtis JR. Global variability in withholding and withdrawal of life-sustaining treatment in the intensive care unit: a systematic review. Intensive Care Med . 2015;41(9):1572-1585. 20. Johnson A, Pollard T, Mark R. MIMIC-III clinical database (version 1.4). PhysioNet. 2016. doi:10.13026/C2XW26 21. Johnson AEW, Pollard TJ, Shen L, et al. MIMIC-III, a freely accessible critical care database. Sci Data . 2016;3:160035. 22. Johnson A, Bulgarelli L, Pollard T, et al. MIMIC-IV (version 3.1). PhysioNet. 2024. doi:10.13026/kpb9-mt58 23. Johnson AEW, Bulgarelli L, Shen L, et al. MIMIC-IV, a freely accessible electronic health record dataset. Sci Data . 2023;10:1. 24. Acute Respiratory Distress Syndrome Network. Ventilation with lower tidal volumes as compared with traditional tidal volumes for acute lung injury and the acute respiratory distress syndrome. N Engl J Med . 2000;342(18):1301-1308. 25. Russell JA, Walley KR, Singer J, et al. Vasopressin versus norepinephrine infusion in patients with septic shock. NEngl J Med . 2008;358(9):877-887. 26. Nauka PC, Kennedy JN, Brant EB, et al. Challenges with reinforcement learning model transportability for sepsis treatment in emergency care. npj Digit Med . 2025;8(1):91. 27. de Haan P, Jayaraman D, Levine S. Causal confusion in imitation learning. NeurIPS . 2019;32.

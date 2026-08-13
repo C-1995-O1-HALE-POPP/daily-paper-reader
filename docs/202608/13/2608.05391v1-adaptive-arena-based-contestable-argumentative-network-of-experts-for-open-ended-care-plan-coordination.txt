@@ -1,0 +1,442 @@
+Title: Adaptive Arena-based Contestable Argumentative Network-of-Experts for Open-Ended Care Plan Coordination
+
+URL Source: https://arxiv.org/pdf/2608.05391v1
+
+Published Time: Fri, 07 Aug 2026 00:12:42 GMT
+
+Number of Pages: 17
+
+Markdown Content:
+# Adaptive Arena-based Contestable Argumentative Network-of-Experts for Open-Ended Care Plan Coordination 
+
+Truong Thanh Hung Nguyen 1,2,⋆ , Hoang-Loc Cao 1, Phuc Ho 1,Phuc Truong Loc Nguyen 1, René Richard 2, and Hung Cao 1 
+
+> 1
+
+Analytics Everywhere Lab, University of New Brunswick, Canada  
+
+> 2
+
+National Research Council Canada, Canada 
+
+{hung.ntt,hung.cao}@unb.ca, Rene.Richard@nrc-cnrc.gc.ca 
+
+Abstract. Care plan coordination demands synthesizing heterogeneous clinical, functional, and psychosocial information across multiple profes-sional disciplines, where monolithic LLM pipelines cannot perform in a transparent or safe manner. We present CANOE (Contestable Argumen-tative Network-of-Experts) , a multi-agent neuro-symbolic framework that addresses these limitations through five modules: complexity assessment, adaptive team recruitment, role-based argumentative computation via an 
+
+Arena-based Quantitative Bipolar Argumentation Framework (A-QBAF) ,human-in-the-loop contestation, and care-plan synthesis. Role-specialized agents generate supporting and attacking arguments for candidate inter-ventions; conflicts are resolved through arena-based clash resolution before acceptability scores propagate across the argumentation graph. Care plan-ners may accept, reject, edit, or add arguments, and the framework will deterministically recompute the final plan. Evaluation on Discharge Me! and MedicalRAG using ROUGE-L, AlignScore, MEDCON F1, FKGL, and LLM-as-a-judge shows that medically fine-tuned models achieve the strongest clinical correctness and safety, while CANOE’s argumentative structure provides faithful explanation and human contestability. 
+
+Keywords: contestable AI, multi-agent systems, argumentative computation, open-ended decision, care plan coordination 
+
+# 1 Introduction 
+
+Personalized care planning for patients with complex needs, e.g., older adults with multimorbidity, post-discharge patients transitioning home, and individuals living with chronic mental and physical illness, is among the most cognitively and organizationally demanding tasks in modern healthcare. A high-quality care plan must integrate heterogeneous information from electronic health records (EHRs) about a patient’s diagnoses, medications, functional limitations, psychosocial  
+
+> ⋆
+
+Corresponding author arXiv:2608.05391v1 [cs.AI] 5 Aug 2026 2 T. T. H. Nguyen et al. 
+
+circumstances, caregiver capacity and home environment, and reconcile guidance from multiple disciplines (e.g., medicine, nursing, pharmacy, occupational ther-apy, social work, mental health) under tight time constraints [21]. Failures of coordination at this interface are a well-documented driver of avoidable readmis-sions, medication errors and adverse safety events [10]. Reducing this burden has become a central motivation for introducing artificial intelligence (AI) into clinical decision support. Recent advances in large language models (LLMs) have demonstrated poten-tial for coordinating, summarizing and personalizing care documentation. LLMs can generate plausible discharge summaries from intensive-care notes, and pro-duce personalized treatment plans when augmented with retrieval and structured prompting [25,5]. Yet, when deployed for open-ended care planning, as opposed to closed multiple-choice question answering, single-model LLM pipelines exhibit several persistent limitations. First, they hallucinate clinically critical content, e.g., drug dosages, contraindications, and follow-up instructions, with errors that are often plausible enough to evade non-expert review [9]. Second, they offer at best post-hoc, narrative chains-of-thought (CoT) [23] as explanations; these rationalizations have been shown to be unfaithful to the model’s actual computations and provide weak guarantees of safety or accountability [6]. Third, they mimic the perspective of a single generalist clinician, collapsing the multi-disciplinary deliberation that characterizes real care planning into one monolithic generation step [13]. As a result, conflicts between, for example, a pharmacist’s concern about polypharmacy and a psychiatrist’s preference for a particular antidepressant are silently resolved inside the model, with no mechanism for a human care planner to inspect, edit or contest specific reasoning steps. This directly contradicts emerging regulatory and design principles for high-stakes AI, which demand that systems be contestable-open and responsive to human dispute throughout their lifecycle [14,18]. We argue that progress on AI-assisted care plan coordination requires moving beyond monolithic LLM prompting toward systems that are multidisciplinary by construction, neuro-symbolic in their reasoning, and contestable by design. To this end, we introduce CANOE (Contestable Argumentative Network-of-Experts) , a framework for personalized care planning that combines role-based LLM agents with formal argumentative reasoning and structured human-in-the-loop intervention. We evaluate CANOE on BioNLP ACL’24 Discharge Me! [25] and MedicalRAG [8] across three open-source backbones using ROUGE-L, AlignScore [28], MEDCON F1 [26], FKGL, and an LLM-as-a-judge protocol scoring Completeness, Validity, Coherence and Safety. The contributions of this paper are as follows: 
+
+– We propose CANOE (Contestable Argumentative Network-of-Experts) , the first end-to-end neuro-symbolic framework that decomposes care plan coor-dination into five modules: complexity assessment and evidence grounding, adaptive multidisciplinary team recruitment, role-based argumentative com-putation, human-in-the-loop contestation, and care-plan coordination. Contestable Argumentative Network-of-Experts for Care Coordination 3
+
+– We introduce an Arena-based Quantitative Bipolar Argumentation Framework (A-QBAF) [4] that aggregates supporting and attacking arguments from het-erogeneous role-based agents into a deterministically computable acceptability score, providing faithful and auditable rationales for every recommendation. 
+
+– We operationalize contestability by design within a clinical workflow, en-abling care planners to accept, reject, edit, or add arguments with formally guaranteed downstream effects on the final plan. 
+
+– We provide an empirical evaluation on two heterogeneous benchmarks with quantitative and qualitative LLM-as-a-judge metrics, offering a reproducible baseline for contestable, multi-agent care plan generation. 
+
+# 2 Related Works 
+
+2.1 LLM-based Multi-Agent Systems in Healthcare 
+
+A growing body of work argues that role-based collaboration among multiple LLM agents better mirrors real clinical decision making than single-model prompting. MedAgents introduces a multi-disciplinary collaboration framework in which role-playing expert agents engage in multi-round consensus discussion and outperform zero-shot baselines on medical QA [22]. MDAgents extends this idea by adap-tively selecting solo, multi-disciplinary or integrated-care-team configurations based on case complexity, achieving state-of-the-art results across ten medical benchmarks [11]. ClinicalAgent applies multi-agent planning to clinical-trial out-come prediction [27]. While these approaches improve diagnostic accuracy, their dispute resolution typically reduces to majority voting, weighted ensembling or free-form natural-language debate, none of which yields a formally interpretable representation of which arguments drove a final decision. Computational argumentation offers a principled foundation for this form of structured reasoning. Foundational work established bipolar and defeasible argumentation frameworks as effective tools for medical decision support [24], and Quantitative Bipolar Argumentation Frameworks (QBAFs) extended these ideas with continuous strength values and gradual semantics that enable the propagation of acceptability scores through attack and support edges [3]. The integration of QBAFs with LLMs is an emerging research direction. ArgLLMs prompt an LLM to generate supporting and attacking arguments and reason over them with gradual semantics, providing faithful explanations and local contestability for binary claim verification [6]; ArgRAG constructs QBAFs from retrieved documents to combat noisy or contradictory evidence in fact verification [29]; and ArgMed-Agents brings argumentation schemes into multi-agent clinical reasoning, instantiating an explicit conflict graph and a symbolic solver that selects coherent arguments [7]. 
+
+2.2 Contestable and Explainable AI in Clinical Decision Support 
+
+Explainable AI (XAI) has become a standard requirement for clinical decision support [17], motivated by both regulatory pressure (e.g., the EU AI Act and 4 T. T. H. Nguyen et al. 
+
+GDPR) and well-documented clinician reluctance to trust opaque models. How-ever, existing approaches remain largely non-interactive, which deliver post-hoc explanations that clinicians cannot interrogate or revise, rather than the narrative, knowledge-grounded justifications that clinical practice demands. Contestable AI (CAI) has emerged as a complementary paradigm that empha-sises human intervention throughout the system lifecycle, encompassing the right to challenge machine predictions, the requirement of human-in-the-loop review for automated decisions, and the need for concrete contestation channels beyond mere explanation [2,16]. An AI-supported shared decision-making framework exemplifies this direction in healthcare, calling for AI reasoning to be embedded in clinician-patient deliberation in a transparent and revisable manner [18,14]. Recent work further argues that QBAFs can be exchanged between agents to resolve conflicts through argumentative interaction [19,15], and that contesta-bility in automated decision systems requires precisely the kind of structured, interactive reasoning that argumentation frameworks provide [12]. CANOE addresses both gaps within a unified system. Unlike existing argu-mentative LLM systems that target narrow binary tasks [6,29,4], our approach applies an Arena-based extension of QBAFs [4] to multi-disciplinary care plan coordination as an open-ended, multi-objective generation task. To our knowledge, CANOE constitutes the first contestable, multi-agent, neuro-symbolic system designed and evaluated for this setting. 
+
+# 3 Environment Formulation 
+
+We consider a decision environment in which the goal is to produce a safe and personalized care plan. This task requires synthesizing clinical conditions, functional abilities, environmental risks, and personal preferences. In practice, high-quality care planning requires contributions from several professional roles, as no single discipline can fully capture the complexity of care plan coordination. Our system aims to support this process by creating a structured multi-agent environment in which different professional viewpoints are revealed, compared, and validated. Formally, we model the environment as a tuple: 
+
+M = ⟨P, D, O, A, Γ, H, V, Π ⟩. (1) Here, the patient information P describes health conditions, functional status, and contextual factors. The system retrieves a set of evidence documents D. A model uses both P and D to propose a set of candidate care options O. A care team recruitment mechanism then chooses a subset of healthcare roles, denoted A,which serve as agents providing expert analysis. Each agent produces supporting and attacking arguments for each option, creating an argumentative pool Γ . A human reviewer may revise this set, producing ΓH . A validation operator V ,grounded in quantitative bipolar argumentation semantics, assigns each argument a degree of acceptability. Finally, the care plan coordinator agent Π synthesizes a recommended care plan using the weighted argumentative structure. Contestable Argumentative Network-of-Experts for Care Coordination 5
+
+Fig. 1: Contestable Argumentative Network-of-Experts (CANOE) Framework for Open-Ended Care Plan Coordination. 
+
+# 4 Framework 
+
+In this section, we present Contestable Argumentative Network-of-Experts (CA-NOE), a multi-agent neuro-symbolic framework for personalized care planning. The objective of CANOE is to transform heterogeneous patient information and retrieved evidence into a transparent, contestable, and clinically grounded care plan. Rather than relying on a single model to directly produce recommenda-tions, the framework decomposes care planning into five coordinated modules, as shown in Fig. 1 and summarized in Algorithm 1: (1) complexity assessment and evidence grounding, (2) adaptive multidisciplinary team recruitment, (3) role-based argumentative computation with an A-QBAF, (4) human-in-the-loop contestation, and (5) care plan coordination. 
+
+4.1 Complexity Assessment and Evidence Grounding 
+
+The framework begins by constructing a structured patient profile from the individual’s demographic data, medical history, current diagnoses, medication regimen, functional limitations, psychosocial conditions, caregiver context, and home-safety factors. We denote this profile by P = {p1, . . . , p k}, where each pℓ
+
+corresponds to a clinically relevant patient attribute. These attributes are derived primarily from available electronic care records and contextual notes. To support grounded reasoning, CANOE retrieves evidence from multiple com-plementary sources. These include historical case records, guideline repositories, and targeted online searches, allowing the framework to combine institution-specific memory with broader clinical knowledge. The retrieved evidence set is denoted by D = {d1, . . . , d n}. Each document dj is associated with metadata 6 T. T. H. Nguyen et al. 
+
+Algorithm 1 CANOE for Care Planning 
+
+Require: Patient record EHR , agent pool Apool , conflict threshold δ, calibration factor 
+
+β, human care planner H
+
+Ensure: Care plan Y = {y1, . . . , y q }
+
+1: // Module 1: Complexity Assessment & Evidence Grounding 
+
+2: P ← ExtractProfile (EHR) ; D ← RetrieveEvidence (P )
+
+3: O ← LLM options (P, D) ▷ Propose candidate interventions o1, . . . , o m
+
+4: c ← C(P, D), c ∈ { low , moderate , high , very high } ▷ LLM-based complexity classifier 5: // Module 2: Adaptive Agent Team Recruitment 
+
+6: A ← S(P, D, c, O) ⊆ A pool ▷ Broader team if c ∈ { high , very high }
+
+7: // Module 3: Role-Based Argumentative Computation (A-QBAF) 
+
+8: Γ ← ∅ 
+
+9: for each aj ∈ A , each oi ∈ O do 
+
+10: Γj,i ← Args( aj , o i, P, D) ▷ α = [text( α), stance( α), role( α), evidence( α), τ (α)] 
+
+11: τ (α) ← LLM score (α, P, D) ∀ α ∈ Γj,i ; Γ ← Γ ∪ Γj,i 
+
+12: end for 
+
+13: for each oi ∈ O , each opposing pair (αs, α a) ∈ Γi do ▷ Arena clash resolution 14: if |τ (αs) − τ (αa)| < δ then 
+
+15: w(α) += LLM adj (αs, α a, P, D); ∆τ (α) ← β 2w(α) − 1
+
+16: ˜τ (α) ← clip  τ (α) + ∆τ (α), 0, 1
+
+17: end if 
+
+18: end for 
+
+19: for each oi ∈ O do ▷ A-QBAF propagation 20: Construct Qi = ⟨Xi, R + 
+
+> i
+
+, R − 
+
+> i
+
+, ˜τi⟩; ˜τi(oi) ← 0.5
+
+21: Iterate σi(x) ← ˜τi(x) +  1 − ˜τi(x)h(Ei(x)) − ˜τi(x)h(−Ei(x)) until convergence 22: F (oi) ← σi(oi)
+
+23: end for 
+
+24: // Module 4: Human-in-the-Loop Contestation 
+
+25: Present {Q i, F (oi)} to H; ΓH ← Γ
+
+26: for each action hk from H do ▷ Accept / Reject / Edit / Add α ∈ ΓH
+
+27: Update ΓH ; construct QHi = ⟨XHi , (R+ 
+
+> i
+
+)H , (R− 
+
+> i
+
+)H , (˜ τi)H ⟩
+
+28: FH (oi) ← σHi (oi) ∀ oi ∈ O ▷ Deterministic recompute after each edit 29: end for 
+
+30: // Module 5: Care Plan Coordination 
+
+31: Y ← Π(P, D, O, Γ H , {FH (oi)}mi=1 ) ▷ Synthesise plan for oi with FH (oi) > 0.5
+
+32: Attach explanation trace (roles, evidence, survived args, scores) to each yt ∈ Y
+
+33: return Y
+
+(e.g., source type, reliability, retrieval score, and temporal relevance). The purpose is not only to enrich the prompt context but to establish a traceable evidentiary base that can later be linked to specific arguments and recommendations. Based on (P, D), a planning model proposes a set of candidate care inter-ventions O = {o1, . . . , o m}, where each option oi represents a plausible action in the care plan, e.g., medication reconciliation, fall-prevention modifications, psychiatric referral, occupational therapy, or community support enrollment. In Contestable Argumentative Network-of-Experts for Care Coordination 7
+
+parallel, CANOE performs a case-level complexity assessment. Let: 
+
+c = C(P, D) ∈ { low , moderate , high , very high }, (2) denote the estimated complexity level of the care-planning case. The function 
+
+C(·) summarizes the joint effects of multimorbidity, frailty, cognitive status, polypharmacy, environmental hazards, psychosocial stressors, and care coordi-nation burden. Intuitively, c reflects the degree of interdisciplinary reasoning required to evaluate the candidate interventions safely and comprehensively. Higher-complexity cases, namely those labeled high/very high, require broader ex-pert recruitment and more extensive argumentative analysis, while low/moderate cases can be handled by a smaller and more targeted care team. 
+
+4.2 Adaptive Agent Team Recruitment 
+
+CANOE maintains a pool of role-specialized healthcare agents, Apool = {a1, . . . , a r },where each agent a is defined by a tuple: 
+
+a = ⟨role( a), expertise( a), priorities( a), style( a)⟩. (3) Here, role( a) identifies the healthcare profession (e.g., general practitioner, nurse, pharmacist, psychiatrist, physical therapist, occupational therapist, social worker, nutritionist, care coordinator), expertise( a) specifies the domains in which the agent is expected to reason reliably, priorities( a) encodes the clinical dimen-sions emphasized by that role, and style( a) governs how the agent formulates recommendations and critiques. Rather than using the full pool for every patient, the framework adaptively recruits a subset of agents tailored to the current case: 
+
+A = S(P, D, c, O) ⊆ A pool . (4) The selection operator S(·) matches the patient profile, retrieved evidences, the candidate intervention set, and the complexity score against the expertise profiles of available roles. For example, a patient with severe depression and medication burden may recruit psychiatry and pharmacy expertise, whereas a patient with frequent near-falls and bathroom hazards may recruit occupational therapy and nursing roles. This recruitment step preserves disciplinary relevance by limiting participation to agents whose perspectives matter for the case. Also, it reduces unnecessary computational overhead while retaining the multidisciplinary structure needed for comprehensive planning. 
+
+4.3 Role-Based Argumentative Computation 
+
+The core reasoning stage of CANOE is a structured argumentative computation process in which each recruited role evaluates the candidate interventions from its own professional perspective. For each option oi ∈ O and each recruited agent 8 T. T. H. Nguyen et al. 
+
+aj ∈ A , the framework generates role-conditioned arguments grounded in the patient state and retrieved evidence: 
+
+Γj,i = Args( aj , o i, P, D). (5) Each generated argument α ∈ Γj,i is represented as: 
+
+α = [text( α), stance( α), role( α), evidence( α), τ (α)] . (6) The field stance( α) ∈ { support , attack } indicates whether the argument sup-ports or challenges the adoption of intervention oi; role( α) = aj records the professional origin of the argument; evidence( α) ⊆ D stores the retrieved sources that substantiate it; and τ (α) ∈ [0 , 1] denotes the argument’s intrinsic strength before considering any interaction with other arguments. For a fixed intervention oi, the full role-based argumentative pool is Γi =S  
+
+> aj∈A
+
+Γj,i , and the global pool across all interventions is Γ = Smi=1 Γi. The intrinsic strength τ (α) is assigned by a scoring model that evaluates the argument along several dimensions: clinical appropriateness, factual consistency with the retrieved evidence, specificity to the patient’s circumstances, transparency of the reasoning chain, and practical feasibility in the community setting. This scoring stage gives each argument an initial weight, but does not yet account for whether it is reinforced or undermined by other arguments in the discussion. 
+
+Clash Resolution (CR) for Near-Tied Conflicts A common failure mode in multi-agent care planning is that a supporting argument and an opposing argument may both appear individually plausible, leading to score saturation and indecisive option ranking. To address this, CANOE implements an arena-based clash-resolution (CR) mechanism before final graph propagation. For any pair of opposing arguments (αs, α a) concerning the same intervention oi, where αs
+
+is supportive, and αa is attacking, the framework checks whether their intrinsic scores are sufficiently close: 
+
+|τ (αs) − τ (αa)| < δ, (7) where δ is a conflict-sensitivity threshold. If the difference falls below this thresh-old, the pair is sent to an adjudication module that compares both arguments in light of the patient context and evidence base. The adjudicator determines which argument is more compelling and aggregates outcomes across all such pairwise clashes. Let w(α) ∈ [0 , 1] denote the empirical win rate of argument α across clashes in which it participates. CANOE calibrates intrinsic strengths according to ∆τ (α) = β 2w(α) − 1, where β ≥ 0 controls the magnitude of the calibration. The revised intrinsic score becomes: 
+
+˜τ (α) = clip  τ (α) + ∆τ (α), 0, 1. (8) This arena-based calibration sharpens the distinction between near-tied but clinically unequal arguments, ensuring that the final reasoning graph reflects not only raw argument quality but also comparative strength under direct conflict. Contestable Argumentative Network-of-Experts for Care Coordination 9
+
+Arena-based Quantitative Bipolar Argumentation Framework After generating and calibrating arguments, CANOE organizes them into a formal A-QBAF for each intervention. For option oi, we define: 
+
+Qi = ⟨Xi, R + 
+
+> i
+
+, R − 
+
+> i
+
+, ˜τi⟩, (9) where Xi = {oi} ∪ Γi is the set of nodes consisting of the intervention node itself and all associated arguments: 
+
+– R+ 
+
+> i
+
+⊆ Xi × Xi: is the support relation, 
+
+– R− 
+
+> i
+
+⊆ Xi × Xi: is the attack relation, 
+
+– ˜τi : Xi → [0 , 1] : is the calibrated base-strength function. By construction, every supportive argument for oi yields an edge (α, o i) ∈
+
+R+ 
+
+> i
+
+, and every attacking argument yields an edge (α, o i) ∈ R− 
+
+> i
+
+. Additional relations may also exist between arguments themselves when one argument semantically reinforces or undermines another. For example, a pharmacist’s warning about sedative burden may support a nurse’s fall-risk concern, while a social worker’s note on caregiver absence may attack the practical feasibility of an otherwise beneficial intervention. In this way, the framework models not only direct supporting/attacking positions on an intervention but also higher-order interactions among the reasons behind those positions. The intervention node is assigned a neutral prior strength ˜τi(oi) = 0 .5, so that its final score emerges from the argumentation process rather than being predetermined. Let σi(x) denote the propagated acceptability of node x ∈ Xi.For each node, we compute the net argumentative energy: 
+
+Ei(x) = X
+
+> y∈Sup i(x)
+
+σi(y) − X
+
+> y∈Att i(x)
+
+σi(y), (10) where Sup i(x) and Att i(x) are the sets of its supporters and attackers, respectively. Following continuous quantitative bipolar semantics, the propagated score is defined by: 
+
+σi(x) = ˜ τi(x) +  1 − ˜τi(x)h(Ei(x)) − ˜τi(x)h(−Ei(x)) , (11) with impact function: 
+
+h(z) = max {z, 0}2
+
+1 + max {z, 0}2 . (12) Starting from the calibrated intrinsic scores, the system iterates this update until convergence, yielding stable propagated strengths for every argument and for the intervention node itself. The option-level acceptability score is then given by the propagated strength of the intervention node F (oi) = σi(oi). Thus, F (oi) summarizes how strongly intervention oi is supported after accounting for role diversity, evidence grounding, inter-argument structure, and direct conflict calibration. Unlike a simple voting or averaging mechanism, this score reflects a genuinely structured deliberation over why an intervention should or should not be included in the care plan. 10 T. T. H. Nguyen et al. 
+
+4.4 Human-in-the-Loop Contestation 
+
+Although A-QBAF provides a formal and explainable argumentative structure, CANOE is designed as a contestable system rather than a fully autonomous recommender. After the initial role-based computation, the framework presents the reasoning state to the human care team in an editable form. The interface summarizes participation by profession, shows the supporting and attacking arguments for each intervention, links arguments to their evidence sources, and displays both intrinsic and propagated strengths. This makes the rationale for each recommendation inspectable at the level of individual claims and role contributions. For each argument α ∈ Γ , human care planners may perform four classes of actions: 1. Accept : retain an argument judged clinically appropriate and well grounded; 2. Reject : remove an argument deemed unsafe, irrelevant, redundant, or poorly supported; 3. Edit : revise an argument’s wording, evidence linkage, or relation to other arguments to better reflect the actual patient situation; 4. Add : introduce a new argument that was missed by the agent team, for example, a contextual consideration arising from caregiver knowledge or local service constraints. These interventions yield an updated argumentation structure: 
+
+QHi = ⟨XHi , (R+ 
+
+> i
+
+)H , (R− 
+
+> i
+
+)H , (˜ τi)H ⟩, (13) for each intervention oi. The same propagation procedure is then re-applied to obtain revised acceptability scores FH (oi) = σHi (oi).This recomputation is critical as human feedback is not treated as a superficial annotation layer, but as a direct modification of the formal reasoning object. Any accepted change propagates through the support and attack structure and can alter the final ranking of interventions. In addition, CANOE allows unre-solved or borderline interventions to be escalated to the human care planner for final adjudication. This is particularly important in high-risk cases where the propagated score remains near neutral, where competing arguments are clinically consequential, or where feasibility depends on non-documented contextual knowl-edge. Therefore, the human care planner serves as the final authority, ensuring accountability remains with qualified professionals. 
+
+4.5 Care-Plan Coordination and Faithful Explanation 
+
+The final stage synthesizes the validated intervention set into a coherent care plan. Using the revised option scores {FH (oi)}mi=1 , the care-plan coordination module prioritizes interventions, removes incompatible or low-confidence options, and resolves cross-option dependencies such as sequencing, feasibility, and service availability. The output is an integrated care plan that organizes recommen-dations into a clinically actionable structure, e.g., immediate safety actions, Contestable Argumentative Network-of-Experts for Care Coordination 11 
+
+medication-related interventions, mental health follow-up, rehabilitation strate-gies, caregiver supports, and community service referrals. Formally, the final care plan is generated by a synthesis care planner: 
+
+Π(P, D, O, Γ H , {FH (oi)}mi=1 ), (14) which produces a plan Y = {y1, . . . , y q }, where each item yt is a validated recommendation with associated priority, rationale, and evidence trace. Each recommendation is accompanied by a faithful explanation that identifies: (i) which roles supported or challenged it, (ii) which evidence sources were used, (iii) which arguments survived human contestation, and (iv) why the final score justified its inclusion or exclusion. Consequently, CANOE produces care plans that are not only personalized and evidence-based, but also auditable, revisable, and suitable for high-stakes collaborative decision-making. Overall, CANOE formulates care planning as a contestable process of mul-tidisciplinary argument construction, conflict calibration, formal propagation, and human validation. By integrating adaptive team selection with A-QBAF-based reasoning, the framework converts distributed professional viewpoints into a structured decision object that can be inspected and revised before action is taken. This makes the resulting care plan both clinically meaningful and methodologically transparent. 
+
+# 5 Experiment and Results 
+
+5.1 Datasets 
+
+We evaluate care-plan generation using two datasets, i.e., Discharge Me! [25] and MedicalRAG [8]. The task is defined as follows: given patient information, including symptoms, diagnoses, clinical history, investigations, hospital course context, and optionally retrieved evidence, the model must generate a clinically appropriate care plan. The target care plan is represented as an open-ended, structured plan that includes active problems, recommended tests or monitoring, treatments or medications, follow-up, patient instructions, and return precautions. 
+
+Discharge Me! [25] The dataset’s original task is to generate the Brief Hospitaßl Course and Discharge Instructions sections of a discharge summary. We adapt this task to care plan generation by treating all non-target patient information as the input and the two target sections as the ground-truth care plan. Specifically, for each admission, we construct the input from the emergency department chief complaint, diagnosis codes, radiology reports, medications or treatments when available, and the discharge summary after removing the Brief Hospital Course and Discharge Instructions sections. 
+
+MedicalRAG [8] The dataset contains role-specific records, including medical case documents with demographics, history, examination findings, investigations, 12 T. T. H. Nguyen et al. 
+
+diagnoses, and plan-like sections such as treatment opinions. We adapt Med-icalRAG by filtering to the clinical role “Medical Practitioners” and the case type “records” . When explicit question–answer fields are available, we retain plan-oriented questions such as “What further tests are required?”, “What treatment is recommended?”, or “What follow-up is needed?” and use the provided answer as the reference. When only document-style case records are available, we split the document at plan-like headings (i.e., Treatment opinions, Handling opinions, Plan, or Recommendations), whereas the text before this heading is used as the patient input, and the plan-like section is used as the ground-truth output. 
+
+5.2 Experiment Setup 
+
+We evaluate our proposed CANOE performance with three open-weight LLMs that represent distinct points on the capability–specialization trade-off as backbones, i.e., Gemma 4 (8B), MedGemma 1.5 (4B) [20], and GPT-OSS (20B) [1]. All models are evaluated in a zero-shot prompted setting. All experiments are conducted on a NVIDIA DGX Spark device. 
+
+5.3 Metrics 
+
+We evaluate generated care plans using four metrics, capturing four aspects of care-plan quality: ROUGE-L for text similarity, AlignScore for factual grounding in the source evidence, MEDCON for coverage of clinical concepts, and FKGL for readability. Let Yi denote the reference care plan, ˆYi the generated care plan, and Ei = Pi ∪ D i the combined patient information and retrieved evidence. All metrics are computed at the example level and averaged over the test set T .
+
+ROUGE-L (Text Similarity) ( ↑) measures textual similarity between ˆYi and Yi
+
+via the longest common subsequence LCS( Yi, ˆYi). Recall, precision, and F-score: 
+
+RLCS = LCS( Yi, ˆYi)
+
+|Yi| , PLCS = LCS( Yi, ˆYi)
+
+| ˆYi| , (15) 
+
+ROUGE -L( Yi, ˆYi) = (1 + β2) RLCS PLCS 
+
+RLCS + β2PLCS 
+
+, (16) averaged over T as ROUGE -LT = 1
+
+> |T |
+
+P 
+
+> i∈T
+
+ROUGE -L( Yi, ˆYi). Because clini-cally valid plans may use different wording, ROUGE-L serves as a surface-level supporting metric rather than a direct measure of clinical correctness. 
+
+AlignScore (Factual Consistency) ( ↑) [28] measures whether the claims in ˆYi
+
+are factually supported by the evidence. Decomposing ˆYi into atomic claims 
+
+{qi1, . . . , q in i } and letting A(qij , ·) denote a support score, source-grounded scores: 
+
+AlignScore src ( ˆYi, E i) = 1
+
+niniX
+
+> j=1
+
+A(qij , E i), (17) with the test-set score AlignScore T = 1
+
+> |T |
+
+P 
+
+> i∈T
+
+AlignScore src ( ˆYi, E i). This pe-nalizes models that produce plausible but unsupported recommendations. Contestable Argumentative Network-of-Experts for Care Coordination 13 
+
+Table 1: CANOE evaluation results on Discharge Me! and MedicalRAG. ↑ higher is better; ↓ lower is better. Bold = best per column per dataset.                             
+
+> Model ROUGE-L ↑AlignScore ↑MEDCON F1 ↑FKGL ↓
+> Discharge Me!
+> Gemma 4 E4B (8B) 0.184 0.312 0.319 11.4
+> MedGemma 1.5 (4B) 0.248 0.451 0.438 14.1 GPT-OSS (20B) 0.314 0.403 0.401 12.8
+> MedicalRAG
+> Gemma 4 E4B (8B) 0.162 0.391 0.354 10.9
+> MedGemma 1.5 (4B) 0.238 0.482 0.459 13.7 GPT-OSS (20B) 0.289 0.428 0.436 12.3
+
+MEDCON (Clinical Correctness) ( ↑) [26] evaluates clinical correctness by comparing normalized medical concepts. Let C(Yi) and C( ˆYi) denote concept sets extracted from the reference and generated plans. Precision, recall, and F1 are: 
+
+PMC = |C ( ˆYi) ∩ C (Yi)||C ( ˆYi)| , R MC = |C ( ˆYi) ∩ C (Yi)||C (Yi)| , F 1MC = 2 PMC RMC 
+
+PMC + RMC 
+
+, (18) averaged as F 1MC ,T = 1
+
+> |T |
+
+P 
+
+> i∈T
+
+F 1MC (Yi, ˆYi). Precision measures avoidance of incorrect concepts; recall measures coverage of clinically important ones. 
+
+Flesch–Kincaid Grade Level (FKGL) (Readability) ( ↓) measures readability of the generated plan. Lower values indicate easier readability. Let Wi, Si, and 
+
+Bi denote the number of words, sentences, and syllables in ˆYi:
+
+FKGL( ˆYi) = 0 .39 
+
+ Wi
+
+Si
+
+
+
++ 11 .8
+
+ Bi
+
+Wi
+
+
+
+− 15 .59 , (19) averaged as FKGL T = 1
+
+> |T |
+
+P 
+
+> i∈T
+
+FKGL( ˆYi).
+
+5.4 Quantitative Results 
+
+Table 1 reports the quantitative evaluation results across both benchmarks. 
+
+Text Similarity ROUGE-L scores follow model size on both datasets. GPT-OSS scores highest (0.314 on Discharge Me!; 0.289 on MedicalRAG), followed by MedGemma 1.5 (0.248; 0.238) and Gemma 4 E4B (0.184; 0.162). This ordering reflects the ability of larger models to reproduce the surface phrasing of clinical reference text. 14 T. T. H. Nguyen et al. 
+
+Factual Consistency AlignScore shows that MedGemma 1.5 ranks first on both datasets (0.451; 0.482), ahead of GPT-OSS (0.403; 0.428) and Gemma 4 E4B (0.312; 0.391). Medical fine-tuning clearly helps the model stay grounded in source evidence, even when its wording differs from the reference. All three models score higher on AlignScore for MedicalRAG than for Discharge Me!, as MedicalRAG cases are shorter and more focused, making them easier to ground against. 
+
+Clinical Correctness MEDCON F1 follows the same ranking as AlignScore. MedGemma 1.5 leads on both datasets (0.438; 0.459), followed by GPT-OSS (0.401; 0.436) and Gemma 4 E4B (0.319; 0.354). The gap between MedGemma 1.5 and GPT-OSS is larger on Discharge Me! (+0.037) than on MedicalRAG (+0.023), because discharge summaries contain denser clinical vocabulary where domain adaptation is more beneficial. Gemma 4 E4B falls 0.119–0.105 points below MedGemma 1.5 on MEDCON F1, confirming that a general-purpose model of this size does not cover enough medical terminology to produce complete care plans. 
+
+Readability Gemma 4 E4B produces the simplest text on both datasets (FKGL 11.4; 10.9), while MedGemma 1.5 produces the most complex (14.1; 13.7), a direct consequence of its exposure to technical biomedical text during fine-tuning. GPT-OSS falls between the two (12.8; 12.3). Since our framework is designed for health professionals, the FKGL range observed across all models is within an acceptable and expected band. 
+
+5.5 LLM-as-a-Judge Evaluation 
+
+Template 1: LLM-as-a-Judge Prompt Template System: You are an expert clinical evaluator. Score the generated care plan strictly and return only valid JSON. 
+
+User: [Patient information], [Retrieved evidence], [Reference plan], [Generated plan] 
+
+Score on four dimensions (1–5 Likert scale): • Completeness – all clinically relevant sections present • Validity – recommendations are evidence-grounded • Coherence – logical organization, no contradictions • Safety – no harmful or hallucinated content Return JSON: {"completeness": {"score": <1–5>, "rationale": "..."}, ..., "average": <float>} 
+
+> *Abbreviated for space; full scoring rubrics will be released with the code upon acceptance.
+
+To complement the quantitative metrics, we evaluate generated care plans using Claude Opus 4.7 as an independent judge, using the structured prompt shown in Template 1. For each example, the judge rates the generated plan on four Contestable Argumentative Network-of-Experts for Care Coordination 15 
+
+Table 2: LLM-as-a-judge evaluation. Scores are on a 1–5 Likert scale. Bold = best per column per dataset. The average is the mean across dimensions.                                    
+
+> Model Completeness Validity Coherence Safety Avg.
+> Discharge Me!
+> Gemma 4 E4B (8B) 2.8 2.6 3.1 2.9 2.85 MedGemma 1.5 (4B) 3.6 4.1 3.7 4.0 3.85
+> GPT-OSS (20B) 3.9 3.5 4.2 3.4 3.75
+> MedicalRAG
+> Gemma 4 E4B (8B) 2.7 2.8 3.2 3.0 2.93 MedGemma 1.5 (4B) 3.5 4.2 3.8 4.1 3.90
+> GPT-OSS (20B) 3.8 3.6 4.3 3.5 3.80
+
+clinician-relevant dimensions, i.e., completeness, validity, coherence, and safety, using a 1–5 Likert scale. This evaluation captures holistic qualities that surface-level metrics such as ROUGE-L and MEDCON F1 cannot fully measure, including logical organization, the presence of unsafe or contradictory recommendations, and whether the plan addresses all clinically relevant aspects of the patient case. Results are reported in Table 2. The judge scores are largely consistent with the quantitative metric findings. MedGemma 1.5 achieves the highest average score on both datasets (3.85 on Discharge Me!; 3.90 on MedicalRAG), driven primarily by strong performance on clinical appropriateness (4.1; 4.2) and safety (4.0; 4.1). GPT-OSS ranks second overall (3.75; 3.80), with the highest scores on completeness (3.9; 3.8) and coherence (4.2; 4.3). However, its safety scores (3.4; 3.5) are notably lower than those of MedGemma 1.5, suggesting that larger general-purpose models are more prone to including recommendations that are plausible in phrasing but insufficiently grounded in the patient context. Gemma 4 E4B scores lowest across all dimensions on both datasets, with average scores of 2.85 and 2.93. Its clinical appropriateness scores (2.6; 2.8) are particularly low, consistent with its weak AlignScore and MEDCON F1 results, and confirm that this model does not yet reach a level of clinical reliability suitable for unsupervised care-plan generation. Altogether, the quantitative and qualitative evaluations point to the same conclusion. MedGemma 1.5 is the strongest model for care-plan generation across both datasets, with consistent advantages on the dimensions most relevant to clinical safety and correctness. GPT-OSS is the most coherent and complete in its outputs, but trades off safety and clinical grounding to achieve this. 
+
+# 6 Conclusion 
+
+This paper introduced CANOE, a contestable multi-agent neuro-symbolic frame-work for personalized care plan coordination. Experiments on Discharge Me! and 16 T. T. H. Nguyen et al. 
+
+MedicalRAG show that medically fine-tuned models provide the strongest factual consistency and safety, while larger general-purpose models offer greater coherence but weaker clinical grounding. CANOE’s A-QBAF layer makes evidence, conflicts, and care planner interventions explicit and traceable, supporting contestable and safety-sensitive clinical AI. Future work will improve role-specific fine-tuning, argument-strength calibration, and prospective evaluation with practicing care coordinators. 
+
+# 7 Acknowledgment 
+
+This work is supported by NSERC Discovery Grant No RGPIN-2025-04478 and NSERC Discovery Supplement Award No DGECR-2025-00129. It is also funded by National Research Council Canada Aging in Place Challenge grant AiP-301-1 D-CGA@home. 
+
+# References 
+
+1. Agarwal, S., et al.: gpt-oss-120b & gpt-oss-20b model card. arXiv preprint arXiv:2508.10925 (2025) 2. Alfrink, K., Keller, I., Kortuem, G., Doorn, N.: Contestable AI by design: Towards a framework. Minds and Machines 33 (4), 613–639 (2023), publisher: Springer 3. Baroni, P., et al.: From fine-grained properties to broad principles for gradual argu-mentation: A principled spectrum. International Journal of Approximate Reasoning 
+
+105 (2019) 4. Cao, H.L., et al.: Neuro-symbolic adaptive collaboration of arena-based argumen-tative llms for contestable legal reasoning. In: The 39th Canadian Conference on Artificial Intelligence. pp. 895–902. PMLR (2026) 5. Damm, H., et al.: Wispermed at “discharge me!”: Advancing text generation in healthcare with large language models, dynamic expert selection, and priming techniques on mimic-iv. In: Proceedings of the 23rd Workshop on Biomedical Natural Language Processing. pp. 105–121 (2024) 6. Freedman, G., et al.: Argumentative Large Language Models for Explainable and Contestable Claim Verification. In: Proceedings of the AAAI Conference on Artificial Intelligence. vol. 39, pp. 14930–14939 (2025), issue: 14 7. Hong, S., et al.: Argmed-agents: Explainable clinical decision reasoning with llm disscusion via argumentation schemes. In: 2024 IEEE International Conference on Bioinformatics and Biomedicine (BIBM). pp. 5486–5493. IEEE (2024) 8. Hongwei, Y., et al.: Controlnet: A firewall for rag-based llm system. arXiv preprint arXiv:2504.09593 (2025) 9. Huang, S.: Hallucinations of large language models in medical environments: A systematic review of risks, detection, and mitigation. In: ITM Web of Conferences. vol. 84, p. 03005. EDP Sciences (2026) 10. Ju, H.H.: Improving care coordination of patients with chronic diseases. The Journal for Nurse Practitioners 18 (8), 833–836 (2022) 11. Kim, Y., et al.: Mdagents: An adaptive collaboration of llms for medical decision-making. Advances in Neural Information Processing Systems 37 , 79410–79452 (2024) Contestable Argumentative Network-of-Experts for Care Coordination 17 12. Leofante, F., et al.: Contestable ai needs computational argumentation. In: Proceed-ings of the 21st International Conference on Principles of Knowledge Representation and Reasoning. pp. 888–896 (2024) 13. Liu, Q., Hu, Z., Huang, T., Niu, Y., Zhang, X., Ma, S., Lin, C., Huat, G.K., Kwon, H.E., Gao, F., et al.: Evomdt: a self-evolving multi-agent system for structured clinical decision-making in multi-cancer. npj Digital Medicine (2026) 14. Nguyen, H., Rahimi, A., Whitford, V., Fournier, H., Kondratova, I., Richard, R., Cao, H.: Heart2mind: Human-centered contestable psychiatric disorder prediction system using wearable ecg monitors. ACM Trans. Comput. Healthcare (2026) 15. Nguyen, H.T.T., et al.: Contestable multi-agent debate with arena-based argu-mentative computation for multimedia verification. In: Proceedings of the 2026 International Conference on Multimedia Retrieval. pp. 2887–2891 (2026) 16. Nguyen, L.P.T., et al.: Motion2Meaning: A Clinician-Centered Framework for Contestable LLM in Parkinson’s Disease Gait Interpretation. In: Proceedings of 9th International Symposium on Chatbots and Human-centred AI (2025) 17. Nguyen, T.T.H., et al.: Towards trust of explainable ai in thyroid nodule diagnosis. In: International Workshop on Health Intelligence. pp. 11–26. Springer (2023) 18. Ploug, T., Holm, S.: The four dimensions of contestable AI diagnostics-A patient-centric approach to explainable AI. Artificial intelligence in medicine 107 (2020) 19. Rago, A., Li, H., Toni, F.: Interactive explanations by conflict resolution via argu-mentative exchanges. In: Proceedings of the International Conference on Principles of Knowledge Representation and Reasoning. vol. 19, pp. 582–592 (2023) 20. Sellergren, A., et al.: Medgemma 1.5 technical report. arXiv preprint arXiv:2604.05081 (2026) 21. Sinsky, C., et al.: Allocation of physician time in ambulatory practice: a time and motion study in 4 specialties. Annals of internal medicine 165 (11), 753–760 (2016) 22. Tang, X., et al.: Medagents: Large language models as collaborators for zero-shot medical reasoning. In: Findings of the Association for Computational Linguistics: ACL 2024 (2024) 23. Wei, J., et al.: Chain-of-thought prompting elicits reasoning in large language models. Advances in neural information processing systems 35 , 24824–24837 (2022) 24. Xiao, L., Greer, D.: Linked argumentation graphs for multidisciplinary decision support. In: Healthcare. vol. 11, p. 585. MDPI (2023) 25. Xu, J., et al.: Overview of the first shared task on clinical text generation: Rrg24 and “discharge me!”. In: Proceedings of the 23rd Workshop on Biomedical Natural Language Processing. pp. 85–98 (2024) 26. Yim, W.w., et al.: Aci-bench: a novel ambient clinical intelligence dataset for benchmarking automatic visit note generation. Scientific data 10 (1), 586 (2023) 27. Yue, L., et al.: Clinicalagent: Clinical trial multi-agent system with large language model-based reasoning. In: Proceedings of the 15th ACM International Conference on Bioinformatics, Computational Biology and Health Informatics. pp. 1–10 (2024) 28. Zha, Y., et al.: Alignscore: Evaluating factual consistency with a unified align-ment function. In: Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers). pp. 11328–11348 (2023) 29. Zhu, Y., et al.: Argrag: Explainable retrieval augmented generation using quan-titative bipolar argumentation. In: Conference on Neurosymbolic Learning and Reasoning. pp. 697–718. PMLR (2025)

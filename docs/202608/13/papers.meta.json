@@ -1,0 +1,69 @@
+{
+  "label": "2026-08-13",
+  "date": "2026-08-13",
+  "generated_at": "2026-08-13T21:03:18",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202608/13/2608.11410v1-unmasking-toxic-mimicry-in-medical-offline-reinforcement-learning-for-icu-sepsis-management-via-counterfactual-clinical-audits",
+      "section": "deep",
+      "title_en": "Unmasking Toxic Mimicry in Medical Offline Reinforcement Learning for ICU Sepsis Management via Counterfactual Clinical Audits",
+      "authors": "Hangqi Ren, Junyi Liao",
+      "date": "2026-08-11",
+      "pdf": "https://arxiv.org/pdf/2608.11410v1",
+      "score": "10.0",
+      "evidence": "基于MIMIC-III电子病历数据，直接评估医学RL智能体并提出反事实临床审计框架",
+      "tldr": "离线RL优化ICU脓毒症治疗虽具潜力，但传统指标MSE与FQE只衡量行为模仿，无法察觉毒性模仿（如舒适护理中不当停药）。本文提出反事实临床审计框架，依据SSC指南在MIMIC-III中对MedDT与HCT-RL施加生理扰动。审计发现MedDT在乳酸升高时反而降低血管加压药剂量，违背复苏指南，而HCT-RL保持合理响应。该结果揭示统计拟合与临床安全错位，反事实审计应成为医学RL必要的评估标准。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Offline reinforcement learning (RL) offers considerable promise for optimizing ICU treatment decisions, yet standard evaluation metrics Mean Squared Error (MSE) and Fitted Q-Evaluation (FQE) assess only behavioral imitation and cannot detect Toxic Mimicry, a failure mode in which agents replicate harmful patterns such as treatment withdrawal during comfort-care transitions. Using the MIMIC-III database, we propose the Counterfactual Clinical Audit (CCA) framework, which stress-tests RL agents through physiological perturbations anchored in Surviving Sepsis Campaign (SSC) guidelines. We audit a Medical Decision Transformer (MedDT) and a Historical Causal Transformer (HCT-RL), the latter employing Causal Action Shielding, propensity-based importance weighting, and Conservative Q-Learning. CCA reveals that MedDT paradoxically reduces vasopressor dosage as lactate escalates, contradicting resuscitation guidelines, while HCT-RL maintains physiologically consistent responses. These findings expose a systemic misalignment between statistical fit and clinical safety, supporting counterfactual audits as a necessary evaluation standard for medical RL.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/13/2608.05391v1-adaptive-arena-based-contestable-argumentative-network-of-experts-for-open-ended-care-plan-coordination",
+      "section": "quick",
+      "title_en": "Adaptive Arena-based Contestable Argumentative Network-of-Experts for Open-Ended Care Plan Coordination",
+      "authors": "Truong Thanh Hung Nguyen, Hoang-Loc Cao, Phuc Ho, Phuc Truong Loc Nguyen, René Richard, Hung Cao",
+      "date": "2026-08-05",
+      "pdf": "https://arxiv.org/pdf/2608.05391v1",
+      "score": "6.0",
+      "evidence": "面向护理计划协调的多智能体神经符号框架（医疗智能体）",
+      "tldr": "护理计划协调需整合多学科异质信息，传统单一LLM流水线难以保证透明与安全。为此提出CANOE，一种基于竞技场的可争论参数网络专家框架，包含复杂度评估、自适应团队招募、基于A-QBAF的角色论证计算、人机回环争论与计划合成。专家智能体生成支持和攻击论点，通过竞技场冲突消解计算可接受度，护理人员可增删改论点并确定性重算计划。在Discharge Me!与MedicalRAG上评估，医疗微调模型在临床正确性与安全性上最佳，且论证结构提供可解释性与可争论性。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Care plan coordination demands synthesizing heterogeneous clinical, functional, and psychosocial information across multiple professional disciplines, where monolithic LLM pipelines cannot perform in a transparent or safe manner. We present CANOE (Contestable Argumentative Network-of-Experts), a multi-agent neuro-symbolic framework that addresses these limitations through five modules: complexity assessment, adaptive team recruitment, role-based argumentative computation via an Arena-based Quantitative Bipolar Argumentation Framework (A-QBAF), human-in-the-loop contestation, and care-plan synthesis. Role-specialized agents generate supporting and attacking arguments for candidate interventions; conflicts are resolved through arena-based clash resolution before acceptability scores propagate across the argumentation graph. Care planners may accept, reject, edit, or add arguments, and the framework will deterministically recompute the final plan. Evaluation on Discharge Me! and MedicalRAG using ROUGE-L, AlignScore, MEDCON F1, FKGL, and LLM-as-a-judge shows that medically fine-tuned models achieve the strongest clinical correctness and safety, while CANOE's argumentative structure provides faithful explanation and human contestability.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/13/2608.10669v1-redagentbench-executable-red-teaming-and-faithful-measurement-of-llm-agent-systems",
+      "section": "quick",
+      "title_en": "REDAgentBench: Executable Red Teaming and Faithful Measurement of LLM Agent Systems",
+      "authors": "Zixing Chen, Xingyuan Liu, Jie Zhu, Huaixia Dou, Shuo Jiang, Junhui Li, Lifan Guo, Feng Chen, Chi Zhang",
+      "date": "2026-08-11",
+      "pdf": "https://arxiv.org/pdf/2608.10669v1",
+      "score": "6.0",
+      "evidence": "可执行的LLM智能体系统忠实评测框架，可应用于医疗智能体基准测试",
+      "tldr": "现有LLM智能体安全评测常将暴露、执行、观察与判定压缩为单一攻击成功率，混淆真实违规与证据可见性。本文提出REDAgentBench，一个可执行的红队测试与可靠度量框架，从明确安全约束推导攻击，在隔离沙箱中运行并通过服务凭证验证危害。基准含1661个案例、五个服务面，跨六模型三框架宏平均攻击成功率为65.69%，且显示识别-执行鸿沟。策略提醒可将确认违规降低70个百分点以上。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Large language model (LLM) agents combine language-based reasoning with external tools to perform complex tasks. Adversarial inputs can exploit interactions between the agent and its environment, causing the agent to violate safety policies during execution. Yet existing evaluations often reduce agent safety to a single attack success rate (ASR), collapsing exposure, execution, observation, and adjudication and potentially conflating actual violations with evidence visibility. We introduce REDAgentBench, an executable framework for autonomous red-teaming and faithful measurement. It derives attacks from explicit safety constraints and associated agent-system vulnerabilities, runs them in isolated service sandboxes, and verifies harmful effects from service receipts and final-state changes. The benchmark contains 1,661 cases across five service surfaces. Across six models and three agent harnesses, macro-average ASR is 65.69%; reported ASR varies with harness and evidence view, while evaluation-context disclosure changes execution behavior. In a state-grounded diagnostic cohort, almost one in five confirmed violations with resolved action anchors occurs after the agent states the relevant constraint or risk, revealing a Recognition--Execution Gap. Finally, a training-free policy reminder reduces confirmed violations by more than 70 percentage points in matched replay. These findings show that executable evaluation can improve safety measurement and identify actionable intervention points.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/13/2608.12138v1-a-corpus-specific-clinical-rag-system-matches-or-outperforms-newer-frontier-llms-on-healthbench",
+      "section": "quick",
+      "title_en": "A corpus-specific clinical RAG system matches or outperforms newer frontier LLMs on HealthBench",
+      "authors": "Praveen Reddy, Charuta Mandke, Suvrankar Datta, Sarah Khan, Siddharth Reddy Anthireddy, Shitij Arora, Vishal Singh",
+      "date": "2026-08-12",
+      "pdf": "https://arxiv.org/pdf/2608.12138v1",
+      "score": "6.0",
+      "evidence": "在HealthBench上基准测试医学AI系统与LLM的性能",
+      "tldr": "通用LLM在医学基准上表现优异，但在中低收入环境评估不足。VITA是面向印度等区域定制语料的临床RAG系统，在4,023道HealthBench题中以51.9%得分超越GPT-5.4等前沿模型。500题子集上用新模型和中性评判，VITA与GPT-5.5统计持平但得分领先。这表明语料特异性RAG可与前沿LLM竞争，但沟通得分略低。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "General-purpose large language models (LLMs) have recently been reported to match or exceed specialized clinical AI tools on medical benchmarks, but such comparisons draw on a narrow set of systems and on benchmarks developed largely in high-income settings. We evaluate VITA, a retrieval-augmented generation (RAG) system purpose-built for contextual knowledge retrieval in India and other low- and middle-income (LMIC) settings. VITA retrieves from a curated corpus of disease-specific guidelines, India-specific antimicrobial resistance data, national formulary constraints, and resource-limited care protocols; its architecture and corpus are proprietary, but the benchmark, the physician-written rubrics, and our full response and scoring outputs are public for independent verification. On 4,023 English-language HealthBench questions (80.5% of the benchmark), scored with a GPT-4.1 judge, VITA ranked first with 51.9% of possible rubric points, ahead of GPT-5.4 (46.1%), o4-mini (44.3%), Gemini 3.1 Pro (42.6%), and Claude Sonnet 4.6 (37.3%), and scored highest on 45.4% of questions. To test robustness to newer models and judge lineage, a 500-question subset was re-run against current-generation models (GPT-5.5, Claude Opus 4.8, Gemini 3.5 Pro, Grok 4.3) and graded by a neutral open-weight judge (DeepSeek-V4-Pro) sharing no lineage with any system tested. Here the gap narrowed to parity: VITA and GPT-5.5 were statistically indistinguishable on mean per-question score, while VITA led on points-weighted score and won the most questions. VITA's advantages in accuracy and completeness persisted under the neutral judge; its communication scores were lower. These results indicate that a purpose-built clinical RAG system remains competitive with frontier LLMs on an open benchmark, consistent with corpus specificity as a design variable that improves grounding at some cost to communication polish.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
