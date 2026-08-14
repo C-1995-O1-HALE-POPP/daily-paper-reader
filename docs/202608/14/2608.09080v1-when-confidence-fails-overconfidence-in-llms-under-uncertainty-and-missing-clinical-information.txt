@@ -1,0 +1,270 @@
+Title: When Confidence Fails: Overconfidence in LLMs under Uncertainty and Missing Clinical Information
+
+URL Source: https://arxiv.org/pdf/2608.09080v1
+
+Published Time: Tue, 11 Aug 2026 01:48:11 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# When Confidence Fails: Overconfidence in LLMs under Uncertainty and Missing Clinical Information 
+
+Maryam Tahermazandarani, Adnan Mahmood, Fahmida Islam, Quan Z. Sheng 
+
+School of Computing, Macquarie University, Sydney, NSW 2109, Australia 
+
+Abstract —Large Language Models (LLMs) have recently achieved strong performance in medical question answering and clinical reasoning tasks. However, their reliability under uncer-tainty remains poorly understood which raises critical concerns for deployment in high-stakes clinical settings. In such environ-ments, incorrect predictions are inherently risky, but confident incorrect predictions can be particularly harmful as they may mislead clinical decision-making. In this paper, we conduct a sys-tematic behavioral analysis of LLMs under clinical information uncertainty. We propose an evaluation framework based on the MedMCQA dataset consisting of two complementary uncertainty settings. First, we introduce linguistic uncertainty cues through prompt modifications to simulate ambiguous clinical contexts. Second, we construct an answer removal setting, wherein the correct option is deliberately excluded mandating the model to recognize insufficient information and abstain. We analyze both model accuracy and confidence behavior using multiple calibration metrics including calibration gap, Expected Calibra-tion Error (ECE), and Unsafe Confident Error Rate (UCER) across 500 medical questions. Our results reveal a consistent failure mode, i.e., although accuracy degrades under increasing uncertainty, model confidence remains misaligned with accuracy. This leads to a substantial increase in unsafe confident errors, indicating that model confidence remains largely insensitive to clinically meaningful information loss. Furthermore, we observe significant variation across models in their ability to abstain when the correct answer is unavailable, with some models persistently producing high confidence hallucinated answers. These findings expose critical limitations in the epistemic reliability of current LLMs and highlight the need for uncertainty aware evaluation methods prior to their deployment in clinical workflows. 
+
+Index Terms —Medical Question Answering, Large Language Models, Calibration, Overconfidence in LLMs, Uncertainty. 
+
+I. I NTRODUCTION 
+
+Large Language Models (LLMs) have rapidly advanced their capabilities across natural language processing tasks, i.e., reasoning and knowledge retrieval [1], [2]. Their rapid progress has led to their adaptation in the medical domain, wherein they have achieved competitive results on challenging benchmarks, e.g., USMLE [3] and MedMCQA [4]. This has thus resulted in an increased interest in utilizing LLMs as decision-support tools within the medical domain [5]. Despite these promising advancements, concerns remain regarding their reliability. LLMs are known to produce answers that appear convincing even when the underlying information is in-correct. This phenomenon, often referred to as overconfidence, occurs when LLMs provide linguistically plausible but factu-ally incorrect answers with high certainty [6], [7]. In medicine, this is not only a technical limitation but also a safety risk that can mislead clinicians and affect patient care [8]. A key 
+
+Fig. 1. A Conceptual Illustration of Overconfidence in LLMs. 
+
+factor in a model’s reliability is calibration that measures how a model’s predicted confidence aligns with its accuracy [9]. Ideally, predictions expressed with higher confidence should correspond to higher probabilities of being correct. While earlier studies suggest that scaling models can improve their ability to accurately assess their own knowledge [10], recent studies demonstrate that this is often more complex in practice. LLMs can exhibit human cognitive biases, particularly when faced with ambiguous or incomplete information [11]. More-over, the expressed confidence in generated text is not aligned with a model’s internal probabilistic confidence, thereby creat-ing a mismatch between verbalized confidence and the model’s underlying beliefs [7]. Uncertainty is a fundamental aspect of clinical reasoning. In real clinical settings, a patient’s history is often incomplete and clinical signs can be ambiguous. However, most existing medical Question Answering (QA) benchmarks operate under a closed-world assumption wherein the correct answer is always among the candidate options. While this assumption simplifies evaluation, it does not reflect real clinical settings. In many scenarios, recognizing insuffi-cient information and refraining from providing a definitive answer is the safest and most responsible course of action. While some recent studies have started to explore LLMs overconfidence in medical QA [12], there is still limited understanding of how LLMs behave when clinical information is incomplete or uncertain. This mismatch between accuracy and confidence is conceptually illustrated in Fig. 1. To address this gap, we introduce an evaluation framework to systematically investigate overconfidence in LLMs under information uncertainty. Our approach includes two comple-arXiv:2608.09080v1 [cs.CL] 10 Aug 2026 mentary experimental settings, i.e., (a) uncertainty framing, wherein linguistic cues that introduce ambiguity are injected into clinical scenarios to make them uncertain and ambiguous, and (b) answer removal, wherein the correct option is removed from the candidate set and replaced with an abstention choice. These settings allow us to evaluate whether models can recognize when the available evidence is insufficient to support a confident answer. We evaluate several state-of-the-art LLMs by employing this framework and analyze their behavior using metrics, i.e., Expected Calibration Error (ECE) and Unsafe Confident Error Rate (UCER). While predictive accuracy is commonly used to evaluate medical QA systems, it does not capture whether models appropriately adjust their confidence levels when clinical information becomes incomplete or am-biguous. Accordingly, the salient contributions of this work are as follows: 1) We design a dual experimental setting that captures two complementary sources of uncertainty: (i) uncertainty framing using graded linguistic cues (C0–C3), and (ii) missing information induced by removing the correct answer option and replacing it with an explicit abstention option. This setup enables systematic evaluation of model behavior under both ambiguous and insufficient evidence. 2) We conduct a comprehensive empirical study across both proprietary and open-weight LLMs, using accuracy, calibration gap, ECE, and UCER. 3) We identify a systematic failure of uncertainty awareness since LLMs remain highly confident under uncertainty and fail to abstain when evidence is insufficient, thus revealing a decoupling between accuracy and confidence. The remainder of this paper is organized as follows. Sec-tion II reviews the related works. Section III introduces the proposed evaluation framework followed by the experimental setup in Section IV. Section V presents the empirical results. Section VI analyzes the findings and their implications for reliable medical AI. Section VII discusses the limitations of the current study. Finally, Section VIII concludes the paper and outlines directions for future work. II. S TATE OF THE ART 
+
+Since the use of LLMs is increasing in real world decision-making scenarios, assessing their reliability has become an important research direction for researchers in both academic and industry. One crucial aspect of models reliability is their ability to estimate and express their uncertainty. Recent studies suggest that despite high performance, LLMs produce hallucinated or incorrect responses with high confidence, pos-ing significant challenges for reliable confidence estimation and calibration [6], [13]. This issue is particularly critical in high-stakes domains, e.g., healthcare, wherein incorrect yet confident predictions may lead to misleading outcomes. Prior studies also argue that LLMs often exhibit systematic overconfidence in turn producing highly confident predictions even when they are incorrect. Behavioral analyses demon-strate that this phenomenon resembles human cognitive biases in confidence estimation [7]. To address this issue, recent studies have further explored methods for eliciting calibrated confidence from LLMs, i.e., prompting strategies and post-hoc calibration techniques [14]. However, empirical evidence indicates that verbalized confidence reported by LLMs is often poorly calibrated and may not reliably reflect a model’s internal uncertainty [15]. A growing body of research has focused on uncertainty estimation in LLMs. In early methods, token-level probabil-ities derived from a model’s output distribution were used to determine confidence levels. More recent works propose response level methods. For instance, Qiu et al. [16] measure uncertainty by analyzing the consistency of multiple generated responses in semantic embedding space. Similarly, Wightman et al. [17] use disagreement among multiple outputs as an indicator of uncertainty instead of calculating just one output uncertainty. Another line of research investigates whether LLMs can recognize when they lack sufficient knowledge and should abstain from answering. For instance, Madhusudhan et al. [18] introduce a benchmark for evaluating abstention behavior, demonstrating that even advanced models frequently fail to abstain when appropriate. These approaches focus on decision level uncertainty, i.e., whether a model chooses to produce an answer or withhold it. While prior work suggests that LLMs may exhibit limited self-awareness regarding their uncertainty [19], their behavior under conditions of incomplete or insufficient input information remains relatively underex-plored. In particular, little is known about how LLMs respond when uncertainty arises not only from model limitations, but from missing or ambiguous input information. This motivates the need for systematic evaluation of models’ reliability under conditions of uncertainty and insufficient clinical evidence. 
+
+A. Confidence and Overconfidence in LLMs 
+
+Confidence in machine learning models refers to the es-timated likelihood that a model’s prediction is correct. A model is considered well-calibrated when its confidence scores align with empirical accuracy, such that predictions made with probability p are correct approximately p of the time [9]. Despite significant improvements in predictive performance, modern neural networks are often poorly calibrated and tend to exhibit overconfidence, assigning higher confidence to predictions than their true correctness would justify. In the context of LLMs, confidence estimation becomes even more challenging due to their generative nature. Unlike traditional classification models with a fixed output space, LLMs operate over a vast and semantically diverse set of possible outputs, where multiple valid responses may correspond to the same input [20]. Furthermore, LLMs express confidence in multiple ways including implicit linguistic cues as well as explicit self-reported scores, introducing additional variability in how uncertainty is represented. Overconfidence refers to the systematic tendency of models to assign high confidence to incorrect predictions, i.e., when predicted confidence exceeds empirical accuracy [9], [21]. In high-stakes domains, e.g., in healthcare, overconfidence may appear as a form of confident failure, where a model Fig. 2. An Overview of the Proposed Evaluation Framework for Assessing Overconfidence in LLMs. 
+
+provides incorrect medical advice with high certainty. Such responses can appear trustworthy, potentially misleading users and leading to unsafe clinical decisions [22]. III. M ETHODOLOGY 
+
+We investigate whether LLMs exhibit overconfidence when answering clinical multiple-choice questions under uncertain or incomplete clinical information. We introduce two experi-mental settings that simulate uncertainty in clinical decision-making, thereby enabling a systematic analysis of a model’s behavior under uncertainty. 
+
+A. Problem Formulation 
+
+Let D = {(xi, A i, y i)}ni=1 denote a medical multiple-choice dataset consisting of n samples. Each sample includes a clinical question xi, a set of candidate answer options 
+
+Ai = {ai, 1, a i, 2, . . . , a i,K } with K being the number of candidate options, and a ground-truth label yi in Ai. Given an instance (xi, A i), a LLM parameterized by θ, i.e., fθ , outputs a predicted answer ˆyi ∈ Ai along with an associated confidence score ci ∈ [0 , 1] as: 
+
+(ˆ yi, c i) = fθ (xi, A i) (1) where, ˆyi represents the selected answer option and ci denotes the confidence reported by the model. Ideally, a model is well-calibrated when its predicted con-fidence reflects the true probability of correctness. In other words, the empirical accuracy of predictions with confidence 
+
+p should equal p. Formally, for any p ∈ [0 , 1] , a calibrated model satisfies: 
+
+P (ˆ yi = yi | ci = p) = p (2) where, yi is the ground-truth answer. Deviations from this condition indicate miscalibration, particularly, when a model produces incorrect prediction with high confidence. Our ob-jective is to evaluate whether this calibration property holds when clinical information becomes uncertain or when a correct answer is unavailable. 
+
+B. Uncertainty Framing 
+
+The first setting ascertains whether the linguistic expressions of uncertainty influence model confidence and calibration. In clinical practice, decision-making often occurs under incom-plete or ambiguous clinical information. It is, therefore, highly indispensable to assess whether LLMs appropriately adjust their confidence when uncertainty is explicitly introduced in the prompt. We introduce linguistic cues that signal potential ambiguity or incompleteness. Let x(k) 
+
+> i
+
+denote a prompt variant corresponding to uncertainty level k, defined as: 
+
+x(k) 
+
+> i
+
+= gk(xi) (3) where, gk(·) represents a transformation that injects contextual uncertainty while preserving the original clinical content. We develop four variants as depicted in Table I. Importantly, the answer options Ai and ground-truth label yi remain unchanged across all framing conditions. This design ensures that the underlying clinical reasoning task remains identical, thereby allowing us to isolate the effect of uncertainty framing on a model’s confidence and calibration. 
+
+C. Answer Removal 
+
+The second experimental setting evaluates model behavior when the correct answer is unavailable. This setting reflects clinical scenarios in which available evidence is insufficient to support a definitive diagnosis or treatment decision. In this setting, the correct answer yi is removed from the candidate set Ai and replaced with an abstention option: 
+
+A′ 
+
+> i
+
+= ( Ai \ { yi}) ∪ { ainsufficient } (4) where, ainsufficient corresponds to the option “Insufficient infor-mation to determine the correct answer”. Selecting ainsufficient 
+
+represents a safe abstention. We define a hallucinated predic-tion as any output ˆyi ∈ A′ 
+
+> i
+
+\ { ainsufficient }, since the correct answer is no longer present in the candidate set. This setting enables a direct evaluation of whether models can recognize missing evidence and abstain appropriately, or instead generate unsupported answers with high confidence. For each prediction, we collect two complementary confidence measures:  
+
+> •
+
+Self-reported ( ci): The explicit confidence score provided by a model in its output; and  
+
+> •
+
+Log probability ( pˆyi ): The probability of each answer option is computed by aggregating token-level logits TABLE I UNCERTAINTY FRAMING STATEMENTS .     
+
+> Condition Framing Statement
+> C0 No additional uncertainty statement. C1 Note: Some clinical details may be incomplete. C2 Warning: The clinical scenario may contain am-biguous or partially missing information. Consider possible uncertainty before answering. C3 Important: The provided information may be insuf-ficient for a fully certain diagnosis. If uncertain, answer cautiously.
+
+corresponding to the option identifier, e.g., A, B, C, and D in a model’s output. Self-reported confidence is obtained by prompting a model to provide an explicit numerical confidence value alongside its predicted answer. Log probability confidence is computed from the token-level logits and normalized across candidate answer options. This measure reflects a model’s internal proba-bilistic belief and enables direct comparison between explicitly reported confidence and implicit probability estimates derived from a model’s output distribution. 
+
+D. Evaluation Metrics 
+
+We evaluate a model’s behavior along three key dimensions, i.e., predictive accuracy, confidence calibration, and safety under uncertainty. 
+
+1) Calibration and Probability Metrics: To quantify the alignment between predicted confidence and empirical correct-ness, we compute ECE following [9]. The confidence interval 
+
+[0 , 1] is partitioned into M = 10 equal-width bins. ECE is defined as: 
+
+ECE = 
+
+> M
+
+X
+
+> m=1
+
+|Bm|
+
+n |acc( Bm) − conf( Bm)| (5) where, n is the total number of samples, Bm denotes the set of samples whose confidence falls into bin m, acc( Bm) is the average accuracy within the bin, and conf( Bm) is the average confidence. In addition to self-reported confidence ( ci), we compute an implicit estimate derived from token-level logits. Let ℓk
+
+denote the logit associated with the token representing answer option k, e.g., “A”, “B”, “C”, and “D”, at the prediction step. The logits are extracted at the decoding step where the model generates the answer token. The normalized probability pk is computed via the softmax function: 
+
+pk = exp( ℓk)
+
+PKj=1 exp( ℓj ) (6) where, K is the number of candidate options. The log proba-bility based confidence is defined as the probability assigned to the selected answer: 
+
+Conf logprob = pˆyi (7) where, ˆyi denotes the predicted answer option for sample i.This metric enables comparison between a model’s implicit probabilistic confidence and its explicitly reported confidence. 
+
+2) Safety and Behavioral Metrics: To quantify high-confidence errors, we employ the UCER metric defined as: 
+
+UCER τ = 1
+
+n
+
+> n
+
+X
+
+> i=1
+
+I[ˆ yi̸ = yi ∧ ci ≥ τ ] (8) where, ˆyi is the predicted answer, yi is the ground-truth label, τ is a high-confidence threshold, and I[·] denotes the indicator function. This metric captures incorrect predictions made with high confidence and is particularly critical in safety-sensitive settings like clinical decision-making. UCER directly captures unsafe model behavior, where incorrect predictions are accompanied by unjustified high confidence. In the answer removal setting, selecting the option ainsufficient 
+
+is interpreted as an abstention. Conversely, any prediction ˆyi ∈
+
+A′ 
+
+> i
+
+\ { ainsufficient } is defined as a hallucinated prediction, since the correct answer is no longer present in the candidate set. We compute the corresponding rates as the fraction of samples satisfying each condition: 
+
+Abstention = 1
+
+n
+
+> n
+
+X
+
+> i=1
+
+I[ˆ yi = ainsufficient ] (9) 
+
+Hallucination = 1 − Abstention (10) 
+
+3) Statistical Analysis: Given that all models are evaluated on the same set of questions, we employ paired statistical tests. For binary outcomes, we apply McNemar’s [23] test to assess differences in model accuracy. For comparisons of self-reported confidence, we apply the Wilcoxon [24] signed-rank test as confidence values are bounded in [0 , 1] and may not follow a normal distribution. All hypothesis tests were two-sided with a significance threshold of α = 0 .05 (5% level), a commonly adopted threshold for controlling Type I error in statistical hypothesis testing. To control for multiple comparisons in pairwise statistical testing, we applied the Holm–Bonferroni correction [25]. IV. E XPERIMENTAL SETUP 
+
+A. Dataset and Sampling 
+
+We utilized MedMCQA [4] a large-scale multiple-choice benchmark derived from Indian medical entrance examina-tions. The dataset comprises questions across diverse medical subjects and reasoning types. From the full dataset, we ran-domly sampled 500 single answer multiple-choice questions using a fixed random seed to ensure reproducibility. Only ques-tions with four answer options and a clearly defined correct label were retained. Each question was treated independently. 
+
+B. Implementation of Experimental Settings 
+
+Following the framework described in Section III, we eval-uated model behavior under two experimental settings. In the first setting, we constructed four prompt variants ( C0–C3). This setup resulted in a total of 2, 000 evaluation instances, i.e., 
+
+500 questions evaluated under four framing conditions. In the second experiment, the ground-truth option was removed and replaced with an abstention option, “Insufficient information to determine the correct answer”. It is pertinent to note that the position of this option is randomized for each question to mitigate positional bias. 
+
+C. Models and Inference Protocol 
+
+We evaluated five LLMs comprising both proprietary and open-weight models, i.e., GPT-5, GPT-4o, GPT-4o-mini, LLaMA-3-8B-Instruct, and Mistral-7B-Instruct-v0.3. The se-lection enabled comparisons across model families with dif-ferent training paradigms and parameter scales. GPT-5, GPT-4o, and GPT-4o-mini were accessed through API endpoints, whereas, LLaMA-3-8B-Instruct and Mistral-7B-Instruct-v0.3 were run locally via the Hugging Face Transformers library with 4-bit quantization on an NVIDIA T4 GPU. All inference was conducted with a temperature set to 0 to ensure deter-ministic and reproducible outputs. We employed a structured prompting strategy with a fixed instruction format across all experiments, thereby requiring models to produce both a discrete answer and an associated confidence score. This design enables consistent evaluation of model calibration and uncertainty behavior. The full prompt templates are depicted in Fig. 3. Model performance was evaluated using the metrics defined in Section III-D. 
+
+> Fig. 3. Two Prompt Settings Used in Our Experiments: (A) Standard Answer Selection and (B) Answer Selection with an Explicit Insufficient Information Option.
+
+V. R ESULTS 
+
+A. Performance under Uncertainty Framing (Setting A) 
+
+Table II summarizes the models’ performance across four uncertainty framing conditions (C0–C3) whereas, Fig. 4 il-lustrates the relationship between accuracy and calibration gap. A key observation is that predictive accuracy remains relatively stable across uncertainty conditions for all models. For instance, GPT-5 consistently achieves the highest accuracy, i.e., with values ranging from 0.82 to 0.84 , showing minimal sensitivity to uncertainty framing. Similar trends are observed for GPT-4o and GPT-4o-mini. This indicates that introducing uncertainty cues in the prompts has a negligible impact on the answer selection behavior. In contrast, calibration behavior differs substantially across models. GPT-5 is the only model that demonstrates com-paratively well-calibrated behavior with confidence values slightly lower than accuracy hence resulting in small negative calibration gaps. This consistent underconfidence suggests that GPT-5 provides relatively conservative confidence estimates. In comparison, GPT-4o and GPT-4o-mini consistently exhibit overconfidence across all conditions, where reported confi-dence exceeds the empirical accuracy. Notably, this miscali-bration remains largely unchanged as uncertainty cues become stronger thus indicating that these two models fail to adjust their confidence in response to increasing ambiguity in the input. This effect is significantly amplified in open-weight models: (a) LLaMA achieves moderate accuracy of 0.75 , but maintains high confidence resulting in substantial overcon-fidence gaps and (b) Mistral demonstrates the most severe miscalibration with accuracy ≈ 0.50 , however, its confidence remains close to 1 with ECE and UCER being highest amongst all models. In practice, this implies that a substantial fraction of predictions are both incorrect and highly confident, which represents a critical failure mode for deployment in safety-critical domains. Importantly, uncertainty framing does not lead to any meaningful reduction in confidence across any model. Even under the strongest uncertainty condition (C3) confidence levels remain consistently high. These results indicate that LLMs fail to internalize uncertainty signals introduced at the prompt level. Overall, these findings reveal a fundamental mismatch between predictive performance and confidence behavior under uncertainty. While accuracy remains stable, confidence fails to appropriately reflect uncertainty conse-quently leading to systematic overconfidence. In medical QA, such confidently incorrect predictions pose significant risks for clinical decision-making and highlight a key limitation in the reliability of current LLMs. 
+
+B. Degraded Setting 
+
+In this setting, we evaluated model behavior under explicit information insufficiency by removing the correct answer from the candidate set resulting in scenarios with no valid answer. Under such conditions a reliable and uncertainty aware model is expected to abstain rather than produce unsupported predictions. The results across models are summarized in Table III and Table IV, and the overall trends are visualized in Fig. 5 and Fig. 6. 
+
+1) Abstention Performance: Abstention performance is de-fined as the proportion of cases in which a model correctly selects the “insufficient information” option when the correct answer is unavailable. As depicted in Table IV and Fig. 5 abstention rates remain consistently low across all models. Among all models, GPT-4o achieves the highest abstention rate of 0.382 , followed closely by GPT-4o-mini with 0.368 .However, even these models abstain in fewer than 40% of cases. In contrast, open-weight models demonstrate substan-tially lower abstention rates. LLaMA abstains in only 15 .6% of cases, and Mistral abstains in 23 .8% of cases. These findings 0 1 2 3           
+
+> Degradation Level (C)
+> 0.50 0.55 0.60 0.65 0.70 0.75 0.80 0.85
+> Accuracy Score
+> Accuracy
+> 0123
+> Degradation Level (C)
+> 0.0 0.1 0.2 0.3 0.4 0.5
+> Gap Value
+> Calibration Gap (Confidence Accuracy)
+> 0123
+> Degradation Level (C)
+> 0.1 0.2 0.3 0.4 0.5
+> ECE Score
+> Expected Calibration Error
+> GPT-4o GPT-4o-mini GPT-5 LLaMA-3 Mistral-7B
+
+Fig. 4. Accuracy and Self-Overconfidence Gap (Defined as the Difference Between Mean Self-Reported Confidence and Accuracy) across Uncertainty Framing Conditions (C0–C3). Higher Conditions Correspond to Increasing Levels of Prompt Induced Uncertainty. TABLE II PERFORMANCE AND CALIBRATION METRICS .Model C Acc. Conf. Gap UCER ECE GPT-4o 0 0.784 0.909 0.125 0.180 0.119 1 0.802 0.904 0.102 0.136 0.101 2 0.800 0.898 0.098 0.128 0.092 3 0.804 0.895 0.091 0.130 0.079 GPT-4o-mini 0 0.706 0.901 0.195 0.248 0.193 1 0.716 0.894 0.178 0.226 0.175 2 0.702 0.893 0.191 0.218 0.187 3 0.682 0.860 0.178 0.162 0.176 GPT-5 0 0.828 0.809 -0.019 0.034 0.040 1 0.824 0.806 -0.018 0.028 0.065 2 0.820 0.807 -0.013 0.030 0.055 3 0.836 0.798 -0.038 0.028 0.048 LLaMA-3 0 0.750 0.908 0.158 0.222 0.171 1 0.774 0.933 0.159 0.218 0.162 2 0.758 0.902 0.144 0.226 0.148 3 0.750 0.895 0.145 0.212 0.148 Mistral-7B 0 0.498 0.987 0.489 0.498 0.489 1 0.504 0.985 0.481 0.492 0.481 2 0.504 0.982 0.478 0.488 0.476 3 0.496 0.971 0.475 0.492 0.473 
+
+reveal a systematic failure of uncertainty awareness in LLMs. Even when the correct answer is explicitly removed, most models continue to select one of the remaining answer options rather than abstaining. This indicates a strong bias toward forced answering, whereby models tend to select a plausible answer over explicitly acknowledging insufficient informa-tion, even when an explicit abstention option is available. One possible explanation for this behavior lies in both the next-token prediction objective of LLMs and their training distribution and instruction-following bias. Since LLMs are predominantly trained on tasks where a correct answer exists, they develop a preference for generating informative responses rather than selecting abstention options. As a result, even 
+
+TABLE III MODEL CALIBRATION AND SAFETY METRICS UNDER ANSWER REMOVAL 
+
+CONDITIONS (E XPERIMENT 2). Model Acc. Conf. LogProb Gap UCER ECE GPT-4o 0.382 0.863 0.883 0.481 0.428 0.486 GPT-4o-mini 0.368 0.871 0.913 0.503 0.424 0.491 GPT-5 0.192 0.691 – 0.499 0.186 0.600 LLaMA-3 0.156 0.970 0.280 0.814 0.828 0.814 
+
+Mistral-7B 0.238 0.998 0.657 0.760 0.760 0.760 TABLE IV MODEL BEHAVIOR UNDER INSUFFICIENT -INFORMATION CONDITIONS 
+
+(E XPERIMENT 2). Model Abstention Hallucination MeanConf Unsafe GPT-4o 0.382 0.618 0.863 0.428 GPT-4o-mini 0.368 0.632 0.871 0.424 GPT-5 0.192 0.808 0.691 0.186 LLaMA-3 0.156 0.798 0.963 0.828 
+
+Mistral-7B 0.238 0.762 0.997 0.760 
+
+when an explicit “insufficient information” option is available, models tend to favor standard answer choices, thus resulting in systematic failures in recognizing insufficient or missing clinical information. 
+
+2) High-confidence Hallucinations: When models fail to abstain under information insufficiency, they generate hallu-cinated answers by selecting incorrect options. As depicted in Table IV and Fig. 6, hallucination rates remain high across all models. GPT-5 exhibits the highest hallucination rate of 0.808 , followed by LLaMA with 0.798 and Mistral with 0.762 . More critically, these hallucinated predictions are frequently associated with high confidence. We define unsafe predictions as incorrect answers with confidence greater than 
+
+0.8. Under this definition LLaMA exhibits the highest unsafe rate of 0.828 , while Mistral also exhibits a high unsafe rate of GPT-4o GPT-4o-mini GPT-5 LLaMA-3 Mistral-7B 0.0 0.2 0.4 0.6 0.8 1.0             
+
+> Rate
+> 38.2% 36.8% 19.2% 15.6% 23.8%
+> Correct Abstention Rate
+> GPT-4o GPT-4o-mini GPT-5 LLaMA-3 Mistral-7B 0.0 0.2 0.4 0.6 0.8 1.0 86.3% 87.1% 69.1% 96.3% 99.7%
+> Mean Confidence
+> GPT-4o GPT-4o-mini GPT-5 LLaMA-3 Mistral-7B 0.0 0.2 0.4 0.6 0.8 1.0 42.8% 42.4% 18.6% 82.8% 76.0%
+> Unsafe Rate (Confidence 0.8 & Incorrect)
+> Models GPT-4o GPT-4o-mini GPT-5 LLaMA-3 Mistral-7B
+
+Fig. 5. Correct Abstention Rate, Mean Confidence, and Unsafe Rate across Uncertainty Framing Conditions (C0–C3). Unsafe Predictions are Defined as Incorrect Answers with Confidence Greater Than 0.8. C0–C3 Represent Increasing Levels of Uncertainty in the Prompt. 
+
+0.760 . Even stronger models, including GPT-4o and GPT-4o-mini, produce substantial unsafe predictions ( 0.428 and 0.424 ,respectively) as illustrated in Fig. 5. These findings reveal that hallucinated answers are fre-quently accompanied by high confidence, directly contributing to elevated UCER values. Notably, open-weight models exhibit the highest UCER, indicating a substantial proportion of unsafe predictions. Among all models, LLaMA exhibits the worst safety profile, characterized by the highest UCER and confidence gap. In contrast, GPT-5 exhibits the lowest UCER indicating comparatively safer behavior although hallucination rates remain high under this setting. This behavior represents a critical safety risk in clinical decision-support settings, as confidently incorrect predictions may mislead clinicians and lead to unsafe medical decisions. 
+
+3) Self-reported vs. Logit-based Confidence: We analyzed the relationship between self-reported confidence and logit-based probabilities derived from token-level likelihoods. As illustrated in Table III, substantial discrepancies are observed between these two measures across all models. For instance, LLaMA reports a very high average confidence of 0.970 , while its logit-based confidence remains considerably lower at 0.280 
+
+resulting in a large confidence gap of 0.814 . Mistral exhibits a similar pattern with near maximal reported confidence of 0.998 
+
+despite only moderate logit probabilities of 0.657 . These re-sults indicate that self-reported confidence systematically over-estimates the probability implied by a model’s internal logits. In contrast, GPT-based models demonstrate closer alignment between reported and logit-based confidence values suggesting relatively better calibration. However, this alignment remains imperfect and noticeable discrepancies persist. Logit-based confidence is not available for GPT-5 due to API limitations thus only self-reported confidence is considered for this model. Overall, these findings reveal a fundamental inconsistency between expressed and internal confidence signals. This sug-gests that self-reported confidence cannot be reliably inter-preted as a measure of model uncertainty particularly in safety 0.0 0.2 0.4 0.6 0.8 1.0  
+
+> Logit Confidence
+> 0.0 0.2 0.4 0.6 0.8 1.0
+> Self-Reported Confidence
+> GPT-4o GPT-4o-mini LLaMA-3 Mistral-7B
+> GPT-4o GPT-4o-mini LLaMA-3 Mistral-7B Overconfidence region Perfect calibration
+
+Fig. 6. Self-reported vs. Logit-based Confidence across the Models. The Diagonal Line Denotes Perfect Calibration, whereas, Shaded Region Indicates Overconfidence. 
+
+critical medical applications. Compared to setting A wherein models fail to adjust confidence under ambiguity this setting exposes a more severe limitation, models continue to produce confident predictions even when no correct answer is available. This highlights a fundamental failure in uncertainty awareness under explicit information insufficiency raising concerns about the safe deployment of LLMs in clinical settings. 
+
+C. Statistical Analysis 
+
+We also performed pairwise McNemar tests to evaluate the statistical differences in model accuracy. To control for multiple comparisons, we applied the Holm–Bonferroni cor-rection. As observed in Table V, several model pairs exhibit statistically significant differences in accuracy with p < 0.05 ,TABLE V PAIRWISE MCNEMAR TEST RESULTS FOR MODEL ACCURACY                              
+
+> COMPARISON .Model Pair p-value Significant ( p < 0.05 )GPT-4o vs GPT-4o-mini 0.603 No GPT-4o vs GPT-5 <0.001 Yes GPT-4o vs LLaMA-3 <0.001 Yes GPT-4o vs Mistral-7B <0.001 Yes GPT-4o-mini vs GPT-5 <0.001 Yes GPT-4o-mini vs LLaMA-3 <0.001 Yes GPT-4o-mini vs Mistral-7B <0.001 Yes GPT-5 vs LLaMA-3 0.133 No GPT-5 vs Mistral-7B 0.077 No LLaMA-3 vs Mistral-7B 0.002 Yes
+
+particularly between proprietary and open-weight models. Specifically, GPT-4o and GPT-4o-mini show significant differ-ences compared to GPT-5, LLaMA, and Mistral. In contrast, no statistically significant difference is observed between GPT-4o and GPT-4o-mini hence indicating comparable predictive performance between these two models. Similarly, no signifi-cant difference is found between GPT-5 and either LLaMA (p = 0 .133 ) or Mistral ( p = 0 .077 ) suggesting that their accuracy levels are statistically indistinguishable. However, the difference between LLaMA and Mistral is statistically significant ( p = 0 .002 ). After Holm–Bonferroni correction, most significant differ-ences remain. In particular, GPT-4o and GPT-4o-mini continue to significantly outperform the other evaluated models. In contrast, no significant differences are observed between GPT-5 and the open-weight models, indicating comparable accu-racy within the open-weight group. The difference between LLaMA and Mistral also remains statistically significant after correction. Overall, these results confirm that performance differences between proprietary and open-weight models are statistically robust, while differences within each group are less pronounced. Importantly, these statistical findings align with the observed differences in calibration and safety behav-ior thus reinforcing the reliability of our empirical analysis. VI. D ISCUSSION 
+
+Our findings reveal a clear mismatch between predictive per-formance and confidence behavior in LLMs for medical QA. While models like GPT-5 achieve high accuracy and relatively stable calibration, most models exhibit persistent overconfi-dence wherein reported confidence consistently exceeds actual correctness. This effect is particularly pronounced in open-weight models, e.g., LLaMA and Mistral, which frequently assign near maximal confidence to incorrect predictions. These results indicate that model generated confidence does not reliably reflect underlying epistemic uncertainty especially in complex clinical reasoning settings. The degraded setting further highlights a fundamental lim-itation in uncertainty awareness. When the correct answer is removed, models rarely abstain and instead continue to select incorrect options with high confidence. This behavior reflects a strong bias toward forced answering wherein models prioritize producing an answer even in the absence of sufficient evi-dence. Moreover, introducing uncertainty cues at the prompt level does not meaningfully mitigate this behavior. This sug-gests that prompt-based approaches alone are insufficient to induce reliable uncertainty awareness or abstention behavior in current LLMs. A plausible explanation for these observations lies in the training objectives of LLMs. Since models are optimized for next-token prediction and are predominantly trained on tasks where a valid answer exists, they implicitly learn to generate informative outputs rather than abstain. In addition, the lack of explicit supervision signals for abstention or uncertainty estimation during training may contribute to this limitation. These findings raise important safety concerns for the deployment of LLMs in clinical decision support systems. In high-stakes medical contexts confidently incorrect predictions may mislead clinicians and potentially lead to harmful out-comes. Therefore, improving the reliability of uncertainty es-timation should be a key priority for future research. Promising directions include developing explicit abstention mechanisms, incorporating calibration aware training objectives, and design-ing evaluation benchmarks that systematically assess model behavior under incomplete or ambiguous clinical information. Overall, our results demonstrate that current LLMs, despite strong predictive performance, exhibit fundamental limitations in uncertainty awareness. Addressing these limitations is es-sential for ensuring safe and reliable deployment of LLMs in clinical practice. VII. L IMITATIONS 
+
+This study has several limitations that should be consid-ered when interpreting the results. First, our experiments are conducted on the MedMCQA dataset, which is although large and diverse, may not fully represent the complexity and variability of real world clinical decision-making. As a result, the generalizability of our findings to other datasets or clinical environments may be limited. Second, uncertainty in our framework is introduced through prompt-based linguistic cues rather than naturally occurring ambiguity. While this design enables systematic and reproducible experimentation, it may not fully reflect the uncertainty encountered in real clinical practice. Finally, our experiments are limited to a fixed set of models and a static multiple-choice setting. Future work should extend this framework to a broader range of models, additional medical QA benchmarks, and more realistic clinical scenarios, including open-ended reasoning tasks, interactive decision-support tasks, and multimodal clinical settings. VIII. C ONCLUSION AND FUTURE WORK 
+
+This work presents a systematic evaluation of Large Lan-guage Models (LLMs) under conditions of clinical uncertainty and missing information. We evaluate five models across multiple dimensions, including predictive accuracy, confidence calibration, abstention behavior, hallucination rates, and unsafe confident errors. Our results reveal a fundamental limitation of current LLMs, i.e., confidence estimates do not reliably track underlying uncertainty. Across all experimental settings, models often remain highly confident even when predictive accuracy decreases or when sufficient clinical information is absent. This issue is particularly pronounced in open-weight models, which exhibit severe overconfidence, large calibration gaps, and high rates of unsafe confident errors. While proprietary models demonstrate relatively better cali-bration and a higher tendency to abstain, they still frequently produce confident but incorrect predictions. We further show that prompt-based linguistic uncertainty framing does not meaningfully improve model behavior. Even when uncertainty is explicitly introduced, models fail to reduce confidence or abstain appropriately. This suggests that current LLMs lack inherent mechanisms for uncertainty awareness and remain biased toward producing answers even in the absence of sufficient evidence. These findings highlight that predictive accuracy alone is insufficient as a reliability metric for medical AI systems. Reliable deployment in clinical settings requires additional evaluation dimensions, including confidence calibration, ab-stention behavior, and safety oriented metrics. Future work should focus on developing calibration-aware training ob-jectives, incorporating explicit abstention mechanisms, and designing benchmarks that systematically evaluate model be-havior under incomplete or ambiguous clinical information. Ultimately, improving uncertainty awareness is essential to enable the safe and trustworthy deployment of LLMs in real-world clinical decision-making. IX. A CKNOWLEDGMENT 
+
+This work was supported by Macquarie University through the International Research Training Program (iRTP) Scholar-ship and the International Macquarie University Research Ex-cellence Scholarship (iMQRES) under Scholarship Allocation Number: 20246621. REFERENCES [1] T. Brown, B. Mann, N. Ryder, M. Subbiah, J. D. Kaplan, P. Dhariwal, A. Neelakantan, P. Shyam, G. Sastry, A. Askell et al. , “Language Models Are Few-shot Learners,” Advances in Neural Information Processing Systems , vol. 33, pp. 1877–1901, 2020. [2] M. M. Perera, A. Mahmood, K. E. Wijethilake, F. Islam, M. Taher-mazandarani, and Q. Z. Sheng, “A survey of the state of the art in con-versational question answering systems,” Knowledge and Information Systems , vol. 68, no. 1, Dec. 2026. [3] T. H. Kung, M. Cheatham, A. Medenilla, C. Sillos, L. De Leon, C. Elepa˜ no, M. Madriaga, R. Aggabao, G. Diaz-Candido, J. Maningo 
+
+et al. , “Performance of ChatGPT on USMLE: Potential for AI-Assisted Medical Education using Large Language Models,” PLoS Digital Health ,vol. 2, no. 2, p. e0000198, 2023. [4] A. Pal, L. K. Umapathi, and M. Sankarasubbu, “MedMCQA: A large-Scale Multi-Subject Multi-Choice Dataset for Medical Domain Question Answering,” in Conference on Health, Inference, and Learning . PMLR, 2022, pp. 248–260. [5] K. Singhal, S. Azizi, T. Tu, S. S. Mahdavi, J. Wei, H. W. Chung, N. Scales, A. Tanwani, H. Cole-Lewis, S. Pfohl et al. , “Large Language Models Encode Clinical Knowledge,” Nature , vol. 620, no. 7972, pp. 172–180, 2023. [6] Z. Ji, N. Lee, R. Frieske, T. Yu, D. Su, Y. Xu, E. Ishii, Y. J. Bang, A. Madotto, and P. Fung, “Survey of Hallucination in Natural Language Generation,” ACM Computing Surveys , vol. 55, no. 12, pp. 1–38, 2023. [7] S. Tripathi, M. T. Nafis, I. Hussain, and J. Gao, “The Confidence Paradox: Can LLM Know When It’s Wrong?” in Proceedings of the 14th International Joint Conference on Natural Language Processing and the 4th Conference of the Asia-Pacific Chapter of the Association for Computational Linguistics , 2025, pp. 2078–2087. [8] M. Steyvers, H. Tejeda, A. Kumar, C. Belem, S. Karny, X. Hu, L. W. Mayer, and P. Smyth, “What Large Language Models Know and What People Think They Know,” Nature Machine Intelligence , vol. 7, no. 2, pp. 221–231, 2025. [9] C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, “On Calibration of Modern Neural Networks,” in Proceedings of the 34th Interna-tional Conference on Machine Learning - Volume 70 , ser. ICML’17. JMLR.org, 2017, p. 1321–1330. [10] S. Kadavath, T. Conerly, A. Askell, T. Henighan, D. Drain, E. Perez, N. Schiefer, Z. Hatfield-Dodds, N. DasSarma, E. Tran-Johnson et al. ,“Language Models (mostly) Know What They Know,” arXiv preprint arXiv:2207.05221 , 2022. [11] C. Xu, B. Wen, B. Han, R. Wolfe, L. L. Wang, and B. Howe, “Do Language Models Mirror Human Confidence? Exploring Psychological Insights to Address Overconfidence in LLMs,” in Findings of the Association for Computational Linguistics: ACL 2025 , 2025, pp. 25 655– 25 672. [12] R. Bentegeac, B. Le Guellec, G. Kuchcinski, P. Amouyel, and A. Ham-roun, “Token Probabilities to Mitigate Large Language Models Overcon-fidence in Answering Medical Questions: Quantitative Study,” Journal of Medical Internet Research , vol. 27, p. e64348, 2025. [13] L. Huang, W. Yu, W. Ma, W. Zhong, Z. Feng, H. Wang, Q. Chen, W. Peng, X. Feng, B. Qin et al. , “A Survey on Hallucination in Large Language Models: Principles, Taxonomy, Challenges, and Open Questions,” ACM Transactions on Information Systems , vol. 43, no. 2, pp. 1–55, 2025. [14] K. Tian, E. Mitchell, A. Zhou, A. Sharma, R. Rafailov, H. Yao, C. Finn, and C. D. Manning, “Just Ask for Calibration: Strategies for Eliciting Calibrated Confidence Scores from Language Models Fine-Tuned with Human Feedback,” in Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing , 2023, pp. 5433–5442. [15] T. Groot and M. Valdenegro-Toro, “Overconfidence is Key: Verbal-ized Uncertainty Evaluation in Large Language and Vision-Language Models,” in Proceedings of the 4th Workshop on Trustworthy Natural Language Processing (TrustNLP 2024) , 2024, pp. 145–171. [16] X. Qiu and R. Miikkulainen, “Semantic Density: Uncertainty Quantifi-cation for Large Language Models Through Confidence Measurement in Semantic Space,” Advances in Neural Information Processing Systems ,vol. 37, pp. 134 507–134 533, 2024. [17] G. P. Wightman, A. Delucia, and M. Dredze, “Strength in Numbers: Es-timating Confidence of Large Language Models by Prompt Agreement,” in Proceedings of the 3rd Workshop on Trustworthy Natural Language Processing (TrustNLP 2023) , 2023, pp. 326–362. [18] N. Madhusudhan, S. T. Madhusudhan, V. Yadav, and M. Hashemi, “Do LLMs Know When to Not Answer? Investigating Abstention Abilities of Large Language Models,” in Proceedings of the 31st International Conference on Computational Linguistics , 2025, pp. 9329–9345. [19] Z. Yin, Q. Sun, Q. Guo, J. Wu, X. Qiu, and X.-J. Huang, “Do Large Language Models Know What They Don’t Know?” in Findings of the Association for Computational Linguistics: ACL 2023 , 2023, pp. 8653– 8665. [20] J. Geng, F. Cai, Y. Wang, H. Koeppl, P. Nakov, and I. Gurevych, “A Survey of Confidence Estimation and Calibration in Large Language Models,” in Proceedings of the 2024 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies (Volume 1: Long Papers) , 2024, pp. 6577–6595. [21] P. Chhikara, “Mind the Confidence Gap: Overconfidence, Calibration, and Distractor Effects in Large Language Models,” arXiv preprint arXiv:2502.11028 , 2025. [22] S. Machcha, S. Yerra, S. Gupta, A. Sahoo, S. Sultana, H. Yu, and Z. Yao, “Knowing When to Abstain: Medical LLMs Under Clinical Uncertainty,” arXiv preprint arXiv:2601.12471 , 2026. [23] Q. McNemar, “Note on the Sampling Error of the Difference between Correlated Proportions or Percentages,” Psychometrika , vol. 12, no. 2, pp. 153–157, 1947. [24] F. Wilcoxon, “Individual Comparisons by Ranking Methods,” Biometrics Bulletin , vol. 1, no. 6, pp. 80–83, 1945. [25] S. Holm, “A Simple Sequentially Rejective Multiple Test Procedure,” 
+
+Scandinavian Journal of Statistics , pp. 65–70, 1979.

@@ -1,0 +1,312 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-14T21:15:05.242367+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 6,
+    "quick_skim_target": 11,
+    "quick_selected": 6
+  },
+  "deep_dive": [
+    {
+      "id": "2608.11323v1",
+      "source": "arxiv",
+      "title": "Deployment Decision Reliability: A Generalizability-Theory Framework for Sizing Long-Horizon Agent Evaluations",
+      "abstract": "Enterprise practitioners read agent leaderboards as if they ranked agent capability. We show, across three open agent-trace benchmarks (TheAgentCompany, $τ^2$-bench, and AppWorld), that the agent main effect accounts for less than 3% of total variance in every dataset and check type, while the agent-by-task interaction accounts for 7-23%. Leaderboards rank specialization, not capability. We arrive at this through a four-facet Generalizability Theory variance decomposition, fit with three estimators (Henderson Method-I, REML via lme4, and a Bayesian binomial GLMM) that agree to three decimal places. Four further findings sharpen what the leaderboard is hiding. First, aggregate reliability collapses on the hardest task quartile: $Eρ^2$ on $τ^2$ action_checks falls from 0.752 to 0.000. Second, training-cell reliability negatively correlates with held-out reliability ($r = -0.90$ on $τ^2$), meaning the designs that look most reliable replicate worst. Third, population-level diagnostics transfer across enterprise benchmarks (capability-gap ratio stable at 0.35-0.40) but per-family agent rankings invert. Fourth, on the MAST failure taxonomy, trace-level mode profiles are idiosyncratic (MAE = 0.261) while cell-level profiles generalise (MAE = 0.056, $r = 0.83$). We package these into Deployment Decision Reliability (DDR), a one-page reporting discipline that turns the variance-component table into five decisions an enterprise buyer can defend. All code, data loaders, and fit artifacts are released under an open-source license.",
+      "authors": [
+        "Vasundra Srinivasan"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-08-11T18:16:51+00:00",
+      "link": "https://arxiv.org/pdf/2608.11323v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Generalizability-theory framework for reliability and sizing of agent evaluations",
+      "llm_evidence_cn": "用于智能体评估可靠性与规模设计的概化理论框架",
+      "llm_evidence": "用于智能体评估可靠性与规模设计的概化理论框架",
+      "canonical_evidence": "用于智能体评估可靠性与规模设计的概化理论框架",
+      "llm_tldr_en": "Applies Generalizability Theory to three agent benchmarks, showing leaderboards rank specialization not capability, and provides a framework for sizing evaluations and understanding reliability.",
+      "llm_tldr_cn": "企业界常将智能体排行榜视为能力排名，但该论文通过三个开源Agent基准（TheAgentCompany、τ^2-bench、AppWorld）的四方面概化理论方差分解发现，智能体主效应仅占总方差不到3%，而智能体×任务交互占7-23%。这意味着排行榜主要衡量特化而非能力。论文提供的概化理论框架可用于量化评估可靠性并确定所需任务数量，对医疗Agent评估的设计与样本量规划具有直接指导意义。",
+      "llm_tldr": "企业界常将智能体排行榜视为能力排名，但该论文通过三个开源Agent基准（TheAgentCompany、τ^2-bench、AppWorld）的四方面概化理论方差分解发现，智能体主效应仅占总方差不到3%，而智能体×任务交互占7-23%。这意味着排行榜主要衡量特化而非能力。论文提供的概化理论框架可用于量化评估可靠性并确定所需任务数量，对医疗Agent评估的设计与样本量规划具有直接指导意义。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.06891v1",
+      "source": "arxiv",
+      "title": "SkillEval: Decomposing Agent Skill Quality into Interpretable Signals",
+      "abstract": "Agent skills provide reusable procedural knowledge that helps agents solve specialized tasks. As their use expands, evaluating skill quality becomes increasingly important. Existing evaluations often measure skill quality by testing whether a skill improves performance on specific downstream tasks. However, a reusable skill may apply to multiple task scenarios. Downstream evaluation mainly reflects the compatibility between a skill and the evaluated task, provides only a partial view of skill quality, and does not identify which aspect of the skill should be improved. We find that general properties of the \\texttt{SKILL.md} document play an important role in skill quality. To evaluate these properties, we propose \\textbf{SkillEval}, an interpretable framework for document-level skill evaluation. SkillEval evaluates each property using a fixed and inspectable scoring direction, producing interpretable scores. It further measures and reduces the influence of unrelated document features, such as length and formatting, so that each score captures its intended semantic property more specifically. Specifically, SkillEval learns an interpretable direction for each quality property from controlled positive--negative skill pairs in the hidden representation space of the model, and scores a new skill by projecting its representation onto these fixed directions. We use SkillEval to evaluate skills in controlled quality tests and show that SkillEval reliably distinguishes skills of different quality. In addition, SkillEval scores closely reflect downstream task performance, providing an early indication of whether a skill is likely to help an agent complete a task. We further explore SkillEval for diagnosing weaknesses in skill documents and guiding targeted revisions. The revised skills improve the targeted properties and achieve higher pass rates on downstream tasks.",
+      "authors": [
+        "Jiahui Han",
+        "Qinuo Li",
+        "Ziheng Peng",
+        "Haotian Wu",
+        "Haoze Liu",
+        "Danfeng Shan",
+        "Guanchu Wang",
+        "Huiqi Deng",
+        "Ninghao Liu"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-07T07:25:17+00:00",
+      "link": "https://arxiv.org/pdf/2608.06891v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Interpretable framework for evaluating agent skill quality",
+      "llm_evidence_cn": "可解释的智能体技能质量评估框架",
+      "llm_evidence": "可解释的智能体技能质量评估框架",
+      "canonical_evidence": "可解释的智能体技能质量评估框架",
+      "llm_tldr_en": "Proposes SkillEval, an interpretable framework to decompose agent skill quality into signals based on SKILL.md properties, providing a more complete view than downstream task performance alone.",
+      "llm_tldr_cn": "现有智能体技能评估主要依赖下游任务性能，但只能反映技能与任务的兼容性，不能定位待改进点。论文提出SkillEval，通过分析SKILL.md文档的通用属性，将技能质量分解为可解释的信号。相比下游评估，SkillEval能提供更全面的技能质量视图，帮助识别技能具体缺陷。该方法可用于医疗Agent技能库的质量评估与改进。",
+      "llm_tldr": "现有智能体技能评估主要依赖下游任务性能，但只能反映技能与任务的兼容性，不能定位待改进点。论文提出SkillEval，通过分析SKILL.md文档的通用属性，将技能质量分解为可解释的信号。相比下游评估，SkillEval能提供更全面的技能质量视图，帮助识别技能具体缺陷。该方法可用于医疗Agent技能库的质量评估与改进。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "What are the metrics for healthcare agent evaluation using EHR data?",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.07346v2",
+      "source": "arxiv",
+      "title": "$A^2E$ : An End-to-End Agent Auditing Engine",
+      "abstract": "With the rapid advancement of large language models (LLMs), harnesses have become essential infrastructure for deploying agents across a wide range of domains. The fast-evolving harness ecosystem has also made rigorous capability evaluation increasingly important. However, efficiently building an end-to-end, systematic, and comprehensive evaluation pipeline remains a significant challenge. To address this challenge, we introduce $A^2E$ (Agent Auditing Engine), an end-to-end evaluation engine designed for agent harnesses. $A^2E$ leverages our newly proposed Agent Task Protocol (ATP) to enable the rapid integration of evaluation tasks with different harnesses. Through an automatically instrumented Monitor, it captures and generates standardized execution traces during experiments. In the Evaluation stage, $A^2E$ systematically assesses harness capabilities using a suite of multidimensional metrics. Compared with correctness alone, these metrics provide a more fine-grained characterization of differences among harnesses in execution efficiency, tool use, task planning, and error recovery. Experiments conducted with $A^2E$ further reveal that model-harness combinations exhibit substantial performance variation across different types of tasks, and that no single combination consistently outperforms all others across every task. These findings not only demonstrate the necessity of systematic evaluation but also provide useful guidance for the co-evolving of models and harnesses. Our code is available at https://github.com/datamllab/A2E.",
+      "authors": [
+        "Haoning Wang",
+        "Mingxun Zhang",
+        "Chenyue Yu",
+        "Yingjun Shang",
+        "Xia Hu",
+        "Guanchu Wang",
+        "Na Zou"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-07T15:44:12+00:00",
+      "link": "https://arxiv.org/pdf/2608.07346v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "end-to-end agent auditing engine for agent harness evaluation, applicable to performance benchmarking of medical agents",
+      "llm_evidence_cn": "面向智能体框架的端到端审计引擎，可用于医疗智能体性能基准测试",
+      "llm_evidence": "面向智能体框架的端到端审计引擎，可用于医疗智能体性能基准测试",
+      "canonical_evidence": "面向智能体框架的端到端审计引擎，可用于医疗智能体性能基准测试",
+      "llm_tldr_en": "A^2E is an end-to-end agent auditing engine with the Agent Task Protocol (ATP) for rapid integration of evaluation tasks, capturing standardized execution traces via an instrumented Monitor.",
+      "llm_tldr_cn": "智能体框架的快速演进使得严格的端到端能力评估十分困难。本文提出A^2E端到端智能体审计引擎，基于Agent任务协议(ATP)快速整合不同框架的评估任务，并通过自动插桩的监控器捕获标准化执行轨迹。该引擎提升了评估流程的系统性和可复现性，可直接应用于医疗等领域的智能体性能基准测试。通过ATP协议，新任务接入无需修改代码，显著降低评估成本。这为构建统一的医疗智能体评测流水线提供了基础设施支持。",
+      "llm_tldr": "智能体框架的快速演进使得严格的端到端能力评估十分困难。本文提出A^2E端到端智能体审计引擎，基于Agent任务协议(ATP)快速整合不同框架的评估任务，并通过自动插桩的监控器捕获标准化执行轨迹。该引擎提升了评估流程的系统性和可复现性，可直接应用于医疗等领域的智能体性能基准测试。通过ATP协议，新任务接入无需修改代码，显著降低评估成本。这为构建统一的医疗智能体评测流水线提供了基础设施支持。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.09080v1",
+      "source": "arxiv",
+      "title": "When Confidence Fails: Overconfidence in LLMs under Uncertainty and Missing Clinical Information",
+      "abstract": "Large Language Models (LLMs) have achieved strong performance in medical question answering and clinical reasoning tasks. However, their reliability under uncertainty remains poorly understood which raises critical concerns for deployment in high-stakes clinical settings. In such environments, incorrect predictions are inherently risky, but confident incorrect predictions can be particularly harmful as they may mislead clinical decision-making. In this paper, we conduct a systematic behavioral analysis of LLMs under clinical information uncertainty. We propose an evaluation framework based on the MedMCQA dataset consisting of two complementary uncertainty settings. First, we introduce linguistic uncertainty cues through prompt modifications to simulate ambiguous clinical contexts. Second, we construct an answer removal setting, wherein the correct option is deliberately excluded mandating the model to recognize insufficient information and abstain. We analyze both model accuracy and confidence behavior using multiple calibration metrics including calibration gap, Expected Calibration Error (ECE), and Unsafe Confident Error Rate (UCER) across 500 medical questions. Our results reveal a consistent failure mode, i.e., although accuracy degrades under increasing uncertainty, model confidence remains misaligned with accuracy. This leads to a substantial increase in unsafe confident errors, indicating that model confidence remains largely insensitive to clinically meaningful information loss. Furthermore, we observe significant variation across models in their ability to abstain when the correct answer is unavailable, with some models persistently producing high confidence hallucinated answers. These findings expose critical limitations in the epistemic reliability of current LLMs and highlight the need for uncertainty aware evaluation methods prior to their deployment in clinical workflows.",
+      "authors": [
+        "Maryam Tahermazandarani",
+        "Adnan Mahmood",
+        "Fahmida Islam",
+        "Quan Z. Sheng"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.HC",
+        "cs.LG"
+      ],
+      "published": "2026-08-10T03:28:46+00:00",
+      "link": "https://arxiv.org/pdf/2608.09080v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "evaluation framework for LLMs under clinical information uncertainty and missing information, directly relevant to evaluating medical agents with EHR",
+      "llm_evidence_cn": "针对临床信息不确定性和缺失信息评估LLM，与EHR医疗智能体评估直接相关",
+      "llm_evidence": "针对临床信息不确定性和缺失信息评估LLM，与EHR医疗智能体评估直接相关",
+      "canonical_evidence": "针对临床信息不确定性和缺失信息评估LLM，与EHR医疗智能体评估直接相关",
+      "llm_tldr_en": "This paper evaluates LLM overconfidence under linguistic and missing clinical information uncertainties using the MedMCQA dataset, proposing a framework to assess reliability in high-stakes clinical settings.",
+      "llm_tldr_cn": "临床环境中信息缺失与不确定表达会使大语言模型产生过度自信，可能误导决策。本文基于MedMCQA数据集提出包含两类不确定性设置的评估框架，系统分析LLM在临床信息不确定性下的行为。研究揭示了模型在不确定与缺失临床信息时的高置信错误模式，为医疗AI安全部署和评估提供了重要参考。该框架可扩展至电子健康记录等真实临床数据，为医疗智能体的鲁棒性评估提供了方法论基础。实验还发现，模型在缺失关键信息时往往给出高置信但错误的答案，凸显了校准评估的必要性。",
+      "llm_tldr": "临床环境中信息缺失与不确定表达会使大语言模型产生过度自信，可能误导决策。本文基于MedMCQA数据集提出包含两类不确定性设置的评估框架，系统分析LLM在临床信息不确定性下的行为。研究揭示了模型在不确定与缺失临床信息时的高置信错误模式，为医疗AI安全部署和评估提供了重要参考。该框架可扩展至电子健康记录等真实临床数据，为医疗智能体的鲁棒性评估提供了方法论基础。实验还发现，模型在缺失关键信息时往往给出高置信但错误的答案，凸显了校准评估的必要性。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.11434v1",
+      "source": "arxiv",
+      "title": "Benchmarking LLM Judges for Mobile Agent Evaluation",
+      "abstract": "Mobile agent benchmarks increasingly rely on LLM-based judges to evaluate task completion, yet the reliability of these judges on mobile agent trajectories remains largely unexamined. We introduce MobileJudgeBench, a benchmark for systematically evaluating LLM-as-judge methods on mobile agent trajectories. Our benchmark comprises 931 human-annotated trajectories spanning 6 mobile agent benchmarks, 4 agent models, and 68 apps. We evaluate 6 judge methods (five adapted from SPA-Bench, A3 with two modes, AndroidArena, and AgentRewardBench, plus a simple baseline we design) across multiple LLM backends. Our experiments reveal three key findings. First, a simple baseline judge with sampled screenshots is competitive with, and often exceeds, purpose-built methods, indicating that more elaborate judge pipelines do not consistently improve judge quality; among competitive methods, the LLM backbone is the primary driver. Second, benchmark quality metrics reliably predict real-world judge utility: they correlate with both agent ranking fidelity for evaluation and downstream performance when judges serve as reward signals for on-policy reinforcement learning. Third, failure analysis across two LLM backends uncovers qualitatively opposite failure profiles, one conservative and the other permissive, linked to the backbone's precision-recall characteristics.",
+      "authors": [
+        "Ziqiang Wan",
+        "Li Gu",
+        "Zhixiang Chi",
+        "Zhi Liu",
+        "Seyed Mehdi Ayyoubzadeh",
+        "Yuanhao Yu",
+        "Yang Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CV"
+      ],
+      "published": "2026-08-11T21:00:46+00:00",
+      "link": "https://arxiv.org/pdf/2608.11434v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark of LLM judges on mobile agent trajectories; transferable to judging medical agents",
+      "llm_evidence_cn": "移动智能体轨迹的LLM评审基准，方法可迁移至医疗智能体评测",
+      "llm_evidence": "移动智能体轨迹的LLM评审基准，方法可迁移至医疗智能体评测",
+      "canonical_evidence": "移动智能体轨迹的LLM评审基准，方法可迁移至医疗智能体评测",
+      "llm_tldr_en": "MobileJudgeBench is a 931-trajectory benchmark evaluating six LLM judge methods on mobile agent tasks; a simple screenshot baseline rivals purpose-built judges, revealing room for improvement.",
+      "llm_tldr_cn": "移动智能体基准越来越多地依赖LLM评审员来判断任务是否完成，但这些评审员的可靠性未被系统验证。MobileJudgeBench包含931条人工标注轨迹，覆盖6个移动智能体基准、4个智能体模型和68个应用，比较了6种评审方法和多种LLM后端。实验发现，使用采样截图的简单基线方法即可与专门设计的评审方法相当甚至更优，说明现有评审技术仍需改进。该基准为智能体评估中的评审方法研究提供了可复用的测试平台，其方法学对医疗智能体的评估同样具有参考价值。",
+      "llm_tldr": "移动智能体基准越来越多地依赖LLM评审员来判断任务是否完成，但这些评审员的可靠性未被系统验证。MobileJudgeBench包含931条人工标注轨迹，覆盖6个移动智能体基准、4个智能体模型和68个应用，比较了6种评审方法和多种LLM后端。实验发现，使用采样截图的简单基线方法即可与专门设计的评审方法相当甚至更优，说明现有评审技术仍需改进。该基准为智能体评估中的评审方法研究提供了可复用的测试平台，其方法学对医疗智能体的评估同样具有参考价值。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.10964v1",
+      "source": "arxiv",
+      "title": "CARE: Confidence-Aware Reasoning for Reliable Medical VQA",
+      "abstract": "Reinforcement Fine-Tuning (RFT) has enabled medical Multimodal Large Language Models (MLLMs) to produce Chain-of-Thought (CoT) reasoning for visual question answering, yet these models suffer from $\\textit{confidence miscalibration}$---a systematic gap between expressed certainty and actual diagnostic accuracy that undermines clinical trust. We propose $\\textbf{CARE}$, a $\\textbf{C}$onfidence-$\\textbf{A}$ware medical $\\textbf{RE}$asoning framework that jointly optimizes accuracy and calibration through a dual-stage pipeline. First, a scalable Medical-CoT synthesis provides structured cold-start data for Supervised Fine-Tuning. Second, Group Relative Policy Optimization (GRPO) with a novel $\\textbf{Confidence-Aware Reward (CAR)}$ mechanism ties the model's confidence to diagnostic correctness within the reward signal. Across three Medical VQA benchmarks, $\\textbf{CARE}$ achieves the highest diagnostic accuracy while obtaining the lowest Expected Calibration Error and Hallucination Rate, establishing a foundation for trustworthy clinical decision support. Our code is available at https://github.com/anotherbricki/CARE.",
+      "authors": [
+        "Yuetian Du",
+        "Yucheng Wang",
+        "Zhenyuan Chen",
+        "Luyuan Chen",
+        "Rongyu Zhang",
+        "Jinjian Zhang",
+        "Wei Zhou",
+        "Zhijie Xu",
+        "Ming Kong",
+        "Zhan Zhou",
+        "Jie Liu",
+        "Qiang Zhu"
+      ],
+      "primary_category": "cs.CV",
+      "categories": [
+        "cs.CV",
+        "cs.AI"
+      ],
+      "published": "2026-08-11T14:28:52+00:00",
+      "link": "https://arxiv.org/pdf/2608.10964v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "uses RL (GRPO) and confidence-aware reward for medical MLLM reasoning, relevant to RL+LLM medical agent evaluation",
+      "llm_evidence_cn": "使用RL与置信度感知奖励进行医学多模态推理，关联RL+LLM医疗评估",
+      "llm_evidence": "使用RL与置信度感知奖励进行医学多模态推理，关联RL+LLM医疗评估",
+      "canonical_evidence": "使用RL与置信度感知奖励进行医学多模态推理，关联RL+LLM医疗评估",
+      "llm_tldr_en": "CARE jointly optimizes accuracy and calibration in medical MLLMs via scalable Medical-CoT synthesis and GRPO with a Confidence-Aware Reward, addressing confidence miscalibration in medical VQA.",
+      "llm_tldr_cn": "医学多模态大模型在视觉问答中常出现置信度与真实准确性不匹配，削弱临床信任。本文提出CARE框架，通过可扩展的医学思维链合成为监督微调提供结构化冷启动数据，并采用带置信度感知奖励的GRPO联合优化准确率与校准度。实验表明该方法能有效缓解置信度失调，提升医学视觉问答的可靠性。CARE不仅提高答案准确率，还使模型在不确定时能更合理地表达置信度，这对高风险医疗场景尤为重要。该工作展示了强化学习在医疗模型评估中的新范式。",
+      "llm_tldr": "医学多模态大模型在视觉问答中常出现置信度与真实准确性不匹配，削弱临床信任。本文提出CARE框架，通过可扩展的医学思维链合成为监督微调提供结构化冷启动数据，并采用带置信度感知奖励的GRPO联合优化准确率与校准度。实验表明该方法能有效缓解置信度失调，提升医学视觉问答的可靠性。CARE不仅提高答案准确率，还使模型在不确定时能更合理地表达置信度，这对高风险医疗场景尤为重要。该工作展示了强化学习在医疗模型评估中的新范式。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "Reinforcement learning and LLM in medical agent evaluation",
+      "matched_requirement_id": "req-10",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.13476v1",
+      "source": "arxiv",
+      "title": "MARC v1: An Open-Source Multi-Agent Framework for Clinical AI Reasoning and Coordination",
+      "abstract": "We present Multi-Agent Reasoning and Coordination (MARC), an open-source framework that replaces monolithic LLM prompting with deterministic multi-agent orchestration for clinical reasoning. MARC coordinates role-specialized agents for extraction, reasoning, answer generation, and evaluation, with explicit context passing and traceable intermediate outputs, enabling stage-wise failure attribution. We additionally introduce a Decomposer module that generates task-specific agent prompts from a plain-language description, eliminating manual prompt engineering. The framework supports both API-based and local CPU-compatible deployments and is entirely configurable via YAML, without code modifications. MARC is designed to be model-agnostic, interpretable, and accessible to clinical domain experts without programming expertise. The full framework is available at https://github.com/Penn-RAIL/MARC-v1.",
+      "authors": [
+        "Saisha Shetty",
+        "Satvik Tripathi",
+        "Austin Lin",
+        "Colin Zhao",
+        "Theodore Kim",
+        "Don Enwerem",
+        "Jacinta Arnold",
+        "Shahriar Faghani",
+        "Tessa S Cook"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-08-13T17:00:08+00:00",
+      "link": "https://arxiv.org/pdf/2608.13476v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "open-source multi-agent framework for clinical AI reasoning with evaluation agent",
+      "llm_evidence_cn": "开源多智能体临床推理框架，内置评估智能体",
+      "llm_evidence": "开源多智能体临床推理框架，内置评估智能体",
+      "canonical_evidence": "开源多智能体临床推理框架，内置评估智能体",
+      "llm_tldr_en": "MARC replaces monolithic LLM prompting with deterministic multi-agent orchestration for clinical reasoning, coordinating extraction, reasoning, answer generation, and evaluation agents, enabling stage-wise failure attribution.",
+      "llm_tldr_cn": "大型语言模型在临床推理中常以整体提示方式使用，难以定位分阶段错误。本文提出开源多智能体框架MARC，通过角色分工的抽取、推理、答案生成与评估智能体进行确定性协同，并引入分解器模块自动生成任务提示。该框架支持接口与本地CPU部署，可配置化程度高，能够实现阶段级失败归因，从而提升临床AI推理与评估的透明度和可扩展性。它将作为社区基础设施推动临床AI评估的标准化。",
+      "llm_tldr": "大型语言模型在临床推理中常以整体提示方式使用，难以定位分阶段错误。本文提出开源多智能体框架MARC，通过角色分工的抽取、推理、答案生成与评估智能体进行确定性协同，并引入分解器模块自动生成任务提示。该框架支持接口与本地CPU部署，可配置化程度高，能够实现阶段级失败归因，从而提升临床AI推理与评估的透明度和可扩展性。它将作为社区基础设施推动临床AI评估的标准化。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    }
+  ]
+}
