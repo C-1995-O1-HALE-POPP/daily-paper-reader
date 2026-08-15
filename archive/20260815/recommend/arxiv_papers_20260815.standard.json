@@ -1,0 +1,184 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-15T20:17:24.527524+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 0,
+    "deep_cap": 6,
+    "deep_selected": 0,
+    "quick_candidates": 4,
+    "quick_skim_target": 11,
+    "quick_selected": 4
+  },
+  "deep_dive": [],
+  "quick_skim": [
+    {
+      "id": "2608.08605v2",
+      "source": "arxiv",
+      "title": "ForestBench: A Unified Graph Framework for Evaluating Multi-Agent Collaboration",
+      "abstract": "Multi-agent systems (MAS) built on Large Language Models (LLMs) are proliferating rapidly, but their heterogeneous execution traces provide no common basis for evaluation across methods. Outcome-only benchmarks discard collaborations, whereas LLM-as-Judge evaluation requires additional, model-dependent inference and can vary with the LLM and rubric. We introduce a generalizable evaluation framework that maps native MAS traces into a shared space of unified collaboration graphs, enabling different methods to be evaluated under the same representation, reference set, and metric panel. Candidate graphs are compared with a query-specific reference forest. Each forest is a benchmark-provided collection of verified-success graphs: it records diverse ways in which representative MAS methods can complete the task, rather than prescribing a unique optimal process. Instantiating the framework as ForestBench, we filter $844$ collaboration-necessary queries from seven public datasets, precompute ten successful target-conditioned reference graphs per query, and evaluate six representative MAS frameworks. Controlled backbone, reference-construction, and perturbation studies test the stability and scope of evaluation. Once the benchmark forests are built, ForestBench scores a trace in milliseconds without further LLM inference, providing a reusable structural basis for comparing diverse MAS collaboration traces.",
+      "authors": [
+        "Guo Chen",
+        "Ziwen Li",
+        "Reed Li",
+        "Yu Lu",
+        "Haibo Shi",
+        "Bingbing Xu",
+        "Junjie Huang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-09T09:38:52+00:00",
+      "link": "https://arxiv.org/pdf/2608.08605v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "general multi-agent evaluation framework using unified collaboration graphs",
+      "llm_evidence_cn": "基于统一协作图的多智能体评估通用框架",
+      "llm_evidence": "基于统一协作图的多智能体评估通用框架",
+      "canonical_evidence": "基于统一协作图的多智能体评估通用框架",
+      "llm_tldr_en": "ForestBench maps heterogeneous multi-agent traces into unified collaboration graphs and compares them with a reference forest, enabling consistent multi-method evaluation under a shared metric panel.",
+      "llm_tldr_cn": "多智能体系统执行轨迹异构，现有结果型基准丢弃协作信息，而LLM裁判评估不稳定且依赖模型。该工作提出统一的协作图评估框架，将不同方法的本地铁轨映射到共享图空间，并利用基准提供的已验证成功图森林作为参考进行比较。实验表明该框架能在同一表示和指标面板下对不同方法进行一致评估，为多智能体协作评测提供了通用方案。",
+      "llm_tldr": "多智能体系统执行轨迹异构，现有结果型基准丢弃协作信息，而LLM裁判评估不稳定且依赖模型。该工作提出统一的协作图评估框架，将不同方法的本地铁轨映射到共享图空间，并利用基准提供的已验证成功图森林作为参考进行比较。实验表明该框架能在同一表示和指标面板下对不同方法进行一致评估，为多智能体协作评测提供了通用方案。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.09168v1",
+      "source": "arxiv",
+      "title": "From Relevance to Execution Utility: Reward-Aware Dynamic Execution Gating for Skill-Based LLM Agents",
+      "abstract": "Agent skills are increasingly used to equip large language model (LLM) agents with reusable procedural knowledge. Although recent work has substantially improved skill retrieval due to the increasing skill libraries, retrieving a plausible skill bundle does not guarantee that executing it is worthwhile. Since every skill-conditioned rollout is computationally expensive, deciding whether a retrieved bundle should be executed has become an increasingly important challenge. To this end, we introduce the Reward-Aware Dynamic Execution Gate (RADEG), a lightweight, retriever-agnostic decision layer between skill retrieval and agent execution. RADEG learns a low-cost surrogate model that predicts the execution utility of a query--bundle pair before the expensive rollout is launched. To obtain informative supervision while controlling for task difficulty, we locally perturb each retrieved bundle by deleting, adding, or replacing one skill, producing matched same-query rollouts that isolate the effect of bundle composition on verifier reward. During deployment, RADEG updates only a warm-started logistic head as new verifier feedback becomes available, enabling inexpensive adaptation of the execute/skip boundary without retraining either the retriever or the agent. Under a query-level held-out evaluation on 288 collected rollouts, RADEG substantially reduces unnecessary agent executions while preserving a large fraction of the downstream verifier reward. It consistently outperforms relevance-based and random gating across different execution budgets, demonstrating that execution-aware surrogate modeling provides a practical and cost-effective complement to skill retrieval.",
+      "authors": [
+        "Liang He",
+        "Jingbo Wen",
+        "Hongyu Gu",
+        "Hao Li",
+        "Haoyu Wang",
+        "Yixiong Chen",
+        "Kangning Cui",
+        "Xilu Wang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-10T06:28:25+00:00",
+      "link": "https://arxiv.org/pdf/2608.09168v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "rewards-based execution utility prediction for LLM agents, transferable to agent performance benchmarking",
+      "llm_evidence_cn": "基于奖励的LLM智能体执行效用预测，可迁移至智能体性能基准评测",
+      "llm_evidence": "基于奖励的LLM智能体执行效用预测，可迁移至智能体性能基准评测",
+      "canonical_evidence": "基于奖励的LLM智能体执行效用预测，可迁移至智能体性能基准评测",
+      "llm_tldr_en": "Proposes RADEG, a lightweight gate predicting execution utility of retrieved skill bundles to avoid costly rollouts; directly addresses agent performance evaluation through reward-aware pre-execution assessment.",
+      "llm_tldr_cn": "该论文指出LLM智能体检索到技能包后未必值得执行，每次执行代价高昂。为此提出RADEG，一个轻量且与检索器无关的决策层，通过学习低代价代理模型预测查询的执行效用，从而在技能检索与智能体执行之间进行动态门控。实验表明该方法能有效减少无效执行并提升整体效率，为智能体性能评估提供了可迁移的执行效用度量思路。",
+      "llm_tldr": "该论文指出LLM智能体检索到技能包后未必值得执行，每次执行代价高昂。为此提出RADEG，一个轻量且与检索器无关的决策层，通过学习低代价代理模型预测查询的执行效用，从而在技能检索与智能体执行之间进行动态门控。实验表明该方法能有效减少无效执行并提升整体效率，为智能体性能评估提供了可迁移的执行效用度量思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.12805v1",
+      "source": "arxiv",
+      "title": "CoMedBench: A Multi-Source Benchmark of Synthetic Medical Data Fidelity and Downstream Utility",
+      "abstract": "Access to clinical data is essential for developing reliable healthcare machine learning systems, but direct use of electronic health records is constrained by privacy regulation, institutional review, data-use agreements, and the risk of re-identification. Synthetic data promises a practical alternative: it can preserve useful statistical and clinical structure while reducing exposure of sensitive patient records. Prior studies often evaluate a single generator, one dataset, or a narrow downstream task, making it difficult to know when synthetic data can support model development and when it fails to preserve task-critical signal. We introduce CoMedBench, a reproducible benchmark that evaluates a family of generators under a common clinical-validity framework and one shared training and evaluation engine, spanning static tabular and temporal downstream tasks on established critical-care datasets. In total the benchmark spans 37 dataset-task pairs across two modalities consists of 20 static tabular and 17 temporal ICU time-series-drawn from seven public data sources: three intensive-care databases (MIMIC-III, MIMIC-IV, and eICU) together with the UCI Machine Learning Repository, the CDC BRFSS diabetes cohort (2015), NHANES (1999-2014), and the pycox survival datasets (GBSG and METABRIC). The benchmark evaluates both statistical fidelity and task utility by comparing models trained and tested across real and synthetic data. In these settings, synthetic training data preserves most of the downstream signal: on tabular tasks the reference generator CoMed-CTGAN retains a mean AUROC utility (the synthetic-to-real performance ratio) of 90.6%, rising to 97.3% for the strongest generator, CoMed-TVAE. Temporal ICU tasks are harder and more generator-sensitive: CoMed-CTGAN retains 81.6% (AUROC) and only 64.0% under the imbalance-sensitive AUPRC, whereas CoMed-TVAE still retains ~95% (AUROC).",
+      "authors": [
+        "Akanta Das",
+        "Al Amin Farhad",
+        "Mrinmoy Sarkar Anto",
+        "David Rehkopf",
+        "Ayin Vala",
+        "Tanmoy Sarkar Pias"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-08-13T04:24:52+00:00",
+      "link": "https://arxiv.org/pdf/2608.12805v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "benchmark for synthetic medical data fidelity and downstream utility addressing EHR privacy",
+      "llm_evidence_cn": "面向EHR隐私的合成医学数据保真度与下游效用基准",
+      "llm_evidence": "面向EHR隐私的合成医学数据保真度与下游效用基准",
+      "canonical_evidence": "面向EHR隐私的合成医学数据保真度与下游效用基准",
+      "llm_tldr_en": "CoMedBench is a reproducible multi-source benchmark for evaluating synthetic medical data fidelity and downstream utility, helping determine when synthetic EHR data can support healthcare ML model development and downstream tasks.",
+      "llm_tldr_cn": "针对医疗数据隐私限制下合成数据评估零散的问题，CoMedBench构建了一个多源、可复现的基准，系统比较不同生成器的保真度和下游效用。实验表明该基准能够明确判断合成数据何时能支撑模型开发、何时丢失关键信息，为在电子健康记录受限场景下评估机器学习模型提供了标准化的参考方法。",
+      "llm_tldr": "针对医疗数据隐私限制下合成数据评估零散的问题，CoMedBench构建了一个多源、可复现的基准，系统比较不同生成器的保真度和下游效用。实验表明该基准能够明确判断合成数据何时能支撑模型开发、何时丢失关键信息，为在电子健康记录受限场景下评估机器学习模型提供了标准化的参考方法。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.13476v1",
+      "source": "arxiv",
+      "title": "MARC v1: An Open-Source Multi-Agent Framework for Clinical AI Reasoning and Coordination",
+      "abstract": "We present Multi-Agent Reasoning and Coordination (MARC), an open-source framework that replaces monolithic LLM prompting with deterministic multi-agent orchestration for clinical reasoning. MARC coordinates role-specialized agents for extraction, reasoning, answer generation, and evaluation, with explicit context passing and traceable intermediate outputs, enabling stage-wise failure attribution. We additionally introduce a Decomposer module that generates task-specific agent prompts from a plain-language description, eliminating manual prompt engineering. The framework supports both API-based and local CPU-compatible deployments and is entirely configurable via YAML, without code modifications. MARC is designed to be model-agnostic, interpretable, and accessible to clinical domain experts without programming expertise. The full framework is available at https://github.com/Penn-RAIL/MARC-v1.",
+      "authors": [
+        "Saisha Shetty",
+        "Satvik Tripathi",
+        "Austin Lin",
+        "Colin Zhao",
+        "Theodore Kim",
+        "Don Enwerem",
+        "Jacinta Arnold",
+        "Shahriar Faghani",
+        "Tessa S Cook"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-08-13T17:00:08+00:00",
+      "link": "https://arxiv.org/pdf/2608.13476v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "open-source multi-agent framework for clinical reasoning with an evaluation agent and traceable outputs",
+      "llm_evidence_cn": "用于临床推理的开源多智能体框架，含评估智能体与可追踪输出",
+      "llm_evidence": "用于临床推理的开源多智能体框架，含评估智能体与可追踪输出",
+      "canonical_evidence": "用于临床推理的开源多智能体框架，含评估智能体与可追踪输出",
+      "llm_tldr_en": "MARC replaces monolithic LLM prompting with deterministic multi-agent orchestration for clinical reasoning, adding an evaluation agent and traceable outputs for stage-wise failure attribution.",
+      "llm_tldr_cn": "临床推理中单体LLM提示缺少明确的中间过程和失败定位能力。该工作发布开源多智能体框架MARC，通过确定性编排协调抽取、推理、答案生成和评估等角色智能体，支持显式上下文传递和可追踪输出，从而对失败环节进行定位。框架无需代码修改即可通过YAML配置适配不同任务，为临床多智能体系统的构建和审计提供了实用基础。",
+      "llm_tldr": "临床推理中单体LLM提示缺少明确的中间过程和失败定位能力。该工作发布开源多智能体框架MARC，通过确定性编排协调抽取、推理、答案生成和评估等角色智能体，支持显式上下文传递和可追踪输出，从而对失败环节进行定位。框架无需代码修改即可通过YAML配置适配不同任务，为临床多智能体系统的构建和审计提供了实用基础。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
