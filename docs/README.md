@@ -6,35 +6,34 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-15
-- 运行时间：2026-08-15 20:19:28 UTC
+- 最新运行日期：2026-08-16
+- 运行时间：2026-08-16 20:18:45 UTC
 - 运行状态：成功
 - 本次总论文数：4
-- 精读区：0
-- 速读区：4
+- 精读区：1
+- 速读区：3
 
 ### 今日简报（AI）
-今日速读3篇论文，聚焦多智能体协作基准、LLM智能体执行门控与合成医疗数据评估。  
-《ForestBench》提出统一图框架评估多智能体协作，《Reward-Aware Dynamic Execution Gating》关注奖励感知的动态执行策略，均获6.0分。  
-建议后续优先精读这两篇，并结合自身任务验证其方法适用性。
-- 详情：[/202608/15/README](/202608/15/README)
+今日聚焦医疗AI与多智能体评估，精读1篇高分段“可审计甲状腺超声诊断”研究，速读3篇框架类论文。  
+最值得关注：精读的《Auditable agentic AI》以9.0分领跑，强调证据可溯与诊断报告可信，是医疗AI落地的重要方向。  
+建议普通读者优先研读精读论文，速读部分可留意多智能体协作基准与工具使用策略，辅助理解评估趋势。
+- 详情：[/202608/16/README](/202608/16/README)
 
 ### 精读区论文标签
-- 本次无精读推荐。
+1. [Auditable agentic AI for evidence-grounded thyroid ultrasound diagnosis and reporting](/202608/16/2608.12590v1-auditable-agentic-ai-for-evidence-grounded-thyroid-ultrasound-diagnosis-and-reporting)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：医学智能体大规模评测，无EHR但为智能体AI
 
 ### 速读区论文标签
-1. [ForestBench: A Unified Graph Framework for Evaluating Multi-Agent Collaboration](/202608/15/2608.08605v2-forestbench-a-unified-graph-framework-for-evaluating-multi-agent-collaboration)  
+1. [ForestBench: A Unified Graph Framework for Evaluating Multi-Agent Collaboration](/202608/16/2608.08605v1-forestbench-a-unified-graph-framework-for-evaluating-multi-agent-collaboration)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：基于统一协作图的多智能体评估通用框架
-2. [From Relevance to Execution Utility: Reward-Aware Dynamic Execution Gating for Skill-Based LLM Agents](/202608/15/2608.09168v1-from-relevance-to-execution-utility-reward-aware-dynamic-execution-gating-for-skill-based-llm-agents)  
+   evidence：面向多智能体协作评估的通用框架，方法上直接可用于智能体基准评测，但不涉及医学/EHR
+2. [VAKRA: Evaluating Multi-Hop Reasoning Across APIs and Retrieval Under Tool-Use Policies](/202608/16/2608.12282v1-vakra-evaluating-multi-hop-reasoning-across-apis-and-retrieval-under-tool-use-policies)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：基于奖励的LLM智能体执行效用预测，可迁移至智能体性能基准评测
-3. [CoMedBench: A Multi-Source Benchmark of Synthetic Medical Data Fidelity and Downstream Utility](/202608/15/2608.12805v1-comedbench-a-multi-source-benchmark-of-synthetic-medical-data-fidelity-and-downstream-utility)  
+   evidence：使用重新执行工具调用验证正确性的智能体评测基准，方法可迁移至医疗智能体
+3. [MARC v1: An Open-Source Multi-Agent Framework for Clinical AI Reasoning and Coordination](/202608/16/2608.13476v1-marc-v1-an-open-source-multi-agent-framework-for-clinical-ai-reasoning-and-coordination)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：面向EHR隐私的合成医学数据保真度与下游效用基准
-4. [MARC v1: An Open-Source Multi-Agent Framework for Clinical AI Reasoning and Coordination](/202608/15/2608.13476v1-marc-v1-an-open-source-multi-agent-framework-for-clinical-ai-reasoning-and-coordination)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：用于临床推理的开源多智能体框架，含评估智能体与可追踪输出
+   evidence：面向临床AI且内置评估能力的开源多代理框架
 
 
 <div class="dpr-home-promo-card">

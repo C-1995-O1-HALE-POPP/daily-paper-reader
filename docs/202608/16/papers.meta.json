@@ -1,0 +1,69 @@
+{
+  "label": "2026-08-16",
+  "date": "2026-08-16",
+  "generated_at": "2026-08-16T20:18:51",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202608/16/2608.12590v1-auditable-agentic-ai-for-evidence-grounded-thyroid-ultrasound-diagnosis-and-reporting",
+      "section": "deep",
+      "title_en": "Auditable agentic AI for evidence-grounded thyroid ultrasound diagnosis and reporting",
+      "authors": "Haifan Gong, Shiyu Chen, Bodong Wang, Yuqi Wang, Shijie Wang, Guoliang You, Xinyu Xiong, Haowei Wang, Mingzhi Mao, Dexing Kong, Qinghua Liu, Wei Lou, Fei Chen, Guanbin Li",
+      "date": "2026-08-12",
+      "pdf": "https://arxiv.org/pdf/2608.12590v1",
+      "score": "9.0",
+      "evidence": "医学智能体大规模评测，无EHR但为智能体AI",
+      "tldr": "甲状腺超声诊断需要病灶定位、测量、风险分层与报告生成协同完成，但现有AI系统多为孤立任务，缺乏可审计的临床审查支持。本文提出ThyroidXAgent，一个临床医生可交互的智能体系统，协调多种专用工具并输出可审计的病例级证据记录。基于包含约30万张图像和2.4万份报告的多中心数据集OpenThyroidDB训练，在28,458例测试中分割Dice达87.21%，良恶性分类AUROC为0.9466；证据驱动的报告生成优于多模态语言模型，并使医生诊断一致性从70.3%提升至86.2%，同时减少分割和报告时间。该工作验证了可审计、可纠正的智能体AI在甲状腺超声诊断中的价值。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Thyroid ultrasound diagnosis requires coordinated lesion localization, measurement, risk stratification and reporting, yet most AI systems address these tasks in isolation and provide limited support for clinical review. We present ThyroidXAgent, a clinician-interactive agentic AI system that coordinates specialized diagnostic tools and stores their outputs as an auditable case-level evidence record. The system was developed using OpenThyroidDB, a multicentre, multitask resource integrating approximately 0.3 million ultrasound images and 24,000 paired reports, and was evaluated on 28,458 non-overlapping test cases, including 8,721 cases from 35 centres in the private NHC-MISD-TUS cohort. Across heterogeneous datasets, ThyroidXAgent achieved a mean Dice score of 87.21 percent for nodule segmentation and a mean AUROC of 0.9466 for benign-malignant classification. The same workflow supported lymph-node metastasis prediction and follicular versus papillary thyroid carcinoma classification, with AUROCs of 0.864 and 0.805, respectively. For report generation, evidence-grounded assembly outperformed multimodal language-model baselines across three cohorts. ThyClinScore, a lesion-level clinical semantic metric introduced here, showed the strongest correlation with a location-aware language-model judge. ThyroidXAgent improved physician classification accuracy, increased report diagnostic consistency from 70.3 percent to 86.2 percent, and reduced segmentation and reporting time by 35.9 percent and 27.4 percent, respectively. These findings support auditable, clinician-correctable agentic AI for thyroid ultrasound diagnosis and reporting.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/16/2608.08605v1-forestbench-a-unified-graph-framework-for-evaluating-multi-agent-collaboration",
+      "section": "quick",
+      "title_en": "ForestBench: A Unified Graph Framework for Evaluating Multi-Agent Collaboration",
+      "authors": "Guo Chen, Ziwen Li, Reed Li, Yu Lu, Haibo Shi, Bingbing Xu, Junjie Huang",
+      "date": "2026-08-09",
+      "pdf": "https://arxiv.org/pdf/2608.08605v1",
+      "score": "6.0",
+      "evidence": "面向多智能体协作评估的通用框架，方法上直接可用于智能体基准评测，但不涉及医学/EHR",
+      "tldr": "多智能体系统（MAS）的异构执行轨迹缺乏统一评估基础，结果型基准丢弃协作过程，LLM评审则依赖额外推理且不稳定。本文提出通用评估框架，将原生MAS轨迹映射为统一协作图，并与查询特定的参考森林比较；参考森林记录多种已验证成功路径而非唯一最优流程。实例化为ForestBench，从7个公开数据集过滤844个需协作查询，为每查询预计算10个成功参考图，评估6个MAS框架，并做受控对照与扰动测试。构建后评分仅需毫秒级且无需LLM推理，为多样MAS轨迹提供可复用结构基准。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Multi-agent systems (MAS) built on Large Language Models (LLMs) are proliferating rapidly, but their heterogeneous execution traces provide no common basis for evaluation across methods. Outcome-only benchmarks discard collaborations, whereas LLM-as-Judge evaluation requires additional, model-dependent inference and can vary with the LLM and rubric. We introduce a generalizable evaluation framework that maps native MAS traces into a shared space of unified collaboration graphs, enabling different methods to be evaluated under the same representation, reference set, and metric panel. Candidate graphs are compared with a query-specific reference forest. Each forest is a benchmark-provided collection of verified-success graphs: it records diverse ways in which representative MAS methods can complete the task, rather than prescribing a unique optimal process. Instantiating the framework as ForestBench, we filter $844$ collaboration-necessary queries from seven public datasets, precompute ten successful target-conditioned reference graphs per query, and evaluate six representative MAS frameworks. Controlled backbone, reference-construction, and perturbation studies test the stability and scope of evaluation. Once the benchmark forests are built, ForestBench scores a trace in milliseconds without further LLM inference, providing a reusable structural basis for comparing diverse MAS collaboration traces.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/16/2608.12282v1-vakra-evaluating-multi-hop-reasoning-across-apis-and-retrieval-under-tool-use-policies",
+      "section": "quick",
+      "title_en": "VAKRA: Evaluating Multi-Hop Reasoning Across APIs and Retrieval Under Tool-Use Policies",
+      "authors": "Ankita Rajaram Naik, Anupama Murthi, Benjamin Elder, Siyu Huo, Raavi Gupta, Abhinav Jain, Praveen Venkateswaran, Abdulhamid Adebayo, Danish Contractor",
+      "date": "2026-08-12",
+      "pdf": "https://arxiv.org/pdf/2608.12282v1",
+      "score": "6.0",
+      "evidence": "使用重新执行工具调用验证正确性的智能体评测基准，方法可迁移至医疗智能体",
+      "tldr": "企业智能体需在真实场景中跨结构化API与文档进行多跳推理，但现有基准往往孤立评测。为此提出VAKRA，包含62领域8000+可执行API，设置API交互、多跳推理、策略约束三种递增难度任务，并以重执行工具调用来验证结果。实验发现最强模型单跳仅70.4%，组合式API降至50%左右，深度增加性能滑落超50%，在策略约束问题低至2.4%。错误集中于实体消歧与跨源接地，揭示语言中介推理是主要瓶颈，为多源工具使用评测提供标准化参照。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Agents deployed in enterprise settings must reason across structured APIs and document collections, yet existing benchmarks evaluate these capabilities in isolation. We introduce VAKRA (e\\textbf{V}aluating \\textbf{A}PI and \\textbf{K}nowledge \\textbf{R}etrieval \\textbf{A}gents), a benchmark of over $8{,}000$ executable APIs across $62$ domains with tasks spanning three settings of increasing difficulty: diverse API interaction styles, multi-hop reasoning over structured APIs, and multi-source reasoning with natural-language tool-use policy constraints. Correctness is verified by re-executing predicted tool calls against live APIs, accommodating multiple valid paths. Using a fixed ReAct harness to isolate model capabilities from agent architecture, we evaluate frontier and open-weight models and find that even the best model achieves only 70.4\\% on single-hop endpoint-style tasks and drops to 50--51\\% on compositional APIs; performance degrades by over 50\\% as reasoning depth increases, and policy-constrained questions expose severe failures (as low as 2.4\\% on unanswerable queries). Trace analysis shows failures concentrate at language-mediated reasoning - entity disambiguation, cross-source grounding, rather than tool invocation mechanics. Code is available https://github.com/IBM/VAKRA. Dataset is available https://huggingface.co/datasets/ibm-research/VAKRA",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/16/2608.13476v1-marc-v1-an-open-source-multi-agent-framework-for-clinical-ai-reasoning-and-coordination",
+      "section": "quick",
+      "title_en": "MARC v1: An Open-Source Multi-Agent Framework for Clinical AI Reasoning and Coordination",
+      "authors": "Saisha Shetty, Satvik Tripathi, Austin Lin, Colin Zhao, Theodore Kim, Don Enwerem, Jacinta Arnold, Shahriar Faghani, Tessa S Cook",
+      "date": "2026-08-13",
+      "pdf": "https://arxiv.org/pdf/2608.13476v1",
+      "score": "6.0",
+      "evidence": "面向临床AI且内置评估能力的开源多代理框架",
+      "tldr": "针对临床AI推理中单体LLM提示可解释性差、错误难以定位的问题，MARC开源框架采用确定性多智能体编排，协调提取、推理、答案生成与评估四个角色特化智能体，并引入Decomposer模块从自然语言描述自动生成任务提示，免去手动工程。该框架支持API和本地CPU部署，完全通过YAML配置且模型无关，提供显式上下文传递与可追溯的中间输出，实现阶段级失败归因。最终为无编程经验的临床领域专家提供了可解释、易用且开放的多智能体推理工具。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "We present Multi-Agent Reasoning and Coordination (MARC), an open-source framework that replaces monolithic LLM prompting with deterministic multi-agent orchestration for clinical reasoning. MARC coordinates role-specialized agents for extraction, reasoning, answer generation, and evaluation, with explicit context passing and traceable intermediate outputs, enabling stage-wise failure attribution. We additionally introduce a Decomposer module that generates task-specific agent prompts from a plain-language description, eliminating manual prompt engineering. The framework supports both API-based and local CPU-compatible deployments and is entirely configurable via YAML, without code modifications. MARC is designed to be model-agnostic, interpretable, and accessible to clinical domain experts without programming expertise. The full framework is available at https://github.com/Penn-RAIL/MARC-v1.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
