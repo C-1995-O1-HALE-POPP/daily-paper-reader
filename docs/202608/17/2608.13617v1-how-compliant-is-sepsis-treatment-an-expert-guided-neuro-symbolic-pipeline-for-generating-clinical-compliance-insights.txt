@@ -1,0 +1,792 @@
+Title: How Compliant is Sepsis Treatment? An Expert-Guided Neuro-symbolic Pipeline for Generating Clinical Compliance Insights
+
+URL Source: https://arxiv.org/pdf/2608.13617v1
+
+Published Time: Mon, 17 Aug 2026 00:04:12 GMT
+
+Number of Pages: 26
+
+Markdown Content:
+> Proceedings of Machine Learning Research 1:1–26, 2026 Conference on Neurosymbolic Learning and Reasoning
+
+## How Compliant is Sepsis Treatment? An Expert-Guided Neuro-symbolic Pipeline for Generating Clinical Compliance Insights 
+
+Himanshu Tripathi htripathi@crimson.ua.edu 
+
+Kaushik Roy kroy2@ua.edu 
+
+Subash Neupane sneupane4@ua.edu 
+
+Shahram Rahimi srahimi1@ua.edu 
+
+Department of Computer Science, The University of Alabama 
+
+Abstract 
+
+Verifying whether clinical care follows evidence-based protocols is a natural neuro-symbolic problem, yet the safety-critical setting defeats either paradigm alone. We present an expert-guided pipeline that constrains a large language model strictly to semantic normalization, mapping messy drug and microbiology strings onto a fixed clinical vocabulary, while a Sugeno fuzzy inference system reasons over the normalized events. The fuzzy layer encodes eight Surviving Sepsis Campaign bundle rules and replaces binary judgments with graded scores in [0 , 1]. Applied to 2,438 MIMIC-IV v3.1 sepsis episodes, it surfaces antibiotic timing as the most critical breakdown (mean 0.24, 13% within one hour), Hour-1 underperformance (mean 36.7%), a 51% elevated-lactate drop-off, and descriptive differences in ICU stay across compliance groups (3.8 versus 5.1 days). 
+
+Code: https://tinyurl.com/yy2zvpd9 
+
+Keywords: Neuro-symbolic, Fuzzy logic, Sepsis, Healthcare 
+
+1. Introduction Fuzzy 
+
+> Inference
+> System
+> LLM for
+> Semantic
+> Normalization
+> Domain
+> Expert
+> Consultant
+> Expert-Guided Neurosymbolic Architecture
+> Sepsis Specific
+> Patient Data
+> Insights for
+> Healthcare Professional
+
+Figure 1: The end-to-end workflow of the Expert-Guided Neurosymbolic pipeline, illustrating the transfor-mation of sepsis specific raw clinical data into healthcare insights via LLM semantic normalization, expert knowledge, and fuzzy logic. 
+
+Sepsis remains a leading cause of in-hospital mortality, and timely adherence to interna-tional, evidence-based clinical guideline such as Surviving Sepsis Campaign (SSC) bun-dle (SSC) is critical for patient survival. Large-scale Electronic Health dataset such as 
+
+M IM IC − IV (MM4) offer a significant opportunity to evaluate protocol compliance at scale across thousands of patients. However, clinical data in these records is deeply un-structured and inconsistent. Traditional rule-based systems fail on semantic variations like trade names and synonyms, while pure neural networks produce uninterpretable risk scores  
+
+> ©2026 H. Tripathi, K. Roy, S. Neupane & S. Rahimi. arXiv:2608.13617v1 [cs.AI] 12 Aug 2026 Tripathi Roy Neupane Rahimi
+
+that cannot guarantee adherence to safety protocols, leaving a critical gap in compliance assessment. To bridge this gap, we present an expert-guided neuro-symbolic pipeline (Fig-ure 1) where each component addresses a specific limitation of the existing paradigms. MedGemma acts as a semantic normalizer that safely resolves messy clinical text, and an expert-validated Fuzzy Inference System then evaluates the normalized data to produce graded compliance scores rather than brittle binary judgments. The system encodes eight SSC bundle rules spanning three clinical phases: immediate actions including blood cul-ture sequencing, antibiotic administration, and lactate measurement within the first hour, followed by hemodynamic resuscitation rules covering fluid administration and vasopressor initiation, and finally treatment response rules assessing Mean Arterial Pressure (MAP) recovery and lactate clearance. For the complete rule definitions, refer to the Appendix: Eight Rules From SSC. This work is guided by 4 Research Questions (RQ): 
+
+RQ1: Is a neuro-symbolic approach necessary where purely symbolic or neural systems fall short? (Answered in Regex vs MedGemma Validation) 
+
+RQ2: Can a hybrid classifier pipeline achieve reliable semantic normalization of clinical data? (Answered in Validation) 
+
+RQ3: Can a fuzzy inference system generate graded SSC compliance scores that provide actionable clinical insights aligns with real-world clinical decision-making patterns and re-flects subject matter expert (SME) perspectives on sepsis management? (Answered in Rule Compliance) 
+
+RQ4: What compliance patterns emerge across the sepsis cohort, and how do they correlate with patient outcomes? (Answered in ICU Outcomes) 
+
+2. Literature Survey 
+
+Sepsis remains a leading cause of ICU mortality, where timely adherence to evidence-based protocols is critical for patient survival (Evans et al., 2021). The Surviving Sepsis Campaign bundles represent the gold standard for reducing mortality (You et al., 2022), yet compli-ance continues to be suboptimal across healthcare settings (Damiani et al., 2015), making its assessment increasingly important (Gao et al., 2005). Electronic Health Records such as MIMIC-IV offer unprecedented opportunities for evaluating protocol adherence (Gupta et al., 2022), yet their inherent heterogeneity creates substantial challenges. Purely data-driven approaches such as Deep Learning achieve high predictive accuracy but operate as black boxes (Yang et al., 2024), lacking the interpretability required for high-stakes clini-cal decision-making (Horng et al., 2017). Conversely, traditional Rule-Based Systems offer transparency but are brittle when facing real-world clinical noise (Nelson et al., 2011), fail-ing on trade name variations such as Vancocin versus Vancomycin. A hybrid system robust to noisy data yet interpretable regarding safety rules is therefore necessary (Tripathi, 2023). NeSy has emerged as such a paradigm for healthcare (Bhuyan et al., 2024), combining neu-ral perception with symbolic reasoning to enforce logical constraints and domain knowledge (Alshahrani et al., 2017; Wu et al., 2023; DeLong et al., 2023). In sepsis management, neural models can process time-series vitals while symbolic modules verify SSC bundle compliance (Evans et al., 2021). However, most existing NeSy frameworks rely on LSTMs or RNNs (Pab´ on et al., 2022) that struggle with the semantic nuance of unstructured clinical text 
+
+> 2
+
+How Compliant is Sepsis Treatment? 
+
+(Chen, 2019), particularly negation, uncertainty, and assertion detection in free-text notes (Ji et al., 2024). Large language models address this semantic gap (Maity and Saikia, 2025; Wang et al., 2023) but introduce hallucination risk in clinical environments (Omar et al., 2025; Asgari et al., 2025), making autonomous LLM deployment unsafe for critical inter-ventions such as antibiotic administration. Hybrid architectures that constrain LLMs to semantic normalization while delegating decisions to symbolic engines (McInerney et al., 2023; Hasan et al., 2025) directly address this limitation. Fuzzy logic provides the comple-mentary mechanism for uncertainty-aware decision support (Arji et al., 2019), positioning the LLM as a semantic normalizer and the fuzzy engine as the safety-guaranteeing reasoner (the architectural pattern illustrated in Figure 2). IF drug ==      
+
+> "Vancomycin" OR
+> "Penicillin"
+> THEN...
+> Standard Symbolic systems,
+> such as rule based system
+> fail due to syntactic rigidity
+> (missing synonyms).
+> Sepsis Risk:
+> 0.52
+> Pure Neural networks lack
+> explicit adherence to safety
+> protocols
+> (Black Box problem).
+> LLM
+> Neuro
+> Antibiotic: True
+> Symbolic
+> Fuzzy Logic
+> MAP: 64
+> NeSy combines semantic normalization (LLM)
+> with interpretable safety boundaries (Fuzzy Logic).
+> 64 mmHg Zosyn
+> Fuzzy
+> Rules
+
+Figure 2: Comparison of sepsis detection paradigms handling complex inputs like ”Zosyn” and 64 mmHg blood pressure. Traditional symbolic systems fail from vocabulary brittleness , while pure neural networks fail as uninterpretable black boxes. The proposed Neuro-Symbolic approach succeeds by pairing LLM semantic normalization with deterministic fuzzy logic safety boundaries. 
+
+3. Pipeline Architecture 
+
+The Expert-Guided Neuro-Symbolic Pipeline (Figure 3) integrates semantic normalization, expert validation, and fuzzy reasoning into one workflow, following the hybrid approach in the Appendix: Problem Statement. We instantiate it on sepsis using M IM IC − IV , but the architecture is domain-general and transfers to any protocol expressible as fuzzy rules, given a domain expert to set the decision boundaries. The M IM IC − IV landscape is described in Appendix: Data Overview and the eight SSC rules in Appendix: Eight Rules From SSC. 
+
+3.1. Cohort Selection and Data Preparation 
+
+Sepsis episodes were identified from M IM IC − IV using ICD − 9 codes 038 .∗, 995 .91, 995 .92, 785 .52 and ICD − 10 codes A40, A41, R65 .20, R65 .21, yielding 17 , 926 patients across 22 , 363 hospitalizations and 17 , 152 ICU stays (Figure 3 (1)). Random sampling with seed 55 produced 2 , 000 patients and 2 , 438 sepsis episodes ( |S| = 2 ,438), some patients contributing multiple hospitalizations. The cohort exceeds the power-analysis minimums for Cohen’s Kappa ( n = 22, by 76 .9×), McNemar’s test ( n = 471, by 5 .2×), and fuzzy membership estimation ( n = 240, by 10 .2×). Each episode is restructured into seven 
+
+3Tripathi Roy Neupane Rahimi MIMIC-IV v3.1 RAW DATASET Total patients in MIMIC-IV: ~250,000+        
+
+> Total hospitalizations: ~500,000+
+> Coverage period: 2008-2022
+> SEPSIS COHORT EXTRACTION Unique sepsis patients (subject_id): 17,926
+> Unique sepsis hospitalizations (hadm_id): 22,363
+> Unique sepsis ICU stays (stay_id): 17,152
+> RANDOM SAMPLING Patients sampled: 2,000
+> Sepsis episodes (hadm_ids) in sample: 2,438 (some patients had multiple hospitalizations)
+
+Isolating Septic Patients &  Carving Dataset     
+
+> UNIQUE STRING EXTRACTION Unique drug strings: 1,691
+> Unique microbiology combos (specimen|organism): 650
+> REGEX CLASSIFICATION Drugs: antibiotic=141, vasopressor=29, iv_fluid=50, other=1,471
+> Micro: blood_cultures=106, pathogen=511, contaminant=48, no_growth=91
+
+Semantic Normalization             
+
+> MEDGEMMA CLASSIFICATION Drugs: antibiotic=158, vasopressor=11, iv_fluid=44, other=1,478
+> Micro: blood_cultures=134, pathogen=347, contaminant=237, no_growth=66
+> INTER-SYSTEM AGREEMENT Drug agreement: 94.26% (1,594/1,691)
+> Drug disagreements: 97
+> Gemma-only catches: 45
+> Regex-only catches: 52
+> Micro agreement: 60.62% (394/650)
+> Blood culture agreement: 95.7% (622/650)
+> EMBEDDING VALIDATION Ground truth (both agree): 1,594
+> Drugs validated (non-other): 213
+> Confirmed: 210
+> Flagged: 3 Confirmation rate: 98.59%
+
+Validation  DOMAIN EXPERT CONSULTATION    
+
+> 1. Gaussian membership functions recommended 2. Reclassified select contaminants as pathogens 3. Immunocompromised context affects pathogen classification 4. Non-IV antibiotic routes excluded from SSC bundle 5. Clinical rule priority ordering established
+> FUZZY INFERENCE SYSTEM 8 SSC bundle rules Input: normalized events from both systems
+> Output: per-episode compliance scores (0 to 1)
+> SME VALIDATION
+> Consulted domain experts to validate clinical decision boundaries and resolve edge cases
+
+123 456
+
+Figure 3: The neuro-symbolic pipeline normalizes clinical text using a dual regex and LLM approach. Fol-lowing embedding-based validation and domain expert refinement of decision boundaries, a Fuzzy Inference System generates graded compliance scores. 
+
+standardized files (medications, microbiology, labs, vitals, static profile), with timestamps preserved to the minute for precise alignment of interventions with protocol windows. 
+
+3.2. Semantic Normalization 
+
+Clinical text encodes the same drug as a trade name ( Zosyn , Rocephin ), generic name, abbreviation, or tall-man spelling, and the same specimen as “blood culture”, “BC”, or “blood cx”. The pipeline extracts unique strings once and classifies them centrally, giv-ing 1 , 691 unique drug strings and 650 microbiology combinations, then maps labels back across all episodes. A regex system with domain-informed exclusion rules (filtering topical formulations, flushes, and osmotic saline) produces 141 antibiotics, 29 vasopressors, and 50 IV fluids, while MedGemma-4b-it (4-bit quantized, local execution) under zero-shot struc-tured prompting produces 158 antibiotics, 11 vasopressors, and 44 IV fluids (Figure 3 (2)). Because the LLM is prompted zero-shot and cannot be trusted on its own for clinical label-ing, the regex system, which matches against documented drug information, verifies every classification rather than the LLM acting autonomously. The two are kept together because their errors are complementary: regex gives near-perfect precision on explicit matches but zero recall on synonyms, while MedGemma generalizes at the cost of hallucination risk. 
+
+4How Compliant is Sepsis Treatment? 
+
+3.3. Validation 
+
+The classifiers agree on 1 , 594 of 1 , 691 drug strings (94.26%) and 394 of 650 microbi-ology combinations (60.62%), with blood-culture detection at 95.7% (622/650). The 97 disagreements split into 45 Gemma-only and 52 regex-only catches. Cohen’s Kappa gives 
+
+κ = Po−Pe 
+
+> 1−Pe
+
+= 0 .65 ( Po = 0 .9426, Pe = 0 .8277), substantial on the Landis-Koch scale, and McNemar’s test gives χ2 = (45 −52) 2 
+
+> 45+52
+
+= 0 .505, p = 0 .088, failing to reject marginal homogene-ity, confirming the classifiers are complementary rather than redundant (confusion matrix in Appendix: Drug classification Confusion Matrix). To rule out shared error, embedding-based validation uses MedGemma’s embedding space as an independent reference (Figure 3 (3)): the 1,594 agreed classifications set per-category thresholds ( θantibiotic = 0 .3206, 
+
+θvasopressor = 0 .2263, θiv fluid = 0 .3075), against which all 213 non-other Gemma classifi-cations are tested, confirming 210 and flagging 3 ALL-CAPS tall-man tokenizer artifacts (Confirmation Rate = 210 /213 = 98 .59%). The 97 disagreements are adjudicated by em-bedding comparison against both claimed anchors, giving 49 regex wins and 48 Gemma wins (This answers RQ2; see Appendix: Research Question Summary). Only cases unre-solved after the embedding check were escalated as edge cases for clinical review. In total the regex system verifies 220 clinical drug strings (141 antibiotics, 29 vasopressors, 50 IV fluids) that a purely synonym-matching system would have missed on variant spellings, with MedGemma resolving the remaining lexical variation. The validated classifications, adjudi-cated disagreements, and expert-reviewed edge cases (Figure 3(4)) feed the fuzzy inference system. 
+
+3.4. Fuzzy Compliance Assessment 
+
+Binary scoring misrepresents clinical reality, since a patient treated at 62 minutes is not categorically different from one treated at 58. Following Domain Expert Consultation, the pipeline uses a Sugeno fuzzy inference system (Figure 3 (5)) over eight SSC rules in three phases (Figure 4). Half-Gaussian membership functions were chosen over triangular or trapezoidal shapes, on expert recommendation, because clinical benefit degrades gradually rather than collapsing at a boundary. Timing-based rules use a right-side half-Gaussian holding μ = 1 inside the window and decaying beyond it; value-based rules use a left-side variant decaying below target; Rule 4 uses a window variant penalizing both early and late repeat lactate. 
+
+μright (x; c, σ ) = 
+
+
+
+1 if x ≤ c
+
+exp 
+
+
+
+− (x − c)2
+
+2σ2
+
+
+
+if x > c 
+
+Phase 1 covers the Hour-1 bundle: Rule 1 is Boolean (cultures before antibiotics), and Rules 2 and 3 apply μright (∆ t; 60 , 30), so treatment at 90 minutes yields μ = 0 .61 and at 120 minutes μ = 0 .13, with Rule 3 (initial lactate) the highest priority and Rule 4 conditional on lactate ≥ 2.0 mmol/L. Phase 2 covers fluid volume (Rule 5) and vasopressor timing (Rule 6), both conditional on hypotension or severe hyperlactatemia. Phase 3 covers MAP recovery (Rule 7) and lactate clearance (Rule 8), conditional on prior intervention. Missing data is handled by excluding unevaluable conditional rules from the evaluable set 
+
+> 5
+
+Tripathi Roy Neupane Rahimi 50 25 0 25 50     
+
+> t1=tculture tabx (min)
+> 0.00 0.25 0.50 0.75 1.00
+> (x)
+> Culture before abx Culture after abx
+
+R1: Blood Culture Before Antibiotics            
+
+> tcx =tabx
+> 050 100 150 200 250
+> t2=tabx t0(min)
+> 0.00 0.25 0.50 0.75 1.00
+> (x)
+> = 30
+
+R2: Antibiotics Within 1 Hour            
+
+> c= 60 min
+> 050 100 150 200 250
+> t3=tlac 1t0(min)
+> 0.00 0.25 0.50 0.75 1.00
+> (x)
+> = 30
+> HIGHEST PRIORITY
+
+R3: Lactate Measurement Within 1 Hour            
+
+> c= 60 min
+> 0100 200 300 400
+> t4=tlac 2tlac 1(min)
+> 0.00 0.25 0.50 0.75 1.00
+> (x)
+> Too early
+> Optimal
+> Too late
+> CONDITIONAL
+> lac 12.0
+
+R4: Repeat Lactate (2 4 Hours)        
+
+> c1= 120
+> c2= 240
+> 0100 200 300 Time to fluid start (min) 010 20 30 40 Volume (mL/kg)
+> (ct,cv)
+> CONDITIONAL MAP<65 or lac 4
+
+R5: Fluid Resuscitation (30 mL/kg)          
+
+> 0.0 0.2 0.4 0.6 0.8 1.0
+> 5
+> 050 100 150 200 250
+> t6=tvaso tfluid _end (min)
+> 0.00 0.25 0.50 0.75 1.00
+> (x)
+> = 30
+> CONDITIONAL MAP<65 post-fluid
+
+R6: Vasopressors if Fluids Fail       
+
+> c= 60 min
+> 40 50 60 70 80 MAP post-vasopressor (mmHg) 0.00 0.25 0.50 0.75 1.00
+> (x)
+> = 5
+> CONDITIONAL vaso started
+
+R7: MAP Recovery 65 mmHg         
+
+> c= 65 mmHg
+> 20 10 010 20 30 Lactate clearance (\%) 0.00 0.25 0.50 0.75 1.00
+> (x)
+> = 5
+> Worsening
+> CONDITIONAL
+> lac 2exists
+
+R8: Lactate Clearance 10\%  
+
+> c= 10%
+> No improvement
+
+Figure 4: Membership functions for all eight SSC bundle rules. Timing-based interventions (Rules 1-3, 6) use Boolean or right-side half-Gaussian decay, while value-based targets (Rules 7-8) utilize left-side half-Gaussians. Rule 4 applies a window penalty, Rule 5 combines volume and time in a 2D contour, and purple badges mark conditional triggers. 
+
+Ri, while mandatory Rules 1 to 3 receive μ = 0 when absent. The per-episode score is a weighted Sugeno defuzzification Compliance( Si) = 
+
+P
+
+r∈R i Rr ·zr
+
+P
+
+r∈R i Rr , with the expert-set priority 
+
+R3 > R 2 > R 5 > R 6 > R 1 = R4 = R7 = R8 (see Appendix: Fuzzy Membership Function Parameter). Scores are aggregated across the cohort to surface population-level patterns. All experiments ran locally on a single NVIDIA RTX 5090. 
+
+4. Quantitative Findings with Expert Discussion 
+
+4.1. Regex vs MedGemma Validation 0 20 40 60 80 100  
+
+> Regex Compliance (%)
+> 020 40 60 80 100
+> MedGemma Compliance (%)
+> 80 diverge (3.3%) 53 with | |>5%
+
+Regex vs MedGemma Compliance Scores 
+
+> Episodes (n=2,438) Perfect agreement
+
+Figure 5: A scatter plot comparing Regex and MedGemma compliance scores, highlighting episodes with divergent classifications. 
+
+Figure 5 compares per-episode compliance scores produced by the regex and MedGemma clas-sifiers when used separately across all 2,438 episodes. Since both classifiers agree on 94.26% of drug classifications, and the fuzzy inference system is fully deterministic given its inputs, episodes where classifiers agree must produce identical compliance scores. This is confirmed in Figure 5, where the vast majority of the 2,438 episodes lie exactly on the perfect agreement di-agonal. Only 80 episodes (3.3%) diverge at all, and only 53 of those exhibit score differences ex-ceeding 5%, corresponding precisely to the ad-judicated disagreements where the two classi-fiers assigned different clinical categories to the same drug string. The regex system verified 220 clinical drug strings against documented drug information, while MedGemma resolved the remaining lexical variation that a purely synonym-matching system would have missed, and the fuzzy inference system then trans-
+
+6How Compliant is Sepsis Treatment? 
+
+formed these normalized inputs into graded compliance scores that a purely neural end-to-end model could not guarantee to align with SSC safety boundaries (This answers RQ1; see Appendix: Research Question Summary). 
+
+4.2. Rule Compliance 
+
+Figure 6 reveals a stark stratification across the eight bundle rules. Antibiotic timing (R2, μ = 0 .24) is the lowest-scoring rule under our operationalization, with only 13% of episodes meeting the uniform one-hour threshold used in this analysis (Appendix: Figure 12). This uniform threshold is a cohort-level operational simplification and does not stratify antibiotic timing by septic-shock status; R2 should therefore be interpreted specifically under this predefined one-hour operationalization. Domain expert discussion (Figure 3 (6)) offered an important clinical explanation: by the time a septic patient arrives in the ICU, clinicians typically already suspect sepsis, and antibiotics are frequently administered prior to formal ICU admission. This is corroborated by Appendix: Figure 12, where the observed timing distribution shows a substantial proportion of episodes receiving antibiotics before the sepsis onset timestamp recorded in MIMIC-IV, suggesting pre-ICU administration that the pipeline’s onset-anchored window penalizes. Blood culture sequencing (R1, μ = 0 .36) and lactate measurement (R3, μ = 0 .39) also fall below the 50% threshold, indicating systemic early-intervention failures. Conditional hemodynamic rules tell a different story: vasopressor initiation (R6, μ = 0 .73) and MAP recovery (R7, μ = 0 .97) appear near-acceptable. However, this perceived high performance likely constitutes a survivorship bias artifact , reflecting that once shock is recognized and fluids have failed in a patient who has survived long enough to reach this secondary phase of care, escalation to vasopressors is well executed, and should not be read as genuine compliance excellence. The overall compliance distribution (Figure 11) confirms this systemic underperformance, with a mean of 36.7% and median of 37.5% across all episodes, driven primarily by failures in the time-critical Hour-1 bundle components (This answers RQ3; see Appendix: Research Question Summary). 
+
+4.3. Clinical Cascade 0 500 1000 1500 2000 2500 3000 3500       
+
+> Number of Episodes
+> All Sepsis Episodes Blood Culture Obtained IV/IM Antibiotic Given Lactate Measured Lactate >= 2.0 (Elevated) Repeat Lactate Drawn Fluids Indicated (R5) Fluids Administered Vasopressor Started Lactate Cleared >=10%
+> 2,438 (100%) 1,881 (77%) drop 23%
+> 1,668 (68%) drop 11%
+> 1,843 (76%) 912 (37%) drop 51%
+> 826 (34%) drop 9%
+> 1,052 (43%) 888 (36%) drop 16%
+> 904 (37%) 489 (20%) drop 46%
+> Compliance Cascade: Where Do Patients Fall Off the Bundle?
+> >=60% of cohort 30-60% of cohort <30% of cohort
+
+Figure 7: A compliance cascade illustrating patient drop-offs across the sequential sepsis management bundle steps. 
+
+Figure 7 (the data points here could fall under the first-hour bundle or later in response to follow-up treatment) traces sequential patient drop-offs across the SSC bundle. The most alarming find-ing, flagged by domain experts, is the 51% drop at elevated lactate ( ≥
+
+2.0 mmol/L): only 912 (37%) episodes recorded this threshold, indicating ei-ther unmeasured or undocumented lac-tate both constituting bundle failures. Appendix: Figure 14 corroborates this, showing antibiotic timing (R2, 31.6%) and lactate measurement (R3, 24.4%) as the most data-sparse Hour-1 interventions. Whether these reflect care never delivered or care never 
+
+7Tripathi Roy Neupane Rahimi 0.0 0.5 1.0 
+
+> Mean Fuzzy Score
+> R1: Culture R2: Abx R3: Lactate R4: Re-Lac R5: Fluids R6: Vaso R7: MAP R8: Clearance
+> 0.36 0.24 0.39 0.40 0.41 0.73 0.97 0.67
+
+Average Compliance by Rule     
+
+> 50% threshold 80% target Perfect (1.0) R1: Culture R2: Abx R3: Lactate R4: Re-Lac R5: Fluids R6: Vaso R7: MAP R8: Clearance
+> 0.2 0.4 0.6 0.8 1.0
+> 0.36 0.24 0.39 0.40 0.41 0.73 0.97 0.67
+> Bundle Compliance Profile
+> Critical (<0.3) Needs Improv. (0.3-0.6) Acceptable (>0.6)
+
+Figure 6: Bar and radar charts displaying average fuzzy compliance scores across all eight bundle rules. 
+
+recorded, the pipeline conservatively treats both as non-compliance, consistent with SSC guidelines. Downstream conditional rules reflect this sparsity, with fluid resuscitation (R5) activating in only 43% of episodes and lactate clearance in 34% (Appendix: Figure 13). 
+
+4.4. ICU Outcomes 
+
+Figure 8 reinforces the critical importance of early intervention, showing that episodes where antibiotics are administered within 30–60 minutes of onset achieve a median ICU stay of just 2.95 days. This duration rises sharply to 4.74 days when administration is delayed beyond six hours. This primarily demonstrates that low-compliance episodes result in a median stay of 5.1 days, whereas the high-compliance group averages only 3.8 days. The broader clinical implications of these findings are detailed in the appendix. Appendix: Figure 16 confirms the consistent association between higher bundle compliance and shorter ICU stays ( r = −0.026, n = 2 , 362), with a trend showing a reduction of 0.006 days per 1% gain in compliance. Furthermore, Appendix: Figure 17 localizes the clinical burden to specific metrics: episodes where the worst-performing rule is antibiotic timing (R2, median 7.0 days) or lactate measurement (R3, median 5.0 days) carry the highest ICU costs. Collectively, these data establish early Hour-1 intervention failures as the primary driver of prolonged critical care (This answers RQ4; see Appendix: Research Question Summary). 
+
+4.5. Operational Insights 
+
+Median compliance rises from 0 .00 in the Hour-1 bundle to 0 .67 in resuscitation and 1 .00 in treatment response, confirming that immediate interventions constitute the dominant failure mode across all three clinical phases (Appendix: Figure 15). Of the 2 ,000 patients, 14% experienced recurrent sepsis, yet median compliance improves only marginally from 0.362 on the first episode to 0 .375 on the second (+1 .3%), suggesting that neither clini-
+
+8How Compliant is Sepsis Treatment? Low (Bot. 33%) Medium (Mid. 33%) High (Top 33%) 0510 15 20 25 30   
+
+> ICU LOS (Days)
+> Med:5.1d Mean:6.9d n=788 Med:4.1d Mean:6.0d n=787 Med:3.8d Mean:6.4d n=787
+> Does Higher Compliance Reduce ICU Stay?
+> 30-60 min 60-120 min 120-180 min 180-360 min 360+ min
+> Time to First Antibiotic
+> 050 100 150 200 250
+> Number of Episodes
+> 28 61 96 273 256
+> Golden Hour: Antibiotic Delay vs ICU Stay
+> Episode count Median ICU LOS
+> 3.00 3.25 3.50 3.75 4.00 4.25 4.50 4.75 Median ICU LOS (Days)
+> 2.95d 2.99d 4.34d 4.66d 4.74d
+
+Figure 8: Descriptive comparison of ICU length of stay across overall bundle-compliance groups and antibiotic-timing categories. 
+
+cal learning nor institutional feedback loops produce meaningful compliance gains across repeated admissions for the same patient (Appendix: Figure 18). 
+
+5. Conclusion 
+
+In this paper, we presented an Expert-Guided Neuro-Symbolic Pipeline that demonstrates combining semantic normalization, fuzzy reasoning, and domain expertise produces inter-pretable and graded compliance assessments for sepsis care. Our Results and Comparison revealed systemic Hour-1 compliance failures alongside descriptive differences in ICU length of stay across compliance and antibiotic-timing groups. This pipeline is not limited to sep-sis and can be adapted to other clinical protocols such as stroke management or cardiac care, provided the underlying guidelines (fuzzy rules) are well-defined and a domain expert is available to set the boundaries. Several limitations point to future work. Mortality was out-side the scope of this study, which deliberately measured how closely the sepsis bundle was followed rather than its survival impact; the high conditional-rule scores we report reflect a survivorship-bias artifact rather than outcome modeling, and linking graded compliance to mortality is a natural next step. The onset-anchored timing window penalizes antibiotics delivered before ICU admission, so future versions should acknowledge that sepsis care often begins earlier and credit early pre-ICU antibiotics accordingly. The fuzzy boundaries are currently fixed from expert input alone; a future data-plus-expert calibration step, opti-mizing the membership parameters against outcome data while preserving the expert-set rule priorities, would improve robustness and reduce manual tuning. Finally, the pipeline depends on subject matter experts to establish clinically meaningful decision boundaries, which may limit scalability in resource-constrained settings. As generative models continue to mature in medical reasoning, they may progressively reduce this dependency, enabling more autonomous and widely deployable clinical decision support across diverse healthcare domains. 
+
+9Tripathi Roy Neupane Rahimi 
+
+References 
+
+Mimic-iv v3.1. URL https://physionet.org/content/mimiciv/3.1/ .Surviving sepsis campaign 2021 adult guidelines — sccm. URL https: //sccm.org/survivingsepsiscampaign/guidelines-and-resources/ surviving-sepsis-campaign-adult-guidelines .Mona Alshahrani, Mohammad Asif Khan, Omar Maddouri, Akira R Kinjo, N´ uria Queralt-Rosinach, and Robert Hoehndorf. Neuro-symbolic representation learning on biological knowledge graphs. Bioinformatics , 33(17):2723–2730, 2017. Goli Arji, Hossein Ahmadi, Mehrbakhsh Nilashi, Tarik A Rashid, Omed Hassan Ahmed, Nahla Aljojo, and Azida Zainol. Fuzzy logic approach for infectious disease diagnosis: A methodical evaluation, literature and classification. Biocybernetics and biomedical engi-neering , 39(4):937–955, 2019. Elham Asgari, Nina Monta˜ na-Brown, Magda Dubois, Saleh Khalil, Jasmine Balloch, Joshua Au Yeung, and Dominic Pimenta. A framework to assess clinical safety and hallucination rates of llms for medical text summarisation. NPJ digital medicine , 8(1): 274, 2025. Bikram Pratim Bhuyan, Amar Ramdane-Cherif, Ravi Tomar, and TP Singh. Neuro-symbolic artificial intelligence: a survey. Neural Computing and Applications , 36(21): 12809–12844, 2024. Long Chen. Attention-based deep learning system for negation and assertion detection in clinical notes. International Journal of Artificial Intelligence and Applications (IJAIA) ,10(1), 2019. Elisa Damiani, Abele Donati, Giulia Serafini, Laura Rinaldi, Erica Adrario, Paolo Pelaia, Stefano Busani, and Massimo Girardis. Effect of performance improvement programs on compliance with sepsis bundles and mortality: a systematic review and meta-analysis of observational studies. PloS one , 10(5):e0125827, 2015. Lauren Nicole DeLong, Ramon Fern´ andez Mir, Zonglin Ji, Fiona Niamh Coulter Smith, and Jacques D Fleuriot. Neurosymbolic ai for reasoning on biomedical knowledge graphs. 
+
+arXiv preprint arXiv:2307.08411 , 2023. Laura Evans, Andrew Rhodes, Waleed Alhazzani, Massimo Antonelli, Craig M Cooper-smith, Craig French, Fl´ avia R Machado, Lauralyn Mcintyre, Marlies Ostermann, Hallie C Prescott, et al. Surviving sepsis campaign: international guidelines for management of sepsis and septic shock 2021. Critical care medicine , 49(11):e1063–e1143, 2021. Fang Gao, Teresa Melody, Darren F Daniels, Simon Giles, and Samantha Fox. The impact of compliance with 6-hour and 24-hour sepsis bundles on hospital mortality in patients with severe sepsis: a prospective observational study. Critical care , 9(6):R764, 2005. 
+
+> 10 How Compliant is Sepsis Treatment?
+
+Mehak Gupta, Brennan Gallamoza, Nicolas Cutrona, Pranjal Dhakal, Raphael Poulain, and Rahmatollah Beheshti. An extensive data processing pipeline for mimic-iv. In Machine learning for health , pages 311–325. PMLR, 2022. Md Mehedi Hasan, Rafid Mostafiz, Md Abir Hossain, and Bikash Kumar Paul. Clin-llm: A safety-constrained hybrid framework for clinical diagnosis and treatment generation. 
+
+arXiv preprint arXiv:2510.22609 , 2025. Steven Horng, David A Sontag, Yoni Halpern, Yacine Jernite, Nathan I Shapiro, and Larry A Nathanson. Creating an automated trigger for sepsis clinical decision support at emergency department triage using machine learning. PloS one , 12(4):e0174708, 2017. Yuelyu Ji, Zeshui Yu, and Yanshan Wang. Assertion detection in clinical natural language processing using large language models. In 2024 IEEE 12th International Conference on Healthcare Informatics (ICHI) , pages 242–247. IEEE, 2024. Alan E Jones, Nathan I Shapiro, Stephen Trzeciak, Ryan C Arnold, Heather A Claremont, Jeffrey A Kline, Emergency Medicine Shock Research Network (EMShockNet) Investiga-tors, et al. Lactate clearance vs central venous oxygen saturation as goals of early sepsis therapy: a randomized clinical trial. Jama , 303(8):739–746, 2010. Subhankar Maity and Manob Jyoti Saikia. Large language models in healthcare and medical applications: a review. Bioengineering , 12(6):631, 2025. Denis McInerney, Geoffrey Young, Jan-Willem van de Meent, and Byron C Wallace. Chill: Zero-shot custom interpretable feature extraction from clinical notes with large language models. In Findings of the Association for Computational Linguistics: EMNLP 2023 ,pages 8477–8494, 2023. Stuart J Nelson, Kelly Zeng, John Kilbourne, Tammy Powell, and Robin Moore. Normalized names for clinical drugs: Rxnorm at 6 years. Journal of the American Medical Informatics Association , 18(4):441–448, 2011. Mahmud Omar, Vera Sorin, Jeremy D Collins, David Reich, Robert Freeman, Nicholas Gavin, Alexander Charney, Lisa Stump, Nicola Luigi Bragazzi, Girish N Nadkarni, et al. Multi-model assurance analysis showing large language models are highly vulnerable to adversarial hallucination attacks during clinical decision support. Communications Medicine , 5(1):330, 2025. Oswaldo Solarte Pab´ on, Orlando Montenegro, Maria Torrente, Alejandro Rodr´ ıguez Gonz´ alez, Mariano Provencio, and Ernestina Menasalvas. Negation and uncertainty detection in clinical texts written in spanish: a deep learning-based approach. PeerJ Computer Science , 8:e913, 2022. Himanshu Tripathi. Experimental approach toward training and analysing siamese deep neural network for sentence with no repeated expressions. In 2023 14th International Con-ference on Computing Communication and Networking Technologies (ICCCNT) , pages 1–5. IEEE, 2023. 
+
+> 11 Tripathi Roy Neupane Rahimi
+
+Guangyu Wang, Guoxing Yang, Zongxin Du, Longjun Fan, and Xiaohu Li. Clinicalgpt: large language models finetuned with diverse medical data and comprehensive evaluation. 
+
+arXiv preprint arXiv:2306.09968 , 2023. Chaoyi Wu, Xiaoman Zhang, Yanfeng Wang, Ya Zhang, and Weidi Xie. K-diag: Knowledge-enhanced disease diagnosis in radiographic imaging. arXiv preprint arXiv:2302.11557 ,2023. Meicheng Yang, Hui Chen, Wenhan Hu, Massimo Mischi, Caifeng Shan, Jianqing Li, Xi Long, and Chengyu Liu. Development and validation of an interpretable conformal predictor to predict sepsis mortality risk: retrospective cohort study. Journal of Medical Internet Research , 26:e50369, 2024. Je Sung You, Yoo Seok Park, Sung Phil Chung, Hye Sun Lee, Soyoung Jeon, Won Young Kim, Tae Gun Shin, You Hwan Jo, Gu Hyun Kang, Sung Hyuk Choi, et al. Relationship between time of emergency department admission and adherence to the surviving sepsis campaign bundle in patients with septic shock. Critical Care , 26(1):43, 2022. 
+
+Appendix A. Data Availability and Ethical Statement 
+
+Data Availability and Ethical Statement This study uses MIMIC-IV v3.1, a de-identified critical care database sourced from the electronic health records of Beth Israel Deaconess Medical Center (BIDMC), spanning 2008–2022 and covering approximately 250,000 patients across 500,000 hospitalizations. MIMIC-IV is publicly available through PhysioNet (MM4) but constitutes credentialed-access data: access requires completion of a recognized human subjects research training program and execution of a PhysioNet Credentialed Health Data Use Agreement (DUA), which prohibits re-identification of individuals, redistribution of the data, and non-research use. The Institutional Review Board (IRB) at BIDMC granted a waiver of informed consent and approved the sharing of MIMIC-IV as a research resource; no additional IRB approval was required for this study. All patient identifiers were removed in accordance with the HIPAA Safe Harbor de-identification standard prior to public release. The raw MIMIC-IV data, derived cohorts, and extracted episode files used in this pipeline cannot be shared directly by the authors and must be independently obtained through PhysioNet. 
+
+Appendix B. Eight Rules From SSC 
+
+The following are the eight rules from the SSC (SSC) that govern the compliance assessment in this pipeline. 1. [R1] Blood Cultures Before Antibiotics: Preserve pathogen identification before sterilizing the blood. 
+
+“Obtain blood cultures before administering antibiotics.” 
+
+2. [R2] Broad-Spectrum Antibiotics: Initiate empirical antibiotic coverage without delay. 
+
+> 12 How Compliant is Sepsis Treatment?
+
+“Administer broad-spectrum antibiotics.” 
+
+3. [R3] Measure Lactate: Assess tissue hypoperfusion severity immediately upon sepsis onset. 
+
+“Measure lactate level.” 
+
+4. [R4] Re-measure Lactate if High: Confirm persistent hypoperfusion when initial lactate is elevated. 
+
+“Remeasure lactate if initial lactate is elevated ( > 2 mmol/L).” 
+
+5. [R5] IV Fluid Resuscitation: Restore circulating volume in hemodynamically compromised patients. 
+
+“Begin rapid administration of 30 mL/kg crystalloid for hypotension or lac-tate ≥ 4 mmol/L.” 
+
+6. [R6] Vasopressors: Support perfusion pressure when fluids alone are insufficient. 
+
+“Apply vasopressors if hypotensive during or after fluid resuscitation to maintain a mean arterial pressure (MAP) ≥ 65 mm Hg.” 
+
+7. [R7] MAP Target: Target minimum perfusion pressure to prevent organ damage. 
+
+“For adults with septic shock on vasopressors, we recommend an initial tar-get mean arterial pressure (MAP) of 65 mm Hg over higher MAP targets.” 
+
+8. [R8] Lactate Clearance: Verify adequate metabolic response to resuscitation efforts. 
+
+“For adults with sepsis or septic shock, we suggest guiding resuscitation to decrease serum lactate in patients with elevated lactate levels over not using serum lactate.” 
+
+Note: The 10% lactate Rule 8 clearance threshold does not originate from the SSC bundle directly but is derived from Jones et al. (2010). 
+
+> 13 Tripathi Roy Neupane Rahimi
+
+Appendix C. Notation and Symbols for Problem Statement 
+
+Table 1: Notation and Symbols used to formulate the Problem Statement 
+
+Symbol Definition 
+
+v Documented drug variant in clinical records 
+
+V Predefined synonym set in rule-based system 
+
+L Large Language Model for semantic normalization input m Clinical prompt supplied to L
+
+Sk Sepsis episode k
+
+P P(E) denotes probability of event E
+
+D Clinical decision boundary (expert-validated threshold) 
+
+F Fuzzy Inference System encoding SSC logic 
+
+Appendix D. Problem Statement 
+
+The Surviving Sepsis Campaign guidelines specify critical actions within narrow time win-dows: antibiotic administration, fluid resuscitation, lactate measurement, and blood cul-tures. Systematic compliance evaluation across large cohorts remains infeasible because clinical documentation encodes drug names as trade names, generic names, and abbrevia-tions interchangeably, while microbiology results intermix suspected organisms, confirmed pathogens, and contamination events, creating systematic barriers to assessment. Tradi-tional rule-based systems fail under this complexity. When a clinician documents Zosyn , a rule searching for piperacillin-tazobactam fails due to syntactic rigidity, where v denotes the documented variant and V the predefined synonym set: Recognize( v, V ) = 
+
+(
+
+1 if v ∈ V
+
+0 if v / ∈ V
+
+Large Language Models L resolve this variability but introduce unquantified hallucination risk. The probability P, that the neural decisions will result in verifiable grounding in documented facts is undefined: Determinism( L(input m)) = P(L(input m) grounded in verifiable facts | input m) → undefined where input m denotes the clinical prompt supplied to L. No existing pipeline produces graded compliance assessment by combining semantic normalization with transparent sym-bolic reasoning. We propose an Expert-Guided Neuro-Symbolic Pipeline that constrains 
+
+L strictly to semantic normalization, preventing autonomous decision-making. A Fuzzy Inference System F then applies expert-validated decision boundaries D to episode Sk to produce graded compliance scores: Compliance( Sk, D) = F(normalized( Sk), D)These scores generate actionable insights for healthcare professionals across 2 ,438 sepsis episodes from the M IM IC − IV database. 
+
+> 14 How Compliant is Sepsis Treatment?
+
+Appendix E. Data Overview 
+
+The pipeline operates on the M IM IC − IV v 3.1 (MM4) database, a comprehensive critical care dataset spanning 2008 − 2022 containing electronic health records for approximately 250 , 000 patients across 500 , 000+ hospitalizations. M IM IC − IV is organized into two relational modules. M IM IC − IV /hosp , which maintains hospital-level administrative and clinical data, and M IM IC − IV /icu , which contains intensive care unit-specific measure-ments and events. As depicted in Figure 9, these modules share three primary linking identifiers enabling integration across granularities: 1. subject id (unique patient), 2. 
+
+hadm id (unique hospitalization), and 3. stay id (unique ICU stay). The M IM IC −
+
+IV /hosp module comprises 22 tables organized hierarchically. Patient-level tables include 
+
+patients and admissions . Clinical tables indexed by hadm id include diagnoses icd 
+
+and procedures icd for coded diagnoses and procedures, labevents for laboratory mea-surements, microbiologyevents for culture results, and prescriptions and pharmacy 
+
+for medication records. The emar (electronic medication administration record) and poe 
+
+(provider order entry) tables capture medication administration events at granular times-tamps. Reference tables ( d icd diagnoses , d icd procedures , d hcpcs , d labitems ) pro-vide standardized mappings. The M IM IC − IV /icu module contains 9 tables keyed by 
+
+stay id . The icustays table anchors ICU admission records. Measurement tables in-clude chartevents (bedside charted observations), inputevents (medications and fluids administered), outputevents (fluid excretion), procedureevents (procedures performed), and datetimeevents (timestamped clinical events). The ingredientevents table provides medication component granularity. Reference table d items maps itemid codes to clinical concepts. For the Surviving Sepsis Campaign compliance assessment, the pipeline specifi-cally extracts data from seven critical tables. From M IM IC − IV /hosp , prescriptions 
+
+and emar capture medication administration timing and names, microbiologyevents pro-vides culture specimen types and interpreted organisms, and labevents contains lactate and other laboratory measurements. From M IM IC − IV /icu , inputevents records fluids and vasopressors, chartevents captures vital signs including blood pressure, and icustays 
+
+anchors the ICU timeline. This selection reflects SSC bundle requirements: 1. Antibiotics (medications), 2. Vasopressors, 3. IV fluids (inputevents), 4. Blood cultures (microbiolo-gyevents), 5. Lactate measurement (labevents), 6. Hemodynamic targets (chartevents vital signs). The relational structure presents both opportunities and challenges. Integration across subject id , hadm id , and stay id enables linking patient demographics with clini-cal events across hospitalizations. However, unstructured text appears in multiple locations: medication names in prescriptions vary as trade names, generic names, and abbrevia-tions. This heterogeneity necessitates the semantic normalization component described in Section 3.2. 
+
+Appendix F. Domain Expert Consultation 
+
+Subject Matter Experts (SME) (e.g. Clinician) were integrated in the middle of the pipeline design, not retrospectively. Domain clinicians reviewed classifier outputs with the entire pipeline and provided four critical inputs: 
+
+> 15
+
+Tripathi Roy Neupane Rahimi patients hcpcsevents drgcodes admissions 
+
+services transfers labevents microbiologyevents prescriptions pharmacy 
+
+emar poe omr d_icd_diagnoses d_icd_procedures 
+
+d_hcpcs d_labitems emar_detail poe_detail 
+
+subject_id 
+
+provider 
+
+diagnoses_icd procedures_icd 
+
+hadm_id hadm_id hadm_id admit_provider_id subject_id icd_code,  icd_version icd_code,  icd_version hcpcs_cd itemid emar_id pharmacy_id pharmacy_id poe_id 
+
+procedureevents datetimeevents chartevents icustays ingredientevents inputevents 
+
+d_items caregiver outputevents 
+
+stay_id stay_id itemid caregiver_id 
+
+# MIMIC IV/hosp MIMIC IV/icu 
+
+Figure 9: MIMIC-IV Database Structure and Relational Organization. The database comprises two mod-ules: MIMIC-IV/hosp maintaining hospital-level records indexed by subject id , hadm id , and pharmacy id ,and MIMIC-IV/icu (9 tables, bottom portion) maintaining ICU-specific records indexed by stay id . Pri-mary linking identifiers ( subject id , hadm id , stay id ) enable integration across administrative, clinical, and intensive care data layers. The pipeline extracts data from emar , prescriptions , microbiologyevents ,
+
+labevents , inputevents , chartevents , and icustays .
+
+16 How Compliant is Sepsis Treatment? 
+
+1. Recommending Gaussian membership functions (reflecting gradual transitions rather than sharp boundaries in clinical adherence) 2. Reclassifying organisms based on immunocompromised status (e.g., Coagulase-negative Staphylococcus is pathogen in immunocompromised patients but contaminant in im-munocompetent) 3. Mandating route-specific exclusion rules (only IV/IM antibiotics within time windows count toward SSC compliance, excluding topical and oral prophylaxis) 4. Establishing rule priority ordering (Rule 3: Lactate > Rule 2: Antibiotics > Rule 5: Fluids > Rule 6: Vasopressors > Remaining rules). These decisions shaped both normalization rules and fuzzy parameters. With expert-validated parameters established, the normalized events are evaluated through a fuzzy inference system that applies these clinical boundaries to produce graded compliance as-sessments. 
+
+Appendix G. Fuzzy Membership Function Parameter 
+
+Table 2: Membership function parameters for the eight SSC bundle compliance rules. Boundaries ( c) and decay rates ( σ) were established through domain expert consultation. Rules marked † are conditional and activate only when the clinical trigger is met.                                                        
+
+> Rule Target MF Type Parameters Rule Weight
+> Phase 1: Hour-1 Bundle
+> R1 Culture before abx Boolean step μ=1 if tcx <t abx , else 0 0.5 R2 Abx ≤1 hr Right HG c=60 min, σ=30 0.9 R3 Lactate ≤1 hr Right HG c=60 min, σ=30 1.0
+> R4 †Re-lactate 2–4 hr Window HG c1=120, c2=240 min 0.5 lac 1≥2.0σe=30, σl=60
+> Phase 2: Hemodynamic Resuscitation
+> R5 †Fluids 30 mL/kg Product ct=180 min, σt=60 0.8 MAP <65 or lac ≥4μ5t×μ5vcv=30 mL/kg, σv=10 R6 †Vasopressors Right HG c=60 min, σ=30 0.7 MAP <65 post-fluid
+> Phase 3: Treatment Response
+> R7 †MAP ≥65 mmHg Left HG c=65 mmHg, σ=5 0.5 R8 †Clearance ≥10% Left HG c=10%, σ=5 0.5
+
+17 Tripathi Roy Neupane Rahimi 
+
+Table 3: Sugeno fuzzy system properties and missing data handling. Priority weights encode the SME-established ordering Rule 3>Rule 2>Rule 5>Rule 6>Rule 1=Rule 4=Rule 7=Rule 8.
+
+Property Value 
+
+Inference type Sugeno first-order Defuzzification P 
+
+> r∈Ri
+
+Rr zr / P 
+
+> r∈Ri
+
+Rr
+
+Conditional untriggered μ = 1 .0, excluded from Ri
+
+Missing mandatory (R1–R3) μ = 0 Culture only, no abx (R1) μ = 0 .5No weight available (R5) μ5v = 0 .5 penalty Missing trigger data Excluded from Ri
+
+Classification Consensus: agree ∪ (embed ≥ θ) ∪ SME 
+
+Appendix H. Drug classification Confusion Matrix Antibiotic Vasopressor IV Fluid Other 
+
+MedGemma Classification 
+
+> Antibiotic Vasopressor IV Fluid Other
+> Regex Classification
+
+126 0 0 15 0 7 0 22 0 0 35 15 32 4 9 1,426  
+
+> Po= 1594/1691 = 0.9426 = 0.65 (substantial)
+> Agreement = 94.26%
+
+Figure 10: Drug classification confusion matrix between regex-based and MedGemma classifiers across 1,691 unique drug strings. Diagonal cells (orange borders) represent agreement ( Po = 1 ,594 /1,691 = 0 .9426). Off-diagonal entries reveal complementary error profiles: regex misses 32 antibiotics, 4 vasopressors, and 9 IV fluids that MedGemma captures, while MedGemma misses 15 antibiotics, 22 vasopressors, and 15 IV fluids that regex captures. Cohen’s κ = 0 .65 (substantial agreement). All off-diagonal cells within the clinical-category submatrix (antibiotic, vasopressor, IV fluid) are zero, confirming that disagreements occur exclusively between a clinical category and other , never across clinical categories. 
+
+18 How Compliant is Sepsis Treatment? 
+
+Appendix I. Additional Graphs 0 20 40 60 80 100 
+
+> Compliance Score (%)
+> 050 100 150 200 250 300 350
+> Number of Episodes n = 2,438 episodes
+
+Overall SSC Bundle Compliance Distribution 
+
+> Mean = 36.7% Median = 37.5%
+
+Figure 11: Overall distribution of fuzzy compliance scores across the cohort of 2,438 sepsis episodes. The histogram is color-coded by compliance quartile, revealing a heavy concentration of episodes in the lower performance tiers. The mean overall compliance score is 36.7% (median 37.5%), highlighting significant systemic challenges in executing the complete set of Surviving Sepsis Campaign (SSC) bundle guidelines in clinical practice. 0 100 200 300 400 500 600 700 
+
+> Time from Sepsis Onset (min)
+> 0.0000 0.0005 0.0010 0.0015 0.0020 0.0025 0.0030
+> Density 13% within 1 hour
+
+Antibiotic Administration Timing vs SSC Target  
+
+> Observed timing 1-hour SSC target Compliance (x)
+> 0.0 0.2 0.4 0.6 0.8 1.0 Compliance  (x)
+
+Figure 12: Distribution of time from sepsis onset to initial antibiotic administration, overlaid with the fuzzy compliance membership function μ(x) (orange line). A severe operational bottleneck is evident, as only 13% of the observed episodes met the strict 1-hour SSC target (red dashed line). 
+
+19 Tripathi Roy Neupane Rahimi R4: Re-Lac R5: Fluids R6: Vaso R7: MAP R8: Clearance 0500 1000 1500 2000 2500 
+
+> Number of Episodes
+> 912 (37%)
+> 1526
+> 1052 (43%)
+> 1386
+> 776 (32%)
+> 1662
+> 686 (28%)
+> 1752
+> 826 (34%)
+> 1612
+
+Conditional Rule Activation Rates 
+
+> Triggered Not Applicable
+
+Figure 13: Proportion of episodes triggering the conditional rules (R4 through R8) of the SSC bundle. This stacked chart visualizes clinical acuity; fluid resuscitation (R5) was the most frequently activated conditional intervention (43% of episodes), reflecting a high prevalence of shock or severe hyperlactatemia in the cohort. R1: Culture R2: Abx R3: Lactate R4: Re-Lac R5: Fluids R6: Vaso R7: MAP R8: Clearance 0510 15 20 25 30  
+
+> Episodes with Missing Data (%)
+> 8.8% 31.6% 24.4% 3.5% 6.7% 3.7% 0.2% 0.0%
+
+Missing Data Prevalence by Rule 
+
+Figure 14: Prevalence of missing clinical documentation across the eight SSC bundle components. Data sparsity is most severe during the critical early stages of care, specifically regarding the exact timing of antibiotic administration (R2, 31.6%) and initial lactate measurements (R3, 24.4%). 
+
+20 How Compliant is Sepsis Treatment? Phase 1: Hour-1 Bundle Phase 2: Resuscitation Phase 3: Response 0.0 0.2 0.4 0.6 0.8 1.0 
+
+> Fuzzy Compliance Score
+> 0.00 0.67 1.00
+
+Compliance Degrades Across Clinical Phases 
+
+Figure 15: Box plots illustrating the distribution of fuzzy compliance scores categorized by clinical care phase: Phase 1 (Hour-1 Bundle), Phase 2 (Resuscitation), and Phase 3 (Response). The data demonstrates a significant increase in median compliance from Phase 1 (0.00) to Phase 3 (1.00). This high variance highlights the operational difficulty of executing rapid, immediate interventions in the initial acute phase versus achieving compliance in downstream resuscitation and response metrics. 0 20 40 60 80 100 
+
+> Compliance Score (%)
+> 0510 15 20 25 30
+> ICU LOS (Days) r = -0.026 n = 2,362
+
+ICU Length of Stay vs Bundle Compliance 
+
+> Trend: -0.006 days per 1% compliance
+
+Figure 16: This scatter plot evaluates the correlation between overall fuzzy compliance scores and Intensive Care Unit Length of Stay (ICU Length of Stay (LOS)). The orange trend line demonstrates that higher bundle compliance leads to a reduction in ICU time . Specifically, the analysis shows a trend of -0.006 days of ICU stay saved for every 1% increase in compliance , based on a correlation of r = −0.026 across n = 2 , 362 episodes. 
+
+21 Tripathi Roy Neupane Rahimi 1 2 3 4 5 6+ Number of Sepsis Episodes 0250 500 750 1000 1250 1500 1750 Number of Patients 
+
+1716 (86%) 207 (10%) 50 (2%) 8(0%) 7(0%) 12 (1%) 
+
+N = 2,000 patients 2,438 episodes 284 recurrent (14%) 
+
+Episodes Per Patient 
+
+1st episode 2nd episode 3rd+ episode 
+
+0.0 0.2 0.4 0.6 0.8 1.0 Compliance Score 
+
+> Med:0.362 Mean:0.350 n=284 Med:0.375 Mean:0.354 n=284 Med:0.375 Mean:0.356 n=154
+
++1.3% 
+
+Does Recurrence Improve Compliance? 
+
+Figure 18: The left panel illustrates the distribution of sepsis episodes per patient across the study cohort ( N = 2 , 000 patients, 2,438 total episodes). While the majority of patients (86%) experienced a single episode, 14% presented with recurrent sepsis. The right panel evaluates whether clinical compliance improves in subsequent episodes for recurrent patients. A marginal improvement in median compliance is observed, increasing from 0.362 in the first episode to 0.375 in the second and third+ episodes, representing a +1.3% gain in median performance between the first two clinical encounters. R1: Culture R2: Abx R3: Lactate R4: Re-Lac R5: Fluids R6: Vaso R8: Clearance   
+
+> Worst Rule Per Episode
+> 0510 15 20 25 30
+> ICU LOS (Days)
+> Med:4.1d n=1180 Med:4.7d n=997 Med:5.0d n=86 Med:3.0d n=31 Med:2.9d n=45 Med:2.2d n=12 Med:2.5d n=10
+
+ICU Length of Stay by Worst-Performing Rule 
+
+Figure 17: Violin plots displaying ICU Length of Stay distributions, grouped by the specific bundle rule that yielded the lowest compliance score per episode. Failures in early interventions such as delayed antibiotics (R2, median 7.0 days) and delayed initial lactate (R3, median 5.0 days) are strongly associated with prolonged ICU stays. 
+
+Appendix J. Comparison Analysis 
+
+22 How Compliant is Sepsis Treatment? 
+
+Table 4: Comparison of SSC Bundle Compliance Gap Papers 
+
+Parameter Gao et al. (2005) Damiani et al. (2015) You et al. (2022) Our Work Type of Study 
+
+Prospective ob-servational study Systematic review & meta-analysis Retrospective ob-servational cohort SME guided computational pipeline 
+
+SSC Bun-dle Gaps Identified 
+
+Non-compliance with 6-hr and 24-hr bundles linked to higher hospital mortality Suboptimal com-pliance across healthcare set-tings despite performance improvement programs Bundle adherence varies signifi-cantly by ED admission time (off-hours worse) Hour-1 bundle mean compliance of only 36.7%; antibiotic timing (R2) worst at 0.24 mean fuzzy score 
+
+Compliance Measurement Method 
+
+Binary — com-pliant vs. non-compliant per bundle window Binary — pooled compliance rates across 50+ stud-ies Binary —adhered/not-adhered per bundle element Graded fuzzy scores (0–1) per each of 8 SSC rules via Sugeno FIS 
+
+Granularity of Gap Anal-ysis 
+
+Bundle-level (6-hr vs. 24-hr) Program-level across institu-tions Admission-time-level (day vs. night shift) Per-rule, per-episode, per-phase (Hour-1, Resuscitation, Response) across 2,438 episodes 
+
+Automated at Scale 
+
+Manual prospec-tive data collec-tion Manual aggrega-tion of existing studies Manual retro-spective review Partially auto-mated on (need to have SME) 
+
+Handles Un-structured EHR Text 
+
+Not addressed Not addressed Not addressed MedGemma resolves trade names, abbre-viations, and microbiology ambiguity 
+
+Key Bundle Gap Finding 
+
+Full 6-hr compli-ance reduces mor-tality significantly Compliance remains subop-timal even with improvement programs Off-hours ED ad-mission leads to worse bundle ad-herence 51% drop-off at elevated lactate threshold; an-tibiotic timing & lactate measure-ment are primary failure points 
+
+Links Com-pliance to Patient Out-comes 
+
+Hospital mortal-ity Mortality reduc-tion rates Shock outcomes by admission time ICU LOS — low compliance yields median 5.1 days vs. high compli-ance 3.8 days Continued on next page... 23 Tripathi Roy Neupane Rahimi 
+
+Table 4 continued from previous page Parameter Gao et al. (2005) Damiani et al. (2015) You et al. (2022) Our Work Per-Patient Actionable Insights 
+
+Population-level only Aggregated across studies Cohort-level only Per-episode scores enabling individual and population-level quality improve-ment 
+
+Domain Ex-pert Valida-tion 
+
+None None None SME consultation mid-pipeline for boundary setting, rule priority or-dering, and edge case resolution 24 How Compliant is Sepsis Treatment? 
+
+Appendix K. Combined Results 
+
+Table 5: Comprehensive Results from the Expert-Guided Neuro-Symbolic Pipeline for Sep-sis Compliance Assessment. Data derived from 2,438 sepsis episodes across 2,000 patients from MIMIC-IV v3.1. 
+
+Metric Value Metric Value 
+
+STUDY COHORT MISSING DATA 
+
+Total Sepsis Patients 2,000 R2: Antibiotic Timing 31.6% Total Sepsis Episodes 2,438 R3: Lactate Timing 24.4% Recurrent Sepsis (14%) 284 R1: Blood Culture 8.8% Unique Drug Strings 1,691 R5: Fluids 6.7% 
+
+NORMALIZATION CONDITIONAL ACTIVATION 
+
+Drug Class. Agreement 94.26% R4: Repeat Lactate 912 (37%) Cohen’s Kappa ( κ) 0.65 R5: Fluid Resusc. 1,052 (43%) Embedding Val. Rate 98.59% R6: Vasopressors 776 (32%) Agreed Antibiotics 126 R7: MAP Recovery 686 (28%) Agreed Vasopressors 7 R8: Lac. Clearance 826 (34%) 
+
+COMPLIANCE RULE ( μ) ICU OUTCOMES 
+
+R1: Blood Culture 0.36 Low Compliance LOS 5.1 days R2: Antibiotics 0.24 Med. Compliance LOS 4.1 days R3: Lactate 0.39 High Compliance LOS 3.8 days R4: Repeat Lactate 0.40 Compliance–LOS r −0.026 R5: Fluid Resusc. 0.41 Trend (Days/1% Comp.) −0.006 R6: Vasopressors 0.73 Sample Size ( n) 2,362 
+
+TIMING & OUTCOMES WORST-RULE IMPACT 
+
+Meet 1-Hr Target 13% R2 (Antibiotic) LOS 7.0 days 30–60 min Median LOS 2.95 d R3 (Lactate) LOS 5.0 days 120–180 min Median LOS 4.34 d R1 (Blood Cult.) LOS 4.1 days 360+ min Median LOS 4.74 d R5 (Fluids) LOS 2.9 days 
+
+CLINICAL CASCADE PHASE PERFORMANCE ( μ)
+
+Blood Culture Obtained 77% Phase 1 (Hour-1) 0.00 IV/IM Antibiotic Given 68% Phase 2 (Resuscitation) 0.67 Lactate Measured 76% Phase 3 (Response) 1.00 Fluids Administered 36% RECURRENT SEPSIS 
+
+Vasopressor Started 37% 1st → 2nd μ Imp. +1.3% 
+
+CASCADE DROP-OFFS EPISODE COMPLIANCE ( μ)
+
+BC → Antibiotic ↓23% 1st Episode 0.362 Antibiotic → Lactate ↓11% 2nd Episode 0.375 Lac. → Elev. Lac. ↓51% 3rd+ Episodes 0.375 
+
+Appendix L. Research Question Summary 
+
+1. [RQ1] Is a neuro-symbolic approach necessary where purely symbolic or neural systems fall short? 
+
+The regex system verified 220 clinical drug strings against documented drug information, while MedGemma resolved the remaining lexical variation that a purely synonym-matching system would have missed; the fuzzy inference system then transformed these normalized in-25 Tripathi Roy Neupane Rahimi 
+
+puts into graded compliance scores that a purely neural end-to-end model could not guarantee to align with SSC safety boundaries. The dual-path compliance comparison (Figure 5) con-firms that 80 episodes (3.3%) produce divergent scores when classifiers operate independently, with 53 exhibiting differences exceeding 5%, demonstrating that neither symbolic nor neural components alone produce reliable compliance assessment across all episodes. 2. [RQ2] Can a hybrid classifier pipeline achieve reliable semantic normalization of clinical data? 
+
+The hybrid pipeline achieves 94.26% drug agreement, κ = 0 .65 substantial agreement, and 98.59% embedding confirmation rate, demonstrating reliable semantic normalization of un-structured M IM IC − IV clinical data. 3. [RQ3] Can a fuzzy inference system generate graded SSC compliance scores that provide actionable clinical insights aligns with real-world clinical decision-making patterns and reflects subject matter expert (SME) perspectives on sepsis man-agement? 
+
+The Sugeno fuzzy inference system reveals stark stratification across eight bundle rules, with antibiotic timing (R2, μ = 0.24) as the most critical compliance failure and MAP recovery (R7, μ = 0.97) as near-acceptable. The domain expert validated these findings by explaining that pre-ICU antibiotic administration accounts for low R2 scores, while high conditional-rule performance reflects survivorship bias rather than genuine compliance excellence. The graded scoring enabled nuanced phase-level analysis showing median compliance rising from 0.00 in the Hour-1 bundle to 1.00 in treatment response, insights that binary compliance systems could not surface. 4. [RQ4] What compliance patterns emerge across the sepsis cohort, and how do they correlate with patient outcomes? 
+
+The compliance cascade reveals a 51% patient drop-off at the elevated lactate threshold, with antibiotic timing and lactate measurement as the most data-sparse Hour-1 interventions. Episodes with higher overall bundle compliance achieve median ICU stays of 3.8 days compared to 5.1 days for low-compliance episodes. The antibiotic timing dose-response relationship shows median ICU stays rising from 2.95 days at 30–60 minutes to 4.74 days beyond six hours, and worst-rule analysis localizes the highest ICU burden to antibiotic timing (R2, median 7.0 days) and lactate measurement (R3, median 5.0 days), establishing Hour-1 intervention failures as the primary driver of prolonged critical care. 26

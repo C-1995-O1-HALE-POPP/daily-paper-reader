@@ -1,0 +1,176 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-17T19:24:34.770251+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 3,
+    "quick_skim_target": 11,
+    "quick_selected": 3
+  },
+  "deep_dive": [
+    {
+      "id": "2608.14157v1",
+      "source": "arxiv",
+      "title": "Removing Temporal Note Redundancy Improves Multimodal Reinforcement Learning for Medicine",
+      "abstract": "Mechanical ventilation is a critical life-support intervention, requiring dynamic adjustments to ventilator settings as a patient's condition evolves. While reinforcement learning (RL) offers a promising framework for optimizing these sequential decisions, standard approaches rely primarily on structured electronic health record (EHR) data, missing crucial clinical context recorded in free-text notes. Integrating longitudinal clinical notes into RL state spaces is challenging because notes are heavily inflated by temporal redundancy, such as copy-forward text, templating, and repetitive documentation, which dilutes time-local updates and degrades state representation quality. To address this, we propose a redundancy-aware multimodal state representation framework that explicitly removes duplicated note text over time before policy learning. We evaluate two computationally efficient temporal decomposition strategies for removing duplicated note text: (1) an embedding-space decomposition using singular value decomposition on local history subspaces, and (2) an interpretable sentence-level diff operation that filters out previously documented sentences before text encoding. Using real-world ICU data, we demonstrate that state representations constructed by stripping temporal note redundancy significantly outperform both structured-only and raw-note baselines across multiple off-policy evaluation methods (Model-Based Rollouts, Fitted Q-Evaluation, Weighted Importance Sampling, and Weighted Doubly Robust Evaluation). Our findings show that explicitly isolating new clinical information from repeated note text yields higher-quality state representations and directly improves RL performance for clinical decision support.",
+      "authors": [
+        "Chenran Weng",
+        "Joo Seung Lee",
+        "Malini Mahendra",
+        "Anil Aswani"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-08-14T10:11:03+00:00",
+      "link": "https://arxiv.org/pdf/2608.14157v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "Multimodal RL agent for medicine uses structured EHR data and free-text notes, direct match to medical agent using electronic health records",
+      "llm_evidence_cn": "面向医学的多模态强化学习智能体使用结构化EHR数据和自由文本病历，直接匹配使用电子健康记录的医疗智能体",
+      "llm_evidence": "面向医学的多模态强化学习智能体使用结构化EHR数据和自由文本病历，直接匹配使用电子健康记录的医疗智能体",
+      "canonical_evidence": "面向医学的多模态强化学习智能体使用结构化EHR数据和自由文本病历，直接匹配使用电子健康记录的医疗智能体",
+      "llm_tldr_en": "Proposes a redundancy-aware multimodal RL method that removes temporal note redundancy to better integrate longitudinal free-text notes with structured EHR data for optimizing mechanical ventilation decisions.",
+      "llm_tldr_cn": "机械通气等重症干预需要随病情动态调整设置，强化学习虽有潜力但标准方法多依赖结构化EHR数据，忽略自由文本中的关键临床信息。该文提出冗余感知的多模态RL方法，通过去除拷贝转发、模板化等时序冗余，将纵向病历文本与结构化数据联合建模。实验表明该策略改善了状态表示质量与RL决策性能。该方法显著提升了利用临床文本的医学智能体能力，与基于EHR的医疗智能体评估主题密切相关。",
+      "llm_tldr": "机械通气等重症干预需要随病情动态调整设置，强化学习虽有潜力但标准方法多依赖结构化EHR数据，忽略自由文本中的关键临床信息。该文提出冗余感知的多模态RL方法，通过去除拷贝转发、模板化等时序冗余，将纵向病历文本与结构化数据联合建模。实验表明该策略改善了状态表示质量与RL决策性能。该方法显著提升了利用临床文本的医学智能体能力，与基于EHR的医疗智能体评估主题密切相关。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.12805v1",
+      "source": "arxiv",
+      "title": "CoMedBench: A Multi-Source Benchmark of Synthetic Medical Data Fidelity and Downstream Utility",
+      "abstract": "Access to clinical data is essential for developing reliable healthcare machine learning systems, but direct use of electronic health records is constrained by privacy regulation, institutional review, data-use agreements, and the risk of re-identification. Synthetic data promises a practical alternative: it can preserve useful statistical and clinical structure while reducing exposure of sensitive patient records. Prior studies often evaluate a single generator, one dataset, or a narrow downstream task, making it difficult to know when synthetic data can support model development and when it fails to preserve task-critical signal. We introduce CoMedBench, a reproducible benchmark that evaluates a family of generators under a common clinical-validity framework and one shared training and evaluation engine, spanning static tabular and temporal downstream tasks on established critical-care datasets. In total the benchmark spans 37 dataset-task pairs across two modalities consists of 20 static tabular and 17 temporal ICU time-series-drawn from seven public data sources: three intensive-care databases (MIMIC-III, MIMIC-IV, and eICU) together with the UCI Machine Learning Repository, the CDC BRFSS diabetes cohort (2015), NHANES (1999-2014), and the pycox survival datasets (GBSG and METABRIC). The benchmark evaluates both statistical fidelity and task utility by comparing models trained and tested across real and synthetic data. In these settings, synthetic training data preserves most of the downstream signal: on tabular tasks the reference generator CoMed-CTGAN retains a mean AUROC utility (the synthetic-to-real performance ratio) of 90.6%, rising to 97.3% for the strongest generator, CoMed-TVAE. Temporal ICU tasks are harder and more generator-sensitive: CoMed-CTGAN retains 81.6% (AUROC) and only 64.0% under the imbalance-sensitive AUPRC, whereas CoMed-TVAE still retains ~95% (AUROC).",
+      "authors": [
+        "Akanta Das",
+        "Al Amin Farhad",
+        "Mrinmoy Sarkar Anto",
+        "David Rehkopf",
+        "Ayin Vala",
+        "Tanmoy Sarkar Pias"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG"
+      ],
+      "published": "2026-08-13T04:24:52+00:00",
+      "link": "https://arxiv.org/pdf/2608.12805v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark of synthetic EHR data fidelity and downstream utility for healthcare machine learning",
+      "llm_evidence_cn": "面向医疗机器学习的数据保真度与下游效用的综合合成数据基准",
+      "llm_evidence": "面向医疗机器学习的数据保真度与下游效用的综合合成数据基准",
+      "canonical_evidence": "面向医疗机器学习的数据保真度与下游效用的综合合成数据基准",
+      "llm_tldr_en": "CoMedBench is a reproducible multi-source benchmark that evaluates synthetic medical (EHR-derived) data generators on fidelity and downstream utility, helping determine when synthetic data can support model development.",
+      "llm_tldr_cn": "论文指出直接使用电子病历受隐私和监管限制，合成数据是重要替代方案，但已有评测往往只测单一生成器或单一任务。作者提出CoMedBench，一个可复现的多源基准，对多种生成器的数据保真度和下游效用进行系统比较。该基准能帮助判断合成数据在什么条件下可用于模型开发。这为基于EHR的医疗智能体研发提供了可靠的数据评测基础。",
+      "llm_tldr": "论文指出直接使用电子病历受隐私和监管限制，合成数据是重要替代方案，但已有评测往往只测单一生成器或单一任务。作者提出CoMedBench，一个可复现的多源基准，对多种生成器的数据保真度和下游效用进行系统比较。该基准能帮助判断合成数据在什么条件下可用于模型开发。这为基于EHR的医疗智能体研发提供了可靠的数据评测基础。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "electronic health records for medical agent",
+      "matched_requirement_id": "req-3",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.13617v1",
+      "source": "arxiv",
+      "title": "How Compliant is Sepsis Treatment? An Expert-Guided Neuro-symbolic Pipeline for Generating Clinical Compliance Insights",
+      "abstract": "Verifying whether clinical care follows evidence-based protocols is a natural neuro-symbolic problem, yet the safety-critical setting defeats either paradigm alone. We present an expert-guided pipeline that constrains a large language model strictly to semantic normalization, mapping messy drug and microbiology strings onto a fixed clinical vocabulary, while a Sugeno fuzzy inference system reasons over the normalized events. The fuzzy layer encodes eight Surviving Sepsis Campaign bundle rules and replaces binary judgments with graded scores in [0,1]. Applied to 2,438 MIMIC-IV v3.1 sepsis episodes, it surfaces antibiotic timing as the most critical breakdown (mean 0.24, 13% within one hour), Hour-1 underperformance (mean 36.7%), a 51% elevated-lactate drop-off, and descriptive differences in ICU stay across compliance groups (3.8 versus 5.1 days).",
+      "authors": [
+        "Himanshu Tripathi",
+        "Kaushik Roy",
+        "Subash Neupane",
+        "Shahram Rahimi"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.SC"
+      ],
+      "published": "2026-08-12T20:41:12+00:00",
+      "link": "https://arxiv.org/pdf/2608.13617v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "EHR-based expert-guided neuro-symbolic pipeline for grading clinical protocol compliance on MIMIC-IV",
+      "llm_evidence_cn": "基于EHR的专家引导神经符号流程，在MIMIC-IV上对临床方案依从性进行评分",
+      "llm_evidence": "基于EHR的专家引导神经符号流程，在MIMIC-IV上对临床方案依从性进行评分",
+      "canonical_evidence": "基于EHR的专家引导神经符号流程，在MIMIC-IV上对临床方案依从性进行评分",
+      "llm_tldr_en": "An expert-guided pipeline uses an LLM only for semantic normalization and a Sugeno fuzzy system to score Surviving Sepsis Campaign bundle compliance on MIMIC-IV, revealing antibiotic timing as the biggest gap.",
+      "llm_tldr_cn": "论文将脓毒症治疗依从性验证视为神经符号问题，提出专家引导流水线：LLM只负责将药物和微生物字符串映射到固定临床词汇，Sugeno模糊系统编码八条SSC集束规则并用0到1分数做梯度评估。在2438例MIMIC-IV脓毒症事件中，抗生素时机被识别为最关键的缺口。这为基于EHR的临床决策评估提供了一种可解释的自动方法。",
+      "llm_tldr": "论文将脓毒症治疗依从性验证视为神经符号问题，提出专家引导流水线：LLM只负责将药物和微生物字符串映射到固定临床词汇，Sugeno模糊系统编码八条SSC集束规则并用0到1分数做梯度评估。在2438例MIMIC-IV脓毒症事件中，抗生素时机被识别为最关键的缺口。这为基于EHR的临床决策评估提供了一种可解释的自动方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.13786v1",
+      "source": "arxiv",
+      "title": "Do AI chatbots find what experts would? Effects of model, user role, and sample size on study retrieval for medical questions",
+      "abstract": "Large language model (LLM) chatbots are increasingly used to answer clinical questions with citations to relevant clinical studies. Prior research has largely focused on citation fabrication, leaving a gap in evaluating the quality of retrieved studies and the factors driving their selection. In this study, we evaluated three general-purpose LLM chatbots: Claude Sonnet 5, Gemini 3.1 Pro, and ChatGPT GPT-5.5. We prompted the models with clinical questions adapted from 20 review questions in Issues 6 and 7 of the 2026 Cochrane Database of Systematic Reviews, simulating patient, clinician, and evidence-synthesis researcher roles. Each chatbot was queried under each user role with four independent repetitions, yielding 720 responses. Each chatbot was asked to support its answers with primary clinical citations, which we benchmarked against the included and excluded study sets of the Cochrane reviews. On average, a chatbot response retrieved 39.2% $\\pm$ 29.8% of Cochrane included studies, while citing 5.0% $\\pm$ 9.4% of excluded studies. Recall of Cochrane included studies varied significantly by model and user role. ChatGPT achieved higher recall than Claude or Gemini (63.1% $\\pm$ 29.5% vs. 37.0% $\\pm$ 23.8% vs. 17.3% $\\pm$ 13.1%; $p=2.0\\times10^{-5}$). The researcher role yielded higher recall than the clinician or patient roles (42.8% $\\pm$ 30.8% vs. 38.6% $\\pm$ 28.9% vs. 36.1% $\\pm$ 29.3%; $p=2.0\\times10^{-5}$). Controlling for publication year, citations per year, and open-access status, sample size was the only independently significant predictor of retrieval (odds ratio 1.80 per 1-unit increase in log sample size, 95% CI 1.37-2.36, $p=2.34\\times10^{-5}$). These findings suggest that while LLM chatbots can retrieve some studies identified by expert reviewers, their performance varies by model and user role, and they exhibit a bias toward clinical trials with larger sample sizes.",
+      "authors": [
+        "Qingfang Liu",
+        "Qiao Jin",
+        "Joe D. Menke",
+        "Thorsten Kahnt",
+        "Zhiyong Lu"
+      ],
+      "primary_category": "cs.IR",
+      "categories": [
+        "cs.IR",
+        "cs.AI",
+        "cs.CL"
+      ],
+      "published": "2026-08-13T21:38:01+00:00",
+      "link": "https://arxiv.org/pdf/2608.13786v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Systematic benchmarking of LLM chatbots as medical agents on clinical study retrieval",
+      "llm_evidence_cn": "系统评测作为医学智能体的LLM聊天机器人在临床研究检索中的表现",
+      "llm_evidence": "系统评测作为医学智能体的LLM聊天机器人在临床研究检索中的表现",
+      "canonical_evidence": "系统评测作为医学智能体的LLM聊天机器人在临床研究检索中的表现",
+      "llm_tldr_en": "This study evaluates three LLM chatbots on study retrieval for Cochrane clinical questions under different user roles, finding that model, role, and sample size affect retrieval quality.",
+      "llm_tldr_cn": "大型语言模型聊天机器人被越来越多用于回答临床问题并附上引文，但已有研究过于关注引文伪造，对检索研究质量及其影响因素研究不足。作者从Cochrane系统评价中选取临床问题，模拟患者、临床医生和证据综合研究者三种角色，评估Claude Sonnet 5、Gemini 3.1 Pro和ChatGPT GPT-5.5的检索表现。结果提示模型、用户角色和样本量都会影响检索到的研究质量，在临床证据检索场景下LLM仍存在可靠性差异。",
+      "llm_tldr": "大型语言模型聊天机器人被越来越多用于回答临床问题并附上引文，但已有研究过于关注引文伪造，对检索研究质量及其影响因素研究不足。作者从Cochrane系统评价中选取临床问题，模拟患者、临床医生和证据综合研究者三种角色，评估Claude Sonnet 5、Gemini 3.1 Pro和ChatGPT GPT-5.5的检索表现。结果提示模型、用户角色和样本量都会影响检索到的研究质量，在临床证据检索场景下LLM仍存在可靠性差异。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

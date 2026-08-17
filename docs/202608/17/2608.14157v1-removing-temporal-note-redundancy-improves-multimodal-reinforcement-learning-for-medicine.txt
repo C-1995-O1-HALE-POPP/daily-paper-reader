@@ -1,0 +1,553 @@
+Title: Removing Temporal Note Redundancy Improves Multimodal Reinforcement Learning for Medicine
+
+URL Source: https://arxiv.org/pdf/2608.14157v1
+
+Published Time: Mon, 17 Aug 2026 00:40:45 GMT
+
+Number of Pages: 9
+
+Markdown Content:
+# Removing Temporal Note Redundancy Improves Multimodal Reinforcement Learning for Medicine 
+
+## Chenran Weng 1, Joo Seung Lee 1, Malini Mahendra 2, Anil Aswani 1∗
+
+> 1
+
+University of California, Berkeley Berkeley, CA, USA 
+
+> 2
+
+University of California, San Francisco San Francisco, CA, USA chenrann@berkeley.edu, jooseung_lee@berkeley.edu, malini.mahendra@ucsf.edu, aaswani@berkeley.edu 
+
+Abstract 
+
+Mechanical ventilation is a critical life-support intervention, requiring dynamic adjustments to ventilator settings as a pa-tient’s condition evolves. While reinforcement learning (RL) offers a promising framework for optimizing these sequential decisions, standard approaches rely primarily on structured electronic health record (EHR) data, missing crucial clinical context recorded in free-text notes. Integrating longitudinal clinical notes into RL state spaces is challenging because notes are heavily inflated by temporal redundancy, such as copy-forward text, templating, and repetitive documentation, which dilutes time-local updates and degrades state represen-tation quality. To address this, we propose a redundancy-aware multimodal state representation framework that explicitly re-moves duplicated note text over time before policy learning. We evaluate two computationally efficient temporal decom-position strategies for removing duplicated note text: (1) an embedding-space decomposition using singular value decom-position on local history subspaces, and (2) an interpretable sentence-level diff operation that filters out previously docu-mented sentences before text encoding. Using real-world ICU data, we demonstrate that state representations constructed by stripping temporal note redundancy significantly outperform both structured-only and raw-note baselines across multiple off-policy evaluation methods (Model-Based Rollouts, Fitted Q-Evaluation, Weighted Importance Sampling, and Weighted Doubly Robust Evaluation). Our findings show that explic-itly isolating new clinical information from repeated note text yields higher-quality state representations and directly im-proves RL performance for clinical decision support. 
+
+## Introduction 
+
+Mechanical ventilation is an intervention in intensive care for patients unable to maintain adequate respiratory function. By delivering controlled air and oxygen, it assists or replaces spontaneous breathing. Effective management requires clini-cians to continuously adjust ventilator settings as patient con-ditions evolve, while inappropriate settings can cause com-plications like ventilator-induced lung injury, diaphragm dys-function, pneumonia, and oxygen toxicity (Pham, Brochard, and Slutsky 2017). These risks make mechanical ventilation an important sequential decision-making problem. Offline reinforcement learning provides a natural frame-work for learning time-varying treatment strategies from 
+
+> ∗
+
+Corresponding author. 
+
+retrospective ICU trajectories. Unlike supervised learning, which primarily imitates clinician actions, RL aims to opti-mize long-term outcomes from sequential states, actions, and rewards. Prior studies have applied RL to mechanical venti-lation using ICU data (Peine et al. 2021; Kondrup et al. 2023; Lee, Mahendra, and Aswani 2025; den Hengst et al. 2024). However, these approaches mainly define patient states using structured EHR variables, which may not fully capture the clinical context considered during ventilator decisions. Clinical notes provide a natural complementary source of such context because they contain clinician assessments, treatment plans, and descriptions of patient status. However, using longitudinal notes directly is challenging because clin-ical documentation is often highly redundant over time due to templating, repeated documentation, copy-paste, and copy-forward practices. In a study of approximately 2.3 million inpatient notes, Vawdrey et al. found that 42% of inpatient notes used copy-paste and 19% of inpatient note content was copied (Vawdrey et al. 2022). For offline RL, this creates a state representation problem. A raw note embedding may mix persistent historical content, repeated text, and newly in-troduced clinical updates, making decision-relevant changes harder to identify. Although modern language representation methods like large language models can provide a potential approach for summarizing or removing redundant information from clin-ical notes, applying them repeatedly to longitudinal note histories can be computationally and financially expensive due to the large number of patients and decision times in ICU trajectories. This motivates the need for a more effi-cient approach that can identify temporal redundancy while preserving clinically meaningful information for sequential decision-making. To address this challenge, we make the following contri-butions in this paper: 1. We introduce two computationally efficient note decom-position methods, one in embedding space and one at the sentence level, to separate history-related content from newly introduced information without relying on expen-sive large language model processing. These are our pro-posed methods for removing temporal note redundancy in a computationally efficient way. 2. We formulate a redundancy-aware multimodal state con-struction framework for offline RL in mechanical ventila-arXiv:2608.14157v1 [cs.AI] 14 Aug 2026 tion. 3. We evaluate the resulting state representations on MIMIC-III mechanical ventilation trajectories and show that they improve estimated policy value over structured-only and raw-note multimodal baselines across multiple off-policy evaluation methods. This supports the accuracy and efficacy of our approach. 
+
+## Related Work 
+
+Mechanical Ventilation Optimization via RL 
+
+RL has been increasingly studied for mechanical ventilation optimization, with prior work addressing dynamic ventilator control, model-based policy learning, interpretability, safety, and weaning. Peine et al. introduced VentAI, a tabular Q-learning framework that uses structured patient trajectories to recommend ventilation regimes and evaluate their asso-ciation with mortality (Peine et al. 2021). Beyond this data-driven control formulation, Chen et al. explored a model-based hybrid soft actor-critic approach for learning ventilator settings (Chen et al. 2022), while Lee et al. emphasized inter-pretability and transparent off-policy evaluation for making learned ventilation policies more clinically meaningful (Lee, Mahendra, and Aswani 2025). Another line of work focuses on safety and reward design: DeepVent applies conserva-tive offline RL with clinically relevant intermediate rewards (Kondrup et al. 2023), Zhang et al. balance therapeutic ef-fect and safety in ventilator recommendation (Zhang, Qiu, and Tan 2024), Eghbali et al. introduce uncertainty-aware recommendations through conformal deep Q-learning (Egh-bali, Alhanai, and Ghassemi 2025), and den Hengst et al. in-corporate clinical guidelines into the RL learning signal and safety constraints (den Hengst et al. 2024). Related studies also consider mechanical ventilation weaning and extubation readiness using off-policy RL and inverse RL (Prasad et al. 2017; Yu, Liu, and Zhao 2019). 
+
+Multimodal EHR Representation Learning 
+
+Multimodal EHR learning has shown that clinical notes can complement structured variables for medical prediction. Prior work fuses time-invariant features, time-series mea-surements, and clinical notes (Yang and Wu 2021), and fur-ther shows that the gain from notes can depend strongly on the clinical information they contain rather than only on model architecture (Husmann et al. 2022). Recent studies extend structured-text fusion to ICU outcome prediction (Lyu et al. 2023; Ruan et al. 2025), and temporal modeling, including early sepsis prediction with physiological time series and ClinicalBERT note features (Wang et al. 2022), and cross-modal temporal pattern discovery in EHR trajectories (Wang et al. 2025). Broader multimodal EHR pretraining methods also aim to learn general representations across tasks (Wang et al. 2023). Closest to our setting, MORE-CLEAR incor-porates clinical notes into offline RL state representations for sepsis treatment (Lim et al. 2025). However, these stud-ies generally treat note representations as additional context, rather than asking how longitudinal note redundancy should be decomposed when notes become part of an RL state. 
+
+Redundancy and Copy-Forward in Clinical Notes 
+
+Clinical notes often contain repeated information because of templates, copy-paste, and copy-forward practices. Prior work has measured redundancy in EHR corpora and studied how it affects text mining performance (Cohen, Elhadad, and Elhadad 2013). Other studies have described where duplicate information in electronic medical records comes from (Steinkamp, Kantrowitz, and Airan-Javia 2022) and proposed practical tools for monitoring copy-paste use in clinical notes (Vawdrey et al. 2022). This repeated content can have real effects: limiting copy-paste has been linked to better inpatient care quality (Cheng et al. 2022), note bloat can affect deep learning models for clinical prediction (Liu et al. 2022), and recent work removes repeated chart text to make LLM-based clinical systems more efficient while keep-ing useful clinical information (Cahoon et al. 2026). These studies motivate redundancy reduction, but they do not ad-dress how repeated and newly introduced note content should be separated for sequential decision-making states; our work studies that gap in offline RL for mechanical ventilation. 
+
+## Method 
+
+Mechanical Ventilation MDP 
+
+We formulate mechanical ventilation management as a finite-horizon offline RL problem. Each patient trajectory is rep-resented as a sequence of transitions (st, a t, r t, s t+1 )Tt=1 ,
+
+where st denotes the patient state at time t, at denotes the ventilator action, and rt is the clinical reward. Following prior work on RL for mechanical ventilation, we use 4-hour decision intervals and define the structured MDP using the same observable clinical variables, action discretization, and reward function as in (Lee, Mahendra, and Aswani 2025). This design isolate the effect of the proposed state represen-tations while keeping the clinical decision problem fixed. The structured component of the state includes the follow-ing variables: 
+
+• Respiratory: Respiratory rate, Spontaneous tidal volume, PaO2FiO2 Ratio, Mean airway pressure 
+
+• Hemodynamic: Heart rate, Systolic BP, Diastolic BP 
+
+• Blood Gas: SpO2, PaCO2, PaO2 
+
+• Miscellaneous: Sepsis, Weight, Age, GCS, Cumulative Fluid Balance Following the original MDP formulation, these observable variables are also augmented with a time-invariant propen-sity score estimated from additional patient-type features us-ing logistic regression. In our experiments, this structured state serves as the baseline representation, to which different clinical-note representations are added. 
+
+Action space. At each decision time, the action corre-sponds to a discretized ventilator setting. Following the same action definition as the prior work, the action is a tuple 
+
+at = ( aVt  
+
+> t
+
+, a PEEP  
+
+> t
+
+, a FiO 2 
+
+> t
+
+), where aVt  
+
+> t
+
+denotes ideal-body-weight-adjusted tidal volume, aPEEP  
+
+> t
+
+denotes positive end-expiratory pressure, and aFiO 2 
+
+> t
+
+denotes fraction of inspired oxygen. Although these ventilator settings are continuous in clinical practice, they are discretized into clinically mean-ingful bins through clustering analysis. This yields a finite discrete action space suitable for offline discrete RL. 
+
+Reward function. We use the same clinically motivated re-ward function as prior work. The reward encourages improve-ment in blood oxygen saturation while penalizing aggressive ventilator settings. Specifically, the oxygenation component rewards increases in SpO 2 only when both the current and next SpO 2 values are below 95%, avoiding additional re-ward for increasing oxygen saturation beyond a clinically safe range: 
+
+rSpO 2 (st, s t+1 ) = 
+
+
+
+st+1 (SpO 2) − st(SpO 2)
+
+if st+1 (SpO 2)< 95 ∧ st(SpO 2) < 95 0 otherwise (1) The action penalty discourages high tidal volume and high inspired oxygen: ra(at) = −α1{aVt  
+
+> t
+
+≥ 10 } − β1{aFiO 2 
+
+> t
+
+≥
+
+0.6}. The total reward is r(st, a t, s t+1 ) = rSpO 2 (st, s t+1 ) + 
+
+ra(at). We use this reward specification to maintain the same clinical objective across all state representations. Therefore, differences in policy performance can be attributed primarily to the proposed state representation rather than to changes in the action space or reward design. 
+
+Problem Setup 
+
+We study offline RL from ICU trajectories. At each time step 
+
+t, the observed patient state contains structured clinical vari-ables ut ∈ Rds and clinical note text Dt, yielding transitions 
+
+D = {(ut, D t, a t, r t, u t+1 , D t+1 )} with action at ∈ A , re-ward rt, and next state st+1 . To avoid temporal leakage, 
+
+Dt contains only notes available up to the state-construction cutoff for that 4-hour interval; later notes are not used. A central challenge is that clinical notes contain substantial redundancy due to copy-forward, templating, and repeated historical content. As a result, a raw note embedding may mix together persistent background information and newly introduced clinical information, which can obscure the time-local patient state relevant for control. Our goal is therefore to construct a redundancy-aware note representation and fuse it with the structured variables for downstream offline RL. Our approach is based on the same principle across all variants: a note should be decomposed into a history com-ponent and an innovation component before it is used as part of the RL state. We consider two instantiations of this idea. First, we introduce an embedding-space temporal decom-position , where the current note embedding is projected onto a patient-local subspace spanned by previous notes, and the residual is treated as the innovation component. Second, we introduce a sentence-level diff decomposition ,where we first compare the current note against previous notes at the sentence level, explicitly split the note text into historical and newly added sentences, and then embed these two text segments separately. The final RL state is formed by concatenating the struc-tured variables with the compressed note-derived history and new-information features. Figure 1 summarizes the proposed pipeline. Starting from the MIMIC-III mechanical ventilation cohort, we align struc-tured variables and clinical notes to the same 4-hour deci-sion intervals. We then construct three state representations for comparison: a structured-only state, a raw-note multi-modal baseline, and the proposed redundancy-aware multi-modal states. The redundancy-aware representations decom-pose clinical notes into history-related and update-related components before combining them with structured clinical variables. The resulting states are used with the same offline policy-learning and off-policy evaluation pipeline, allowing us to isolate the effect of state representation. 
+
+Note Encoding 
+
+For each note Dt, we compute xt = f (Dt) ∈ Rdn using ClinicalBERT (Alsentzer et al. 2019). Intervals with no note text use a zero note vector. The same pretrained encoder is used for the raw-note baseline, the embedding-space decom-position, and the sentence-level diff decomposition, keeping the comparison focused on the redundancy-handling strategy rather than on the text encoder. 
+
+Embedding-Space Temporal Decomposition 
+
+The first representation variant performs deduplication after note embedding. The main idea is to characterize the sub-space of note content already explained by recent note history and then extract the residual as the current innovation. Fix a time t, and consider the previous k notes from the same ICU stay: xt−k, x t−k+1 , . . . , x t−1. For early time steps 
+
+t < k , we use the available history only; if the history is empty, the history component is set to zero and xt is treated as new information. Define the local history mean μhist  
+
+> t
+
+=
+
+> 1
+> k
+
+Pt−1 
+
+> i=t−k
+
+xi. We then construct the centered history matrix 
+
+Ht =
+
+
+
+(xt−k − μhist  
+
+> t
+
+)⊤
+
+(xt−k+1 − μhist  
+
+> t
+
+)⊤
+
+...
+
+(xt−1 − μhist  
+
+> t
+
+)⊤
+
+ ∈ Rk×dn .
+
+We compute Ht = UtΣtV ⊤ 
+
+> t
+
+, and let Vt,ℓ contain the top 
+
+ℓ right singular vectors, which span the recent-history sub-space. With yt = xt − μhist  
+
+> t
+
+, the projection and residual are 
+
+xsvd ,hist  
+
+> t
+
+= μhist  
+
+> t
+
++Vt,ℓ V ⊤
+
+> t,ℓ
+
+yt and xsvd ,new  
+
+> t
+
+= ( I−Vt,ℓ V ⊤
+
+> t,ℓ
+
+)yt.The original note embedding then admits the additive decom-position xt = xsvd ,hist  
+
+> t
+
++ xsvd ,new  
+
+> t
+
+. Here xsvd ,hist  
+
+> t
+
+represents the part of the current note embedding explained by recent note history, while xsvd ,new  
+
+> t
+
+captures the information not ex-plained by the local history subspace. 
+
+Sentence-Level Diff Decomposition 
+
+The second representation variant performs deduplication before note embedding. The main idea is to explicitly sepa-rate the current note text into sentences that already appeared in the recent note history and sentences that are newly intro-duced at the current time step. Let St = ( ct, 1, c t, 2, . . . , c t,m t ) denote the ordered sen-tence sequence of note Dt, where ct,j is the j-th sentence in A. Data extraction  B. State representation construction  C. Learning and evaluation     
+
+> MIMIC-III
+> mechanical
+> ventilation cohort
+> Structured
+> variables
+> Clinical
+> notes
+> Train / Test split
+> 5-fold CV
+> (a) Structured only
+> xtstruct
+> (b) Raw-note baseline
+> Concatenated
+> notes
+> Embed
+> concatenated
+> notes
+> Combine with
+> structured
+> data
+> (c) Proposed redundancy-aware note representations
+> Embedding-space SVD Sentence-level diff
+> Combine with structured data
+> (a) structured
+> (b) structured +
+> raw notes
+> (c) structured +
+> redundancy-
+> aware
+> notes
+> BC
+> behavior
+> policy
+> FQE
+> Train Test Val
+> Compare three
+> stoptions:
+> Off-policy evaluation
+> history
+> update
+> history
+> update
+> Paired-bootstrap
+> Comparison
+> Offline Dataset
+> (st, a t, r t, s t+1 )
+> 4-hour time window
+> DB
+> Query
+> CQL
+> policy
+> learning
+> WIS
+> WDR MB
+
+Figure 1: Overview of the redundancy-aware multimodal state construction and evaluation pipeline. the note. Let the sentence history over the previous k notes be 
+
+Rt = St−k ⊕S t−k+1 ⊕· · ·⊕S t−1, where ⊕ denotes temporal concatenation of sentence sequences. We apply a sentence-level diff operator based on the classical longest-common-subsequence formulation of differential file comparison (Hunt and McIlroy 1976): (Shist  
+
+> t
+
+, Snew  
+
+> t
+
+) = Diff( St, Rt),where Shist  
+
+> t
+
+contains the current-note sentences aligned to the history sequence and Snew  
+
+> t
+
+contains the current-note sen-tences not aligned to the history sequence. We reconstruct two note texts: Dhist  
+
+> t
+
+= concat( Shist  
+
+> t
+
+)
+
+and Dnew  
+
+> t
+
+= concat( Snew  
+
+> t
+
+), where concat( ·) concatenates a sentence sequence into text. We then embed the two views separately: xdiff ,hist  
+
+> t
+
+= f (Dhist  
+
+> t
+
+) and xdiff ,new  
+
+> t
+
+= f (Dnew  
+
+> t
+
+).If either sentence set is empty, we use the zero vector for the corresponding embedding. Compared with the embedding-space decomposition, the sentence-level diff decomposition removes redundancy ear-lier in the pipeline and does so in a more explicit and inter-pretable way. The “history” channel contains only text that can be traced to previous notes, while the “new” channel contains only text newly introduced at time t. This represen-tation is particularly natural when note duplication occurs via sentence-level copy-forward. 
+
+Compression of Note Components 
+
+All note components remain high-dimensional and are there-fore compressed before being used in downstream RL. We apply PCA fitted on the training set to each com-ponent separately, producing low-dimensional history and new-information features for both the embedding-space and sentence-level decompositions. This step controls state di-mension and is not essential to the core redundancy decom-position. For the embedding-space decomposition, we obtain low-dimensional features zsvd ,hist  
+
+> t
+
+∈ Rqsvd ,hist and zsvd ,new  
+
+> t
+
+∈
+
+Rqsvd ,new from xsvd ,hist  
+
+> t
+
+and xsvd ,new  
+
+> t
+
+, respectively. For the sentence-level diff decomposition, we similarly obtain zdiff ,hist  
+
+> t
+
+∈ Rqdiff ,hist and zdiff ,new  
+
+> t
+
+∈ Rqdiff ,new from 
+
+xdiff ,hist  
+
+> t
+
+and xdiff ,new  
+
+> t
+
+.We summarize the different state constructions in Table 1. Both variants provide the RL model with two note-derived channels: a history-like channel and a newly introduced infor-mation channel. They differ in the stage at which redundancy is addressed. The embedding-space method performs decom-position after embedding, modeling redundancy as low-rank structure in the continuous representation space, whereas the sentence-level diff method removes redundancy before embedding by identifying explicit textual reuse. These ap-proaches are complementary: the former is naturally aligned with continuous representation learning, while the latter pro-vides an interpretable text-level decomposition for sentence-level copy-forward. In both cases, the goal is to construct note-based state representations that are less dominated by redundant content and more responsive to changes in the patient’s clinical condition. 
+
+Offline Policy Learning 
+
+For each state representation in Table 1, we construct transi-tions (st, a t, r t, s t+1 ) and train policies on the same training trajectories. This ensures that all downstream comparisons use the same patient population, action space, reward func-tion, and policy-learning algorithm. 
+
+Behavior cloning. We train a behavior cloning (BC) pol-icy (Bain and Sammut 1995) to imitate historical clinician actions by solving the supervised classification problem. BC Method State Representation 
+
+Structured-only sstruct  
+
+> t
+
+= ut
+
+Structured + raw note sraw  
+
+> t
+
+= [ ut, z raw  
+
+> t
+
+]
+
+Embedding-space SVD ssvd  
+
+> t
+
+= [ ut, z svd ,hist  
+
+> t
+
+, z svd ,new  
+
+> t
+
+]
+
+Sentence-level diff sdiff  
+
+> t
+
+= [ ut, z diff ,hist  
+
+> t
+
+, z diff ,new  
+
+> t
+
+]
+
+Table 1: Summary of state representations. serves as a clinician-imitation baseline and is used to es-timate the behavior policy for importance-ratio-based off-policy evaluation. 
+
+Conservative Q-learning. Our main offline RL policy is trained using Conservative Q-Learning (CQL) (Kumar et al. 2020), which mitigates overestimation and out-of-distribution action selection by learning a conservative Q-function. For each state representation, we train a separate CQL policy ˆπCQL (s) = arg max a∈A Qθ (s, a ). All policies use the same CQL algorithm and training procedure, with the only difference being the underlying state representation. 
+
+## Experiments 
+
+Dataset 
+
+This study uses data from MIMIC-III, a large-scale and openly accessible critical care database (Johnson et al. 2016). We focus on ICU stays involving mechanical ventilation and follow the cohort construction and structured-data prepro-cessing pipeline of (Lee, Mahendra, and Aswani 2025). In brief, patient trajectories are discretized into 4-hour intervals, and each episode contains demographic variables, laboratory measurements, vital signs, and ventilator-related variables. We include adult patients with documented 90-day mortality outcomes and recorded tidal volume measurements. In pre-processing procedure, continuous structured vari-ables are winsorized to reduce the effect of extreme out-liers, missing values are filled using a combination of for-ward/backward filling and KNN imputation, and trajectories are truncated to the first 72 hours of ventilation. This gives a maximum of 18 decision points per episode, with one deci-sion point every 4 hours. In addition to the structured variables, we extract clinical notes associated with each ICU stay. Notes are aligned to the same 4-hour decision intervals as the structured observations. For each interval, we concatenate all notes whose timestamps fall within the interval, preserving the de-identified note time and note category as headings. The final note dataset contains 157,924 notes from 10,125 ICU stays, aligned to 147,997 decision intervals. Each ICU stay contains 15.60 notes on average. 
+
+Off-Policy Evaluation 
+
+We evaluate each learned target policy πe using four com-plementary off-policy estimators: (i) model-based rollouts (MB), (ii) Fitted Q Evaluation (FQE), (iii) Weighted Impor-tance Sampling (WIS), and (iv) Weighted Doubly Robust evaluation (WDR). Each estimator carries different bias– variance tradeoffs, and we report all four to triangulate pol-icy value. Throughout, γ denotes the discount factor and a trajectory τ = ( s0, a 0, r 0, s 1, a 1, r 1, . . . , s T ) has length T .
+
+Model-Based Evaluation We learn a probabilistic transi-tion model ˆP (s′ | s, a ) from the offline dataset, and evalu-ate πe by Monte Carlo rollouts in the learned model. Start-ing from each test-set initial state s0, we sample a trajec-tory ˆτ = ( s0, ˆa0, ˆs1, ˆa1, . . . ) where ˆat ∼ πe(· | ˆst) and 
+
+ˆst+1 ∼ ˆP (· | ˆst, ˆat), and accumulate the discounted reward 
+
+ˆV MB (πe) = Es0∼D 0
+
+hPT −1 
+
+> t=0
+
+γt ˆr(ˆ st, ˆat)
+
+i
+
+, (2) where ˆr(·, ·) is the same reward function used during policy training and D0 is the empirical distribution of test-set ini-tial states. To reduce variance from stochastic rollouts, we average over 5 independent trajectories per initial state. MB is unbiased only if the learned ˆP matches the true transi-tion kernel; in practice it can be optimistic when πe visits state–action regions with sparse training support. 
+
+Fitted Q Evaluation Fitted Q Evaluation (FQE) (Le, Voloshin, and Yue 2019) estimates policy value by itera-tively fitting a Q-function under the evaluation policy. The final value is computed from the learned Q-function: 
+
+ˆVFQE (πe) = Es0∼D 0
+
+Ea0∼πe(·| s0)Qπe (s0, a 0) . (3) 
+
+Weighted Importance Sampling Weighted Importance Sampling (WIS) (Precup, Sutton, and Singh 2000) estimates policy value by reweighting observed trajectories accord-ing to the ratio between the evaluation policy and the esti-mated behavior policy. We estimate the behavior policy us-ing a behavior-cloning model with a small uniform mixture (ϵ = 0 .05 ). 
+
+Weighted Doubly Robust Evaluation Weighted Doubly Robust evaluation (WDR) (Thomas and Brunskill 2016) combines importance sampling with the FQE value estimates to reduce variance while retaining correction from observed trajectories. 
+
+Implementation Details 
+
+We split the mechanical ventilation episodes into training and testing subsets in an 80:20 ratio. Within the training set, 5-fold cross-validation was used to select shared reward and policy-learning hyperparameters. Because this step tunes parameters that are shared across all state representations, cross-validation was carried out using the structured-only state representation, which serves as our baseline. We tuned the Conservative Q-Learning coefficient αCQL together with the reward-penalty coefficients α and β, which balance im-proving oxygenation (measured by per-step changes in SpO 2)against discouraging aggressive ventilator settings. Aggres-sive actions were defined as Vt set index ≥ 6 or FiO 2 index 
+
+≥ 3, corresponding to the higher action indices in our dis-cretized action space. The binning intervals used to construct the action space are reported in Table 2. For each candidate setting, we trained a CQL policy on the four training folds and evaluated it on the validation fold using Bin Vt set PEEP FiO 2 (%) 1 [0 .00 , 3.94) [0 .00 , 7.04) [0 , 38 .13) 
+
+2 [3 .94 , 5.36) [7 .04 , 11 .28) [38 .13 , 51 .73) 
+
+3 [5 .36 , 6.54) [11 .28 , 16 .47) [51 .73 , 62 .12) 
+
+4 [6 .54 , 7.74) [16 .47 , ∞) [62 .12 , 68 .12) 
+
+5 [7 .74 , 9.12) – [68 .12 , 76 .82) 
+
+6 [9 .12 , 11 .11) – [76 .82 , 90 .94) 
+
+7 [11 .11 , ∞) – [90 .94 , 100 .00] 
+
+Table 2: Action space binning intervals. model-based rollouts. Each rollout was initialized from the observed initial state of an ICU stay, and at each subsequent step the learned CQL policy selected an action while the learned transition model predicted the next state. The SpO 2
+
+improvement for ICU stay i was the mean per-step change in inverse-transformed SpO 2 along the simulated trajectory, 
+
+∆SpO 2 
+
+> i
+
+= 1
+
+> Ti−1
+
+PTi−2
+
+> t=0
+
+ dSpO 2,i,t +1 − dSpO 2,i,t 
+
+
+
+,
+
+averaged across stays in the validation fold. To characterize the accuracy of the transition model used inside model-based evaluation, we evaluated it by one-step next-state prediction on the held-out test set. For next-step SpO 2 prediction in physiological units, the model achieved a mean absolute error of 1.080 and an ROC-AUC of 0.903 for classifying whether SpO 2 exceeded 94% . The selected configuration maximized validation SpO 2 improvement subject to a safety constraint on the rate of aggressive actions, yielding α∗ = 0 .375 , β∗ =0.75 , and αCQL = 0 .25 .For all note-based state representations, we fixed repre-sentation hyperparameters before policy learning. The his-tory window was set to k = 18 , matching the maximum number of 4-hour decision points in the 72-hour horizon; the embedding-space method used ℓ = 2 singular vectors, and each note-derived component was compressed to q = 64 di-mensions using training-set PCA. These values were shared across representations to keep state dimensions comparable. All final models were trained with fixed hyperparame-ter settings after cross-validation. The CQL policies used a discount factor γ = 0 .99 and were trained with d3rlpy li-brary (Seno and Imai 2022), which uses a two-layer MLP encoder with 256 hidden units per layer, the Adam optimizer with learning rate 6.25 ×10 −5. The behavior cloning models used a two-layer fully connected encoder with [128 , 128] hid-den units, learning rate 10 −4, batch size 512 , weight decay 
+
+10 −4, and the Adam optimizer. The transition model was a two-layer MLP with hidden dimension 256 , dropout proba-bility 0.1, learning rate 10 −3, batch size 256 , weight decay 
+
+10 −4, the Adam optimizer, and early stopping on held-out next-state MSE. These settings were held fixed across state representations. 
+
+Numerical Results 
+
+Aggregate OPE Comparisons Across State Representa-tions Figure 2 reports paired bootstrap comparisons of es-timated policy value across state representations. Positive values indicate higher estimated value for the representation on the left than for the baseline on the right. Filled diamonds denote comparisons whose 95% bootstrap confidence inter-vals exclude zero, and hollow circles denote comparisons whose intervals include zero. We evaluate each comparison using four OPE estimators: FQE, WIS, WDR, and MB. Both redundancy-aware representations consistently im-prove over the structured-only baseline. The embedding-space SVD representation achieves estimated gains of +0 .12 
+
+(FQE), +0 .40 (WIS), +0 .22 (WDR), and +0 .73 (MB). The sentence-level diff representation achieves larger gains of 
+
++0 .27 , +0 .64 , +0 .41 , and +0 .75 under the same estima-tors. All of these comparisons have confidence intervals that exclude zero. The redundancy-aware representations also improve over the raw-note baseline. The SVD representation improves over raw notes by +0 .14 to +0 .46 , and the diff representation improves over raw notes by +0 .28 to +0 .69 , depending on the estimator. In contrast, the raw-note representation does not show a consistent improvement over the structured-only state: its confidence intervals include zero under FQE, WIS, and WDR, and only MB gives a positive point estimate. This pattern suggests that the observed gains are not simply due to adding note embeddings, but to representing notes in a way that separates persistent clinical history from newly introduced information. FQE produces narrower bootstrap intervals than WIS and WDR, reflecting the difference between value function based estimation and trajectory level importance weighting. Since each estimator has different bias–variance tradeoffs, we base our conclusions on the consistent improvements observed across all four OPE methods. 
+
+Case Study: Separating Stable Ventilation History To better understand how the redundancy-aware note represen-tations affect policy recommendations, we examine a rep-resentative held-out trajectory from ICU stay 246432. At decision time t = 8 , the clinician selected action 412, and all learned policies agreed with this choice. At the following de-cision time t = 9 , the clinician again selected action 412. The policies learned from the structured-only, embedding-space SVD, and sentence-level diff representations also selected action 412, while the policy learned from the raw-note rep-resentation selected action 512. The notes around this decision are summarized in Ta-ble 3. At t = 8 , the respiratory care note describes a stable ventilation status, with stable arterial blood gases and no ventilator changes required. At t = 9 , the note contains sub-stantial new clinical information, including planned surgery, possible transfusion, coagulation abnormalities, potassium replacement, and continued sedation/paralysis. However, the ventilation-related information remains unchanged: the pa-tient continues to have good arterial blood gas results on 40% FiO 2 and 5 PEEP, with clear bilateral breath sounds. This example illustrates the challenge of using raw note representations for ventilator control. The raw note embed-ding may capture newly introduced information that reflects broader clinical events but is not directly relevant to ventilator adjustment, causing the policy to change its recommendation. 0.0 0.5 1.0 Raw Notes minus Structured Diff minus Raw Notes Diff minus Structured SVD minus Raw Notes SVD minus Structured -0.01        
+
+> +0.28 +0.27 +0.14 +0.12
+> FQE
+> 0.0 0.5 1.0 +0.03
+> +0.69 +0.64 +0.37 +0.40
+> WIS
+> 0.0 0.5 1.0 -0.13
+> +0.60 +0.41 +0.46 +0.22
+> WDR
+> 0.0 0.5 1.0
+> +0.32 +0.41 +0.75 +0.41 +0.73
+> MB
+> Estimated policy value difference
+> Off-policy evaluation of state representations
+> 95% CI excludes 0 95% CI includes 0
+
+Figure 2: Off-policy evaluation of state representations. Paired-bootstrap mean differences in estimated policy value (left row label minus right) with 95% CIs. Filled diamonds: CI excludes zero. Bottom row (below dashed line): raw-note check. Time Note type Excerpt and interpretation 
+
+t = 8 Respiratory care note The patient remained intubated, sedated, and mechanically ven-tilated. The note reports stable ABGs, clear and equal bilateral lung sounds, and no ventilator changes required overnight. 
+
+t = 9 Nursing note The note adds new information about planned return to the oper-ating room, possible transfusion, elevated coagulation measures, potassium replacement, and con-tinued sedation/paralysis. How-ever, the ventilation-specific con-tent is stable: good ABG on 40% FiO 2 and 5 PEEP, with clear bi-lateral breath sounds. Table 3: Clinical notes around decision time t = 9 for ICU stay 246432. In contrast, the redundancy-aware representations preserve the stable ventilation context from previous notes while sep-arating newly introduced information, allowing the learned policies to remain consistent with the clinician’s action. This suggests that redundancy reduction is not only about remov-ing repeated text, but also about preserving clinically relevant history for sequential decision-making. 
+
+## Conclusion 
+
+In conclusion, we presented a redundancy-aware multimodal state representation framework for offline RL in mechani-cal ventilation. Our approach addresses the challenge that longitudinal clinical notes contain substantial temporal re-dundancy, which can obscure decision-relevant information when raw note embeddings are directly incorporated into RL states. Rather than modifying the RL algorithm, we focus on improving state construction by decomposing clinical notes into history-related and new-information components before policy learning. We introduce two computationally efficient implementations of this idea: an embedding-space temporal decomposition based on recent note history and a sentence-level diff decomposition that explicitly separates repeated and newly introduced text, which are able to successfully deal with temporally redundant information in clinical notes. Using MIMIC-III mechanical ventilation trajectories, we show that both redundancy-aware representations improve estimated policy value over structured-only and raw-note multimodal baselines across multiple off-policy evaluation methods. These results demonstrate that clinical notes can provide useful additional information for offline RL when their temporal redundancy is explicitly modeled. Separating persistent clinical context from newly introduced information helps construct more effective multimodal state representa-tions for sequential decision-making. However, these findings should be interpreted within the limitations of retrospective offline RL. Off-policy evalua-tion estimates policy performance from observational data rather than providing direct evidence of clinical benefit, and learned policies may still be affected by dataset bias, dis-tribution shift, and limited coverage of state-action pairs. In addition, our decomposition methods identify textual or rep-resentational changes, which may not always correspond to clinically meaningful updates for ventilator control. Finally, this study is based on a single ICU dataset, MIMIC-III, and further validation on more diverse clinical settings is needed before deployment. Future work will investigate combining redundancy-aware representations with uncertainty estima-tion, clinical interpretability methods, and prospective eval-uation to develop more reliable multimodal RL systems for clinical decision support. 
+
+## References 
+
+Alsentzer, E.; Murphy, J.; Boag, W.; Weng, W.-H.; Jindi, D.; Naumann, T.; and McDermott, M. 2019. Publicly avail-able clinical BERT embeddings. In Proceedings of the 2nd clinical natural language processing workshop , 72–78. Bain, M.; and Sammut, C. 1995. A Framework for Be-havioural Cloning. In Machine Intelligence 15 , 103–129. Oxford University Press. Cahoon, J. L.; Stanwyck, C.; Aali, A.; Madding, R.; Sun, E.; Jiang, Y.; Dhanasekaran, R.; and Alsentzer, E. 2026. Clinical Note Bloat Reduction for Efficient LLM Use. arXiv:2604.16364. Chen, S.; Qiu, X.; Tan, X.; Fang, Z.; and Jin, Y. 2022. A model-based hybrid soft actor-critic deep reinforcement learning algorithm for optimal ventilator settings. Informa-tion sciences , 611: 47–64. Cheng, C.-G.; Wu, D.-C.; Lu, J.-C.; Yu, C.-P.; Lin, H.-L.; Wang, M.-C.; and Cheng, C.-A. 2022. Restricted use of copy and paste in electronic health records potentially improves healthcare quality. Medicine , 101(4): e28644. Cohen, R.; Elhadad, M.; and Elhadad, N. 2013. Redundancy in electronic health record corpora: analysis, impact on text mining performance and mitigation strategies. BMC bioin-formatics , 14(1): 10. den Hengst, F.; Otten, M.; Elbers, P.; van Harmelen, F.; François-Lavet, V.; and Hoogendoorn, M. 2024. Guideline-informed reinforcement learning for mechanical ventilation in critical care. Artificial intelligence in medicine , 147: 102742. Eghbali, N.; Alhanai, T.; and Ghassemi, M. M. 2025. Distribution-Free Uncertainty Quantification in Mechani-cal Ventilation Treatment: A Conformal Deep Q-Learning Framework. In Proceedings of the AAAI Conference on Ar-tificial Intelligence , volume 39, 27960–27968. Hunt, J. W.; and McIlroy, M. D. 1976. An Algorithm for Differential File Comparison. Technical Report Computing Science Technical Report 41, Bell Laboratories. Husmann, S.; Yèche, H.; Rätsch, G.; and Kuznetsova, R. 2022. On the importance of clinical notes in multi-modal learning for EHR data. arXiv:2212.03044. Johnson, A. E. W.; Pollard, T. J.; Shen, L.; Lehman, L.-w. H.; Feng, M.; Ghassemi, M.; Moody, B.; Szolovits, P.; Celi, L. A.; and Mark, R. G. 2016. MIMIC-III, a freely accessible critical care database. Scientific Data , 3: 160035. Kondrup, F.; Jiralerspong, T.; Lau, E.; de Lara, N.; Shkrob, J.; Tran, M. D.; Precup, D.; and Basu, S. 2023. Towards safe mechanical ventilation treatment using deep offline rein-forcement learning. In Proceedings of the AAAI Conference on Artificial Intelligence , volume 37, 15696–15702. Kumar, A.; Zhou, A.; Tucker, G.; and Levine, S. 2020. Con-servative q-learning for offline reinforcement learning. Ad-vances in neural information processing systems , 33: 1179– 1191. Le, H.; Voloshin, C.; and Yue, Y. 2019. Batch policy learning under constraints. In International Conference on Machine Learning , 3703–3712. PMLR. Lee, J. S.; Mahendra, M.; and Aswani, A. 2025. Matching-Based Off-Policy Evaluation for Reinforcement Learning Applied to Mechanical Ventilation. In Proceedings of the ACM/IEEE International Conference on Connected Health: Applications, Systems and Engineering Technologies , 211– 221. Lim, Y.; Jeon, B.; Park, S.-A.; Lee, J.; Choi, S. W.; Jeong, C. W.; Ryu, H.-G.; Lee, H.; and Yang, H.-L. 2025. MORE-CLEAR: Multimodal Offline Reinforcement learning for Clinical notes Leveraged Enhanced State Representation. arXiv:2508.07681. Liu, J.; Capurro, D.; Nguyen, A.; and Verspoor, K. 2022. “Note Bloat” impacts deep learning-based NLP models for clinical prediction tasks. Journal of biomedical informatics ,133: 104149. Lyu, W.; Dong, X.; Wong, R.; Zheng, S.; Abell-Hart, K.; Wang, F.; and Chen, C. 2023. A multimodal transformer: Fusing clinical notes with structured ehr data for interpretable in-hospital mortality prediction. In AMIA Annual Symposium Proceedings , volume 2022, 719. Peine, A.; Hallawa, A.; Bickenbach, J.; Dartmann, G.; Fa-zlic, L. B.; Schmeink, A.; Ascheid, G.; Thiemermann, C.; Schuppert, A.; Kindle, R.; et al. 2021. Development and val-idation of a reinforcement learning algorithm to dynamically optimize mechanical ventilation in critical care. NPJ digital medicine , 4(1): 32. Pham, T.; Brochard, L. J.; and Slutsky, A. S. 2017. Mechan-ical ventilation: state of the art. In Mayo Clinic Proceedings ,volume 92, 1382–1400. Elsevier. Prasad, N.; Cheng, L.-F.; Chivers, C.; Draugelis, M.; and Engelhardt, B. E. 2017. A reinforcement learning approach to weaning of mechanical ventilation in intensive care units. arXiv:1704.06300. Precup, D.; Sutton, R. S.; and Singh, S. P. 2000. Eligibility Traces for Off-Policy Policy Evaluation. In Proceedings of the Seventeenth International Conference on Machine Learn-ing , 759–766. Ruan, Y.; Tan, D. J.; Huang, L.; and Feng, M. 2025. Evidence-based multimodal fusion on structured ehrs and free-text notes for icu outcome prediction. arXiv:2501.04389. Seno, T.; and Imai, M. 2022. d3rlpy: An offline deep re-inforcement learning library. Journal of Machine Learning Research , 23(315): 1–20. Steinkamp, J.; Kantrowitz, J. J.; and Airan-Javia, S. 2022. Prevalence and sources of duplicate information in the elec-tronic medical record. JAMA network open , 5(9): e2233348. Thomas, P.; and Brunskill, E. 2016. Data-efficient off-policy policy evaluation for reinforcement learning. In International conference on machine learning , 2139–2148. PMLR. Vawdrey, D. K.; Cauthorn, C.; Francis, D.; Hackenberg, K.; Maloney, G.; and Hohmuth, B. A. 2022. A practical approach for monitoring the use of copy-paste in clinical notes. In 
+
+AMIA Annual Symposium Proceedings , volume 2021, 1178. Wang, F.; Wu, F.; Tang, Y.; and Yu, L. 2025. Ctpd: Cross-modal temporal pattern discovery for enhanced multimodal electronic health records analysis. In Findings of the Associ-ation for Computational Linguistics: ACL 2025 , 6783–6799. Wang, X.; Luo, J.; Wang, J.; Yin, Z.; Cui, S.; Zhong, Y.; Wang, Y.; and Ma, F. 2023. Hierarchical pretraining on multimodal electronic health records. In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing , 2839–2852. Wang, Y.; Zhao, Y.; Callcut, R.; and Petzold, L. 2022. In-tegrating physiological time series and clinical notes with transformer for early prediction of sepsis. arXiv:2203.14469. Yang, B.; and Wu, L. 2021. How to leverage the multimodal EHR data for better medical prediction? In Proceedings of the 2021 conference on empirical methods in natural language processing , 4029–4038. Yu, C.; Liu, J.; and Zhao, H. 2019. Inverse reinforcement learning for intelligent mechanical ventilation and sedative dosing in intensive care units. BMC medical informatics and decision making , 19(Suppl 2): 57. Zhang, B.; Qiu, X.; and Tan, X. 2024. Balancing therapeutic effect and safety in ventilator parameter recommendation: An offline reinforcement learning approach. Engineering Applications of Artificial Intelligence , 131: 107784.

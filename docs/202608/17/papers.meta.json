@@ -1,0 +1,69 @@
+{
+  "label": "2026-08-17",
+  "date": "2026-08-17",
+  "generated_at": "2026-08-17T19:27:58",
+  "count": 4,
+  "papers": [
+    {
+      "paper_id": "202608/17/2608.14157v1-removing-temporal-note-redundancy-improves-multimodal-reinforcement-learning-for-medicine",
+      "section": "deep",
+      "title_en": "Removing Temporal Note Redundancy Improves Multimodal Reinforcement Learning for Medicine",
+      "authors": "Chenran Weng, Joo Seung Lee, Malini Mahendra, Anil Aswani",
+      "date": "2026-08-14",
+      "pdf": "https://arxiv.org/pdf/2608.14157v1",
+      "score": "9.0",
+      "evidence": "面向医学的多模态强化学习智能体使用结构化EHR数据和自由文本病历，直接匹配使用电子健康记录的医疗智能体",
+      "tldr": "机械通气需动态调整参数，强化学习可优化决策，但现有方法依赖结构化EHR数据，忽略临床文本中的关键信息。临床笔记存在大量时间冗余（如复制转发、模板化），稀释了状态表示。本文提出冗余感知的多模态状态表示框架，通过嵌入空间SVD分解或句子级diff操作去除重复文本。在真实ICU数据上，去冗余后的状态表示显著优于结构化数据和原始笔记基线，提升多种离线评估下的RL性能。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Mechanical ventilation is a critical life-support intervention, requiring dynamic adjustments to ventilator settings as a patient's condition evolves. While reinforcement learning (RL) offers a promising framework for optimizing these sequential decisions, standard approaches rely primarily on structured electronic health record (EHR) data, missing crucial clinical context recorded in free-text notes. Integrating longitudinal clinical notes into RL state spaces is challenging because notes are heavily inflated by temporal redundancy, such as copy-forward text, templating, and repetitive documentation, which dilutes time-local updates and degrades state representation quality. To address this, we propose a redundancy-aware multimodal state representation framework that explicitly removes duplicated note text over time before policy learning. We evaluate two computationally efficient temporal decomposition strategies for removing duplicated note text: (1) an embedding-space decomposition using singular value decomposition on local history subspaces, and (2) an interpretable sentence-level diff operation that filters out previously documented sentences before text encoding. Using real-world ICU data, we demonstrate that state representations constructed by stripping temporal note redundancy significantly outperform both structured-only and raw-note baselines across multiple off-policy evaluation methods (Model-Based Rollouts, Fitted Q-Evaluation, Weighted Importance Sampling, and Weighted Doubly Robust Evaluation). Our findings show that explicitly isolating new clinical information from repeated note text yields higher-quality state representations and directly improves RL performance for clinical decision support.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/17/2608.12805v1-comedbench-a-multi-source-benchmark-of-synthetic-medical-data-fidelity-and-downstream-utility",
+      "section": "quick",
+      "title_en": "CoMedBench: A Multi-Source Benchmark of Synthetic Medical Data Fidelity and Downstream Utility",
+      "authors": "Akanta Das, Al Amin Farhad, Mrinmoy Sarkar Anto, David Rehkopf, Ayin Vala, Tanmoy Sarkar Pias",
+      "date": "2026-08-13",
+      "pdf": "https://arxiv.org/pdf/2608.12805v1",
+      "score": "6.0",
+      "evidence": "面向医疗机器学习的数据保真度与下游效用的综合合成数据基准",
+      "tldr": "临床数据受隐私和法规限制难以直接使用，合成数据成为替代方案，但现有评测覆盖不全。CoMedBench构建统一基准，整合7个公共数据源、37个数据集-任务对，覆盖静态表格和时序ICU任务，评估统计保真度和下游效用。结果显示表格任务中CoMed-TVAE保留97.3%的AUROC，时序任务难度更大且对生成器敏感。该基准为合成医疗数据的适用性提供了可复现的评估框架。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Access to clinical data is essential for developing reliable healthcare machine learning systems, but direct use of electronic health records is constrained by privacy regulation, institutional review, data-use agreements, and the risk of re-identification. Synthetic data promises a practical alternative: it can preserve useful statistical and clinical structure while reducing exposure of sensitive patient records. Prior studies often evaluate a single generator, one dataset, or a narrow downstream task, making it difficult to know when synthetic data can support model development and when it fails to preserve task-critical signal. We introduce CoMedBench, a reproducible benchmark that evaluates a family of generators under a common clinical-validity framework and one shared training and evaluation engine, spanning static tabular and temporal downstream tasks on established critical-care datasets. In total the benchmark spans 37 dataset-task pairs across two modalities consists of 20 static tabular and 17 temporal ICU time-series-drawn from seven public data sources: three intensive-care databases (MIMIC-III, MIMIC-IV, and eICU) together with the UCI Machine Learning Repository, the CDC BRFSS diabetes cohort (2015), NHANES (1999-2014), and the pycox survival datasets (GBSG and METABRIC). The benchmark evaluates both statistical fidelity and task utility by comparing models trained and tested across real and synthetic data. In these settings, synthetic training data preserves most of the downstream signal: on tabular tasks the reference generator CoMed-CTGAN retains a mean AUROC utility (the synthetic-to-real performance ratio) of 90.6%, rising to 97.3% for the strongest generator, CoMed-TVAE. Temporal ICU tasks are harder and more generator-sensitive: CoMed-CTGAN retains 81.6% (AUROC) and only 64.0% under the imbalance-sensitive AUPRC, whereas CoMed-TVAE still retains ~95% (AUROC).",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/17/2608.13617v1-how-compliant-is-sepsis-treatment-an-expert-guided-neuro-symbolic-pipeline-for-generating-clinical-compliance-insights",
+      "section": "quick",
+      "title_en": "How Compliant is Sepsis Treatment? An Expert-Guided Neuro-symbolic Pipeline for Generating Clinical Compliance Insights",
+      "authors": "Himanshu Tripathi, Kaushik Roy, Subash Neupane, Shahram Rahimi",
+      "date": "2026-08-12",
+      "pdf": "https://arxiv.org/pdf/2608.13617v1",
+      "score": "6.0",
+      "evidence": "基于EHR的专家引导神经符号流程，在MIMIC-IV上对临床方案依从性进行评分",
+      "tldr": "验证脓毒症治疗是否遵循循证协议需结合符号知识与底层文本，单一神经或符号范式在安全关键环境均不可靠。本文提出专家引导的神经符号管道：大语言模型仅做语义归一化，将药物、微生物字符串映射到标准词汇；Sugeno模糊推理对归一化事件执行八条集束规则，输出[0,1]分级合规分数。在MIMIC-IV的2,438次发作中，发现抗生素时机平均0.24且仅13%一小时达标，Hour-1平均36.7%，高乳酸检测下降51%。该管道为临床合规监测提供了可解释的神经符号融合方法。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Verifying whether clinical care follows evidence-based protocols is a natural neuro-symbolic problem, yet the safety-critical setting defeats either paradigm alone. We present an expert-guided pipeline that constrains a large language model strictly to semantic normalization, mapping messy drug and microbiology strings onto a fixed clinical vocabulary, while a Sugeno fuzzy inference system reasons over the normalized events. The fuzzy layer encodes eight Surviving Sepsis Campaign bundle rules and replaces binary judgments with graded scores in [0,1]. Applied to 2,438 MIMIC-IV v3.1 sepsis episodes, it surfaces antibiotic timing as the most critical breakdown (mean 0.24, 13% within one hour), Hour-1 underperformance (mean 36.7%), a 51% elevated-lactate drop-off, and descriptive differences in ICU stay across compliance groups (3.8 versus 5.1 days).",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "paper_id": "202608/17/2608.13786v1-do-ai-chatbots-find-what-experts-would-effects-of-model-user-role-and-sample-size-on-study-retrieval-for-medical-questions",
+      "section": "quick",
+      "title_en": "Do AI chatbots find what experts would? Effects of model, user role, and sample size on study retrieval for medical questions",
+      "authors": "Qingfang Liu, Qiao Jin, Joe D. Menke, Thorsten Kahnt, Zhiyong Lu",
+      "date": "2026-08-13",
+      "pdf": "https://arxiv.org/pdf/2608.13786v1",
+      "score": "6.0",
+      "evidence": "系统评测作为医学智能体的LLM聊天机器人在临床研究检索中的表现",
+      "tldr": "背景：LLM聊天机器人用于临床问答并引用文献，但既往研究多关注引用捏造，缺少对检索质量与选择因素的评价。方法：以20个Cochrane系统评价问题为基准，对Claude、Gemini、ChatGPT三大模型在患者、临床医生、研究者角色下各重复4次，共720个响应，对比纳入/排除研究集。结果：平均召回纳入研究39.2%，误引排除研究5.0%；ChatGPT召回率最高(63.1%)，研究者角色最高(42.8%)，样本量是唯一独立预测因子。意义：揭示模型和角色差异及大样本偏见，为临床引用评估提供基准。",
+      "tags": "query:ehr-agent",
+      "abstract_en": "Large language model (LLM) chatbots are increasingly used to answer clinical questions with citations to relevant clinical studies. Prior research has largely focused on citation fabrication, leaving a gap in evaluating the quality of retrieved studies and the factors driving their selection. In this study, we evaluated three general-purpose LLM chatbots: Claude Sonnet 5, Gemini 3.1 Pro, and ChatGPT GPT-5.5. We prompted the models with clinical questions adapted from 20 review questions in Issues 6 and 7 of the 2026 Cochrane Database of Systematic Reviews, simulating patient, clinician, and evidence-synthesis researcher roles. Each chatbot was queried under each user role with four independent repetitions, yielding 720 responses. Each chatbot was asked to support its answers with primary clinical citations, which we benchmarked against the included and excluded study sets of the Cochrane reviews. On average, a chatbot response retrieved 39.2% $\\pm$ 29.8% of Cochrane included studies, while citing 5.0% $\\pm$ 9.4% of excluded studies. Recall of Cochrane included studies varied significantly by model and user role. ChatGPT achieved higher recall than Claude or Gemini (63.1% $\\pm$ 29.5% vs. 37.0% $\\pm$ 23.8% vs. 17.3% $\\pm$ 13.1%; $p=2.0\\times10^{-5}$). The researcher role yielded higher recall than the clinician or patient roles (42.8% $\\pm$ 30.8% vs. 38.6% $\\pm$ 28.9% vs. 36.1% $\\pm$ 29.3%; $p=2.0\\times10^{-5}$). Controlling for publication year, citations per year, and open-access status, sample size was the only independently significant predictor of retrieval (odds ratio 1.80 per 1-unit increase in log sample size, 95% CI 1.37-2.36, $p=2.34\\times10^{-5}$). These findings suggest that while LLM chatbots can retrieve some studies identified by expert reviewers, their performance varies by model and user role, and they exhibit a bias toward clinical trials with larger sample sizes.",
+      "source": "arxiv",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "errors": []
+}
