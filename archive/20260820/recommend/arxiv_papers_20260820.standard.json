@@ -1,0 +1,421 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-20T20:49:50.488823+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 2,
+    "deep_cap": 6,
+    "deep_selected": 2,
+    "quick_candidates": 8,
+    "quick_skim_target": 11,
+    "quick_selected": 8
+  },
+  "deep_dive": [
+    {
+      "id": "2608.17075v1",
+      "source": "arxiv",
+      "title": "Foundation Agents Meet Agentic Deep Research: Evidence-Grounded Clinical Code Forecasting",
+      "abstract": "Next-encounter ICD forecasting predicts which standardized diagnosis codes will be documented at a future visit from the longitudinal record available beforehand. The task is prospective and multi-label: the target note does not yet exist, and several codes may be correct. Structured EHR foundation models capture recurrence and temporal progression, whereas language foundation models generate flexible diagnostic hypotheses. We introduce ICD-Deepresearch, a DeepResearch workflow that composes these predictive foundation models with medical search and ICD dictionaries. Because no source reveals the future code set, research evaluates candidate transitions by linking patient evidence, external clinical relations, and exact code semantics under a fixed top-K budget. Candidate Generation uses SparseEHR to produce an EHR Prior that initializes two bounded Research Expansion rounds; an independent GPT-5 Direct Forecast supplies complementary candidates. Final Selection validates, deduplicates, and jointly ranks both paths, after which a separate module writes rationales without changing predictions. Finally ICD-Deepresearch achieves patient-averaged precision/recall of 24.60/35.09% on MIMIC-III and 25.14/48.32% on MIMIC-IV. Physicians rate 51% and 68% of its retrieved documents useful, compared with 22% and 39% for standalone GPT-5 web search and 32% and 41% for Medical Deep Research. ICD-Deepresearch therefore improves over the registered local comparators while retrieving evidence with higher physician-rated usefulness than the standalone research systems",
+      "authors": [
+        "Junda Wang",
+        "Meysam Ghaffari",
+        "Akshat Choube",
+        "Mohsen Sharifi Renani",
+        "Hong Yu",
+        "Carlos Morato"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-08-17T19:24:57+00:00",
+      "link": "https://arxiv.org/pdf/2608.17075v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "A medical agent that uses longitudinal EHR records and deep research workflow to forecast ICD codes, directly matching EHR-based medical agent",
+      "llm_evidence_cn": "结合纵向EHR与深度研究工作流进行ICD编码预测，是直接使用EHR的医疗Agent",
+      "llm_evidence": "结合纵向EHR与深度研究工作流进行ICD编码预测，是直接使用EHR的医疗Agent",
+      "canonical_evidence": "结合纵向EHR与深度研究工作流进行ICD编码预测，是直接使用EHR的医疗Agent",
+      "llm_tldr_en": "A deep-research agent combines EHR foundation models, medical search, and ICD dictionaries to forecast future diagnosis codes from longitudinal records, directly demonstrating an EHR-based medical agent",
+      "llm_tldr_cn": "针对下次就诊ICD编码预测中未来编码未知且需要证据支持的问题，提出ICD-Deepresearch工作流，将结构化EHR基础模型、语言模型、医学搜索和ICD字典组合为一个深度研究Agent。该系统通过连接患者证据、外部临床关系和精确编码语义对候选转移进行评估，实现前瞻性多标签预测。该工作直接展示了一个使用电子健康记录的医疗Agent，完全契合需求。",
+      "llm_tldr": "针对下次就诊ICD编码预测中未来编码未知且需要证据支持的问题，提出ICD-Deepresearch工作流，将结构化EHR基础模型、语言模型、医学搜索和ICD字典组合为一个深度研究Agent。该系统通过连接患者证据、外部临床关系和精确编码语义对候选转移进行评估，实现前瞻性多标签预测。该工作直接展示了一个使用电子健康记录的医疗Agent，完全契合需求。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    },
+    {
+      "id": "2608.16643v1",
+      "source": "arxiv",
+      "title": "Toward Better Assessment of LLMs' Performance in Clinical Error Detection",
+      "abstract": "Automated detection of errors in clinical documentation is a promising application of large language models (LLMs), yet decisions to deploy such models rest on benchmarks that evaluate each clinical note in isolation. Error-detection benchmarks are typically constructed by injecting errors into notes, such that each erroneous note has a natural counterpart. Aggregate discriminative metrics (e.g., balanced accuracy or F1) do not exploit this structure. We show that this omission is consequential. In particular, evaluating 15 diverse LLMs on 4 standardized clinical error-detection test sets across 3 languages, we find that 13 of 15 models fall below the level of random pairwise discrimination, even while achieving F1 scores that standard practice would read as moderate. We also observe that the underlying bias patterns differ across languages: the same model can default to \"no error\" on one language and over-flag errors on another. To diagnose where discrimination breaks down, we further introduce a procedure to score the evidence models cite in their outputs. We find that while models consistently locate error-relevant content, they fail to produce the corresponding correct verdict on the clean counterpart. Finally, we show that F1 and pairwise accuracy are driven in opposite directions by the same underlying bias, so that ranking models by F1 may systematically promote the weakest discriminators. For safety-critical clinical NLP applications, we advocate for supplementing aggregate metrics with paired evaluations in benchmark reporting. Code and analysis scripts are available at https://github.com/healthylaife/paired-clinical-eval.",
+      "authors": [
+        "Yifan Zhang",
+        "Rahmatollah Beheshti"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.LG"
+      ],
+      "published": "2026-08-17T14:41:53+00:00",
+      "link": "https://arxiv.org/pdf/2608.16643v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "Proposes better evaluation metrics for clinical error detection",
+      "llm_evidence_cn": "提出用于临床错误检测的更好评估指标",
+      "llm_evidence": "提出用于临床错误检测的更好评估指标",
+      "canonical_evidence": "提出用于临床错误检测的更好评估指标",
+      "llm_tldr_en": "The paper shows that aggregate metrics like F1 fail to exploit paired structure in clinical error-detection benchmarks, and 13/15 LLMs perform below chance on pairwise discrimination.",
+      "llm_tldr_cn": "该研究指出，临床错误检测基准通常将每条病历单独评估，聚合指标（如平衡准确率或F1）未能利用错误注入带来的成对结构。作者在3种语言的4个标准测试集上评估了15个LLM，发现13个模型的成对判别能力低于随机水平。这表明标准评估指标会高估模型能力，亟需采用成对判别等更严格的评估方法。这项工作为医疗AI模型的评测提供了重要方法学启示。",
+      "llm_tldr": "该研究指出，临床错误检测基准通常将每条病历单独评估，聚合指标（如平衡准确率或F1）未能利用错误注入带来的成对结构。作者在3种语言的4个标准测试集上评估了15个LLM，发现13个模型的成对判别能力低于随机水平。这表明标准评估指标会高估模型能力，亟需采用成对判别等更严格的评估方法。这项工作为医疗AI模型的评测提供了重要方法学启示。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "What are the metrics for healthcare agent evaluation using EHR data?",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.15286v1",
+      "source": "arxiv",
+      "title": "No Task Fails Every Time: Why One-Shot Audits Are Structurally Blind to Agent Damage",
+      "abstract": "We introduce AgentRelBench, an environment-agnostic reliability instrument that computes ground-truth, severity-priced damage from database state diffs across repeated runs, with no LLM in the measurement path, demonstrated on EnterpriseOps-Gym. Across 2,128 evaluation runs spanning nine models in six families (four development, three pre-registered held-out, plus a frontier pass on two frontier-tier models that the pre-registration designates exploratory), we find: (1) damage on irreversible actions is universal across the families we measured and stochastic within them on pinned, single-provider stacks. (2) No task damaged on every run: zero always-fail cells across 42 confirmatory held-out damage events. A single clean run misses a damage-producing (model, task) pair 0.80 of the time on the development pool (13 pairs); the held-out pool is descriptively consistent (0.575 over 5 pairs, pair-weighted) but sits below our pre-registered power floor and is reported as underpowered, not as confirmation. (3) Damage-producing task count falls with model capability, from 7 of 20 tasks for an 8B model to 1 of 20 for the most capable; capability is confounded with family and training, so this is an observed gradient, not a causal claim. The residual damage does not change in character: in the exploratory frontier pass, the most capable model's one damaging task damages at $\\hat{p} = 0.16$ per run, inside the same demonstrably-stochastic band, and a single audit misses it 84% of the time. (4) One model family committed the gated irreversible change while declaring it had refused: transcript- and judge-based grading scores those runs as safe refusals, only state diffs as damage. All confirmatory findings were pre-registered with per-claim demote criteria; one demoted our own initially favored finding, which we report.",
+      "authors": [
+        "Shiven Khurdi"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-08-15T15:33:32+00:00",
+      "link": "https://arxiv.org/pdf/2608.15286v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "environment-agnostic agent reliability benchmarking across repeated runs",
+      "llm_evidence_cn": "跨多次运行的通用智能体可靠性评测方法",
+      "llm_evidence": "跨多次运行的通用智能体可靠性评测方法",
+      "canonical_evidence": "跨多次运行的通用智能体可靠性评测方法",
+      "llm_tldr_en": "Introduces AgentRelBench, an environment-agnostic reliability instrument computing ground-truth severity-priced damage from database state diffs across repeated agent runs, demonstrating that one-shot audits miss stochastic agent damage.",
+      "llm_tldr_cn": "现有一次性智能体审计无法捕捉随机的副作用行为，因为多数任务并非每次运行都失败。为此提出AgentRelBench，一种与环境无关的可靠性评测工具，通过跨多次运行比较数据库状态差异来计算真实且按严重程度定价的损害，评测过程中不依赖LLM。在EnterpriseOps-Gym上对9个模型进行2128次运行评测，发现不可逆动作的损害普遍存在且在同一模型内具有随机性，但没有任何任务每次运行都失败。结果表明一次性通过并不能证明智能体安全，重复运行的可靠性评估对医疗等高风险智能体评测具有重要参考价值。",
+      "llm_tldr": "现有一次性智能体审计无法捕捉随机的副作用行为，因为多数任务并非每次运行都失败。为此提出AgentRelBench，一种与环境无关的可靠性评测工具，通过跨多次运行比较数据库状态差异来计算真实且按严重程度定价的损害，评测过程中不依赖LLM。在EnterpriseOps-Gym上对9个模型进行2128次运行评测，发现不可逆动作的损害普遍存在且在同一模型内具有随机性，但没有任何任务每次运行都失败。结果表明一次性通过并不能证明智能体安全，重复运行的可靠性评估对医疗等高风险智能体评测具有重要参考价值。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.14270v1",
+      "source": "arxiv",
+      "title": "TimeSage-EV: A Live Benchmark for Agentic Time Series Analysis in Evolving Environments",
+      "abstract": "Time series analysis in high-stakes domains relies on recurring data releases, where new observations can alter the evidence base and the validity of later conclusions. Existing time series QA benchmarks mostly rely on fixed snapshots, leaving temporal validity and cutoff-aware evidence use unevaluated. We introduce TimeSage-EV, a live benchmark for agentic time series analysis in evolving environments. It tracks 60 real institutional scenarios across 6 domains, comprising 1,485 scenario-period QA pairs from Feb 2023 to May 2026 and spanning monthly, weekly, daily, and irregular release cadences. At each period, large language model (LLM) agents receive time series data and source reports, while the withheld target release provides ground truth. TimeSage-EV evaluates state identification, data summarization, and outlook reasoning. Experiments with frontier LLM agents and TimeSage-1.0, a novel self-evolving agent with a reusable analytical skill library, reveal significant performance gaps across model tiers and recurring failures in temporal validity, exogenous context use, and adaptation. We release TimeSage-EV as a research resource with monthly updates, code, a leaderboard, and failure-mode analyses.",
+      "authors": [
+        "Qingren Yao",
+        "Yaxuan Kong",
+        "Yuqi Nie",
+        "Yichen Li",
+        "Stefan Zohren",
+        "Anna Vettoruzzo",
+        "Qingsong Wen",
+        "Ming Jin",
+        "Joaquin Vanschoren"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-14T12:53:21+00:00",
+      "link": "https://arxiv.org/pdf/2608.14270v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "live benchmark for agentic time series analysis; transferable to evaluating medical agents on evolving EHR data",
+      "llm_evidence_cn": "演化环境中智能体时间序列分析的实时基准，可迁移至EHR动态数据下的医疗智能体评测",
+      "llm_evidence": "演化环境中智能体时间序列分析的实时基准，可迁移至EHR动态数据下的医疗智能体评测",
+      "canonical_evidence": "演化环境中智能体时间序列分析的实时基准，可迁移至EHR动态数据下的医疗智能体评测",
+      "llm_tldr_en": "TimeSage-EV is a live benchmark for agentic time series analysis in evolving environments. It tracks 60 institutional scenarios across 6 domains with 1,485 scenario-period QA pairs over 2023-2026, evaluating how LLM agents handle recurring data releases, temporal validity, and cutoff-aware evidence use, with withheld target releases as ground truth.",
+      "llm_tldr_cn": "现有时间序列问答基准大多依赖固定快照，无法检验智能体在数据反复发布下对时间有效性和截止时间点的证据使用。本文提出TimeSage-EV实时基准，覆盖6个领域的60个机构场景和1485条情景-周期问答对，每个周期让LLM智能体基于最新数据和报告作答，并以扣留的目标发布结果作为真值。该基准可评估智能体在演化环境中的自适应分析与证据利用能力。",
+      "llm_tldr": "现有时间序列问答基准大多依赖固定快照，无法检验智能体在数据反复发布下对时间有效性和截止时间点的证据使用。本文提出TimeSage-EV实时基准，覆盖6个领域的60个机构场景和1485条情景-周期问答对，每个周期让LLM智能体基于最新数据和报告作答，并以扣留的目标发布结果作为真值。该基准可评估智能体在演化环境中的自适应分析与证据利用能力。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.16211v1",
+      "source": "arxiv",
+      "title": "BaT: Towards Self-Evolving Medical Research Agent with Stage Rubrics",
+      "abstract": "Long-horizon agents are beginning to automate complete workflows that produce code, reports, and research artifacts. Medical imaging workflows are multi-stage and data-sensitive, while expert trajectories remain scarce and difficult to share. Structured benchmarks can localize failures through stage-level rubrics, but standard post-training discards these diagnostics before the next training round. We present Benchmark-as-Teacher (BaT), a recursive self-improvement system for agent post-training. BaT contains two linked components: the asynchronous Stage Bank data pipeline and BiCuRL (Bilevel Curriculum Reinforcement Learning), its self-improving post-training method. Stage Bank synthesizes content-isolated training states outside the policy-update loop. BiCuRL uses a fixed held-out evaluation to select the next stage curriculum, verifies rollouts with task rubrics, updates the policy with GRPO, and returns the candidate checkpoint to evaluation. On AutoMedBench-Lite, BaT-4B and BaT-9B more than double the Overall scores of their Qwen Instruct baselines. BaT-9B Agent reaches 79.6 Overall, exceeding Claude Opus 4.6 with Claude Code at 77.5.",
+      "authors": [
+        "Junqi Liu",
+        "Yufan He",
+        "Yexiao He",
+        "Pengfei Guo",
+        "Dong Yang",
+        "Andriy Myronenko",
+        "Can Zhao",
+        "Hanrong Ye",
+        "Tianhao Qi",
+        "Yuyin Zhou",
+        "Daguang Xu",
+        "Yucheng Tang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-17T07:44:57+00:00",
+      "link": "https://arxiv.org/pdf/2608.16211v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Uses stage rubrics and bilevel curriculum RL for self-improving medical research agent, relevant to RL-based healthcare agent evaluation",
+      "llm_evidence_cn": "采用阶段评分规则和双层课程强化学习实现医学研究Agent自进化，与基于RL的医疗Agent评估相关",
+      "llm_evidence": "采用阶段评分规则和双层课程强化学习实现医学研究Agent自进化，与基于RL的医疗Agent评估相关",
+      "canonical_evidence": "采用阶段评分规则和双层课程强化学习实现医学研究Agent自进化，与基于RL的医疗Agent评估相关",
+      "llm_tldr_en": "Introduces a self-evolving medical research agent that uses stage rubrics and bilevel curriculum RL, providing a new paradigm for RL-based healthcare agent evaluation",
+      "llm_tldr_cn": "针对医学影像等工作流多阶段、专家轨迹稀缺且标准后训练丢弃风险诊断的问题，提出BaT系统，包含Stage Bank异步流水线和BiCuRL双层课程强化学习。系统利用阶段评分规则定位失败并递归自改进，为医疗Agent的后训练与评估提供新范式。该研究未使用EHR，但其评测与强化学习方法可迁移到医疗Agent。",
+      "llm_tldr": "针对医学影像等工作流多阶段、专家轨迹稀缺且标准后训练丢弃风险诊断的问题，提出BaT系统，包含Stage Bank异步流水线和BiCuRL双层课程强化学习。系统利用阶段评分规则定位失败并递归自改进，为医疗Agent的后训练与评估提供新范式。该研究未使用EHR，但其评测与强化学习方法可迁移到医疗Agent。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "reinforcement learning for healthcare agent evaluation",
+      "matched_requirement_id": "req-5",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.15382v1",
+      "source": "arxiv",
+      "title": "Grounding Healthcare LLMs in a Causal Knowledge Graph: Framework, Metrics, and a Cardiovascular Pilot",
+      "abstract": "Large language models (LLMs) are increasingly proposed for healthcare decision support, but their evaluations still reward single-answer accuracy rather than reasoning about interventions, mechanisms, harms, evidence, and uncertainty. We propose a reproducible, graph-centered evaluation framework for intervention-oriented LLM behavior in healthcare and stress-test it in a cardiovascular pilot. The framework has four components: (i) a domain causal knowledge graph in which assertions are first-class, provenance-preserving nodes with stable identifiers; (ii) a scenario-conditioned subgraph extraction step that, given any clinical scenario, retrieves the relevant reified-assertion subgraph; (iii) four controlled grounding conditions that vary how the retrieved subgraph is composed into the model's context (ungrounded C1, knowledge-graph C2, causal-graph C3, integrated C4); and (iv) an automated scoring pipeline, anchored on assertion identifiers, that computes intervention accuracy, and other evaluation measures on a single pass. To test the framework, we built a category-balanced scenario generator across eight reasoning failure modes and instantiated it on a cardiovascular graph. The metric panel discriminates conditions along interpretable, non-redundant axes: C4 obtains the strongest causal edge F1 (0.838), adverse-effect F1 (0.833), evidence accuracy (0.738), and unsupported claim rate (0.114), while C1 obtains the highest raw intervention accuracy (0.948) with no measurable causal or evidential grounding.",
+      "authors": [
+        "Ummara Mumtaz",
+        "Aimen Noor",
+        "Awais Ahmed"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.IR",
+        "q-bio.QM"
+      ],
+      "published": "2026-08-15T19:21:51+00:00",
+      "link": "https://arxiv.org/pdf/2608.15382v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "metrics and framework for evaluating healthcare LLM reasoning, relevant to medical agent evaluation",
+      "llm_evidence_cn": "面向医疗LLM推理评估的指标与框架，与医疗智能体评估相关",
+      "llm_evidence": "面向医疗LLM推理评估的指标与框架，与医疗智能体评估相关",
+      "canonical_evidence": "面向医疗LLM推理评估的指标与框架，与医疗智能体评估相关",
+      "llm_tldr_en": "Grounding Healthcare LLMs in a Causal Knowledge Graph proposes a reproducible evaluation framework and metrics for intervention-oriented healthcare LLM behavior, addressing reasoning beyond single-answer accuracy.",
+      "llm_tldr_cn": "大型语言模型在医疗决策支持中的评估仍局限于单答案准确率，忽略了对干预、机制、危害、证据和不确定性的推理。作者提出一个可复现的基于图中心的评估框架，包含域因果知识图谱、场景条件子图抽取、四个受控接地协同度量等组件，并在心血管试点中验证。该框架提供了面向干预的医疗LLM评估指标，能够为基于EHR的医疗智能体评测提供方法论借鉴，但并未直接使用EHR或智能体交互。",
+      "llm_tldr": "大型语言模型在医疗决策支持中的评估仍局限于单答案准确率，忽略了对干预、机制、危害、证据和不确定性的推理。作者提出一个可复现的基于图中心的评估框架，包含域因果知识图谱、场景条件子图抽取、四个受控接地协同度量等组件，并在心血管试点中验证。该框架提供了面向干预的医疗LLM评估指标，能够为基于EHR的医疗智能体评测提供方法论借鉴，但并未直接使用EHR或智能体交互。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "What are the metrics for healthcare agent evaluation using EHR data?",
+      "matched_requirement_id": "req-7",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.15591v1",
+      "source": "arxiv",
+      "title": "Agent Gym: A Framework for Continuous Evaluation and Evolution of LLM Agents Through Human-in-the-Loop Feedback",
+      "abstract": "Large Language Model (LLM) agents deployed in production environments face a fundamental tension: the agent's behavior is frozen at deployment time, while the business rules and edge cases it must handle continue to evolve. Existing approaches address agent construction and one-time evaluation but provide no structured mechanism for continuous post-deployment behavioral correction without modifying the agent's source code. Most of the approaches offered in the market, require intense collection of logs and traces, and re-examining the agent design by the engineering team, a process which is heavy, long and negates the economical value of agentic transformation. We introduce Agent Gym, a modular, domain-agnostic framework that wraps any existing LLM-based agent in a continuous evaluation-and-evolution loop. The framework provides six composable capabilities --- Act, Evaluate, Investigate, Correct, Learn, and Observe --- organized across three architectural zones: a constitution layer that codifies domain knowledge in configuration artifacts, a runtime inference pipeline that chains acting, investigation, and adaptive correction, and a learning loop that enables subject matter experts to discover and validate new correction rules through natural language interaction. The key technical contributions include a hybrid deterministic-LLM correction engine with 21 condition operators and three-tier actions, a three-layer investigation architecture for ground-truth-free compliance validation, and a programmatic safety loop that guarantees rule correctness before human approval. We further introduce the Spec-to-Note Gap, an autoencoder-inspired view of agentic system transparency. An open-source reference implementation for invoice processing demonstrates that the framework is fully operational and ready for adoption.",
+      "authors": [
+        "Pouya Ghiasnezhad Omran",
+        "Michael Zimmermann",
+        "Duncan Cambridge",
+        "Ashmita Kapoor",
+        "Tanya Dixit"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-16T07:27:26+00:00",
+      "link": "https://arxiv.org/pdf/2608.15591v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Domain-agnostic framework for continuous evaluation of LLM agents",
+      "llm_evidence_cn": "用于LLM智能体持续评估的领域无关框架",
+      "llm_evidence": "用于LLM智能体持续评估的领域无关框架",
+      "canonical_evidence": "用于LLM智能体持续评估的领域无关框架",
+      "llm_tldr_en": "Agent Gym is a modular, domain-agnostic framework for continuously evaluating and evolving LLM agents via human-in-the-loop feedback.",
+      "llm_tldr_cn": "该框架针对LLM智能体部署后行为冻结、难以持续改进的问题，提出Agent Gym，一种模块化且领域无关的评估与进化框架。它通过人在回路反馈，在不修改智能体源码的前提下实现部署后的行为纠正。相比需要大量日志与工程团队介入的传统方法，Agent Gym提供更轻量、可持续的评估机制。这对于医疗智能体的持续评测具有较高的方法学参考价值。",
+      "llm_tldr": "该框架针对LLM智能体部署后行为冻结、难以持续改进的问题，提出Agent Gym，一种模块化且领域无关的评估与进化框架。它通过人在回路反馈，在不修改智能体源码的前提下实现部署后的行为纠正。相比需要大量日志与工程团队介入的传统方法，Agent Gym提供更轻量、可持续的评估机制。这对于医疗智能体的持续评测具有较高的方法学参考价值。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.16411v1",
+      "source": "arxiv",
+      "title": "Towards Risk-free AI Agent Deployment",
+      "abstract": "LLM-based agents are rapidly moving from research prototypes into the core business processes of organizations, but these agents pose deployment risks to security, compliance, and functionality. In this article, we argue that risk-free deployment must be grounded in the agent's trajectory: the recorded sequence of reasoning steps, tool invocations, and environmental observations. Trajectories are available for any agent, and many failures are visible only in the trajectory. To make agents deployable and sustainable, we advocate agent testing and debugging as a systematic research direction for detecting and mitigating these risks. This article begins with the challenges of testing agents, including the oracle problem, non-determinism, trajectory validation, and the absence of adequacy metrics. We then turn to debugging agents, from automated failure attribution to repair and self-evolution. We distill these directions into a practical deployment-readiness checklist covering the full deployment lifecycle. Finally, we identify open problems, i.e., formal adequacy metrics, root-cause attribution over long-horizon trajectories, and the reliability of self-evolving agents, that the community must address to enable trustworthy agent deployment.",
+      "authors": [
+        "Yintong Huo",
+        "Rangeet Pan",
+        "Abhik Roychoudhury"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI"
+      ],
+      "published": "2026-08-17T11:07:07+00:00",
+      "link": "https://arxiv.org/pdf/2608.16411v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory-based agent testing methodology for performance evaluation",
+      "llm_evidence_cn": "基于轨迹的智能体测试方法，用于性能评估",
+      "llm_evidence": "基于轨迹的智能体测试方法，用于性能评估",
+      "canonical_evidence": "基于轨迹的智能体测试方法，用于性能评估",
+      "llm_tldr_en": "This paper argues for ground risk-free agent deployment in recorded trajectories, advocating systematic agent testing and debugging. It addresses the oracle problem, non-determinism, trajectory validation, and absence of adequacy criteria for reliable agent evaluation.",
+      "llm_tldr_cn": "本文指出大模型智能体在企业流程中部署面临安全、合规和功能风险，提出基于智能体轨迹的系统化测试与调试方向。该方法针对oracle问题、非确定性、轨迹验证与充分性准则缺失等挑战，为智能体可靠性评估提供了通用框架。虽然论文未聚焦医疗，但其轨迹驱动的测试思想可直接迁移到医学智能体的性能评估中。",
+      "llm_tldr": "本文指出大模型智能体在企业流程中部署面临安全、合规和功能风险，提出基于智能体轨迹的系统化测试与调试方向。该方法针对oracle问题、非确定性、轨迹验证与充分性准则缺失等挑战，为智能体可靠性评估提供了通用框架。虽然论文未聚焦医疗，但其轨迹驱动的测试思想可直接迁移到医学智能体的性能评估中。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.17330v1",
+      "source": "arxiv",
+      "title": "LLMs for Medical Consultation Are Evaluated Too Late: The Preformulation Gap",
+      "abstract": "Large language models for medical consultation are often evaluated after a clinical problem has already been made clear, although real consultations may begin with a vague, minimized, or misframed concern. We evaluated three API models across four physician-authored, multi-turn vignettes under baseline and entry-to-care instruction conditions, yielding 24 fixed-script transcripts; two cases also used adaptive standardized-patient simulation, yielding 12 transcripts. Self-care or home-management advice before any patient answer appeared in 9 of 12 baseline case-model cells and 0 of 12 instruction cells, while structured handoff summaries appeared in 0 of 12 and 10 of 12 cells, respectively. The instruction changed sequencing and documentation, although it did not reliably ensure elicitation of decisive facts. The preformulation gap should therefore be evaluated directly through observable first-contact behavior rather than inferred from diagnostic accuracy or final-answer quality.",
+      "authors": [
+        "Yining Hua",
+        "Cyrus Ayubcha",
+        "Hongbin Na",
+        "Levi Lian",
+        "Alon Gorenshtein",
+        "Yiftach Barash",
+        "Eyal Klang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "cs.CL",
+        "cs.CY"
+      ],
+      "published": "2026-08-18T03:40:56+00:00",
+      "link": "https://arxiv.org/pdf/2608.17330v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "medical consultation LLM evaluation, aligned with medical agent evaluation",
+      "llm_evidence_cn": "针对医疗咨询LLM的评估，与医疗智能体评估直接相关",
+      "llm_evidence": "针对医疗咨询LLM的评估，与医疗智能体评估直接相关",
+      "canonical_evidence": "针对医疗咨询LLM的评估，与医疗智能体评估直接相关",
+      "llm_tldr_en": "Shows that LLM medical consultation agents are typically evaluated after the clinical problem is clear; introducing preformulation instructions changes advice sequencing and documentation quality.",
+      "llm_tldr_cn": "针对医疗咨询LLM评估时机过晚的问题，本文指出真实咨询常从模糊主诉开始，而现有评估在问题明确后进行。作者在医生编写的多轮场景和标准化病人模拟下，对比了基线与加强进入对话指导条件，发现基线条件下过早给出自我护理建议的比例较高，而结构化交接摘要缺失。加入指导后，对话排序与文档记录显著改善。该研究强调了医疗对话LLM评估中考虑问题预表述阶段的重要性，为更贴近临床的评估设计提供了依据。",
+      "llm_tldr": "针对医疗咨询LLM评估时机过晚的问题，本文指出真实咨询常从模糊主诉开始，而现有评估在问题明确后进行。作者在医生编写的多轮场景和标准化病人模拟下，对比了基线与加强进入对话指导条件，发现基线条件下过早给出自我护理建议的比例较高，而结构化交接摘要缺失。加入指导后，对话排序与文档记录显著改善。该研究强调了医疗对话LLM评估中考虑问题预表述阶段的重要性，为更贴近临床的评估设计提供了依据。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.18072v1",
+      "source": "arxiv",
+      "title": "Multi-Agent AI System for Radiology Report Structuring and Quality Assurance with Independent Radiologist Evaluation",
+      "abstract": "Purpose: To develop and evaluate a locally deployed multi-agent AI system for radiology report structuring and quality assurance. Materials and Methods: This retrospective study included 638 radiology reports from CT examinations of the chest, abdomen, and pelvis dictated by 15 board-certified radiologists in 2023 and 2024. A multi-agent AI pipeline was developed to perform report structuring and quality assurance (QA). The system structured the report into standardized anatomical sections at the sentence level using regex rules and local large language models. It also detected mismatches between the Findings and Impression sections, or within sections; gender-anatomy conflicts; and undocumented communication of critical findings. Two board-certified radiologists independently evaluated a 45-report subset. Results: The multi-agent system structured the Findings sections of all reports (22,270 sentences) into a predefined anatomical format while retaining the original report content. The system flagged 90 (14.1%) reports, most commonly for section mismatches (80 reports, 12.5%). In the radiologist evaluation, both reviewers agreed that 31 (69%) were correctly restructured, 2 reports (4%) were incorrectly restructured, and disagreed on the remaining 12 reports (27%). Both reviewers agreed that no clinically important information was omitted and no fabricated content was introduced. Overall QA performance was rated as \"excellent\" or \"good\" in 84% of the evaluated reports, with the remaining reports rated as \"fair\". Conclusion: A locally deployed multi-agent AI system combined radiology report structuring and quality assurance within a single workflow. The system demonstrated favorable performance in radiologist evaluation. Such systems may support standardization of reporting and quality assurance in radiology practice.",
+      "authors": [
+        "Iryna Hartsock",
+        "Cesar Lam",
+        "Christopher Otteni",
+        "Aliya Qayyum",
+        "Robert Gatenby",
+        "Cyrillo Araujo",
+        "Ghulam Rasool"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-08-18T17:57:08+00:00",
+      "link": "https://arxiv.org/pdf/2608.18072v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "multi-agent AI system for radiology reports with independent radiologist evaluation; no structured EHR use",
+      "llm_evidence_cn": "面向放射学报告的多Agent系统并进行了放射科医生独立评估，未使用结构化EHR",
+      "llm_evidence": "面向放射学报告的多Agent系统并进行了放射科医生独立评估，未使用结构化EHR",
+      "canonical_evidence": "面向放射学报告的多Agent系统并进行了放射科医生独立评估，未使用结构化EHR",
+      "llm_tldr_en": "Develops and evaluates a locally deployed multi-agent AI pipeline for radiology report structuring and QA, with radiologist assessment on 638 reports; useful prototype for medical agent evaluation.",
+      "llm_tldr_cn": "放射科报告结构化和质量保证工作繁重，需要一个可本地部署且经过专家验证的多Agent系统。作者回顾性收集638份胸腹盆CT报告，构建由正则规则和本地大语言模型驱动的多Agent流水线，将报告按句子标准化到解剖章节，并检测所见与印象不一致、性别与解剖冲突以及未记录的沟通内容。独立放射科医生对系统进行评估，验证了其可行性。该工作为医疗多Agent系统的专家评估提供示例，但其任务不是EHR上的通用Agent性能评测。",
+      "llm_tldr": "放射科报告结构化和质量保证工作繁重，需要一个可本地部署且经过专家验证的多Agent系统。作者回顾性收集638份胸腹盆CT报告，构建由正则规则和本地大语言模型驱动的多Agent流水线，将报告按句子标准化到解剖章节，并检测所见与印象不一致、性别与解剖冲突以及未记录的沟通内容。独立放射科医生对系统进行评估，验证了其可行性。该工作为医疗多Agent系统的专家评估提供示例，但其任务不是EHR上的通用Agent性能评测。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}
