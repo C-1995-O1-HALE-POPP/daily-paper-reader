@@ -1,0 +1,430 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-21T20:45:23.835264+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 9,
+    "quick_skim_target": 11,
+    "quick_selected": 9
+  },
+  "deep_dive": [
+    {
+      "id": "2608.19263v1",
+      "source": "arxiv",
+      "title": "The Evaluation Context Protocol (ECP): A Portable Contract for AI Agent Evaluation",
+      "abstract": "The evolution of artificial intelligence has necessitated a fundamental shift from evaluating isolated Large Language Models (LLMs) to assessing autonomous agentic architectures. This paper explores the critical methodologies for evaluating AI agents and the essential role of advanced observability infrastructure. We analyze the architectural components of agents and identify the severe limitations of current evaluation paradigms, including benchmark exploitation, the \"confidently wrong\" phenomenon, and the discrepancy between theoretical capability and operational reliability. To begin addressing the fragmentation in current evaluation infrastructure, this paper proposes the Evaluation Context Protocol (ECP), an early-stage, vendor-neutral framework intended to act as a portable evaluation contract layer for agentic systems. In its current form ECP defines a small JSON-RPC interface over which an agent exposes its user-visible output, the tool calls it made, and evaluator-safe audit context, and against which programmatic checks can be run uniformly across frameworks and continuous integration systems. We describe an open-source reference implementation that includes adapters for LangChain, LlamaIndex, CrewAI, and PydanticAI, and we situate the design against failure modes documented in the recent literature. ECP is presented as work in progress rather than a finished standard: the evaluation surface, method set, and grader families are all expected to change as the protocol is exercised against more systems, and the empirical validation required to justify adoption is outlined as future work.",
+      "authors": [
+        "Aniket Wattamwar",
+        "Manav Anandani",
+        "Mrunal Kakirwar"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.MA"
+      ],
+      "published": "2026-08-18T07:14:36+00:00",
+      "link": "https://arxiv.org/pdf/2608.19263v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 8.0,
+      "llm_evidence_en": "portable evaluation contract for AI agents, directly applicable to benchmarking medical agents",
+      "llm_evidence_cn": "面向AI智能体的可移植评估契约，可直接用于医疗智能体基准测试",
+      "llm_evidence": "面向AI智能体的可移植评估契约，可直接用于医疗智能体基准测试",
+      "canonical_evidence": "面向AI智能体的可移植评估契约，可直接用于医疗智能体基准测试",
+      "llm_tldr_en": "ECP addresses fragmented AI agent evaluation by proposing the Evaluation Context Protocol, a vendor-neutral portable contract capturing evaluation context, observability, and reliability. It analyzes failures like benchmark exploitation and confidently-wrong behavior, shifting focus from isolated LLMs to agentic architectures.",
+      "llm_tldr_cn": "为应对AI智能体评估基础设施碎片化与现有范式缺陷，提出评估上下文协议（ECP）。该协议提供厂商中立的可移植契约，标准化评估上下文和可观测性，弥补能力与运营可靠性之间的鸿沟。通过分析基准利用和“自信错误”等现象，推动从孤立LLM评估转向自主Agent评估。该协议可被医疗智能体评估采用，支撑EHR环境下的基准测试。",
+      "llm_tldr": "为应对AI智能体评估基础设施碎片化与现有范式缺陷，提出评估上下文协议（ECP）。该协议提供厂商中立的可移植契约，标准化评估上下文和可观测性，弥补能力与运营可靠性之间的鸿沟。通过分析基准利用和“自信错误”等现象，推动从孤立LLM评估转向自主Agent评估。该协议可被医疗智能体评估采用，支撑EHR环境下的基准测试。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.14804v1",
+      "source": "arxiv",
+      "title": "Generated Context versus Governed State: Functional Conditions for Accountable Longitudinal Clinical Reasoning",
+      "abstract": "Large language models (LLMs) have become the dominant interface of clinical artificial intelligence, yet the interface they expose (text in, text out, one context window at a time) maintains no explicit, persistent, governed representation of what is currently true about a patient. This paper argues that longitudinal clinical reasoning is a state-estimation problem under partial observability, and that the axis on which clinical AI succeeds or fails is not the fluency of the model reading the record but the governance of the patient state it reasons over. We distinguish generated context from governed state; separate five objects that clinical AI habitually conflates (true state, observations, evidence, belief, and simulated state); define a tiered governance standard against which any clinical AI system can be audited; and show that an operational definition of accountability decomposes into four information requirements: an immutable evidence ledger with awareness-time versioning, a belief state distinct from accumulated evidence, an observation-process model, and claim-level causal typing. We are explicit that this decomposition is analytic rather than a necessity theorem, and that its value is conceptual hygiene: it converts \"accountable clinical AI\" from a slogan into an audit instrument. A six-level maturity framework separates what a system makes governable from what it can compute, locating current LLM-centric practice at high capability but low maturity. The paper is fully self-contained: the four research questions the framework poses are stated in the introduction, and the conclusion records what the paper establishes toward each; future work develops the buildable core of the architecture and the research program toward full Clinical World Models. No empirical result is claimed here.",
+      "authors": [
+        "Augusto Bernardo Pissarra",
+        "Victor Lorena de Farias Souza"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-14T18:18:31+00:00",
+      "link": "https://arxiv.org/pdf/2608.14804v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "Defines functional conditions for accountable longitudinal clinical reasoning, separating governed patient state from generated context, relevant to evaluating clinical AI over EHR.",
+      "llm_evidence_cn": "提出负责任纵向临床推理的功能条件，区分受管理的患者状态与生成上下文，对EHR临床AI评估有参考意义。",
+      "llm_evidence": "提出负责任纵向临床推理的功能条件，区分受管理的患者状态与生成上下文，对EHR临床AI评估有参考意义。",
+      "canonical_evidence": "提出负责任纵向临床推理的功能条件，区分受管理的患者状态与生成上下文，对EHR临床AI评估有参考意义。",
+      "llm_tldr_en": "Argues longitudinal clinical reasoning is state-estimation under partial observability and distinguishes generated context from governed state, offering functional conditions for accountable clinical AI evaluation.",
+      "llm_tldr_cn": "该论文认为纵向临床推理是一个在部分可观测条件下的状态估计问题，而当前LLM的文本进文本出接口缺乏对患者真实状态的显式、持久和受管理的表示。作者区分生成上下文与受管理状态，并将真实状态、观测、证据、信念等五种常被混淆的对象分离，提出负责任临床AI应满足的功能条件。这一概念框架可用于设计评估医疗智能体在处理纵向记录时是否具备可靠状态治理能力的指标。",
+      "llm_tldr": "该论文认为纵向临床推理是一个在部分可观测条件下的状态估计问题，而当前LLM的文本进文本出接口缺乏对患者真实状态的显式、持久和受管理的表示。作者区分生成上下文与受管理状态，并将真实状态、观测、证据、信念等五种常被混淆的对象分离，提出负责任临床AI应满足的功能条件。这一概念框架可用于设计评估医疗智能体在处理纵向记录时是否具备可靠状态治理能力的指标。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "evaluation of clinical decision support agents with EHR",
+      "matched_requirement_id": "req-6",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.12779v1",
+      "source": "arxiv",
+      "title": "CRAFT: LLM-Based Iterative Refinement for Temporal Reasoning over Clinical Narratives",
+      "abstract": "Understanding the temporal progression of symptoms in clinical narratives is critical for disease monitoring, safety surveillance, and causality assessment. Clinical narratives, however, rarely provide explicit temporal anchors. Current approaches to temporal information reasoning focus predominantly on pairwise relation classification across multi-visit and timestamp-rich records, leaving the reconstruction of structured symptom trajectories from individual anchor-sparse reports largely unaddressed. We propose CRAFT, an LLM framework that pairs a generator with a constraint-based verifier to iteratively produce and refine stage-wise symptom timelines through targeted feedback. We conduct evaluation on MedTempo, a new benchmark of 5,347 vaccine adverse-event narratives spanning three COVID-19 vaccine types, with expert-validated temporal stage annotations for 3,166 reports. Experiments across four LLM backbones demonstrate that CRAFT consistently improves temporal ordering accuracy, with ablation analysis isolating the contribution of generator and verifier components across model capability levels.",
+      "authors": [
+        "Chengyang He",
+        "Tahreem Arif",
+        "Marko Zivkovic",
+        "Lijing Wang",
+        "Yue Ning",
+        "Ping Wang"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI",
+        "cs.IR"
+      ],
+      "published": "2026-08-13T03:37:11+00:00",
+      "link": "https://arxiv.org/pdf/2608.12779v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "clinical narrative benchmark and LLM evaluation, transferable to EHR-based agent evaluation",
+      "llm_evidence_cn": "临床叙事基准与LLM评估，对基于EHR的智能体评估有迁移价值",
+      "llm_evidence": "临床叙事基准与LLM评估，对基于EHR的智能体评估有迁移价值",
+      "canonical_evidence": "临床叙事基准与LLM评估，对基于EHR的智能体评估有迁移价值",
+      "llm_tldr_en": "Presents CRAFT, an LLM framework pairing a generator with a constraint-based verifier to iteratively refine symptom timelines from anchor-sparse clinical narratives, evaluated on the new MedTempo benchmark. Relevant to clinical text evaluation but not directly agent-centric.",
+      "llm_tldr_cn": "临床叙事中的症状时间线重建对疾病监测和安全性评估至关重要，但现有方法主要处理成对关系且依赖时间戳丰富的记录。作者提出CRAFT框架，将生成器与基于约束的验证器结合，对锚点稀疏的临床记录进行迭代式症状时间线优化，并在新基准MedTempo上进行评测。该工作为临床文本中的时间推理提供了新评估基准与方法。",
+      "llm_tldr": "临床叙事中的症状时间线重建对疾病监测和安全性评估至关重要，但现有方法主要处理成对关系且依赖时间戳丰富的记录。作者提出CRAFT框架，将生成器与基于约束的验证器结合，对锚点稀疏的临床记录进行迭代式症状时间线优化，并在新基准MedTempo上进行评测。该工作为临床文本中的时间推理提供了新评估基准与方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical AI agents evaluation using EHR data",
+      "matched_requirement_id": "req-4",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.18575v1",
+      "source": "arxiv",
+      "title": "Beyond LLM-Based Reasoning: Lightweight GNNs for Agent Failure Attribution",
+      "abstract": "Large language model (LLM)-based multi-agent systems (MAS) often exhibit complex failure modes, which frequently cause agents to produce incorrect outcomes. This motivates the task of Agent Failure Attribution: given a failed multi-agent trajectory, identify the faulty agents and their corresponding error types. Existing approaches predominantly rely on LLMs to perform failure attribution, either through direct prompting, fine-tuning on synthetic data or complex agentic pipelines. While effective, these methods incur substantial computational overhead due to long-context processing, expensive post-training and handcrafted workflows. Moreover, empirical evidence shows that even state-of-the-art models achieve limited accuracy on existing benchmarks, suggesting that scaling model size alone is insufficient. In this work, we revisit this task and question the necessity of such expensive generative solutions. We introduce AFANet, a lightweight graph-based framework that models interaction trajectories through step-level semantic signals and agent-level relationships. We show that with significantly fewer parameters and near-zero inference cost, AFANet (i) matches or outperforms LLM-based baselines, including fine-tuned models on in-domain benchmarks, (ii) maintains robust performance across different GNN architectures and (iii) can be further improved with inexpensive test-time adaptation on the OOD benchmark. Our results suggest that effective agent failure attribution does not require heavy LLM reasoning and a lightweight, structured approach can achieve strong performance.",
+      "authors": [
+        "Ting-Wei Li",
+        "Yuanchen Bei",
+        "Xiao Lin",
+        "Hanghang Tong"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-08-19T06:16:09+00:00",
+      "link": "https://arxiv.org/pdf/2608.18575v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 7.0,
+      "llm_evidence_en": "focuses on agent failure attribution, a core aspect of evaluating multi-agent system performance; transferable to medical agents",
+      "llm_evidence_cn": "聚焦代理故障归因这一多智能体性能评估核心环节，可迁移至医疗代理评估",
+      "llm_evidence": "聚焦代理故障归因这一多智能体性能评估核心环节，可迁移至医疗代理评估",
+      "canonical_evidence": "聚焦代理故障归因这一多智能体性能评估核心环节，可迁移至医疗代理评估",
+      "llm_tldr_en": "Proposes lightweight GNNs to attribute failures in multi-agent trajectories, avoiding costly LLM-based attribution; applicable to medical agent evaluation.",
+      "llm_tldr_cn": "LLM多智能体系统常出现复杂失败模式，需要从失败轨迹中定位故障智能体并识别错误类型。现有归因方法依赖大量LLM推理，计算开销高且准确率受限。本文提出轻量级GNN模型直接基于轨迹进行智能体故障归因，避免长上下文处理与昂贵后训练。该方法为医疗多智能体系统提供高效的自动化评估路径，可用于EHR环境中智能体故障的诊断。",
+      "llm_tldr": "LLM多智能体系统常出现复杂失败模式，需要从失败轨迹中定位故障智能体并识别错误类型。现有归因方法依赖大量LLM推理，计算开销高且准确率受限。本文提出轻量级GNN模型直接基于轨迹进行智能体故障归因，避免长上下文处理与昂贵后训练。该方法为医疗多智能体系统提供高效的自动化评估路径，可用于EHR环境中智能体故障的诊断。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "7"
+    },
+    {
+      "id": "2608.13867v1",
+      "source": "arxiv",
+      "title": "Engineering Reliable Coding Agents: Evaluating and Operating the System Around the Model",
+      "abstract": "AI coding agents are commonly evaluated as models but deployed as systems. Their reliability depends not only on model capability, but on the harness, execution state, retrieval, memory and state management, permissions, review interfaces, and resource allocation. This monograph examines those boundaries and develops a framework for evaluating and operating coding agents reliably. It synthesizes 164 scholarly works, 100 practitioner records, 29 benchmark records, and 17 author-system case records through a structured multivocal review, targeted update audits, software-engineering coverage analysis, and distributed-systems evidence synthesis. Across this evidence, many apparent model failures originate elsewhere in the system, while improvements at one layer often fail to propagate to end-to-end outcomes. Evaluation and operation are treated as a dependency chain in which weaknesses in task construction, execution environments, retrieval, state management, verification, or observability can invalidate downstream conclusions. The monograph contributes a versioned catalog of 206 reliability records: 193 gated practices, including 56 developed in depth, plus 13 research leads; an evidence ledger; a framework for dependency and repair asymmetry across the agent lifecycle; measurements and failure cases from operated agent systems; runnable evaluation and reliability protocols; and five reusable agent skills with evidence maps. Together, these provide a system-level methodology for distinguishing model capability from infrastructure effects, designing defensible evaluations, and building systems that recover safely when components fail. The review is structured rather than exhaustive, evidence strength varies by topic, and results depend on workload and configuration. The methods record which search lanes were executed, which remain unexecuted, and limits on evidence-grading claims.",
+      "authors": [
+        "Stephanie Jarmak"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI"
+      ],
+      "published": "2026-08-14T01:34:25+00:00",
+      "link": "https://arxiv.org/pdf/2608.13867v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "general framework for evaluating agent systems, transferable to medical agent benchmarking",
+      "llm_evidence_cn": "通用的智能体系统评估框架，可迁移至医疗智能体基准测试",
+      "llm_evidence": "通用的智能体系统评估框架，可迁移至医疗智能体基准测试",
+      "canonical_evidence": "通用的智能体系统评估框架，可迁移至医疗智能体基准测试",
+      "llm_tldr_en": "Argues AI coding agents should be evaluated as systems, not models. Develops a framework covering harness, execution, retrieval, memory, permissions, and review interfaces, synthesizing many evidence sources. Shows many model failures actually originate in surrounding infrastructure.",
+      "llm_tldr_cn": "该专著指出编码Agent以模型评估但以系统部署，可靠性取决于模型外部的执行环境、检索、记忆、权限等边界条件。通过多声部综述和案例分析提出系统化评估与运行框架，大量失败根因源于基础设施而非模型本身。该框架强调围绕模型的完整系统评估，可迁移至医疗Agent的性能评估场景。",
+      "llm_tldr": "该专著指出编码Agent以模型评估但以系统部署，可靠性取决于模型外部的执行环境、检索、记忆、权限等边界条件。通过多声部综述和案例分析提出系统化评估与运行框架，大量失败根因源于基础设施而非模型本身。该框架强调围绕模型的完整系统评估，可迁移至医疗Agent的性能评估场景。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.14036v1",
+      "source": "arxiv",
+      "title": "Demystifying Agent Skills: Why They Work-Until They Don't",
+      "abstract": "Skills have emerged as a practical and effective approach for enhancing LLM agents at inference time through structured packages of knowledge. However, existing evaluations largely measure whether skills improve aggregated task success, leaving a more fundamental question underexplored: \\emph{\\textbf{When do skills help, why do they work, and where do they fail?}} Through controlled experiments across various benchmarks, agent harnesses and LLMs, we isolate the effects of representation, outcome annotation, retrieval difficulty, and cross-framework robustness of skills. To further answer this question, we design a contrastive study that combines controlled quantitative experiments with paired trajectory analysis. We normalize 8,135 trial records from controlled experiments and retain 238 valid unique labels from 240 open-coded records. We consolidate these observations into a taxonomy of three high-level categories and twelve skill-use modes: skills work when noisy trajectories become procedural anchors that stabilize execution. Skills improve over Workflow Memory by 6.06 points in matched comparisons. Procedural anchoring accounts for 65.7\\% of skill cases, versus 4.5\\% for explicit knowledge injection, showing that skills stabilize action rather than inject missing facts. Retrieval is a separate bottleneck: as pools grow from 5 to 100, actual-use precision falls from 29.6\\% to 3.3\\%. Confusable distractors impair offline identification, yet downstream success remains stable; exact ground-truth invocation is neither sufficient nor necessary. Skills fail under brittle assumptions, incompatible contexts, or insufficient adaptation. These findings move evaluation beyond aggregate success rates and guide reliable self-evolving agents.",
+      "authors": [
+        "Zhiyuan Jiang",
+        "Fangrui Huang",
+        "Hanwen Xing",
+        "Xander Wu",
+        "Yipeng Gao",
+        "Rui Cao",
+        "Mengdi Wang",
+        "Shilong Liu",
+        "Yijiang Li"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-14T07:26:38+00:00",
+      "link": "https://arxiv.org/pdf/2608.14036v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Controlled experiments isolating when agent skills help and fail; transferable evaluation methodology for medical agents",
+      "llm_evidence_cn": "通过受控实验分离技能何时有效何时失效，评估方法可迁移到医疗Agent",
+      "llm_evidence": "通过受控实验分离技能何时有效何时失效，评估方法可迁移到医疗Agent",
+      "canonical_evidence": "通过受控实验分离技能何时有效何时失效，评估方法可迁移到医疗Agent",
+      "llm_tldr_en": "This study demystifies LLM agent skills through controlled experiments across benchmarks, harnesses, and models, isolating effects of representation, outcome annotation, retrieval difficulty, and cross-framework robustness to answer when skills help and why they fail.",
+      "llm_tldr_cn": "技能是提升LLM Agent的重要机制，但现有评测只关心平均任务成功率。该研究通过对比实验，从表征方式、结果标注、检索难度和跨框架鲁棒性等维度剖析技能何时有效、为何失效，并规范化了8135条试验记录。实验发现技能的收益高度依赖Agent框架与检索设置，单纯的技能包并不总能带来提升。这项工作提供的测试方法和分析结论可用于指导和评测医疗Agent中技能的使用。",
+      "llm_tldr": "技能是提升LLM Agent的重要机制，但现有评测只关心平均任务成功率。该研究通过对比实验，从表征方式、结果标注、检索难度和跨框架鲁棒性等维度剖析技能何时有效、为何失效，并规范化了8135条试验记录。实验发现技能的收益高度依赖Agent框架与检索设置，单纯的技能包并不总能带来提升。这项工作提供的测试方法和分析结论可用于指导和评测医疗Agent中技能的使用。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.14352v1",
+      "source": "arxiv",
+      "title": "ATLAS: Discovering Agent Strategies through LLM-Guided Abstraction and Automata Learning",
+      "abstract": "Large Language Model (LLM)-based agents are increasingly used for complex tasks such as software testing and cybersecurity assessment. While these agents demonstrate impressive capabilities, their behavior is difficult to understand, explain, and analyze. Existing evaluations focus mainly on task success and execution traces, offering limited insight into the strategies employed by the agent. We present ATLAS (Automata Learning for Agent Trajectory Analysis and Strategy Discovery), an approach for recovering interpretable behavioral models from agent trajectories. ATLAS combines trace abstraction with automata learning to infer finite-state models that capture observed agent-environment interaction strategies. These models provide human-interpretable insights and support automated analyses of recurring behaviors, decision points, successful task-completion paths, and failure loops. As a proof of concept, we apply ATLAS to trajectories generated by an LLM-based penetration-testing agent. The resulting models expose high-level behavioral strategies for exploiting vulnerable machines that are difficult to identify from raw execution traces alone. We discuss how learned behavioral models can support explainability, model-guided exploration, auditing, and analysis of agentic systems. We further demonstrate symbolic model-based knowledge transfer from powerful frontier models to compact language models. In addition, we show how model transformations can derive concise explanations of agent behavior in a penetration-testing case study comprising 12 vulnerable machines. ATLAS highlights a new opportunity for model-driven engineering: transforming agent trajectories into explicit behavioral models that enable systematic understanding and analysis of otherwise opaque AI agents.",
+      "authors": [
+        "Ignacio D. Lopez-Miguel",
+        "Andreas Happe",
+        "Jürgen Cito",
+        "Ezio Bartocci",
+        "Bettina Könighofer",
+        "Martin Tappler"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.LG"
+      ],
+      "published": "2026-08-14T14:51:48+00:00",
+      "link": "https://arxiv.org/pdf/2608.14352v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Agent strategy discovery via automata learning; transferable method for medical agent evaluation.",
+      "llm_evidence_cn": "通过自动机学习发现智能体策略；可迁移到医疗智能体评估。",
+      "llm_evidence": "通过自动机学习发现智能体策略；可迁移到医疗智能体评估。",
+      "canonical_evidence": "通过自动机学习发现智能体策略；可迁移到医疗智能体评估。",
+      "llm_tldr_en": "ATLAS recovers interpretable finite-state models from LLM agent trajectories via trace abstraction and automata learning, enabling strategy-level evaluation beyond task success.",
+      "llm_tldr_cn": "大型语言模型智能体的行为难以解释，现有评估主要关注任务成功率和执行轨迹，缺乏对智能体策略的深入理解。论文提出ATLAS，将轨迹抽象与自动机学习相结合，从智能体与环境的交互轨迹中推断可解释的有限状态模型，以发现智能体实际采用的策略。该方法为智能体行为分析提供了新的工具，可迁移到医疗智能体的评估中，尽管论文本身并未涉及电子健康记录数据或医学场景。",
+      "llm_tldr": "大型语言模型智能体的行为难以解释，现有评估主要关注任务成功率和执行轨迹，缺乏对智能体策略的深入理解。论文提出ATLAS，将轨迹抽象与自动机学习相结合，从智能体与环境的交互轨迹中推断可解释的有限状态模型，以发现智能体实际采用的策略。该方法为智能体行为分析提供了新的工具，可迁移到医疗智能体的评估中，尽管论文本身并未涉及电子健康记录数据或医学场景。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.15008v1",
+      "source": "arxiv",
+      "title": "Harness the Memory: A Holistic Evaluation of Memory Substrates in Memory Agents",
+      "abstract": "Memory is becoming core infrastructure for long-horizon LLM agents, yet existing evaluations offer limited guidance on which memory substrate, namely the underlying medium in which memory is represented and stored, should be used under different operating regimes. We present a controlled harness evaluation of memory substrates for memory-augmented agents, covering dense and sparse indices, text records, structural stores, hierarchical stores, refinement-based memories, parametric updates, and activation-compatible context mechanisms. Across three backbone models and four benchmark suites spanning user-centric question answering and agent-centric decision-making, we instrument 26 performance and efficiency metrics under a unified harness. Our results show that no single substrate consistently dominates: broad retrieval benefits long-context factual QA, while excessive retrieval can harm sequential decision-making by shifting attention away from action-critical context. Scalability introduces a further routing axis, as substrates that perform well at moderate history lengths can become costly or brittle at longer horizons. These findings motivate substrate routing as a necessary component of adaptive agent memory systems and provide empirical guidance for designing efficient, reliable, and regime-aware long-term memory for LLM agents. Code will be made available upon acceptance.",
+      "authors": [
+        "Wei-Chieh Huang",
+        "Weizhi Zhang",
+        "Yuchen Wu",
+        "Yankai Chen",
+        "Eric Hanchen Jiang",
+        "Wooseong Yang",
+        "Yiwei Yang",
+        "Henry Peng Zou",
+        "Hanrong Zhang",
+        "Ying Nian Wu",
+        "Haolun Wu",
+        "Kai-Wei Chang",
+        "Philip S. Yu",
+        "Xue Liu",
+        "Aylin Caliskan"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL"
+      ],
+      "published": "2026-08-15T03:29:48+00:00",
+      "link": "https://arxiv.org/pdf/2608.15008v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Holistic evaluation harness with 26 performance and efficiency metrics for memory-augmented agents; transferable to benchmarking medical agents",
+      "llm_evidence_cn": "为记忆增强Agent提供26项性能与效率指标的统一评估框架，可迁移用于医疗Agent基准测试",
+      "llm_evidence": "为记忆增强Agent提供26项性能与效率指标的统一评估框架，可迁移用于医疗Agent基准测试",
+      "canonical_evidence": "为记忆增强Agent提供26项性能与效率指标的统一评估框架，可迁移用于医疗Agent基准测试",
+      "llm_tldr_en": "This paper presents a controlled harness evaluation of memory substrates for LLM agents, covering multiple backbones and benchmarks, and instruments 26 performance and efficiency metrics to guide memory choice in different operating regimes.",
+      "llm_tldr_cn": "记忆对于长程LLM Agent至关重要，但现有评测很少指导如何选择记忆存储介质。作者构建了统一测试平台，覆盖多种索引、文本记录、结构存储、层级存储等记忆基质，在三个主干模型和四个基准套件上测量26项性能与效率指标。结果显示不同运行场景下记忆基质选择会显著影响Agent表现，为包括医疗领域在内的Agent设计提供了评测方法和性能参考。此项工作为医疗Agent评估贡献了可复用的多维度指标和测试平台。",
+      "llm_tldr": "记忆对于长程LLM Agent至关重要，但现有评测很少指导如何选择记忆存储介质。作者构建了统一测试平台，覆盖多种索引、文本记录、结构存储、层级存储等记忆基质，在三个主干模型和四个基准套件上测量26项性能与效率指标。结果显示不同运行场景下记忆基质选择会显著影响Agent表现，为包括医疗领域在内的Agent设计提供了评测方法和性能参考。此项工作为医疗Agent评估贡献了可复用的多维度指标和测试平台。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.18398v1",
+      "source": "arxiv",
+      "title": "LEDGER: Claim-to-Evidence Trace Graphs for Auditing LLM Agents",
+      "abstract": "Large language model (LLM) agents can now carry out long-horizon technical workflows involving complex tool use, code execution, file edits, and generated artifacts. As agents do more work faster, the productivity bottleneck shifts from producing outputs to auditing whether those outputs are correct and trustworthy. Agent observability systems make fine-grained execution events visible, but visibility alone still leaves reviewers to reconstruct which actions, artifacts, and validation steps matter for a particular conclusion. We introduce LEDGER - Layered Evidence and Decision Graphs for Execution Review, a tracing and review system that builds layered trace graphs over observed agent sessions. LEDGER preserves Trace Records while grouping them into Evidence Nodes and Workflow Nodes, representing artifacts as evidence anchors, and adding typed semantic edges that connect claims to supporting actions, artifacts, and checks. Through data-analysis and coding examples, we show how the resulting traces expose workflow decisions, artifact lineage, repair steps, validation coverage, and claim-support paths for evidence-centered audit.",
+      "authors": [
+        "Daehong Kim",
+        "Haichao Miao",
+        "Shusen Liu"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC",
+        "cs.AI"
+      ],
+      "published": "2026-08-19T00:10:04+00:00",
+      "link": "https://arxiv.org/pdf/2608.18398v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Claim-to-evidence trace graphs for auditing LLM agents; directly applicable to trustworthy evaluation of medical agents",
+      "llm_evidence_cn": "利用声明到证据的追踪图审计LLM Agent，可直接用于医疗Agent的可信评估",
+      "llm_evidence": "利用声明到证据的追踪图审计LLM Agent，可直接用于医疗Agent的可信评估",
+      "canonical_evidence": "利用声明到证据的追踪图审计LLM Agent，可直接用于医疗Agent的可信评估",
+      "llm_tldr_en": "LEDGER builds layered trace graphs over LLM agent sessions, grouping execution events into evidence nodes to help reviewers reconstruct which actions and artifacts matter for a conclusion, supporting trustworthy auditing of agent outputs.",
+      "llm_tldr_cn": "LLM Agent在长周期工作流中生成大量产物，审计这些输出是否正确成为瓶颈。该工作提出LEDGER，通过分层追踪图保留Trace记录，并将事件分组为证据节点，使审查者能快速重建支持结论的关键动作和验证步骤。该方法为Agent输出提供了可审计的证据链路。这为评估医疗Agent的决策过程和结果可信度提供了一种通用审计工具。",
+      "llm_tldr": "LLM Agent在长周期工作流中生成大量产物，审计这些输出是否正确成为瓶颈。该工作提出LEDGER，通过分层追踪图保留Trace记录，并将事件分组为证据节点，使审查者能快速重建支持结论的关键动作和验证步骤。该方法为Agent输出提供了可审计的证据链路。这为评估医疗Agent的决策过程和结果可信度提供了一种通用审计工具。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.19902v1",
+      "source": "arxiv",
+      "title": "Bringing analytic rigor to agentic AI for science: The Brain Researcher platform for neuroimaging data analysis",
+      "abstract": "AI agents can execute scientific analyses, but an analytic output becomes a defensible claim only after alternatives are weighed and the claim is limited to what the evidence supports. Agents may reproduce failures including selective analysis, premature declarations of success and optimization of imperfect criteria. We present Brain Researcher, an agentic research harness operating in a neuroimaging researcher's computational environment under rules for admissible analyses, required checks and claim scope. In benchmarks, Brain Researcher increased first-choice tool-selection accuracy across seven models by 70.2 percentage points (23.3% without it versus 93.6% with it) and verifiable grounding from 4.6% to 22.0%. In collaborator-led and self-evolving studies, multiverse analyses exposed analytic-choice sensitivity, and scientific review classified claims as accepted, qualified, revised, blocked, rejected or deferred. By linking decisions to evidence and provenance, Brain Researcher embeds methodological judgment within the workflow, not after it.",
+      "authors": [
+        "Zijiao Chen",
+        "Nicholas Lu",
+        "Xinhui Li",
+        "Jocelyn A. Ricard",
+        "Ce Ju",
+        "Huan H. Wang",
+        "Christian Kindermann",
+        "Jeanette A. Mumford",
+        "Steven Dillmann",
+        "James Kent",
+        "Alejandro de la Vega",
+        "Sanmi Koyejo",
+        "Vince D. Calhoun",
+        "Joshua W. Buckholtz",
+        "Juan Helen Zhou",
+        "Steffen Bollmann",
+        "Russell A. Poldrack"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI",
+        "q-bio.NC"
+      ],
+      "published": "2026-08-20T11:13:27+00:00",
+      "link": "https://arxiv.org/pdf/2608.19902v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Agentic research harness for neuroimaging analysis with rigorous evaluation benchmarks, transferable to medical agent evaluation.",
+      "llm_evidence_cn": "面向神经影像分析的智能体研究框架，包含严格评估与基准测试，可迁移至医疗智能体评估。",
+      "llm_evidence": "面向神经影像分析的智能体研究框架，包含严格评估与基准测试，可迁移至医疗智能体评估。",
+      "canonical_evidence": "面向神经影像分析的智能体研究框架，包含严格评估与基准测试，可迁移至医疗智能体评估。",
+      "llm_tldr_en": "Introduces a rule-based agentic research harness that enforces admissible analyses and claim-scope checks, sharply improving tool-selection accuracy and verifiable grounding for scientific (neuroimaging) data agents.",
+      "llm_tldr_cn": "论文针对科学数据分析中智能体可能出现的选择性分析与过早宣称成功等问题，提出了Brain Researcher智能体研究框架，通过可允许分析规则、必要检查与声明范围约束来提升分析严谨性。基准测试表明，该框架将七个模型的工具首选准确率提升70.2个百分点，可验证grounding率从4.6%提升至22.0%。其方法论对医疗智能体的评估与基准构建具有参考价值，但并未使用EHR数据。",
+      "llm_tldr": "论文针对科学数据分析中智能体可能出现的选择性分析与过早宣称成功等问题，提出了Brain Researcher智能体研究框架，通过可允许分析规则、必要检查与声明范围约束来提升分析严谨性。基准测试表明，该框架将七个模型的工具首选准确率提升70.2个百分点，可验证grounding率从4.6%提升至22.0%。其方法论对医疗智能体的评估与基准构建具有参考价值，但并未使用EHR数据。",
+      "llm_tags": [
+        "query:ehr-agent:composite"
+      ],
+      "matched_query_tag": "query:ehr-agent:composite",
+      "matched_query_text": "Papers central to 基于EHR的医疗Agent评估, especially work that connects or combines: medical agent that uses electronic health records; benchmarking performance of medical agents; electronic health records for medical agent; medical AI agents evaluation using EHR data; reinforcement learning for healthcare agent evaluation; evaluation of clinical decision support agents with EHR; What are the metrics for healthcare agent evaluation using EHR data?; How to evaluate the performance of medical agents using electronic health records; Benchmarks for clinical decision support agents based on EHR; Reinforcement learning and LLM in medical agent evaluation.",
+      "matched_requirement_id": "req-composite-ehr-agent",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

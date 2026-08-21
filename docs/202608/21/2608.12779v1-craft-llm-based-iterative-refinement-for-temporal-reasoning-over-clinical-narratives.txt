@@ -1,0 +1,587 @@
+Title: CRAFT: LLM-Based Iterative Refinement for Temporal Reasoning over Clinical Narratives
+
+URL Source: https://arxiv.org/pdf/2608.12779v1
+
+Published Time: Fri, 14 Aug 2026 00:28:57 GMT
+
+Number of Pages: 15
+
+Markdown Content:
+# CRAFT: LLM-Based Iterative Refinement for Temporal Reasoning over Clinical Narratives 
+
+Chengyang He ∗ Tahreem Arif ∗ Marko Zivkovic † Lijing Wang ‡ Yue Ning ∗
+
+Ping Wang ∗
+
+Abstract. Understanding the temporal progres-sion of symptoms in clinical narratives is critical for disease monitoring, safety surveillance, and causality assessment. Clinical narratives, however, rarely pro-vide explicit temporal anchors. Current approaches to temporal information reasoning focus predominantly on pairwise relation classification across multi-visit and timestamp-rich records, leaving the reconstruc-tion of structured symptom trajectories from individual anchor-sparse reports largely unaddressed. We propose CRAFT, an LLM framework that pairs a generator with a constraint-based verifier to iteratively produce and refine stage-wise symptom timelines through targeted feedback. We conduct evaluation on MedTempo, a new benchmark of 5,347 vaccine adverse-event narratives spanning three COVID-19 vaccine types, with expert-validated temporal stage annotations for 3,166 reports. Experiments across four LLM backbones demonstrate that CRAFT consistently improves temporal ordering accuracy, with ablation analysis isolating the contribu-tion of generator and verifier components across model capability levels. 
+
+1 Introduction. Clinical temporal reasoning, recovering a stage-wise trajectory of clinical events from narrative text, is central to disease progression model-ing, treatment outcome monitoring, and safety signal detection [10, 20]. However, constructing such order-ings from free text remains labor-intensive. Temporal cues in these narratives are frequently implicit or ex-pressed relative to other events rather than anchored to fixed dates, and co-mentions, restatements, and status updates further obscure the true chronological order of symptoms [37, 1]. A large body of work on temporal information rea-soning has focused on identifying events and temporal        
+
+> ∗Stevens Institute of Technology, Hoboken, NJ, 07030, USA (che14@stevens.edu, tarif1@stevens.edu, yue.ning@stevens.edu, pwang44@stevens.edu)
+> †Genesis Research Group, Hoboken, NJ, 07030,USA (marko.zivkovic@genesisrg.com)
+> ‡New Jersey Institute of Technology, Newark, NJ, 07102, USA (lijing.wang@njit.edu
+
+expressions and predicting pairwise relations to derive a global ordering [16, 25], with recent efforts expanding to exhaustive relation coverage and complex temporal fact extraction [2, 8]. In the clinical domain, however, progress has been bottlenecked by limited benchmark diversity, with most work concentrated on a small num-ber of corpora and relation inventories [1, 28]. Recent LLM-based approaches to clinical temporal reasoning further assume multi-visit timelines, timestamp-linked supervision, or constrained data settings [3, 10, 35]. As a result, standardized methods and benchmarks for ordering symptom progressions within single-report, anchor-sparse clinical narratives remain underexplored. To address this gap, we propose CRAFT (Clinical 
+
+Refinement with Adaptive Feedback for Temporal ordering), a generator–verifier framework that mod-els temporal trajectory reconstruction as an iterative structured prediction task under weak temporal an-choring, where candidate trajectories are refined via constraint-based feedback. Inspired by iterative refine-ment paradigms such as Self-Refine [17], CRAFT in-troduces a structured trajectory representation and a task-specific verification mechanism tailored to tempo-ral ordering, and can be instantiated with different gen-erator and verifier configurations. In this work, we instantiate CRAFT as CRAFT-Full , which pairs a full-regeneration generator with a multi-criterion ad-ditive verifier; we additionally define two baselines (PIVOT , GUIDE ) and two ablations ( CRAFT-G ,
+
+CRAFT w/o V ) to isolate the contribution of the generator and verifier components respectively. To enable rigorous evaluation, we introduce 
+
+MedTempo (Med ical Temp oral Ordering Bench-mark), a benchmark for temporal progression recon-struction from medical free text. MedTempo contains 
+
+5,347 narrative reports spanning three vaccine types, each consisting of a single report per patient with no ex-plicit absolute time anchor and paired with a provided symptom list. Our benchmark task focuses on the 3,166 
+
+reports that exhibit temporal evidence of distinct symp-tom progression, for which we provide expert-validated stage-wise ordering annotations. The remaining reports 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited arXiv:2608.12779v1 [cs.CL] 13 Aug 2026
+
+contain no temporal progression and are retained in the dataset release to support future work on temporal-evidence identification, but fall outside the scope of the current benchmark evaluation. Our primary contribu-tions are as follows: • We propose CRAFT, a generator–verifier frame-work for iterative temporal reasoning refinement under weak temporal anchoring, with controlled baselines and ablations that isolate generator and verifier contributions. • We introduce MedTempo, an expert-annotated benchmark for evaluating structured temporal tra-jectories over anchor-sparse clinical narratives. • We conduct extensive experiments across four LLMs, revealing distinct refinement behaviors tied to model capability and verifier calibration. Figure 4.1 provides a schematic overview of the full pipeline, from dataset construction through iterative refinement and post-hoc evaluation. 
+
+2 Related Work. Temporal information extrac-tion has been shaped by the TimeML annotation frame-work [23], which introduced a markup language for events, temporal expressions, and their relations. The TempEval shared tasks [31] established standardized evaluation for pairwise temporal relation classification, with systems progressing from rule-based and CR-F/SVM approaches to neural methods. A common par-adigm is to predict pairwise relations and then induce a globally consistent ordering [16, 9, 33], while more re-cent benchmarks emphasize richer annotation for event ordering [2] and LLM-based strategies for temporally grounded fact extraction [8]. Transformer-based meth-ods have become the dominant paradigm, as surveyed in [28]. However, these efforts typically center on local relation correctness rather than the end-to-end recon-struction of an ordered, grouped trajectory under weak anchoring. In the clinical domain, the i2b2 2012 challenge [29] brought temporal relation extraction to clinical dis-charge summaries, followed by the Clinical TempEval shared tasks [6] on the THYME corpus [27], where best-performing systems evolved from CRF/SVM classifiers to LSTMs [30]. Surveys document persistent difficul-ties including implicit time anchors, inter-sentence rela-tions, and the gap between relation-level extraction and usable patient timelines [20, 1]. More recent work ap-plies neural end-to-end methods to established clinical corpora [19], and LLM-based approaches have begun to examine prompting and fine-tuning for clinical temporal relation extraction [13, 4, 3, 36] as well as timeline ex-traction from medical case reports [32]. However, these Table 2.1: Descriptive statistics for MedTempo by vaccine type. Text Len. denotes clinical narrative length in words; #Stages denotes number of temporal stages.                                                                                              
+
+> MedTempo MedTempo-T MedTempo-NT Vaccine Metric Med Min Max Med Min Max Med Min Max Pfizer
+> (1789/1019/770) Text Len. 102 11 2319 109 12 1638 81 11 2319 # Symp. 6464 6429 5464 # Stages 2010 3110 000
+> Moderna
+> (1769/983/786) Text Len. 83 11 1056 99 13 905 57 11 1056 # Symp. 6430 6430 5429 # Stages 209329000
+> Janssen
+> (1789/1164/625) Text Len. 87 11 1317 100 12 826 56 11 1317 # Symp. 6443 7443 5433 # Stages 2013 3213 000
+
+approaches typically require longitudinal records span-ning multiple visits or rely on structured temporal meta-data [10, 35]. In contrast, CRAFT operates on single-report clinical narratives where temporal cues are sparse or implicit. To support evaluation in this underexplored setting, MedTempo provides expert-annotated temporal trajectory benchmarks derived from real-world adverse event narratives. A parallel line of work applies iterative refinement to structured prediction, most notably the Self-Refine paradigm [17], which iterates over model outputs using self-generated feedback. In the clinical domain, Hein et al. [14] apply iterative refinement with human-in-the-loop review cycles to improve extraction precision. However, such approaches are not suitable for system-atic benchmark evaluation across model tiers, as they conflate model capability with human reviewer effort. CRAFT leverages iterative refinement for structured clinical temporal extraction in a fully automated set-ting, pairing a generator with a multi-criterion verifier and enabling principled comparison across frontier and open-weight models. 
+
+3 Dataset Creation. This section describes how MedTempo is constructed from VAERS. We first introduce the source corpus and the information each re-port provides. We then describe the filtering and strat-ified sampling that reduce the corpus to reports carry-ing temporal signal, followed by the annotation proto-col that produces the gold-standard timelines. We close with summary statistics of the resulting benchmark. 
+
+3.1 VAERS Dataset. The Vaccine Adverse Event Reporting System (VAERS), managed jointly by the CDC and FDA, is a passive surveillance data-base in which healthcare professionals, patients, and manufacturers submit reports of adverse events fol-lowing immunization [7]. Each report includes demo-graphics, vaccination details, free-text clinical narra-tives, and MedDRA-coded symptom lists. We focus on 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited
+
+Table 3.1: Annotation agreement and adjudication rates (%) overall and by subset. Ann. = Annotator; T= MedTempo-T with temporal report only; NT =MedTempo-NT with no temporal report. Ambiguity exclusions are not applicable (–) in the T subset by definition.                       
+
+> Category Metric MedTempo TNT
+> Agreement Model–Ann. 1 78 82 91 Model–Ann. 2 73 78 86 Inter-Annotator 93 94 94 Adjudication Accepted 80 90 90 Corrected 910 10 Excluded 11 ––
+
+three widely administered COVID-19 vaccines: Pfizer-BioNTech, Moderna, and Janssen, covering reports from 2021 to 2024. 
+
+3.2 Data Sampling. Starting from the full VAERS corpus, we applied a multi-stage filtering and stratified sampling pipeline. We first removed non-symptom MedDRA terms by building an exclusion list from three non-clinical System Organ Classes ( Surgical and medical procedures , Social circumstances , Product issues ) combined with human-annotated non-symptom labels, yielding 5,601 excluded terms. Reports with three or fewer distinct symptoms were discarded as they lack sufficient temporal variation. Reports of ten or fewer words (typically bare symptom lists without nar-rative context) were also removed. For reports between 11 and 30 words, we applied rule-based temporal key-word filtering (relative markers such as before/after , du-ration terms, date patterns) to retain only those with explicit temporal cues; reports of 30 or more words were retained unconditionally. Finally, stratified sam-pling balanced by year and report length was applied per vaccine to draw 2,000 records each , preserving the distribution of the underlying VAERS corpus. Ap-pendix A.1 presents representative examples of reports removed under each criterion. 
+
+3.3 Annotation of Temporal Sequence. 
+
+Temporal timelines were produced via a human-in-the-loop three-phase protocol: GPT-4o mini [21] generated initial stage-ordered timelines; two annotators with a medical NLP background independently reviewed and labeled each sequence; and all disagreements and un-certain cases were resolved through collaborative adju-dication. As shown in Table 3.1, human inter-annotator agreement (IAA) was 93%. After adjudication, 80% of LLM annotations were accepted without change, 9% were corrected, and 11% were excluded for temporal 
+
+Figure 3.1: Distribution of the most frequent symptoms (left) and the symptoms that occurred after (right). Each chart displays a total of 15 unique symptoms, representing the top 10 symptoms from each vaccine type and the overall dataset combined. ambiguity, yielding a final corpus of 5,347 records. 
+
+3.4 Dataset Statistics and Analysis. Ta-ble 2.1 summarizes the 3,166 temporally-evident reports that form the primary benchmark subset MedTempo-T; the remaining 2,181 reports contain no temporal pro-gression and are released separately as MedTempo-NT . Symptom count is consistent across vaccines (me-dian 6), while narrative length varies: Pfizer-BioNTech reports are longest (median 102 words) versus Moderna (83) and Janssen (87). Because symptom count is sta-ble regardless of length, longer reports likely contribute richer contextual cues rather than additional adverse events, providing stronger signals for temporal extrac-tion. Figure 3.1 shows that thermoregulatory symptoms (pyrexia, chills) dominate early stages, while headache and fatigue are the most frequent overall, illustrating the diversity of symptom trajectories in the benchmark. 
+
+4 Method. This section presents CRAFT. We first formalize the ordering task and define the stage-based representation used throughout the paper, fixing the notation for reports, findings, and predicted time-lines. Then, we describe the framework itself: the gen-erator that proposes a timeline, the verifier that scores it and returns feedback, and the loop that connects them. Figure 4.1 gives an overview of both the dataset pipeline and the framework. 
+
+4.1 Problem Formulation and Temporal Representation. For each post-vaccination report r,let xr denote its free-text clinical narrative and F(r) = 
+
+{f1, . . . , f n} the provided list of adverse clinical findings 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited
+
+(a) MedTempo : Dataset Construction       
+
+> VAERS Reports
+> 5,347 narratives
+> Pfizer · Moderna · Janssen
+> Data Sampling
+> (stratified by vaccine & length)
+> + Temporal Filtering
+> (retain time anchors)
+> MedTempo-NT MedTempo-T
+> LLM Pre-annotation
+> GPT-4.1 draft stage-ordered timelines
+> Human Review
+> expert correction & adjudication
+> (IAA)
+> Clinical Narrative
+> Shortly after vaccine: complained of a
+> headache . Next day: really bad gas, sore throat . Following day: stomach ache .Vomited at school on 12/6 .
+> Gold-Standard Timeline
+> St. 1 Headache
+> “headache”
+> St. 2
+> Flatulence, Oro. pain
+> “really bad gas; sore throat”
+> St. 3 Abd. pain
+> “stomach ache”
+> St. 4
+> Vomiting
+> “vomited at school on 12/6”
+> same report
+
+(b) CRAFT : Framework             
+
+> Generator
+> propose
+> timelineᵢ
+> Verifier
+> verify & score FormatTool
+> Accept?
+> s ≥ θ
+> Score Sᵢ
+> i = 1, 2, ..., I max = 4
+> acceptance threshold
+> θ = 3
+> Yes (s ≥ θ) i = I max
+> report timelineᵢ
+> No (s < θ, i < I max )
+> feedback / retry, i++
+> Model Prediction
+> St. 1 Headache
+> “complained of a headache”
+> St. 2 Flatulence, Oro. pain
+> “really bad gas; sore throat”
+> St. 3 Abd. pain
+> “stomach ache”
+> St. 4 Vomiting
+> “vomited at school”
+> Evaluation
+> EM exact match
+> LCCS longest common contiguous subseq.
+> τᵇ Kendall's rank
+> correlation
+> Post
+> hoc
+
+Figure 4.1: Overview of MedTempo and CRAFT. (a) Dataset construction pipeline from VAERS narratives to gold-standard stage-ordered timelines. (b) CRAFT iterative generator–verifier loop, instantiated across four configurations (CRAFT-Full, PIVOT, GUIDE, CRAFT-G) and evaluated on four LLM backbones. (MedDRA Preferred Terms from the VAERS SYMPTOM 
+
+fields). We treat F(r) as given and do not perform en-tity extraction or coding. Our goal is to predict an explicit temporal ordering over F(r) when the narrative expresses a temporal progression (i.e., at least one new finding appears after 
+
+previously mentioned findings). We exclude concurrent onset, changes in severity or resolution without new onsets, and timelines inferable only from durations (e.g., “finding A for 4 days, finding B for 3 days” without an explicit order). Formally, we produce an ordered sequence of non-empty time buckets 
+
+B(r) = ( B1, B 2, . . . , B K ),
+
+where each finding in F(r) is assigned to exactly one bucket Bk, grouping together findings that occurred at the same point in the patient’s clinical course, and index k orders the buckets from earliest to latest. This representation is stored as a JSON list of buckets, which is the format used by both the generator and verifier below. Models are evaluated solely on temporal structure (ordering and grouping); optional evidence snippets are not scored. 
+
+4.2 CRAFT: Iterative Generator–Verifier Framework. CRAFT operates as a fully automated iterative loop: the generator proposes a candidate tem-poral sequence, the verifier scores it against structural and temporal constraints and returns targeted feedback, and the loop repeats until the candidate is accepted or a fixed iteration budget is exhausted. Figure 4.1(b) and algorithm 5.1 illustrate this process. 
+
+4.2.1 Generator Agent. At iteration i, the generator LLM implements 
+
+g :  F(r), x r , feedback (i−1)  −→ ˆB(i)(r),
+
+where feedback (i−1) is empty at i=1 and contains veri-fier guidance thereafter. CRAFT-Full uses a full-regeneration generator: asingle prompt template with full task instructions at each iteration, with verifier feedback appended to the context when available. The generator receives: (i) a task description and definition of temporal progression, including phenomena that should not be treated as progression; (ii) the finding list F(r), which must appear exactly as given in the output; and (iii) the free-text narrative xr . It outputs a JSON bucket sequence using only findings from F(r) and avoiding unsupported temporal inferences. 
+
+4.2.2 Verifier Agent. The verifier implements 
+
+v :  F(r), x r , ˆB(i)(r) →  decision (i), feedback (i), score (i),
+
+where decision (i) ∈ { ACCEPT , REVISE }, feedback (i)
+
+describes issues to fix, and score (i) ∈ { 0, . . . , 5} sup-ports early stopping. The verifier first calls FormatTool ,
+
+Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited a deterministic helper module that normalizes the raw generator output into the JSON bucket schema with-out altering temporal content, then applies an additive rubric that assigns one point each for: valid JSON with earliest →latest ordering; placing non-mentioned symp-toms as “none” in the final group; using each symptom exactly once; grouping symptoms that occur around the same time; and ordering groups according to temporal cues in the narrative. When the score meets threshold 
+
+θ, the verifier returns ACCEPT; otherwise it returns REVISE with targeted feedback for the next iteration. If no candidate is accepted within Tmax iterations, the loop terminates and the last candidate is returned. The complete procedure is given in Algorithm 5.1. 
+
+5 Experimental Setup. We organize our eval-uation around three research questions: • RQ1 Method effectiveness. Does CRAFT-Full outperform the baselines (PIVOT, GUIDE) across model tiers, and what drives the difference? • RQ2 Model capability. How well do different LLM backbones perform on MedTempo, and is the capability ordering stable across configurations? • RQ3 Vaccine discrepancy. To what extent do performance and error patterns vary across vac-cine types, and are model rankings consistent under vaccine-stratified evaluation? The remainder of this section specifies the evalua-tion data, the model backbones and their settings, the implementation of each configuration, and the metrics used to score predicted timelines against the gold stan-dard. 
+
+5.1 Dataset. MedTempo contains 5,347 vaccine adverse-event narratives across three COVID-19 vaccine types, each paired with a provided symptom list. We evaluate on the 3,166 reports from MedTempo-T with temporal evidence of distinct symptom progression; the remaining reports contain no temporal progression and fall outside the primary benchmark. 
+
+5.2 Models and Settings. We evaluate four LLMs: GPT-4.1 [22], Claude Sonnet 4.5 [5], 
+
+MedGemma-27B [26], and Llama-3.3-70B [18]. Pro-prietary models are accessed via their respective APIs with deterministic decoding. Open-weight models run locally using Hugging Face transformers [34] with 4-bit quantization (NF4 via bitsandbytes [11]). We evaluate five settings that systematically vary the generator and verifier components to isolate the con-tribution of each. Our proposed method, CRAFT-Full, pairs the full-regeneration generator with the additive rubric verifier (Section 4.2.1–4.2.2). Two baselines rep-resent alternative design choices grounded in established 
+
+Algorithm 5.1 CRAFT: Iterative generator–verifier loop 
+
+Require: F(r), narrative xr , generator G, verifier V ,
+
+Tmax , threshold θ
+
+Ensure: ˆB(r)
+
+feedback ← ∅ 
+
+for t = 1 , . . . , T max do 
+
+raw ← G(F(r), x r , feedback )ˆB(r) ← FormatTool (raw )
+
+score , feedback ← V
+
+
+
+F(r), x r , ˆB(r)
+
+
+
+if score ≥ θ then return ˆB(r)
+
+end if end for return ˆB(r) {return last candidate} paradigms: PIVOT pairs the full-regeneration generator with an anchor-based verifier inspired by the document-creation-time (DCT) anchoring tradition in temporal extraction [33, 9], where a fixed reference point serves as a hub for ordering events. GUIDE pairs an edit-conditioned generator, which applies targeted local edits to the previous candidate rather than regenerating from scratch, with the same anchor-based verifier. CRAFT-G swaps in the edit-conditioned generator while holding the additive verifier fixed, isolating the generator’s con-tribution; CRAFT w/o V removes the verification loop entirely, running one generator pass without feedback, isolating the verifier’s contribution. 
+
+Edit-conditioned generator (CRAFT-G, GUIDE). 
+
+Uses a dedicated initialization prompt at i=1 , switching to a lightweight editing prompt that conditions on the previous candidate and verifier feedback at i> 1.
+
+Anchor-based verifier (PIVOT, GUIDE). Treats the vaccination date as the dominant time anchor and scores conservatively, starting from 5 and subtracting one point for clear violations: anchor-order contra-dictions, grouping errors (over-merge or over-split), or overall inconsistency with temporal cues. 
+
+5.3 Implementation Details. All runs use fixed prompt templates that enforce a strict JSON schema and require every symptom in the provided list to appear exactly once, grouping symptoms into the same stage when the narrative does not support an in-ternal order. We use deterministic decoding (no sam-pling) with max_new_tokens =512. For generator–verifier configurations, we run up to max_iter =4 refinement iterations and accept out-puts when the verifier score is at least θ = 3; the parameter-selection procedure for max_iter and θ is summarized in Appendix A.2. Full prompt templates 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited
+
+Table 5.1: General results stratified by vaccine type. Metrics in %. Bold = best, underline = second best within each model block. †Proposed method.                                                                                                                                                                                                                                                                     
+
+> Model Setting Janssen (n=1,164) Moderna (n=983) Pfizer (n=1,019) Total EM ↑LCCS ↑τb↑EM ↑LCCS ↑τb↑EM ↑LCCS ↑τb↑EM ↑LCCS ↑τb↑
+> GPT-4.1  PIVOT 33.65 59.56 58.89 38.53 60.73 55.43 31.89 57.44 57.00 34.60 59.24 57.20 GUIDE 33.99 61.02 60.07 36.70 60.68 56.48 31.30 57.57 57.85 33.97 59.80 58.24
+> CRAFT w/o V 26.49 42.94 45.79 27.93 43.51 43.65 24.51 40.06 42.37 26.30 42.19 44.02 CRAFT G29.68 55.71 55.92 33.94 56.52 52.08 29.92 54.86 53.31 31.08 55.69 53.88
+> CRAFT-Full †34.43 61.68 59.58 40.06 63.84 56.45 32.68 58.93 56.97 35.61 61.46 57.77 Llama-70B  PIVOT 24.76 50.18 51.98 30.58 52.81 49.53 26.77 50.33 52.13 27.22 51.04 51.27 GUIDE 23.73 48.59 50.81 30.28 51.40 48.53 24.70 47.94 49.17 26.08 49.25 49.58 CRAFT w/o V 18.64 41.34 54.10 23.55 44.68 51.59 20.18 41.08 51.12 20.66 42.30 52.36 CRAFT G23.81 48.55 50.64 30.48 51.49 48.70 24.90 47.97 49.20 26.24 49.28 49.57
+> CRAFT-Full †25.88 52.06 53.47 31.90 53.89 50.69 26.77 51.49 52.93 28.04 52.45 52.43
+> MedGemma  PIVOT 17.95 39.67 43.63 25.89 43.65 42.08 19.00 39.37 41.92 20.75 40.81 42.60
+> GUIDE 17.52 39.56 42.33 23.96 41.34 39.29 19.39 38.53 40.36 20.12 39.78 40.75 CRAFT w/o V 13.03 33.21 44.52 15.90 36.38 40.61 14.67 35.00 42.20 14.44 44.36 42.56 CRAFT G15.53 35.90 38.54 21.92 37.83 35.61 18.11 35.73 36.68 18.35 36.44 37.03
+> CRAFT-Full †18.29 40.20 43.84 25.99 43.91 41.59 18.80 39.49 42.09 20.85 41.13 42.57 Claude-4.5  PIVOT 34.51 57.34 52.71 40.37 59.47 51.03 34.84 55.58 51.66 36.44 57.44 51.85 GUIDE 34.69 54.98 50.53 38.23 56.61 48.03 34.35 53.09 48.21 35.68 54.88 49.00 CRAFT w/o V 37.19 57.73 56.03 40.88 59.85 54.20 35.63 55.23 53.06 37.83 57.58 54.51 CRAFT G33.74 61.04 57.58 40.67 63.39 53.99 34.06 59.57 54.50 35.99 61.30 55.47 CRAFT-Full †35.89 61.82 56.68 41.18 64.51 54.98 34.65 58.54 52.92 37.14 61.60 54.94
+
+for CRAFT-Full are provided in Appendix A.3. More implementation details can be found at https://github. com/LEAF-Lab-Stevens/TemporalAnalysis. Open-weight experiments are run on a workstation equipped with two NVIDIA RTX A5000 GPUs (24GB each). Large models are loaded with device sharding across both GPUs and 4-bit quantization. API-based experiments are executed using the official Python SDKs for the corresponding providers. 
+
+5.4 Evaluation Metrics. We evaluate temporal sequences as ordered lists of buckets, where each bucket is a set of items and within-bucket order is trivial. Let the gold sequence be G = ( G1, . . . , G m) and the prediction P = ( P1, . . . , P n). After normalization ϕ(·)
+
+(e.g., lower-casing), write ˜Gi = {ϕ(x) | x ∈ Gi} and 
+
+˜Pj = {ϕ(x) | x ∈ Pj }; let rG(x) and rP (x) denote the bucket rank of item x in gold and prediction, and S the set of items appearing in both. Within-bucket duplicates are ignored; cross-bucket duplicates are resolved by a check-and-fix module FormatTool .
+
+Strict Exact Match (EM) [24]. 
+
+Pass/fail: the prediction must exactly reproduce the gold segmentation and inter-bucket order (within-bucket order ignored). 
+
+EM( G, P ) = 
+
+(
+
+1, m = n and ∀ i ∈ { 1, ..., m } : ˜Gi = ˜Pi,
+
+0, otherwise. 
+
+Kendall’s τb [15]. 
+
+For each unordered pair {x, y } ⊂ S, the pair is con-cordant if sign( rG(y)−rG(x)) = sign( rP (y)−rP (x)) ̸ =0, and discordant if the signs are non-zero and opposite. Let NC , ND be the concordant and discordant counts, and TG, TP the pair counts tied in gold and prediction: 
+
+τb = NC − ND
+
+p(NC + ND + TG) ( NC + ND + TP ) ∈ [−1, 1] .
+
+Ranges from −1 (complete reversal) to +1 (perfect agreement); ties from within-bucket equivalence are handled explicitly. 
+
+Group-Aware LCCS [12]. 
+
+Treating each bucket as a token, LCCS is the longest common contiguous subsequence of ( ˜G1, . . . , ˜Gm) and 
+
+( ˜P1, . . . , ˜Pn):
+
+L = max  ℓ | ∃ i, j : ( ˜Gi, ..., ˜Gi+ℓ−1) = ( ˜Pj , ..., ˜Pj+ℓ−1) .
+
+This metric complements τb by rewarding unbroken 
+
+spans of perfectly matched phases, penalising isolated segmentation errors. 
+
+6 Results. This section reports our empirical findings, organized around the three research questions. We first compare CRAFT-Full against the baselines, then examine how the four backbones compare to one another, and then test whether these patterns hold when performance is broken out by vaccine type. Two further subsections follow: an ablation that isolates the contributions of the verifier and the generator, and case                 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited Fatigue Pyrexia Nausea Pain Dizziness
+> Earlier symptom
+> Headache Fatigue Pyrexia Chills Pain
+> Later symptom  149 110 108 88 84 075 52 47 51 95 067 62 52 125 95 86 77 56 90 66 61 046 050 100
+
+(a) Ground Truth Fatigue Pyrexia Nausea Pain Dizziness                  
+
+> Earlier symptom
+> Headache Fatigue Pyrexia Chills Pain
+> Later symptom  148 111 108 84 83 077 54 49 51 97 069 62 53 126 99 87 74 57 90 68 61 044 050 100
+
+(b) Claude, CRAFT-Full 
+
+Figure 6.1: Before–after symptom-transition frequen-cies of each later symptom (columns) given the first symptom of the report (rows; restricted to the most fre-quent first symptoms in the dataset): (a) ground truth; (b) CRAFT-Full on Claude studies that illustrate the behavior behind the aggregate numbers. 
+
+6.1 RQ1: CRAFT-Full vs. Baselines. Ta-ble 5.1 reports final performance across all four models and five settings. Against PIVOT, CRAFT-Full gains +1.0 EM points for GPT-4.1 (35.61 vs. 34.60), +0.8 for Llama-3.3-70B (28.04 vs. 27.22), +0.7 for Claude Sonnet 4.5 (37.14 vs. 36.44), and +0.1 for MedGemma-27B (20.85 vs. 20.75). Margins over GUIDE are uniformly larger (GPT-4.1: +1.6; Llama: 
+
++2.0; Claude: +1.5; MedGemma: +0.7). CRAFT-Full achieves the highest EM in every model block compared to baselines, confirming it as the strongest configuration. Although baselines such as PIVOT and GUIDE occasionally match or exceed CRAFT-Full on τb or LCCS, these metrics credit partial ordering agreement and can score highly even when the full trajectory structure is incorrect. EM, which requires the entire stage-wise grouping and ordering to match gold, is the most demanding metric for this task and the one on which CRAFT-Full consistently leads. Table 6.1 explains how CRAFT-Full wins. CRAFT-Full actively uses its refinement budget: AvgIters reaches 2.99 for GPT-4.1 and 3.46 for Claude, and per-formance builds across iterations. For GPT-4.1, EM rises from 26.90 at i=1 to 35.61 at i=4 , a gain of 8.7 points across rounds. In contrast, PIVOT and GUIDE converge after a single pass in most instances (AvgIters 
+
+≈ 1.2–2.0) because the anchor-based verifier accepts outputs quickly without substantive ordering improve-ment. For GPT-4.1, PIVOT peaks at EM@2 =34.73 and GUIDE degrades from its peak of 34.92 at i=1 .This confirms that CRAFT-Full’s additive rubric pro-vides richer, more actionable feedback that sustains im-provement across the full refinement budget, whereas the anchor-based verifier’s narrower signal cannot drive continued gains beyond the first pass. Figure 6.1 shows that the gold and CRAFT-Full transition matrices share a similarly diffuse distribution across symptom pairs and differ only in small cell values, confirming that CRAFT-Full preserves progression pat-terns at the population scale. Since this aggregate view does not reveal where refinement changes predictions, we turn to an instance level case study in Section 6.5. 
+
+6.2 RQ2: Overall Model Performance. The capability ordering is stable across all configurations and metrics: Claude Sonnet 4.5 > GPT-4.1 > Llama-3.3-70B > MedGemma-27B. Under CRAFT-Full, Claude achieves the highest total EM (37.14), followed by GPT-4.1 (35.61), Llama (28.04), and MedGemma (20.85). This ordering holds without exception across all three metrics and all vaccine strata, indicating that MedTempo reliably differentiates model tiers. Beyond the stable ranking, models differ notably in how they respond to iterative refinement. GPT-4.1 ben-efits most from additional iterations: under CRAFT-Full, EM climbs from 26.90 at i=1 to 35.61 at i=4 (+8.7 points), with LCCS and τb following similar upward trends (47.10 →61.46 and 45.71 →57.77 respectively). In contrast, Claude starts strong (EM 36.57 at i=1 ) but gains only +0.6 points across iterations, suggesting its first-pass outputs already capture most of the tempo-ral structure. Llama and MedGemma show similarly flat iteration curves (EM gains of +0.6 and +0.2 re-spectively), but for a different reason: both converge quickly (AvgIters 1.2–1.5), indicating that the verifier accepts their outputs early rather than driving further improvement. This divergence between models that sat-urate from high initial quality (Claude) and those that stall from limited capacity to act on feedback (Llama, MedGemma) highlights that iteration utility is tied to model capability. Figure 6.2 shows that distributional fidelity to gold tracks the capability ordering: Claude overlaps gold across all settings, while Llama and MedGemma fall short of gold at stage counts of four and above regardless of verifier choice. GPT-4.1 is the one tier where verifier choice visibly reshapes the distribution, with CRAFT w/o V peaking at stage 2 and CRAFT-Full recovering a spread close to gold. 
+
+6.3 RQ3: Vaccine-Stratified Performance. 
+
+Performance is consistently stratified by vaccine type across all models and configurations: Moderna nar-ratives yield the highest EM in every case, followed by Janssen, with Pfizer-BioNTech systematically low-est. Under CRAFT-Full, the Moderna–Pfizer gap is 7.4 points for GPT-4.1 (40.06 vs. 32.68), 6.5 for Claude Sonnet 4.5 (41.18 vs. 34.65), 5.1 for Llama-3.3-70B (31.90 vs. 26.77), and 7.2 for MedGemma-27B (25.99 vs. 18.80). This ordering is preserved across all settings 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited
+
+Table 6.1: Results at each iteration per model and setting. M @t: metric M ∈ { EM , LCCS , τ b} when the generate– verify loop is capped at t iterations. AvgIters: mean iterations executed under t=4 . Metrics in %. Underline: best per setting across iterations. Bold underline : best per model per metric. †Proposed method. 
+
+LLM Setting AvgIters EM@1 EM@2 EM@3 EM@4 LCCS@1 LCCS@2 LCCS@3 LCCS@4 τb@1 τb@2 τb@3 τb@4 
+
+> GPT-4.1
+
+PIVOT 1.2734 29.72 34.73 34.73 34.60 52.19 59.44 59.31 59.24 50.74 57.29 57.28 57.20 GUIDE 1.2348 34.92 34.22 34.06 33.97 60.96 60.18 59.97 59.80 58.91 58.44 58.36 58.24 CRAFT w/o V 1.0000 26.30 — — — 42.19 — — — 44.02 — — —CRAFT G 2.9407 34.89 32.79 31.78 31.08 60.90 58.16 56.61 55.69 58.33 55.87 54.40 53.88 
+
+CRAFT-Full † 2.9864 26.90 34.89 35.61 35.61 47.10 60.94 61.45 61.46 45.71 58.19 58.16 57.77 Llama-70B  PIVOT 1.2022 26.90 27.22 27.22 27.22 50.13 51.00 51.04 51.04 50.07 51.21 51.27 51.27 GUIDE 1.2148 26.08 26.08 26.08 26.08 49.23 49.25 49.25 49.28 49.54 49.59 49.58 49.58 CRAFT w/o V 1.0000 20.66 — — — 42.30 — — — 52.36 — — —CRAFT G 1.2643 26.08 26.27 26.24 26.24 49.23 49.30 49.26 49.28 49.54 49.52 49.53 49.57 
+
+CRAFT-Full † 1.2136 27.47 27.95 28.01 28.04 50.92 52.32 52.42 52.45 50.28 52.37 52.41 52.43 
+
+> MedGemma
+
+PIVOT 1.1496 20.66 20.75 20.75 20.75 40.56 40.82 40.83 40.81 42.08 42.60 42.63 42.60 GUIDE 1.1179 20.15 20.12 20.12 20.12 39.80 39.78 39.78 39.78 40.86 40.76 40.75 40.75 CRAFT w/o V 1.0000 14.44 — — — 44.36 — — — 42.56 — — —CRAFT G 1.5542 20.15 18.47 18.35 18.35 39.80 36.49 36.44 36.44 40.86 37.13 37.03 37.03 
+
+CRAFT-Full † 1.5032 20.66 20.47 20.85 20.85 40.56 40.64 41.13 41.13 42.08 42.32 42.57 42.57 Claude-4.5  PIVOT 1.9861 37.58 35.33 36.66 36.44 62.65 56.92 57.81 57.44 56.73 52.61 52.55 51.85 GUIDE 1.9943 40.37 35.17 36.47 35.68 65.37 55.56 55.75 54.88 58.57 51.42 49.97 49.00 CRAFT w/o V 1.0000 37.83 — — — 57.58 — — — 54.51 — — —CRAFT G 3.6350 40.08 35.90 37.48 35.99 65.35 61.63 62.51 61.30 58.40 55.59 56.07 55.47 
+
+CRAFT-Full † 3.4623 36.57 36.57 37.42 37.14 61.32 61.49 61.65 61.60 55.74 54.83 55.05 54.94 
+
+and all four models without exception, indicating a sys-tematic corpus-level source of difficulty rather than a model-specific effect. The vaccine gap is more pronounced on EM than on LCCS and τb, suggesting that models make segmenta-tion errors on Pfizer narratives specifically rather than systematically misranking symptoms within groups. Since EM requires an exact match on both bucket com-position and inter-bucket order while LCCS rewards contiguous correct spans and τb captures global pair-wise ordering, the metric divergence points to Pfizer narratives being harder to segment into correct tem-poral groups rather than harder to order within those groups. The capability ordering Claude > GPT-4.1 >
+
+Llama > MedGemma holds for every vaccine type under every configuration. 
+
+6.4 Ablation Study. Using Table 6.1, we ana-lyze two ablation groups: the verifier ablation (CRAFT-Full vs. CRAFT w/o V), which holds the genera-tor fixed, and the generator ablation (CRAFT-G vs. CRAFT-Full), which holds the verifier fixed. 
+
+Verifier contribution. Removing the verification loop causes substantial performance drops for three of four models. CRAFT-Full gains +9.3 EM over CRAFT w/o V for GPT-4.1 (35.61 vs. 26.30), +7.4 for Llama-3.3-70B (28.04 vs. 20.66), and +6.4 for MedGemma-27B (20.85 vs. 14.44). For Llama and MedGemma, virtually all gain is captured at i=1 : the verifier’s first-pass feedback corrects schema violations in unverified outputs, after which the output is ac-cepted without substantive ordering improvement. 2 3 4 5 6+             
+
+> Predicted stage count
+> 010 20 30 40
+> Frequency (%)
+> GPT-4.1 (a)
+> Gold PIVOT GUIDE CRAFT w/o Verifier CRAFT-G CRAFT-FULL
+> 23456+
+> Predicted stage count
+> 010 20 30 40
+> Frequency (%)
+> Claude Sonnet 4.5 (b)
+> Gold PIVOT GUIDE CRAFT w/o Verifier CRAFT-G CRAFT-FULL
+> 23456+
+> Predicted stage count
+> 010 20 30 40
+> Frequency (%)
+> Llama-3.3-70B (c)
+> Gold PIVOT GUIDE CRAFT w/o Verifier CRAFT-G CRAFT-FULL
+> 23456+
+> Predicted stage count
+> 010 20 30 40
+> Frequency (%)
+> MedGemma-27B (d)
+> Gold PIVOT GUIDE CRAFT w/o Verifier CRAFT-G CRAFT-FULL
+
+Figure 6.2: Predicted stage-count distributions (fre-quency %) under all five settings vs. gold, per model. All models under-segment relative to gold; the bias is more pronounced for weaker models (MedGemma-27B, Llama-3.3-70B) than for stronger ones (GPT-4.1, Claude Sonnet 4.5). For GPT-4.1, gains accumulate steadily through i=3 
+
+(AvgIters = 2.99), confirming that the verification loop provides genuine multi-iteration value for capable mod-els. For Claude Sonnet 4.5, CRAFT-Full (37.14) falls slightly below CRAFT w/o V (37.83): the fixed thresh-old θ=3 does not recognize Claude’s near-correct first-pass output as satisfactory, forcing continued revision that introduces errors rather than correcting them. This highlights the importance of threshold calibration for further improvement. 
+
+Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited Table 6.2: Iteration trace for Example 1 (GPT-4.1, CRAFT-Full). ✓ = matches gold; × = grouping error.                                  
+
+> Iter Score Predicted Stages
+> Gold —{Insomnia} →{Muscle disorder} →
+> {Herpes zoster} →{Memory impair-ment} 12/5 {Insomnia} →{Muscle disorder} →
+> {Herpes zoster, Memory impair-ment }×
+> 23/5 {Insomnia} →{Muscle disorder} →
+> {Herpes zoster} →{Memory impair-ment} ✓
+
+Generator contribution. Replacing the full-regeneration generator with the edit-conditioned variant (CRAFT-G) consistently degrades final per-formance. For GPT-4.1, CRAFT-G achieves a strong EM of 34.89 at i=1 but degrades monotonically to 31.08 by i=4 (−3.8 points), while CRAFT-Full builds to 35.61. The edit-conditioned prompt is effective for initialisation but too constrained to sustain quality under continued verifier feedback across the full budget. For MedGemma-27B, CRAFT-G is actively harmful: EM drops from 20.15 at i=1 to 18.35 by i=2 , indicating the model misinterprets edit-only instructions and degrades its own output under revision. CRAFT-Full avoids this across all tiers by regenerating from full task context at every iteration. 
+
+6.5 Case Study. The ablation analysis above quantifies verifier and generator contributions across models and iterations at the aggregate level, but does not reveal how the feedback loop operates on individ-ual instances. To provide insight into the refinement mechanism, we present a representative example show-ing how verifier feedback guides the generator toward the correct trajectory across iterations. An additional case study is provided in the Appendix A.5. 
+
+Example (GPT-4.1, CRAFT-Full): 
+
+Symptom list: Insomnia, Muscle disorder, Herpes zoster, Memory impairment 
+
+Narrative (abridged): “On 20Feb2021, the patient experienced could not sleep. In Feb2021, the patient experienced effected upper part of body, arms, neck, shoulders, severe muscle condition, had tiny bit of shingles on my side, did not have memory of anything that happened / was out of my mind [. . . ] They took her to the hospital and then the patient underwent MRI to see if her brain was okay.” 
+
+Iteration 1 Score: 2/5 — below θ, continue 
+
+Verifier feedback: “Symptoms are grouped in tempo-ral order and all are present, but ‘Herpes zoster’ and ‘Memory impairment’ should be in separate groups as they are not clearly described as occurring at the same time [. . . ] For full marks, ensure symptoms grouped to-gether are clearly simultaneous per the text.” 
+
+Iteration 2 Score: 3/5 — s ≥ θ, early stop ✓
+
+Verifier feedback: —At i=1 , the model correctly orders all four symptom groups but over-merges Herpes zoster and Memory im-pairment into a single stage, receiving a score of 2. The score of 2 rather than 3 reflects that the over-merge constitutes two rubric violations simultaneously: grouping symptoms without clear simultaneous sup-port, and failing to maintain strict earliest-to-latest or-dering within the merged group. CRAFT-Full’s verifier precisely identifies the grouping error and provides a targeted one-sentence correction, demonstrating that its additive rubric produces informative, actionable feed-back even when the overall ordering direction is already correct. At i=2 the model splits the two symptoms into separate stages, exactly matching the gold stan-dard and receiving a score of 3, which meets the accep-tance threshold θ=3 and triggers early stopping. This example illustrates that a single round of targeted feed-back is sufficient for a capable model to correct a local grouping error within the refinement budget. Table 6.2 summarizes the predicted stages across iterations. 
+
+7 Conclusion. We presented CRAFT, agenerator–verifier LLM framework for iterative tempo-ral reasoning over clinical narratives, and MedTempo, an expert-annotated benchmark of 5,347 adverse-event narratives, to evaluate structured symptom trajectory construction under sparse temporal anchoring. Experi-ments across four LLM backbones show that CRAFT consistently improves temporal ordering accuracy. Ablation analysis confirms that both generator and verifier components contribute meaningfully, with CRAFT-Full emerging as the strongest configuration across all model tiers. Our results also reveal that refinement behavior varies by model capability, sug-gesting that adaptive verification strategies may further improve performance. Future work will leverage the 2,181 non-temporal reports from MedTempo-NT as su-pervision for a learned temporal-evidence identification module, extending CRAFT into a unified end-to-end framework for automatic progression detection and stage-wise temporal ordering. 
+
+Acknowledgments. This work was supported in part by the US National Science Foundation grant IIS-2245907, IIS-2047843, IIS-2437621, and an Amazon Research Award, Fall 2024. 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited
+
+References 
+
+[1] G. Alfattni, N. Peek, and G. Nenadic ,
+
+Extraction of temporal relations from clinical free text: A systematic review of current ap-proaches , Journal of Biomedical Informatics, 108 (2020), p. 103488, https://doi.org/10.1016/ j.jbi.2020.103488, https://www.sciencedirect.com/ science/article/pii/S1532046420301167. [2] S. Alsayyahi and R. Batista-Navarro , TIME-LINE: Exhaustive annotation of temporal relations supporting the automatic ordering of events in news articles , in Proceedings of the 2023 Conference on Empirical Methods in Natural Language Process-ing, Singapore, 2023, Association for Computa-tional Linguistics, pp. 16336–16348, https://doi. org/10.18653/v1/2023.emnlp-main.1016, https:// aclanthology.org/2023.emnlp-main.1016/. [3] J. J. Andrew, J. Potier, N. Garcelon, A. Burgun, and M. Vincent , Using large language models for temporal rela-tion extraction from pediatric clinical re-ports , JAMIA Open, 8 (2025), p. ooaf121, https://doi.org/10.1093/jamiaopen/ooaf121, https://academic.oup.com/jamiaopen/article/8/ 6/ooaf121/8340484. [4] J. J. Andrew, M. Vincent, A. Burgun, and N. Garcelon , Evaluating LLMs for temporal en-tity extraction from pediatric clinical text in rare diseases context , in Proceedings of the First Work-shop on Patient-Oriented Language Processing (CL4Health) @ LREC-COLING 2024, D. Demner-Fushman, S. Ananiadou, P. Thompson, and B. On-dov, eds., Torino, Italia, May 2024, ELRA and ICCL, pp. 145–152, https://aclanthology.org/2024. cl4health-1.18/. [5] Anthropic , Claude sonnet 4.5 system card . System Card, 2025, https://assets. anthropic.com/m/12f214efcc2f457a/original/ Claude-Sonnet-4-5-System-Card.pdf. [6] S. Bethard, G. Savova, M. Palmer, and J. Pustejovsky , SemEval-2017 Task 12: Clin-ical TempEval , in Proceedings of the 11th In-ternational Workshop on Semantic Evaluation (SemEval-2017), 2017. [7] Centers for Disease Control and Preven-tion (CDC), Food and Drug Administration (FDA), agencies of the U.S. Department of Health and Human Services (HHS) , Vaccine adverse event reporting system . https://vaers.hhs. gov/data.html, 1990. [8] J. Chen, H. Ouyang, J. Ren, W. Ding, W. Hu, and Y. Qu , Timeline-based sen-tence decomposition with in-context learn-ing for temporal fact extraction , 2024, https://doi.org/10.48550/arXiv.2405.10288, https://arxiv.org/abs/2405.10288, https: //arxiv.org/abs/2405.10288. Accepted to ACL 2024 (main conference). [9] F. Cheng and Y. Miyao , Inducing temporal re-lations from time anchor annotation , in Proceed-ings of the 2018 Conference of the North Ameri-can Chapter of the Association for Computational Linguistics: Human Language Technologies, Vol-ume 1 (Long Papers), New Orleans, Louisiana, June 2018, Association for Computational Linguis-tics, pp. 1833–1843, https://doi.org/10.18653/v1/ N18-1166, https://aclanthology.org/N18-1166/. [10] H. Cui, A. Unell, B. Chen, J. A. Fries, E. Alsentzer, S. Koyejo, and N. H. Shah ,
+
+Timer: temporal instruction modeling and eval-uation for longitudinal clinical records , npj Digi-tal Medicine, 8 (2025), p. 577, https://doi.org/10. 1038/s41746-025-01965-9, https://pmc.ncbi.nlm. nih.gov/articles/PMC12475073/. [11] T. Dettmers, A. Pagnoni, A. Holtzman, and L. Zettlemoyer , QLoRA: Efficient finetuning of quantized LLMs , in Advances in Neural Informa-tion Processing Systems 36 (NeurIPS 2023), 2023. [12] D. Gusfield , Algorithms on Strings, Trees, and Sequences: Computer Science and Computational Biology , Cambridge University Press, 1997. [13] J. He, L. Rasmy, H. Li, J. Li, Z. Sun, E. Yu, D. Zhi, and C. Tao , Prompting large lan-guage models for clinical temporal relation extrac-tion , 2024, https://doi.org/10.48550/arXiv.2412. 04512, https://arxiv.org/abs/2412.04512, https:// arxiv.org/abs/2412.04512. [14] D. Hein, A. Christie, M. Holcomb, B. Xie, A. Jain, J. Vento, N. Rakheja, A. H. Shakur, S. Christley, L. G. Cowell, et al. ,
+
+Iterative refinement and goal articulation to opti-mize large language models for clinical information extraction , NPJ Digital Medicine, 8 (2025), p. 301. [15] M. G. Kendall , The treatment of ties in ranking problems , Biometrika, 33 (1945), pp. 239–251. 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited
+
+[16] A. Leeuwenberg and M.-F. Moens , Temporal information extraction by predicting relative time-lines , in Proceedings of the 2018 Conference on Em-pirical Methods in Natural Language Processing, Brussels, Belgium, 2018, Association for Computa-tional Linguistics, pp. 1237–1246, https://doi.org/ 10.18653/v1/D18-1155, https://aclanthology.org/ D18-1155/. [17] A. Madaan, N. Tandon, P. Gupta, S. Hal-linan, L. Gao, S. Wiegreffe, U. Alon, N. Dziri, S. Prabhumoye, Y. Yang, S. Welleck, B. P. Majumder, S. Gupta, A. Yazdanbakhsh, and P. Clark , Self-refine: Iterative refinement with self-feedback , 2023, https://arxiv.org/abs/2303.17651. [18] Meta AI , Llama-3.3-70B-Instruct . Model card, 2024, https://huggingface.co/meta-llama/ Llama-3.3-70B-Instruct. Released December 6, 2024. [19] T. Miller, S. Bethard, D. Dligach, and G. Savova , End-to-end clinical temporal infor-mation extraction with multi-head attention , in Proceedings of the 22nd Workshop on Biomed-ical Natural Language Processing and BioNLP Shared Tasks, Toronto, Canada, July 2023, As-sociation for Computational Linguistics, pp. 50– 61, https://doi.org/10.18653/v1/2023.bionlp-1.4, https://aclanthology.org/2023.bionlp-1.4/. [20] A. L. Olex and B. T. McInnes , Review of tem-poral reasoning in the clinical domain for time-line extraction: Where we are and where we need to be , Journal of Biomedical Informatics, 118 (2021), p. 103784, https://doi.org/10.1016/ j.jbi.2021.103784, https://www.sciencedirect.com/ science/article/pii/S1532046421001131. [21] OpenAI , GPT-4o system card , (2024), https:// openai.com/index/gpt-4o-system-card/. [22] OpenAI , GPT-4.1 . Model release, 2025, https: //openai.com/index/gpt-4-1/. [23] J. Pustejovsky, J. Castaño, R. Ingria, R. Saurí, R. Gaizauskas, A. Setzer, G. Katz, and D. Radev , TimeML: Robust specification of event and temporal expressions in text , in Fifth In-ternational Workshop on Computational Semantics (IWCS-5), 2003. [24] P. Rajpurkar, J. Zhang, K. Lopyrev, and P. Liang , Squad: 100,000+ questions for machine comprehension of text , in Proceedings of the 2016 conference on empirical methods in natural lan-guage processing, 2016, pp. 2383–2392. [25] G. Savova, S. Bethard, W. Styler, J. Mar-tin, M. Palmer, J. Masanz, and W. Ward ,
+
+Towards temporal relation discovery from the clini-cal narrative , in AMIA annual symposium proceed-ings, vol. 2009, 2009, p. 568. [26] A. Sellergren, S. Kazemzadeh, T. Jaroen-sri, A. Kiraly, et al. , MedGemma techni-cal report , 2025, https://arxiv.org/abs/2507.05201, https://arxiv.org/abs/2507.05201. [27] W. F. Styler IV, S. Bethard, S. Finan, M. Palmer, S. Pradhan, P. C. de Groen, B. Erickson, T. Miller, C. Lin, G. Savova, and J. Pustejovsky , Temporal annotation in the clinical domain , Transactions of the Association for Computational Linguistics, 2 (2014), pp. 143–154. [28] X. Su, P. Howard, and S. Bethard ,
+
+Transformer-based temporal information extrac-tion and application: A review , 2025, https:// doi.org/10.48550/arXiv.2504.07470, https://arxiv. org/abs/2504.07470, https://arxiv.org/abs/2504. 07470. [29] W. Sun, A. Rumshisky, and Ö. Uzuner , Eval-uating temporal relations in clinical text: 2012 i2b2 challenge , Journal of the American Medical Infor-matics Association, 20 (2013), pp. 806–813. [30] J. Tourille , Extracting Clinical Event Time-lines: Temporal Information Extraction and Tem-poral Relation Inference , PhD thesis, Univer-sité Paris-Saclay, Nov. 2018, https://theses.hal. science/tel-01997223. [31] M. Verhagen, R. Gaizauskas, F. Schilder, M. Hepple, and J. Pustejovsky , SemEval-2007 Task 15: TempEval temporal relation identifica-tion , in Proceedings of the Fourth International Workshop on Semantic Evaluations (SemEval-2007), 2007. [32] E. Wang and A. Weiss , Extracting relative time-lines from medical case reports using large language models , AMIA Joint Summits on Translational Sci-ence proceedings. AMIA Joint Summits on Trans-lational Science, (2025), pp. 598–606, https://pmc. ncbi.nlm.nih.gov/articles/PMC12150726/. [33] L. Wang, P. Li, and S. Xu , DCT-centered temporal relation extraction , in Proceedings of the 29th International Conference on Computational 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited
+
+Linguistics, Gyeongju, Republic of Korea, Oct. 2022, International Committee on Computational Linguistics, pp. 2087–2097, https://aclanthology. org/2022.coling-1.182/. [34] T. Wolf, L. Debut, V. Sanh, J. Chau-mond, C. Delangue, A. Moi, P. Cistac, T. Rault, R. Louf, M. Funtowicz, J. Davi-son, S. Shleifer, P. von Platen, C. Ma, Y. Jernite, J. Plu, C. Xu, T. Le Scao, S. Gugger, M. Drame, Q. Lhoest, and A. Rush , Transformers: State-of-the-art natural language processing , in Proceedings of the 2020 Conference on Empirical Methods in Natural Lan-guage Processing: System Demonstrations, On-line, Oct. 2020, Association for Computational Linguistics, pp. 38–45, https://doi.org/10.18653/ v1/2020.emnlp-demos.6, https://aclanthology.org/ 2020.emnlp-demos.6/. [35] D. Yu, R. W. Stidham, and V. G. V. Vydiswaran , A systematic temporal extrac-tion pipeline for medical concepts in clinical notes , in AMIA Annual Symposium Proceedings, 2023, pp. 1314–1323, https://pmc.ncbi.nlm.nih. gov/articles/PMC10785919/. AMIA 2023; pub-lished in AMIA Annu Symp Proc .[36] C. Yuan, Q. Xie, and S. Ananiadou , Zero-shot temporal relation extraction with chatgpt ,2023, https://doi.org/10.48550/arXiv.2304.05454, https://arxiv.org/abs/2304.05454, https://arxiv. org/abs/2304.05454. [37] L. Zhou, S. Parsons, and G. Hripcsak ,
+
+The evaluation of a temporal reasoning system in processing clinical discharge summaries , Jour-nal of the American Medical Informatics Associ-ation, 15 (2008), pp. 99–106, https://doi.org/10. 1197/jamia.M2467, https://pmc.ncbi.nlm.nih.gov/ articles/PMC2274869/. 
+
+A Appendix. A.1 Data Sampling. Table A.1 presents repre-sentative examples of reports removed under each crite-rion. 
+
+A.2 Hyperparameter Selection. Hyperpa-rameter selection for Tmax and θ was conducted us-ing GPT-4.1 on a development sample of 100 instances drawn from MedTempo-T. Due to computational bud-get constraints, as each sweep configuration requires multiple LLM calls per instance across both genera-tor and verifier, we limited the search to a single fron-tier model rather than conducting independent sweeps for all four backbones, and to a representative subset rather than the full evaluation set. The selected values (Tmax =4 , θ=3 ) are applied uniformly across all mod-els and configurations in the main experiments. While model-specific tuning could yield marginal gains for in-dividual backbones, uniform hyperparameters ensure a controlled comparison and reflect a realistic deployment scenario where per-model calibration may not be feasi-ble. Tables A.2 and A.3 report the development set EM across the swept ranges. Table A.2: Development EM (%) across maximum iteration budget Tmax ∈ { 2, . . . , 10 } for CRAFT. Tmax is the upper cap on generator–verifier loop iterations per instance with early stopping enabled. GPT-4.1, sample size 100.                      
+
+> 2345678910
+> CRAFT 12.5 20.0 22.5 20.0 11.0 19.5 18.5 20.0 19.0
+> Note. Columns denote Tmax .Bold indicates the best EM.
+> Tmax =4 is adopted in all main experiments.
+
+Table A.3: Development EM (%) across verifier accep-tance threshold θ ∈ { 1, 2, 3, 4} for CRAFT. θ is the minimum verifier score (0–5 scale) required to accept a candidate output. GPT-4.1, sample size 100.           
+
+> θ=1 θ=2 θ=3 θ=4
+> CRAFT 41 39 43 37
+> Note. Bold indicates the best EM. θ=3 is adopted in all main experiments.
+
+A.3 CRAFT Prompt Templates. The gen-erator prompt (Box A.3) is used across all CRAFT iterations. On the first pass, the placeholder fields $prev_result_block and $feedback_block are empty; on subsequent passes, they carry the prior out-put and verifier feedback, respectively. The verifier prompt (Box A.3) scores each candidate on a 0–5 rubric; 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited
+
+Table A.1: Examples of records removed from the dataset. This table presents representative samples of clinical reports excluded from the final dataset due to criteria such as brevity, lack of temporal information, or limited symptom mentions. 
+
+Category Standard Symptoms Clinical Text Reports with 3 or less symptoms 
+
+[Pharyngeal swelling] patient called back the next day and stated her throat was swelling and had to take Benadryl. [Dysphagia, Epiglottitis] Right side of epiglottis swelled up and hin-der swallowing pictures taken Benadryl Tylenol taken [Dizziness, Fatigue, Mobility decreased] extreme fatigue, dizziness,. could not lift my left arm for 72 hours 
+
+Reports with less than 10 words 
+
+[Erythema, Pruritus, Rash, Swelling] redness, bumps, itchiness, and local swelling [Asthenia, Chills, Headache, Myalgia] Headache, chills, muscle aches and weakness [Chills, Dizziness, Injection site pain, Myalgia, Pyrexia] Dizziness, chills, fever, muscle aches, pain at the injection site 
+
+Reports with no temporal cues 
+
+[Headache, Nausea, Pain, Pyrexia, Ur-ticaria, Vomiting] Fever, headache, body aches, nausea and vom-iting. Hives [Dizziness, Headache, Hypoaesthesia, In-jection site pain] Headache, sore arm to injection site, dizzy, numbness to right foot. No medications taken. Continues to have symptoms. [Arthralgia, Chills, Fatigue, Headache, Myalgia, Nausea, Pyrexia, Vomiting] Repeated shaking with chills, headache, nausea and vomiting, muscle/joint aches, fatigue, fever. Nausea Fatigue Pyrexia Pain Chills 
+
+Earlier symptom                     
+
+> Headache Fatigue Pyrexia Pain Chills
+> Later symptom  38 34 32 25 21 16 019 14 14 21 26 016 018 24 16 0020 25 24 22 0010 20 30
+
+Pfizer-BioNTech Fatigue Pyrexia Pain Chills Dizziness 
+
+Earlier symptom                      
+
+> Headache Fatigue Pyrexia Chills Pain
+> Later symptom  43 24 23 22 21 025 13 16 15 27 015 13 042 26 15 015 29 18 014 11 010 20 30 40
+
+Moderna Fatigue Pyrexia Nausea Dizziness Pain 
+
+Earlier symptom                      
+
+> Headache Pyrexia Fatigue Chills Pain
+> Later symptom  72 54 51 47 40 42 028 26 31 031 24 21 20 58 45 41 30 40 37 32 31 28 0020 40 60
+
+Janssen Fatigue Pyrexia Nausea Pain Dizziness 
+
+Earlier symptom                  
+
+> Headache Fatigue Pyrexia Chills Pain
+> Later symptom  149 110 108 88 84 075 52 47 51 95 067 62 52 125 95 86 77 56 90 66 61 046 050 100
+
+Overall 
+
+(a) Ground Truth Nausea Fatigue Pyrexia Pain Chills 
+
+Earlier symptom                     
+
+> Headache Fatigue Pyrexia Chills Dizziness
+> Later symptom  38 34 33 22 21 16 021 14 16 22 28 015 021 26 28 20 021 19 0011 010 20 30
+
+Pfizer-BioNTech Fatigue Pyrexia Chills Pain Dizziness 
+
+Earlier symptom                      
+
+> Headache Fatigue Pyrexia Chills Pain
+> Later symptom  42 24 22 21 20 025 16 13 14 27 012 15 042 26 015 15 28 18 12 00010 20 30 40
+
+Moderna Fatigue Pyrexia Nausea Dizziness Pain 
+
+Earlier symptom                      
+
+> Headache Pyrexia Fatigue Chills Pain
+> Later symptom  72 54 51 47 41 42 028 27 32 031 24 22 22 58 45 41 31 39 38 32 31 27 0020 40 60
+
+Janssen Fatigue Pyrexia Nausea Pain Dizziness 
+
+Earlier symptom                  
+
+> Headache Fatigue Pyrexia Chills Pain
+> Later symptom  148 111 108 84 83 077 54 49 51 97 069 62 53 126 99 87 74 57 90 68 61 044 050 100
+
+Overall 
+
+(b) Best Model (Claude Sonnet 4.5, CRAFT-Full) 
+
+Figure A.1: Before–after symptom relationship heatmaps across vaccine types; rows denote the most frequent earlier symptoms and columns denote the most frequent subsequent symptoms. Row (a) ground truth; row (b)CRAFT-Full on Claude 
+
+Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited scores below 3 trigger re-generation with actionable feedback. 
+
+Box A.3: Generator Prompt 
+
+Ignore previous conversations. 
+
+TASK: Temporally order the provided list of ad-verse events based on their sequence of appearance in the clinical notes and extract the most specific mention for each adverse event from the notes. 
+
+Clinical Notes: {symptom_text} 
+
+Adverse Events to Temporally Order: {symp-tom_list} 
+
+PROCESSING INSTRUCTIONS: 
+
+• Start with the provided adverse events list and reorder it based on the sequence implied in the clinical notes. • If several adverse effects are mentioned together without a clear temporal order, group them into the same block (inside a single dictionary). • For each adverse event, extract the closest match-ing phrase from the clinical notes; if an adverse event is not mentioned, assign "none" as its value. 
+
+IMPORTANT RULES: 
+
+• No Invention: Never add, remove, or modify symptom names from the provided list. • Mention Each Symptom Once: Mention each symptom only once—at the first time it appears or becomes relevant. • Specific vs. Generic Terms: When a phrase matches both specific and generic symptoms, as-sign it to the specific term only. If “Lip swelling” or “Pharyngeal swelling” is matched, do NOT include the generic “Swelling” unless there is a separate, explicit mention of general swelling elsewhere. • Temporal Evidence Required: If multiple symp-toms are mentioned across multiple sentences without clear timeline separation, group them to-gether. Do NOT treat different sentences as dif-ferent times unless there is an explicit temporal indicator (e.g., “then,” “after that,” “later,” spe-cific dates or times). • Unmentioned Symptoms: Group all symptoms with no original mention together in a separate block with "none" as their value. This block should be placed after all the temporally ordered groups. 
+
+OUTPUT FORMAT: Return your answer only in valid JSON format—using a list of dictionaries to represent temporal progression and grouping: 
+
+{[ {"Erythema": ["redness in neck"]}, {"Pain in extremity": ["sore arm"], "Pruritus": ["itchy feeling"]}, {"Swelling": ["mild arm swelling"]} ]} 
+
+When revising, consider both the feedback (if any) and the previous attempt result (if provided). Keep correct parts from prior attempts, but fix issues based on feedback. 
+
+{prev_result_block} {feedback_block} 
+
+Box A.3: Verifier Prompt 
+
+Given the original text and extracted symptoms below: 
+
+Original Text: {symptom_text} 
+
+Symptoms to Extract: {symptom_list} 
+
+Current Result (JSON): {initial_result} 
+
+Scoring rubric (0–5), +1 each if: 1. The JSON is valid and groups are earliest →latest. 2. Non-mentioned symptoms are presented as 
+
+"none" in the last group. 3. Every symptom in the list appears exactly once overall. 4. Symptoms grouped together occur around the same time. 5. Group ordering follows the text’s temporal cues. Return ONLY one of the following JSON objects: • If score ≥ 3:
+
+{"score": <int>, "feedback": ""} 
+
+• If score < 3:
+
+{"score": <int>, "feedback": "<specific fixes>"} 
+
+A.4 Heatmaps. Figure A.1 compares ground-truth before–after symptom relationships with the best-performing Claude CRAFT-Full configuration across all three vaccine types and overall. 
+
+A.5 Case Study 2: Verifier Miscalibra-tion Induces Oscillation (Claude Sonnet 4.5, GUIDE). Symptom list: Chest pain, Fatigue, Carditis, Troponin increased 
+
+Narrative (abridged): “My son experienced chest pain and was very tired — Sat 6/19 [. . . ] Monday 6/21 at 11am severe chest pain. Taken to hospital — was hospitalized with heart inflammation and very high troponin numbers until Thursday 6/24.” 
+
+Iteration 1 Score: 2/5 — below θ, continue 
+
+Verifier feedback: 
+
+ASPECT=GROUPING; OP=MERGE(g0, g1) 
+
+Iteration 2 Score: 2/5 — below θ, continue 
+
+Verifier feedback: 
+
+> Copyright © 2026 by SIAM Unauthorized reproduction of this article is prohibited
+
+ASPECT=GROUPING; OP=SPLIT(g0, move_keys=[Chest pain, Fatigue], to=NEW_AFTER_-1); OP=SPLIT(g1, move_keys=[Carditis, Troponin increased], to=NEW_AFTER_1) 
+
+Iterations 3–4 Score: 2/5 — budget exhausted, return last output 
+
+Verifier feedback: (repeats i=1 and i=2 feedback alternately) 
+
+At i=1 , Claude produces the exact gold-standard out-put, correctly separating the pre-hospital symptoms (Chest pain, Fatigue) from the hospitalization findings (Carditis, Troponin increased). However, GUIDE’s ver-ifier assigns a score of 2 and instructs a Merge oper-ation — because the narrative uses relative date mark-ers (“Sat 6/19”, “Monday 6/21”) rather than explicit absolute anchors, the verifier cannot confidently con-firm distinct temporal support for the two groups. The model faithfully follows the instruction at i=2 , merging all symptoms into a single stage and producing a wrong output. The verifier then issues a Split instruction, the model recovers the correct grouping at i=3 , and the cy-cle repeats. The loop terminates at i=4 on a merge step, returning an incorrect final output despite the model having produced the correct answer twice. This exam-ple illustrates how GUIDE’s verifier’s strict requirement for explicit temporal anchors is miscalibrated for narra-tives that express temporal order through relative date references, causing it to reject a correct first-pass output and drive the model into an unresolvable oscillation. Ta-ble A.4 summarizes the predicted stages across all four iterations. Table A.4: Model outputs across iterations for Exam-ple 2 (Claude Sonnet 4.5, GUIDE). ✓ = matches gold; 
+
+× = grouping error.
