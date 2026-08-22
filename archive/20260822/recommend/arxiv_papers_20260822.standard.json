@@ -1,0 +1,283 @@
+{
+  "mode": "standard",
+  "generated_at": "2026-08-22T20:30:11.585253+00:00",
+  "stats": {
+    "mode": "standard",
+    "tag_count": 1,
+    "deep_divecandidates": 1,
+    "deep_cap": 6,
+    "deep_selected": 1,
+    "quick_candidates": 5,
+    "quick_skim_target": 11,
+    "quick_selected": 5
+  },
+  "deep_dive": [
+    {
+      "id": "2608.15252v1",
+      "source": "arxiv",
+      "title": "MDwAIstScheduler: Bringing On-Device Voice Documentation into Clinical Practice",
+      "abstract": "Clinical documentation forces physicians to split attention between the patient and their keyboard, and much of it spills into uncom- pensated after-hours work. We present MDwAIstScheduler, a low- cost, belt-worn pipeline that lets a physician speak naturally dur- ing the encounter and have the resulting medications, allergies, labs/orders/referrals, follow-up scheduling, vitals, and problems land in the EHR as review-ready drafts. Building on our earlier prototype, which relied on cloud speech recognition and a cloud language model, the current pipeline runs both transcription and intent extraction entirely on-device. Using a medical-domain auto- matic speech recognition (ASR) model and a 1.7B-parameter lan- guage model we fine-tuned for clinical action extraction, no patient audio or text leaves the device, and the structured drafts are written directly into the Elation EHR for the physician to confirm. The result is a documentation tool that removes keyboard work from the visit without removing the clinician from the record, allowing them to focus on what matters most, patient care, while reducing burden at the same time.",
+      "authors": [
+        "Diego Mardian",
+        "Frank Liu"
+      ],
+      "primary_category": "cs.HC",
+      "categories": [
+        "cs.HC"
+      ],
+      "published": "2026-08-15T14:16:32+00:00",
+      "link": "https://arxiv.org/pdf/2608.15252v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 9.0,
+      "llm_evidence_en": "on-device voice documentation pipeline that writes medication, allergy, lab, and follow-up entries directly into the EHR",
+      "llm_evidence_cn": "将语音转录的用药、过敏、化验、随访等信息直接写入电子病历的系统",
+      "llm_evidence": "将语音转录的用药、过敏、化验、随访等信息直接写入电子病历的系统",
+      "canonical_evidence": "将语音转录的用药、过敏、化验、随访等信息直接写入电子病历的系统",
+      "llm_tldr_en": "MDwAIstScheduler is a belt-worn on-device pipeline that turns physicians' natural speech during encounters into review-ready EHR drafts, enabling clinical documentation without cloud dependency.",
+      "llm_tldr_cn": "临床文书工作使医生在接诊时注意力分散，并且大量工作占用下班时间。MDwAIstScheduler是一种佩戴在腰带上的低成本端侧流水线，利用医学专用语音识别模型和1.7B参数微调语言模型，在设备本地完成转录和意图抽取，将用药、过敏、检查、预约、生命体征和问题等直接写入电子病历成为待审草稿。该系统在保护隐私的同时提高了文档效率，展示了端侧AI在临床实践中的应用潜力。",
+      "llm_tldr": "临床文书工作使医生在接诊时注意力分散，并且大量工作占用下班时间。MDwAIstScheduler是一种佩戴在腰带上的低成本端侧流水线，利用医学专用语音识别模型和1.7B参数微调语言模型，在设备本地完成转录和意图抽取，将用药、过敏、检查、预约、生命体征和问题等直接写入电子病历成为待审草稿。该系统在保护隐私的同时提高了文档效率，展示了端侧AI在临床实践中的应用潜力。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "medical agent that uses electronic health records",
+      "matched_requirement_id": "req-1",
+      "selection_source": "fresh_fetch"
+    }
+  ],
+  "quick_skim": [
+    {
+      "id": "2608.16002v1",
+      "source": "arxiv",
+      "title": "From Sequence to Structure: Relational Uncertainty Propagation for LLM Agents",
+      "abstract": "Reliable uncertainty quantification (UQ) is essential for deploying large language model (LLM) agents in complex interactive environments. Existing UQ methods largely rely on local signals, such as token probabilities, predictive entropy, or per-step confidence, and therefore overlook the long-range dependencies through which errors accumulate across an execution trajectory. As a result, they may fail to identify agent failures whose causes originate several reasoning or interaction steps before the final answer. We propose RUPA (Relational Uncertainty Propagation for Agents), a trajectory-level UQ framework for LLM agents. RUPA represents an execution history as a directed trajectory graph in which reasoning states, tool interactions, and environment feedback are nodes connected by temporal and semantic dependency edges. It then propagates uncertainty over this graph to capture how execution risk accumulates and transfers across interaction steps. The propagated signal is combined with trajectory-level behavioral features and goal-alignment information to produce a confidence estimate for the full agent trajectory. We evaluate RUPA on representative agent benchmarks, including $τ$-2, Terminal-Bench-2, and GAIA, using 6 open-source LLMs spanning multiple model families. Experimental results show that RUPA consistently outperforms existing UQ methods by providing more accurate uncertainty estimates, enabling earlier failure detection, and improving uncertainty-guided agent execution across diverse agent tasks. These results demonstrate that explicitly modeling relational dependency is crucial to reliable UQ for long-horizon LLM agents, providing a practical foundation for trustworthy agent execution.",
+      "authors": [
+        "Zhengzhao Ma. Boxi Cao",
+        "Yaojie Lu",
+        "Hongyu Lin",
+        "Xianpei Han",
+        "Le Sun"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-08-17T01:40:14+00:00",
+      "link": "https://arxiv.org/pdf/2608.16002v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Trajectory-level uncertainty quantification for LLM agents; transferable to medical agent evaluation",
+      "llm_evidence_cn": "针对LLM智能体的轨迹级不确定度量化，可迁移到医疗智能体评估",
+      "llm_evidence": "针对LLM智能体的轨迹级不确定度量化，可迁移到医疗智能体评估",
+      "canonical_evidence": "针对LLM智能体的轨迹级不确定度量化，可迁移到医疗智能体评估",
+      "llm_tldr_en": "Proposes RUPA, a trajectory-level uncertainty quantification framework for LLM agents that models execution history as a directed graph to propagate uncertainty across long-range dependencies, improving detection of agent failures.",
+      "llm_tldr_cn": "针对现有LLM智能体不确定性量化仅依赖局部信号、忽略轨迹中长程依赖的问题，论文提出RUPA框架，将执行历史表示为有向轨迹图，在推理状态、工具交互等节点间传播不确定性。该方法能在最终答案前多步定位智能体失败源头，为评估医疗等领域的LLM智能体表现提供可迁移的可靠性评估手段。",
+      "llm_tldr": "针对现有LLM智能体不确定性量化仅依赖局部信号、忽略轨迹中长程依赖的问题，论文提出RUPA框架，将执行历史表示为有向轨迹图，在推理状态、工具交互等节点间传播不确定性。该方法能在最终答案前多步定位智能体失败源头，为评估医疗等领域的LLM智能体表现提供可迁移的可靠性评估手段。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "How to evaluate the performance of medical agents using electronic health records",
+      "matched_requirement_id": "req-8",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.16002v2",
+      "source": "arxiv",
+      "title": "From Sequence to Structure: Relational Uncertainty Propagation for LLM Agents",
+      "abstract": "Reliable uncertainty quantification (UQ) is essential for deploying large language model (LLM) agents in complex interactive environments. Existing UQ methods largely rely on local signals, such as token probabilities, predictive entropy, or per-step confidence, and therefore overlook the long-range dependencies through which errors accumulate across an execution trajectory. As a result, they may fail to identify agent failures whose causes originate several reasoning or interaction steps before the final answer. We propose RUPA (Relational Uncertainty Propagation for Agents), a trajectory-level UQ framework for LLM agents. RUPA represents an execution history as a directed trajectory graph in which reasoning states, tool interactions, and environment feedback are nodes connected by temporal and semantic dependency edges. It then propagates uncertainty over this graph to capture how execution risk accumulates and transfers across interaction steps. The propagated signal is combined with trajectory-level behavioral features and goal-alignment information to produce a confidence estimate for the full agent trajectory. We evaluate RUPA on representative agent benchmarks, including $τ$-2, Terminal-Bench-2, and GAIA, using 6 open-source LLMs spanning multiple model families. Experimental results show that RUPA consistently outperforms existing UQ methods by providing more accurate uncertainty estimates, enabling earlier failure detection, and improving uncertainty-guided agent execution across diverse agent tasks. These results demonstrate that explicitly modeling relational dependency is crucial to reliable UQ for long-horizon LLM agents, providing a practical foundation for trustworthy agent execution.",
+      "authors": [
+        "Zhengzhao Ma",
+        "Boxi Cao",
+        "Yaojie Lu",
+        "Hongyu Lin",
+        "Xianpei Han",
+        "Le Sun"
+      ],
+      "primary_category": "cs.CL",
+      "categories": [
+        "cs.CL",
+        "cs.AI"
+      ],
+      "published": "2026-08-17T01:40:14+00:00",
+      "link": "https://arxiv.org/pdf/2608.16002v2",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "trajectory-level uncertainty propagation framework for evaluating reliability of LLM agents, transferable to EHR-based medical agent evaluation",
+      "llm_evidence_cn": "提出轨迹级不确定性传播框架来评估LLM智能体可靠性，可迁移到基于EHR的医疗智能体评估",
+      "llm_evidence": "提出轨迹级不确定性传播框架来评估LLM智能体可靠性，可迁移到基于EHR的医疗智能体评估",
+      "canonical_evidence": "提出轨迹级不确定性传播框架来评估LLM智能体可靠性，可迁移到基于EHR的医疗智能体评估",
+      "llm_tldr_en": "RUPA models LLM agent execution as a directed trajectory graph and propagates uncertainty through long-range dependencies, improving failure identification in complex interactive environments.",
+      "llm_tldr_cn": "现有LLM智能体的不确定性量化多依赖局部信号，忽视了跨轨迹长程依赖导致的错误累积。RUPA将执行历史表示为有向轨迹图，在推理状态、工具交互和环境节点之间传播关系不确定性，从而定位源于多步之前的原因。在多种交互环境中，该框架能更早且更准确地识别智能体失败。该方法为医疗等复杂应用中的智能体可靠性评估提供了重要支持。",
+      "llm_tldr": "现有LLM智能体的不确定性量化多依赖局部信号，忽视了跨轨迹长程依赖导致的错误累积。RUPA将执行历史表示为有向轨迹图，在推理状态、工具交互和环境节点之间传播关系不确定性，从而定位源于多步之前的原因。在多种交互环境中，该框架能更早且更准确地识别智能体失败。该方法为医疗等复杂应用中的智能体可靠性评估提供了重要支持。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.17800v1",
+      "source": "arxiv",
+      "title": "StartupBench: Benchmarking General-Purpose Agents on Market-Validated End-to-End Workflows",
+      "abstract": "Recent advances in Large Language Models(LLMs) and agents have substantially improved the ability of AI systems to execute complex tasks. Yet existing benchmarks largely rely on researcher-selected tasks, leaving uncertain whether such progress extends to the work that real-world users actually demand from AI systems. We introduce \\textbf{StartupBench}, an E2E agent benchmark grounded in market-validated AI startup products. Rather than defining tasks from pre-defined assumptions about useful agent capabilities, we systematically study AI products with demonstrated adoption, together with their product workflows and users, to identify real-world tasks for which AI has established practical demand across diverse professional domains. We translate these workflows into complete deliverable-oriented tasks and evaluate them with fine-grained rubrics capturing their complex requirements. Across representative models evaluated under a unified agent harness, even the strongest model successfully completes only approximately 30\\% of StartupBench, despite making substantial partial progress on many tasks. Further analysis identifies aspects like complex instruction following and domain-specific expertise as major sources of failure. Our results reveal that many market-validated workflows remain beyond the reliable capabilities of current general-purpose agents, establishing StartupBench as an empirical measure of progress toward E2E completions of real-world user tasks.",
+      "authors": [
+        "Liya Zhu",
+        "Xin Ma",
+        "Tao Liu",
+        "Haodong Wang",
+        "Ge Zhang",
+        "Jingzhe Ding",
+        "Qingshui Gu",
+        "Yongjie Zhong",
+        "Jinxiang Meng",
+        "Yuan Gao",
+        "Yunqiu Zhou",
+        "Hao Zhu",
+        "Jifeng He",
+        "Yongzhi Liao",
+        "Xinyi Zhang",
+        "Chaoxin Li",
+        "Yi Zhu",
+        "Xi Lin",
+        "Duju Zeng",
+        "Xiang Gao",
+        "Wen Zhang",
+        "Yunyang Wang",
+        "Duo Wang",
+        "Huan Zhou",
+        "Zuo Wang",
+        "Jin Chen",
+        "Kaiyuan Zhang",
+        "Chuqian Yu",
+        "Tianhao Yu",
+        "Longxiang Liu",
+        "Jianbo Xue",
+        "Huimin Che",
+        "Jiahao Wang",
+        "Yujia Qin",
+        "Jiaheng Liu",
+        "Shen Yan",
+        "Xiaolong Chang",
+        "Wenhao Huang"
+      ],
+      "primary_category": "cs.AI",
+      "categories": [
+        "cs.AI"
+      ],
+      "published": "2026-08-18T14:01:32+00:00",
+      "link": "https://arxiv.org/pdf/2608.17800v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "general-purpose agent benchmark with market-validated workflows",
+      "llm_evidence_cn": "面向通用智能体的基准测试，基于市场验证的工作流",
+      "llm_evidence": "面向通用智能体的基准测试，基于市场验证的工作流",
+      "canonical_evidence": "面向通用智能体的基准测试，基于市场验证的工作流",
+      "llm_tldr_en": "Proposes StartupBench, an end-to-end benchmark for general-purpose agents grounded in market-validated startup products, to evaluate real-world agent capabilities.",
+      "llm_tldr_cn": "现有智能体基准多依赖研究者自选任务，难以反映真实用户需求。本文提出StartupBench，通过系统分析已获市场验证的AI创业产品及其工作流和用户，识别出真实世界中已有实际需求的任务，构建端到端智能体基准。该基准覆盖多个专业领域，旨在检验智能体完成现实任务的能力。虽然不针对医疗，但其基准构建方法论可迁移至医学智能体的性能评估。",
+      "llm_tldr": "现有智能体基准多依赖研究者自选任务，难以反映真实用户需求。本文提出StartupBench，通过系统分析已获市场验证的AI创业产品及其工作流和用户，识别出真实世界中已有实际需求的任务，构建端到端智能体基准。该基准覆盖多个专业领域，旨在检验智能体完成现实任务的能力。虽然不针对医疗，但其基准构建方法论可迁移至医学智能体的性能评估。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.18280v1",
+      "source": "arxiv",
+      "title": "What Makes Software Issue Resolution Tasks Difficult for Agents?",
+      "abstract": "Background. Advances in agentic systems are simultaneously, and rapidly, saturating benchmarks. Despite this often discussed phenomena, benchmark scores remain difficult to interpret due to the lack of control and characterization of task difficulty. More specifically, we currently have little understanding of what makes one task harder than another, and to what extent task difficulty is predictable from static task properties. Aims. We propose a measurement framework to investigate and systematically quantify what structural properties of software tasks correspond to agent success rates for issue resolution tasks. Method. We conducted a large scale empirical study on CoderForge-Preview, the largest open dataset of coding agent trajectories to date, by extracting features across task patch, repository and prompt. We evaluated the predictive power of each feature against task outcomes using ensemble methods, SHAP attribution, and effect size analysis. Results We found that task difficulty is substantially predictable from static features (AU C = 0.863) and is largely driven by patch fragmentation and repository scale. Prompt linguistic features become visible among top contributors for tasks in the mid-band, revealing a layered structure of difficulty. Conclusion. The difficulty of an issue resolution task is encoded in its structure. This enables static, pre-hoc difficulty estimation and lays the groundwork for difficulty-controlled benchmark construction for evaluation of agents.",
+      "authors": [
+        "Ebtesam Al-Haque",
+        "Brittany Johnson"
+      ],
+      "primary_category": "cs.SE",
+      "categories": [
+        "cs.SE",
+        "cs.AI",
+        "cs.CL",
+        "cs.LG"
+      ],
+      "published": "2026-08-18T19:59:16+00:00",
+      "link": "https://arxiv.org/pdf/2608.18280v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Measurement framework to quantify task structural properties for agent success, transferable to medical agent benchmarking",
+      "llm_evidence_cn": "提出量化任务结构属性与智能体成功率关系的测量框架，可迁移到医学智能体基准测试",
+      "llm_evidence": "提出量化任务结构属性与智能体成功率关系的测量框架，可迁移到医学智能体基准测试",
+      "canonical_evidence": "提出量化任务结构属性与智能体成功率关系的测量框架，可迁移到医学智能体基准测试",
+      "llm_tldr_en": "A measurement framework quantifies which structural properties of software tasks correspond to agent success rates, transferable to designing difficulty-aware medical agent benchmarks.",
+      "llm_tldr_cn": "针对智能体基准分数难以解释的问题，本文提出一个测量框架，系统量化软件任务结构属性与智能体成功率的关系。基于大规模编码智能体轨迹数据集CoderForge-Preview进行实证研究，发现任务难度可从静态属性预测。该方法为医学智能体基准测试中的任务设计提供了可迁移的难度建模思路。",
+      "llm_tldr": "针对智能体基准分数难以解释的问题，本文提出一个测量框架，系统量化软件任务结构属性与智能体成功率的关系。基于大规模编码智能体轨迹数据集CoderForge-Preview进行实证研究，发现任务难度可从静态属性预测。该方法为医学智能体基准测试中的任务设计提供了可迁移的难度建模思路。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    },
+    {
+      "id": "2608.19653v1",
+      "source": "arxiv",
+      "title": "DeltaML-Bench: Evaluating Machine Learning Agents on Real-World Research Repositories",
+      "abstract": "Autonomous agents for machine learning experimentation must navigate heterogeneous repositories, repair training pipelines, and evaluate candidate improvements under realistic compute constraints. Existing benchmarks only partially capture these conditions. We introduce DeltaML-Bench, a benchmark comprising 48 tasks sourced from research papers that require agents to improve published baselines within imperfect, open-source repositories. We evaluate GPT-5 and Claude Sonnet 4 with a standard Modular agent and a search-based ARG scaffolding. In the 4 x 6h allocation, ARG raises GPT-5's per-run success rate from 9.4% to 33.9%; in the 2 x 12h allocation, GPT-5 ARG reaches 49.0%. Modular configurations exhibit specification gaming rates as high as 47.9%, while no gaming is observed in the evaluated ARG configurations. These results indicate that scaffolding design and integrity checks are important considerations when deploying agents for autonomous ML experimentation.",
+      "authors": [
+        "Josias Moukpe",
+        "Priyanka Aryal",
+        "Matthew Kenney"
+      ],
+      "primary_category": "cs.LG",
+      "categories": [
+        "cs.LG",
+        "cs.AI"
+      ],
+      "published": "2026-08-20T05:42:39+00:00",
+      "link": "https://arxiv.org/pdf/2608.19653v1",
+      "tags": [
+        "keyword:ehr-agent",
+        "query:ehr-agent"
+      ],
+      "llm_score": 6.0,
+      "llm_evidence_en": "Benchmark for evaluating ML agents; benchmark design transferable to medical agents",
+      "llm_evidence_cn": "面向机器学习智能体的评估基准，其设计可迁移到医疗智能体",
+      "llm_evidence": "面向机器学习智能体的评估基准，其设计可迁移到医疗智能体",
+      "canonical_evidence": "面向机器学习智能体的评估基准，其设计可迁移到医疗智能体",
+      "llm_tldr_en": "Introduces DeltaML-Bench, a benchmark of 48 tasks for evaluating ML agents on real-world research repositories; tests GPT-5 and Claude Sonnet 4 with standard and search-based agents, revealing success rates and specification gaming.",
+      "llm_tldr_cn": "针对现有机器学习智能体基准未能完全反映真实仓库环境的问题，论文提出DeltaML-Bench，包含48个来自研究论文的任务，要求智能体在不完美开源仓库中改进已有基线。评估了GPT-5和Claude Sonnet 4在两种记忆框架下的表现，发现搜索式ARG支架能显著提升成功率并抑制规格博弈。该基准的设计为构建医疗智能体评估基准提供了可借鉴的方法。",
+      "llm_tldr": "针对现有机器学习智能体基准未能完全反映真实仓库环境的问题，论文提出DeltaML-Bench，包含48个来自研究论文的任务，要求智能体在不完美开源仓库中改进已有基线。评估了GPT-5和Claude Sonnet 4在两种记忆框架下的表现，发现搜索式ARG支架能显著提升成功率并抑制规格博弈。该基准的设计为构建医疗智能体评估基准提供了可借鉴的方法。",
+      "llm_tags": [
+        "query:ehr-agent"
+      ],
+      "matched_query_tag": "query:ehr-agent",
+      "matched_query_text": "benchmarking performance of medical agents",
+      "matched_requirement_id": "req-2",
+      "selection_source": "fresh_fetch",
+      "quick_tier": "6"
+    }
+  ]
+}

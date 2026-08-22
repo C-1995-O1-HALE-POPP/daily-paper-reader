@@ -6,50 +6,40 @@
 </div>
 
 ## 每次日报
-- 最新运行日期：2026-08-21
-- 运行时间：2026-08-21 20:54:04 UTC
+- 最新运行日期：2026-08-22
+- 运行时间：2026-08-22 20:34:21 UTC
 - 运行状态：成功
-- 本次总论文数：10
+- 本次总论文数：6
 - 精读区：1
-- 速读区：9
+- 速读区：5
 
 ### 今日简报（AI）
-今日共读10篇，精读1篇《The Evaluation Context Protocol (ECP)》获8.0分，速读9篇。最值得关注ECP作为AI Agent评估的可移植契约，以及临床推理与失败归因两篇7分工作。建议优先精读ECP，理解评估上下文标准化对后续实操的价值。
-- 详情：[/202608/21/README](/202608/21/README)
+今日精读1篇高分论文，并速读3篇LLM代理与工作流基准研究。  
+最值得关注的是《MDwAIstScheduler》（9.0/10），聚焦设备端语音文档的临床应用落地。  
+建议普通读者优先了解该临床调度方案，再延伸对比LLM代理的不确定性传播与端到端工作流评测。
+- 详情：[/202608/22/README](/202608/22/README)
 
 ### 精读区论文标签
-1. [The Evaluation Context Protocol (ECP): A Portable Contract for AI Agent Evaluation](/202608/21/2608.19263v1-the-evaluation-context-protocol-ecp-a-portable-contract-for-ai-agent-evaluation)  
-   标签：评分：8.0/10、query:ehr-agent
-   evidence：面向AI智能体的可移植评估契约，可直接用于医疗智能体基准测试
+1. [MDwAIstScheduler: Bringing On-Device Voice Documentation into Clinical Practice](/202608/22/2608.15252v1-mdwaistscheduler-bringing-on-device-voice-documentation-into-clinical-practice)  
+   标签：评分：9.0/10、query:ehr-agent
+   evidence：将语音转录的用药、过敏、化验、随访等信息直接写入电子病历的系统
 
 ### 速读区论文标签
-1. [Generated Context versus Governed State: Functional Conditions for Accountable Longitudinal Clinical Reasoning](/202608/21/2608.14804v1-generated-context-versus-governed-state-functional-conditions-for-accountable-longitudinal-clinical-reasoning)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：提出负责任纵向临床推理的功能条件，区分受管理的患者状态与生成上下文，对EHR临床AI评估有参考意义。
-2. [Beyond LLM-Based Reasoning: Lightweight GNNs for Agent Failure Attribution](/202608/21/2608.18575v1-beyond-llm-based-reasoning-lightweight-gnns-for-agent-failure-attribution)  
-   标签：评分：7.0/10、query:ehr-agent
-   evidence：聚焦代理故障归因这一多智能体性能评估核心环节，可迁移至医疗代理评估
-3. [CRAFT: LLM-Based Iterative Refinement for Temporal Reasoning over Clinical Narratives](/202608/21/2608.12779v1-craft-llm-based-iterative-refinement-for-temporal-reasoning-over-clinical-narratives)  
+1. [From Sequence to Structure: Relational Uncertainty Propagation for LLM Agents](/202608/22/2608.16002v1-from-sequence-to-structure-relational-uncertainty-propagation-for-llm-agents)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：临床叙事基准与LLM评估，对基于EHR的智能体评估有迁移价值
-4. [Engineering Reliable Coding Agents: Evaluating and Operating the System Around the Model](/202608/21/2608.13867v1-engineering-reliable-coding-agents-evaluating-and-operating-the-system-around-the-model)  
+   evidence：针对LLM智能体的轨迹级不确定度量化，可迁移到医疗智能体评估
+2. [From Sequence to Structure: Relational Uncertainty Propagation for LLM Agents](/202608/22/2608.16002v2-from-sequence-to-structure-relational-uncertainty-propagation-for-llm-agents)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：通用的智能体系统评估框架，可迁移至医疗智能体基准测试
-5. [Demystifying Agent Skills: Why They Work-Until They Don't](/202608/21/2608.14036v1-demystifying-agent-skills-why-they-work-until-they-dont)  
+   evidence：提出轨迹级不确定性传播框架来评估LLM智能体可靠性，可迁移到基于EHR的医疗智能体评估
+3. [StartupBench: Benchmarking General-Purpose Agents on Market-Validated End-to-End Workflows](/202608/22/2608.17800v1-startupbench-benchmarking-general-purpose-agents-on-market-validated-end-to-end-workflows)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：通过受控实验分离技能何时有效何时失效，评估方法可迁移到医疗Agent
-6. [ATLAS: Discovering Agent Strategies through LLM-Guided Abstraction and Automata Learning](/202608/21/2608.14352v1-atlas-discovering-agent-strategies-through-llm-guided-abstraction-and-automata-learning)  
+   evidence：面向通用智能体的基准测试，基于市场验证的工作流
+4. [What Makes Software Issue Resolution Tasks Difficult for Agents?](/202608/22/2608.18280v1-what-makes-software-issue-resolution-tasks-difficult-for-agents)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：通过自动机学习发现智能体策略；可迁移到医疗智能体评估。
-7. [Harness the Memory: A Holistic Evaluation of Memory Substrates in Memory Agents](/202608/21/2608.15008v1-harness-the-memory-a-holistic-evaluation-of-memory-substrates-in-memory-agents)  
+   evidence：提出量化任务结构属性与智能体成功率关系的测量框架，可迁移到医学智能体基准测试
+5. [DeltaML-Bench: Evaluating Machine Learning Agents on Real-World Research Repositories](/202608/22/2608.19653v1-deltaml-bench-evaluating-machine-learning-agents-on-real-world-research-repositories)  
    标签：评分：6.0/10、query:ehr-agent
-   evidence：为记忆增强Agent提供26项性能与效率指标的统一评估框架，可迁移用于医疗Agent基准测试
-8. [LEDGER: Claim-to-Evidence Trace Graphs for Auditing LLM Agents](/202608/21/2608.18398v1-ledger-claim-to-evidence-trace-graphs-for-auditing-llm-agents)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：利用声明到证据的追踪图审计LLM Agent，可直接用于医疗Agent的可信评估
-9. [Bringing analytic rigor to agentic AI for science: The Brain Researcher platform for neuroimaging data analysis](/202608/21/2608.19902v1-bringing-analytic-rigor-to-agentic-ai-for-science-the-brain-researcher-platform-for-neuroimaging-data-analysis)  
-   标签：评分：6.0/10、query:ehr-agent
-   evidence：面向神经影像分析的智能体研究框架，包含严格评估与基准测试，可迁移至医疗智能体评估。
+   evidence：面向机器学习智能体的评估基准，其设计可迁移到医疗智能体
 
 
 <div class="dpr-home-promo-card">
